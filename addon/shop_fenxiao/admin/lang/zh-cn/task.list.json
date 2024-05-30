@@ -1,0 +1,22 @@
+{
+    "addTask": "添加任务奖励",
+    "taskName":"活动名称",
+    "taskTime":"活动时间",
+    "createTime":"创建时间",
+    "level":"参与等级",
+    "state":"活动状态",
+    "task":"奖励",
+    "taskNamePlaceholder": "请输入任务名称",
+    "startDate":"开始时间",
+    "endDate":"结束时间",
+    "edit": "编辑",
+    "detail": "详情",
+    "taskDeleteTips": "确定要删除该任务吗？",
+    "finish": "结束",
+    "taskFinishTips": "确定要结束该任务吗？",
+    "taskContent": "奖励内容",
+    "status": "状态",
+    "statusPlaceholder": "请选择状态",
+    "all": "全部",
+    "awardDetail": "奖励明细"
+}

@@ -1,0 +1,12 @@
+{
+  "fenxiaoSelectPricePopupTitle": "选择分销代理商",
+  "memberInfo": "会员信息",
+  "fenxiaoNamePlaceholder": "请输入会员昵称或者手机号",
+  "fenxiaoLevel": "分销商等级",
+  "currentState": "状态",
+  "memberNamePlaceholder": "请输入会员昵称或者手机号",
+  "mobile": "手机号",
+  "point": "积分",
+  "balance": "余额",
+  "select": "选择"
+}

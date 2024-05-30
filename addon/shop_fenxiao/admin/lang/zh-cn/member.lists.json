@@ -1,0 +1,15 @@
+{
+    "memberName":"会员信息",
+    "memberNamePlaceholder":"请输入会员昵称或手机号",
+    "memberInfo":"会员信息",
+    "isFenxiao":"是否是分销商",
+    "consumptionNumber": "消费次数",
+    "editSupFenxiaoTip": "修改上级推荐人",
+    "editSupFenxiaoTitle": "修改上级推荐人",
+    "consumptionMoney": "消费金额",
+    "supFenxiao": "上级分销商",
+    "bindingSupFenxiao": "上级推荐人",
+    "detail": "详情",
+    "are": "是",
+    "no": "否"
+}
