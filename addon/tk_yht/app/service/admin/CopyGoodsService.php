@@ -76,7 +76,7 @@ class CopyGoodsService extends BaseAdminService
                 'goods_name' => $data['store_name'],
                 'sub_title' => $data['store_info'],
                 'goods_cover' => $this->saveImage($data['image'], $this->isLocal),
-                'goods_image' => $this->saveImage($data['slider_image'], $this->isLocal),
+                'goods_image' => $this->saveImage($data['slider_image'], '1'),
                 'goods_category' => $params['goods_category'],
                 'goods_type' => $params['goods_type'],
                 'brand_id' => 0,

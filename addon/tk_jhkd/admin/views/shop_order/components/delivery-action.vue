@@ -292,7 +292,20 @@ import {
   preOrder,
 } from "@/addon/tk_jhkd/api/shop";
 import { cloneDeep } from "lodash-es";
-const mr_address = ref(JSON.parse(localStorage.getItem("mr_address")));
+const mr_address = ref(null);
+
+try {
+  const storedAddress = localStorage.getItem("mr_address");
+  if (storedAddress) {
+    mr_address.value = JSON.parse(storedAddress);
+  } else {
+    // 处理地址为空的情况
+    console.log("Address is empty.");
+  }
+} catch (error) {
+  console.error("Error parsing address:", error);
+}
+
 const preData = ref();
 const selectPreData = ref();
 const selectAddress = async (row) => {
@@ -546,8 +559,10 @@ const preOrderEvent = async () => {
     weight: formData.weight,
     bj_price: formData.bj_price,
   };
-  const res = await preOrder(data);
-  preData.value = res.data;
+  if (mr_address.value.id) {
+    const res = await preOrder(data);
+    preData.value = res.data;
+  }
 };
 defineExpose({
   showDialog,

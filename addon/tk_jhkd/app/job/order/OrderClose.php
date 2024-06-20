@@ -24,7 +24,7 @@ class OrderClose extends BaseJob
             $orderModel= new Order();
             $list = $orderModel->where([
                 ['order_status', '=', JhkdOrderDict::WAIT_PAY],
-                ['create_time', '<=', time()-60]
+                ['create_time', '<=', time()-60*30]
             ])->select();
             if(!$list->isEmpty()){
                 foreach($list as $v){

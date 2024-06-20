@@ -14,6 +14,13 @@ return [
                 'action' => 'decorate'
             ],
             [
+                'name' => 'TK_JHKD_MEMBER_INDEX',
+                'title' =>'个人中心',
+                'url' => '/addon/tk_jhkd/pages/member',
+                'is_share' => 1,
+                'action' => 'decorate'
+            ],
+            [
                 'name' => 'TK_JHKD_ORDERSUBMIT',
                 'title' =>'快递下单',
                 'url' => '/addon/tk_jhkd/pages/ordersubmit',

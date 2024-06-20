@@ -364,5 +364,271 @@ return [
                 ]
             ]
         ],
-    ]
+    ],
+    'DIY_TK_JHKD_MEMBER_INDEX' => [
+        'tk_jhkd_member_first' => [ // 页面标识
+            "title" => "聚合快递个人中心", // 页面名称
+            'cover' => '', // 页面封面图
+            'preview' => '', // 页面预览图
+            'desc' => '', // 页面描述
+            'mode' => 'diy', // 页面模式：diy：自定义，fixed：固定
+            // 页面数据源
+            "data" => [
+                "global" => [
+                    "title" =>"个人中心",
+                    "pageStartBgColor" =>"#F8F8F8",
+                    "pageEndBgColor" =>"",
+                    "pageGradientAngle" =>"to bottom",
+                    "bgUrl" =>"",
+                    "bgHeightScale" =>0,
+                    "imgWidth" =>"",
+                    "imgHeight" =>"",
+                    "bottomTabBarSwitch" =>true,
+                    "template" => [
+                        "textColor" =>"#303133",
+                        "pageStartBgColor" =>"",
+                        "pageEndBgColor" =>"",
+                        "pageGradientAngle" =>"to bottom",
+                        "componentBgUrl" =>"",
+                        "componentBgAlpha" =>2,
+                        "componentStartBgColor" =>"",
+                        "componentEndBgColor" =>"",
+                        "componentGradientAngle" =>"to bottom",
+                        "topRounded" =>0,
+                        "bottomRounded" =>0,
+                        "elementBgColor" =>"",
+                        "topElementRounded" =>0,
+                        "bottomElementRounded" =>0,
+                        "margin" => [
+                            "top" =>0,
+                            "bottom" =>0,
+                            "both" =>12
+                        ]
+                    ],
+                    "topStatusBar" => [
+                        "isShow" =>true,
+                        "bgColor" =>"#ffffff",
+                        "isTransparent" =>false,
+                        "style" =>"style-1",
+                        "styleName" =>"风格1",
+                        "textColor" =>"#333333",
+                        "textAlign" =>"center",
+                        "inputPlaceholder" =>"请输入搜索关键词",
+                        "imgUrl" =>"",
+                        "link" => [
+                            "name" =>""
+                        ]
+                    ],
+                    "popWindow" => [
+                        "imgUrl" =>"",
+                        "imgWidth" =>"",
+                        "imgHeight" =>"",
+                        "count" =>-1,
+                        "show" =>0,
+                        "link" => [
+                            "name" =>""
+                        ]
+                    ]
+                ],
+                "value" =>[
+                    [
+                        "path" =>"edit-member-info",
+                        "id" =>"67qv49qgxp00",
+                        "componentName" =>"MemberInfo",
+                        "componentTitle" =>"会员信息",
+                        "uses" =>0,
+                        "ignore" =>[
+                            "componentBgUrl"
+                        ],
+                        "pageStartBgColor" =>"",
+                        "pageEndBgColor" =>"",
+                        "pageGradientAngle" =>"to bottom",
+                        "componentBgUrl" =>"",
+                        "componentBgAlpha" =>2,
+                        "componentStartBgColor" =>"",
+                        "componentEndBgColor" =>"",
+                        "componentGradientAngle" =>"to bottom",
+                        "topRounded" =>9,
+                        "bottomRounded" =>9,
+                        "elementBgColor" =>"",
+                        "topElementRounded" =>0,
+                        "bottomElementRounded" =>0,
+                        "margin" => [
+                            "top" =>12,
+                            "bottom" =>6,
+                            "both" =>16
+                        ],
+                        "style" =>"style-1",
+                        "styleName" =>"风格1",
+                        "textColor" =>"#000000",
+                        "bgUrl" =>"",
+                        "bgColorStart" =>"",
+                        "bgColorEnd" =>"",
+                        "pageStyle" =>"padding-top:24rpx;padding-bottom:12rpx;padding-right:32rpx;padding-left:32rpx;"
+                    ],
+                    [
+                        "path" =>"edit-member-level",
+                        "uses" =>1,
+                        "id" =>"1w83pipkfpi8",
+                        "componentName" =>"MemberLevel",
+                        "componentTitle" =>"会员等级",
+                        "ignore" =>[
+                            "componentBgColor",
+                            "componentBgUrl"
+                        ],
+                        "style" =>"style-3",
+                        "styleName" =>"风格3",
+                        "textColor" =>"#303133",
+                        "pageStartBgColor" =>"",
+                        "pageEndBgColor" =>"",
+                        "pageGradientAngle" =>"to bottom",
+                        "componentBgUrl" =>"",
+                        "componentBgAlpha" =>2,
+                        "componentStartBgColor" =>"",
+                        "componentEndBgColor" =>"",
+                        "componentGradientAngle" =>"to bottom",
+                        "topRounded" =>0,
+                        "bottomRounded" =>0,
+                        "elementBgColor" =>"",
+                        "topElementRounded" =>0,
+                        "bottomElementRounded" =>0,
+                        "margin" => [
+                            "top" =>0,
+                            "bottom" =>0,
+                            "both" =>12
+                        ],
+                        "pageStyle" =>"padding-top:2rpx;padding-bottom:0rpx;padding-right:24rpx;padding-left:24rpx;"
+                    ],
+                    [
+                        "path" =>"edit-graphic-nav",
+                        "id" =>"62b7d7hl4ok",
+                        "componentName" =>"GraphicNav",
+                        "componentTitle" =>"图文导航",
+                        "uses" =>0,
+                        "layout" =>"horizontal",
+                        "mode" =>"graphic",
+                        "showStyle" =>"fixed",
+                        "rowCount" =>4,
+                        "pageCount" =>2,
+                        "carousel" => [
+                            "type" =>"circle",
+                            "color" =>"#FFFFFF"
+                        ],
+                        "imageSize" =>25,
+                        "aroundRadius" =>25,
+                        "font" => [
+                            "size" =>12,
+                            "weight" =>"bold",
+                            "color" =>"#303133"
+                        ],
+                        "pageStartBgColor" =>"",
+                        "pageEndBgColor" =>"",
+                        "pageGradientAngle" =>"to bottom",
+                        "componentBgUrl" =>"",
+                        "componentBgAlpha" =>2,
+                        "componentStartBgColor" =>"rgba(255, 255, 255, 1)",
+                        "componentEndBgColor" =>"",
+                        "componentGradientAngle" =>"to bottom",
+                        "topRounded" =>0,
+                        "bottomRounded" =>9,
+                        "elementBgColor" =>"",
+                        "topElementRounded" =>0,
+                        "bottomElementRounded" =>0,
+                        "margin" => [
+                            "top" =>0,
+                            "bottom" =>6,
+                            "both" =>16
+                        ],
+                        "ignore" =>[],
+                        "list" =>[
+                            [
+                                "title" =>"个人资料",
+                                "link" => [
+                                    "parent" =>"MEMBER_LINK",
+                                    "name" =>"MEMBER_PERSONAL",
+                                    "title" =>"个人资料",
+                                    "url" =>"/app/pages/member/personal"
+                                ],
+                                "imageUrl" =>"static/resource/images/diy/horz_m_personal.png",
+                                "label" => [
+                                    "control" =>false,
+                                    "text" =>"热门",
+                                    "textColor" =>"#FFFFFF",
+                                    "bgColorStart" =>"#F83287",
+                                    "bgColorEnd" =>"#FE3423"
+                                ],
+                                "id" =>"xvlauaflc6o",
+                                "imgWidth" =>100,
+                                "imgHeight" =>100
+                            ],
+                            [
+                                "title" =>"我的佣金",
+                                "link" => [
+                                    "parent" =>"MEMBER_LINK",
+                                    "name" =>"MEMBER_COMMISSION",
+                                    "title" =>"我的佣金",
+                                    "url" =>"/app/pages/member/commission",
+                                    "action" =>""
+                                ],
+                                "imageUrl" =>"static/resource/images/diy/horz_m_balance.png",
+                                "label" => [
+                                    "control" =>false,
+                                    "text" =>"热门",
+                                    "textColor" =>"#FFFFFF",
+                                    "bgColorStart" =>"#F83287",
+                                    "bgColorEnd" =>"#FE3423"
+                                ],
+                                "id" =>"63bjscck5n40",
+                                "imgWidth" =>100,
+                                "imgHeight" =>100
+                            ],
+                            [
+                                "title" =>"分销收入",
+                                "link" => [
+                                    "parent" =>"DIY_LINK",
+                                    "name" =>"DIY_LINK",
+                                    "title" =>"分销收入",
+                                    "url" =>"/app/pages/member/detailed_account?type=commission",
+                                    "action" =>""
+                                ],
+                                "imageUrl" =>"static/resource/images/diy/horz_m_point.png",
+                                "label" => [
+                                    "control" =>false,
+                                    "text" =>"热门",
+                                    "textColor" =>"#FFFFFF",
+                                    "bgColorStart" =>"#F83287",
+                                    "bgColorEnd" =>"#FE3423"
+                                ],
+                                "id" =>"4qiczw54t8g0",
+                                "imgWidth" =>100,
+                                "imgHeight" =>100
+                            ],
+                            [
+                                "title" =>"联系客服",
+                                "link" => [
+                                    "parent" =>"TK_CPS_COMMONLINK",
+                                    "name" =>"TK_CPS_DIY",
+                                    "title" =>"CPS首页",
+                                    "url" =>"/addon/tk_cps/pages/diy",
+                                    "action" =>"decorate"
+                                ],
+                                "imageUrl" =>"static/resource/images/diy/horz_m_service.png",
+                                "label" => [
+                                    "control" =>false,
+                                    "text" =>"热门",
+                                    "textColor" =>"#FFFFFF",
+                                    "bgColorStart" =>"#F83287",
+                                    "bgColorEnd" =>"#FE3423"
+                                ],
+                                "id" =>"2eqwfkdphpgk",
+                                "imgWidth" =>100,
+                                "imgHeight" =>100
+                            ]
+                        ],
+                        "pageStyle" =>"padding-top:2rpx;padding-bottom:12rpx;padding-right:32rpx;padding-left:32rpx;"
+                    ]
+                ]
+            ]
+        ],
+    ],
 ];

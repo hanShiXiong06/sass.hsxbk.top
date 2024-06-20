@@ -40,7 +40,7 @@ class GoodsService extends BaseApiService
      */
     public function getPage(array $where = [])
     {
-        $field = 'site_id,goods_id,goods_name,sub_title,goods_category,goods_type,goods_cover,unit,status,sale_num + goods.virtual_sale_num as sale_num,member_discount,is_discount,virtual_receive_type';
+        $field = 'site_id,goods_id,goods_name,sub_title,goods_category,goods_type,goods_cover,unit,status,sale_num + goods.virtual_sale_num as sale_num,member_discount,is_discount,virtual_receive_type , create_time';
 
         $sku_where = [
             [ 'goodsSku.is_default', '=', 1 ],

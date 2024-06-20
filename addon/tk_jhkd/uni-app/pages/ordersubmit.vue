@@ -89,6 +89,7 @@
 			</label>
 		</checkbox-group>
 	</view>
+	<view class="mt-[380rpx] mb-[260rpx] flex items-center"></view>
 	<!-- 物品信息弹出框 -->
 	<u-popup class="safe-area-inset-bottom" :round="10" @close="close" closeable="true" :show="goodshow" mode="bottom"
 		width="640" border-radius="12">
@@ -181,22 +182,33 @@
 		</view>
 		<u-safe-bottom></u-safe-bottom>
 	</view>
+	<button @click="shareEvent()" class="fixed bottom-48 right-4 z-50 rounded-full p-2 text-white hover:bg-blue-700">
 
+		<u-icon name="share" color="#000000" size="24"></u-icon>
+	</button>
+	<share-poster ref="sharePosterRef" posterType="tk_jhkd_poster" :posterId="poster_id" :posterParam="posterParam"
+		:copyUrlParam="copyUrlParam" />
 	<pay ref="payRef" @close="payLoading = false"></pay>
-</template>
+</template>-
 <script setup lang="ts">
 	import useDiyStore from '@/app/stores/diy';
-	import { ref, reactive } from 'vue'
+	import { ref, reactive, computed } from 'vue'
 	import { goto } from '@/addon/tk_jhkd/utils/ts/goto';
 	import {
 		onLoad,
 		onShow
 	} from '@dcloudio/uni-app'
 	import {
-		preOrder, createOrder, getJhkdAddressInfo, getAgreement
+		preOrder, createOrder, getJhkdAddressInfo, getAgreement, checkFenxiao
 	} from '@/addon/tk_jhkd/api/tkjhkd'
-	import { redirect, img } from '@/utils/common';
+	import { redirect, img, handleOnloadParams } from '@/utils/common';
 	import { getAddressInfo } from '@/app/api/member'
+	import { useSubscribeMessage } from '@/hooks/useSubscribeMessage'
+	import { useLogin } from '@/hooks/useLogin'
+	import useMemberStore from '@/stores/member'
+	const memberStore = useMemberStore()
+	const userInfo = computed(() => memberStore.info)
+	import { getToken, isWeixinBrowser, getSiteId } from '@/utils/common'
 	const list = ref([''])
 	const startaddress = ref(null)
 	const endaddress = ref(null)
@@ -223,6 +235,41 @@
 		'零食特产',
 		'办公用品'
 	])
+
+
+	/************* 分享海报-start **************/
+	let sharePosterRef = ref(null);
+	let copyUrlParam = ref('');
+	let posterParam = {};
+	const poster_id = ref(0)
+	// 分享海报链接
+	const copyUrlFn = () => {
+
+		if (userInfo.value && userInfo.value.member_id) copyUrlParam.value += '?mid=' + userInfo.value.member_id;
+	}
+	const shareEvent = () => {
+
+		// 检测是否登录
+		if (!userInfo.value) {
+			let pid = uni.getStorageSync('pid');
+			if (pid && pid > 0) {
+				useLogin().setLoginBack({ url: '/addon/tk_jhkd/pages/ordersubmit?mid=' + pid })
+				return false
+			} else {
+				useLogin().setLoginBack({ url: '/addon/tk_jhkd/pages/ordersubmit' })
+				return false
+			}
+		}
+
+		if (userInfo.value && userInfo.value.member_id)
+			posterParam.member_id = userInfo.value.member_id;
+		copyUrlFn()
+		sharePosterRef.value.openShare()
+	}
+	/************* 分享海报-end **************/
+
+
+
 	const goodswrite = (index) => {
 		uni.$u.toast(goods.value[index])
 		form.goods = goods.value[index]
@@ -273,13 +320,15 @@
 				value: type
 			},
 			success() {
-				redirect({ url: '/app/pages/member/address', param: { type: 'address' } })
+				redirect({ url: '/addon/tk_jhkd/pages/address/address', param: { type: 'address' } })
 			}
 		})
 	}
 	const addressInfo = async (id) => {
-		const data = await getJhkdAddressInfo(id);
-		return data.data;
+		if (id > 0) {
+			const data = await getJhkdAddressInfo(id);
+			return data.data;
+		}
 	};
 
 	const selectAddress = uni.getStorageSync('selectAddressCallback');
@@ -318,6 +367,7 @@
 			uni.$u.toast('请填写送件地址')
 			return
 		}
+		useSubscribeMessage().request('tk_jhkd_order_sign')
 		goodshow.value = true
 		form.delivery_info = []
 	}
@@ -372,6 +422,8 @@
 			uni.$u.toast('请先阅读并同意协议')
 			return
 		}
+
+		useSubscribeMessage().request('tk_jhkd_order_pay,tk_jhkd_order_pick,tk_jhkd_order_add')
 		const data = await createOrder(form)
 		form.delivery_info = []
 		selectData.value = null
@@ -390,13 +442,57 @@
 		const data = await getAgreement('jhkdservice')
 		jhkdservice.value = data.data
 	}
-	onLoad((options) => {
+	onLoad((option) => {
+
+		// #ifdef MP-WEIXIN
+		// 处理小程序场景值参数
+		option = handleOnloadParams(option);
+		// #endif
+		if (option.mid) {
+			uni.setStorageSync('pid', option.mid)
+
+		}
+
+		// 判断是否已登录
+		let data = {
+			type: ''
+		};
+		if (!getToken()) {
+			const login = useLogin()
+			// 第三方平台自动登录
+			// #ifdef MP
+			login.getAuthCode()
+			// #endif
+			// #ifdef H5
+			if (isWeixinBrowser()) {
+				data.query.code ? login.authLogin(data.query.code) : login.getAuthCode('snsapi_userinfo')
+			}
+			// #endif
+		}
+		setTimeout(() => {
+			if (!userInfo.value) {
+				let pid = uni.getStorageSync('pid');
+				if (pid && pid > 0) {
+					useLogin().setLoginBack({ url: '/addon/tk_jhkd/pages/ordersubmit?mid=' + pid })
+					return false
+				} else {
+					useLogin().setLoginBack({ url: '/addon/tk_jhkd/pages/ordersubmit' })
+					return false
+				}
+			}
+		}, 500)
+		let pid = uni.getStorageSync('pid');
+		if (pid && pid > 0) {
+			checkFenxiao({ pid: pid })
+		}
+
 		//传入判断，type,寄件
-		form.customerType = options.type ? options.type : 'kd'
+		form.customerType = option.type ? option.type : 'kd'
 		if (form.customerType == 'ky') {
 			form.weight = 30
 		}
 		checkServiceAgreement()
+
 	})
 </script>
 

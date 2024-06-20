@@ -11,6 +11,7 @@
 
 namespace addon\tk_jhkd\app\service\core;
 use app\model\dict\Dict;
+use app\service\core\sys\CoreConfigService;
 use core\base\BaseAdminService;
 use core\exception\CommonException;
 
@@ -24,6 +25,14 @@ class CommonService extends BaseAdminService
     public function __construct()
     {
         parent::__construct();
+    }
+    public function getConfig($site_id)
+    {
+        $info = (new CoreConfigService())->getConfig($site_id, 'TK_JHKD_CONFIG');
+        if (empty($info)) {
+            $info['value']['is_webhook'] = '0';
+        }
+        return $info['value'];
     }
     /**
      * 移动文件

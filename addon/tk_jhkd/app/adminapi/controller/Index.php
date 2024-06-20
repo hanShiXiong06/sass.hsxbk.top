@@ -12,6 +12,7 @@
 namespace addon\tk_jhkd\app\adminapi\controller;
 
 
+use addon\tk_jhkd\app\job\order\SendOrder;
 use core\base\BaseAdminController;
 use addon\tk_jhkd\app\service\core\ConfigService;
 class Index extends BaseAdminController

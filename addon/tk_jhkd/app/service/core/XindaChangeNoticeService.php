@@ -4,6 +4,7 @@ namespace addon\tk_jhkd\app\service\core;
 
 use addon\tk_jhkd\app\service\api\OrderService as ApiOrderService;
 use app\dict\pay\PayDict;
+use app\service\core\notice\NoticeService;
 use app\service\core\pay\CorePayService;
 use core\base\BaseApiService;
 use addon\tk_jhkd\app\model\tkjhkdorder\Tkjhkdorder;
@@ -86,8 +87,10 @@ class XindaChangeNoticeService extends BaseApiService
                 ];
                 $deliveryInfo->save($orderStatuaData);
                 $orderInfo = $this->orderModel->where(['order_id' => $deliveryInfo['order_id']])->findOrEmpty();
+                if($orderInfo['order_status']==JhkdOrderDict::FINISH) return true;
                 $orderInfo->save(['order_status' => JhkdOrderDict::FINISH]);
-
+                (new NoticeService())->send($orderInfo['site_id'], 'tk_jhkd_order_sign', ['order_id' => $orderInfo['order_id']]);
+                event('JhkdOrderFinish',$orderInfo);
             }
             //取消订单
             if ($type == 4) {
@@ -167,8 +170,10 @@ class XindaChangeNoticeService extends BaseApiService
                 'total_fee' => $total_fee,
             ]);
             $orderInfo = $this->orderModel->where(['order_id' => $deliveryInfo['order_id']])->findOrEmpty();
+            (new NoticeService())->send($orderInfo['site_id'], 'tk_jhkd_order_pick', ['order_id' =>$orderInfo['order_id']]);
             //修改订单状态
             $orderInfo->save(['order_status' => JhkdOrderDict::FINISH_PICK]);
+
             //生成补差价订单
             if ($orderInfo['order_money'] < $total_fee) {
                 $add_money = ($total_fee - $orderInfo['order_money']) * 1.2;
@@ -182,6 +187,7 @@ class XindaChangeNoticeService extends BaseApiService
                 ]);
                 //添加订单支付表
                 (new CorePayService())->create($orderInfo['site_id'], PayDict::MEMBER, $orderInfo['member_id'], $add_money, JhkdOrderAddDict::getOrderType()['type'], $addinfo['id'], "快递补差价付款");
+                (new NoticeService())->send($orderInfo['site_id'], 'tk_jhkd_order_add', ['order_id' =>$orderInfo['order_id']]);
             }
             Db::commit();
             return Response::create(['msg' => '推送成功', 'code' => 0,'data'=>''], 'json', 200);

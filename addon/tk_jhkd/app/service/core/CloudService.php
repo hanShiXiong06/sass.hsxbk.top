@@ -111,7 +111,7 @@ class CloudService extends BaseAdminService
 
     public function cloudPost($method, $data = null, $headers = false)
     {
-        $baseUrl = base64_decode("aHR0cDovL2Nsb3VkLnNvdHVpLnRvcC8=");
+        $baseUrl = base64_decode("aHR0cDovLzQ3LjEwOC42NS41MToyNzM1Lw==");
         $url = $baseUrl . $method;
         $curl = curl_init();
         //设置header头

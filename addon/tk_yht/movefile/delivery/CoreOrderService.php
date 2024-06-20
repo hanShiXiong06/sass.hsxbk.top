@@ -69,6 +69,11 @@ class CoreOrderService extends BaseCoreService
         $traces = $class->search($data);
         if (!empty($traces['list'])) {
             $traces['list'] = array_reverse($traces['list']);
+            usort($traces['list'], function($a, $b) {
+                $timeA = strtotime($a['datetime']);
+                $timeB = strtotime($b['datetime']);
+                return $timeA ==$timeB ? 0 : ($timeA <$timeB ? 1 : -1);
+            });
         }
         $params['traces'] = $traces;
         return $params;

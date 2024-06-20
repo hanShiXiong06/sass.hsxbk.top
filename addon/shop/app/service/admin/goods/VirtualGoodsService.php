@@ -52,7 +52,7 @@ class VirtualGoodsService extends BaseAdminService
 
         if (!empty($params[ 'goods_id' ])) {
             // 查询商品信息，用于编辑
-            $field = 'goods_id,goods_name,sub_title,goods_type,goods_cover,goods_image,goods_desc,brand_id,goods_category,label_ids,service_ids,unit,stock,virtual_sale_num,status,sort,supplier_id,attr_id,attr_format,virtual_auto_delivery,virtual_receive_type,virtual_verify_type,virtual_indate,member_discount,poster_id';
+            $field = 'goods_id,goods_name,sub_title,goods_type,goods_cover,goods_image,goods_desc,goods_url,brand_id,goods_category,label_ids,service_ids,unit,stock,virtual_sale_num,status,sort,supplier_id,attr_id,attr_format,virtual_auto_delivery,virtual_receive_type,virtual_verify_type,virtual_indate,member_discount,poster_id';
             $goods_info = $this->model->field($field)->where([ [ 'goods_id', '=', $params[ 'goods_id' ] ], [ 'site_id', '=', $this->site_id ] ])->findOrEmpty()->toArray();
             if (!empty($goods_info)) {
 
@@ -162,6 +162,7 @@ class VirtualGoodsService extends BaseAdminService
                 'goods_image' => $data[ 'goods_image' ],
                 'goods_category' => array_map(function($item) { return (string) $item; }, $data[ 'goods_category' ]),
                 'goods_desc' => $data[ 'goods_desc' ],
+                'goods_url' => $data[ 'goods_url' ],
                 'brand_id' => $data[ 'brand_id' ],
                 'label_ids' => array_map(function($item) { return (string) $item; }, $data[ 'label_ids' ]),
                 'service_ids' => array_map(function($item) { return (string) $item; }, $data[ 'service_ids' ]),
@@ -289,6 +290,7 @@ class VirtualGoodsService extends BaseAdminService
                 'goods_image' => $data[ 'goods_image' ],
                 'goods_category' => array_map(function($item) { return (string) $item; }, $data[ 'goods_category' ]),
                 'goods_desc' => $data[ 'goods_desc' ],
+                'goods_url'=> $data[ 'goods_url' ],
                 'brand_id' => $data[ 'brand_id' ],
                 'label_ids' => array_map(function($item) { return (string) $item; }, $data[ 'label_ids' ]),
                 'service_ids' => array_map(function($item) { return (string) $item; }, $data[ 'service_ids' ]),

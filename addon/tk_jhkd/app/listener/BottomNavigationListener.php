@@ -44,8 +44,8 @@ class BottomNavigationListener
                             "url" =>"/addon/tk_jhkd/pages/index",
                             "action" =>"decorate"
                         ],
-                        "iconPath" => "addon/tk_jhkd/diy/tabbar/index-select.png",
-                        "iconSelectPath" => "addon/tk_jhkd/diy/tabbar/index.png"
+                        "iconPath" => "addon/tk_jhkd/diy/tabbar/index.png",
+                        "iconSelectPath" => "addon/tk_jhkd/diy/tabbar/index-select.png"
                     ],
                     [
                         "text" => "订单",
@@ -56,8 +56,8 @@ class BottomNavigationListener
                             "url" => "/addon/tk_jhkd/pages/orderlist",
                             "action" => ""
                         ],
-                        "iconSelectPath" => "addon/tk_jhkd/diy/tabbar/order.png",
-                        "iconPath" => "addon/tk_jhkd/diy/tabbar/order-select.png"
+                        "iconSelectPath" => "addon/tk_jhkd/diy/tabbar/order-select.png",
+                        "iconPath" => "addon/tk_jhkd/diy/tabbar/order.png"
                     ],
                     [
                         "text" => "帮助",
@@ -68,8 +68,8 @@ class BottomNavigationListener
                             "url" => "/addon/tk_jhkd/pages/help",
                             "action" => ""
                         ],
-                        "iconSelectPath" => "addon/tk_jhkd/diy/tabbar/help.png",
-                        "iconPath" => "addon/tk_jhkd/diy/tabbar/help-select.png"
+                        "iconSelectPath" => "addon/tk_jhkd/diy/tabbar/help-select.png",
+                        "iconPath" => "addon/tk_jhkd/diy/tabbar/help.png"
                     ],
                     [
                         "text" => "个人",
@@ -77,11 +77,11 @@ class BottomNavigationListener
                             "parent" => "MEMBER_LINK",
                             "name" => "MEMBER_CENTER",
                             "title" => "个人中心",
-                            "url" => "/app/pages/member/index",
+                            "url" => "/addon/tk_jhkd/pages/member",
                             "action" => "decorate"
                         ],
-                        "iconSelectPath" => "addon/tk_jhkd/diy/tabbar/my.png",
-                        "iconPath" => "addon/tk_jhkd/diy/tabbar/my-select.png"
+                        "iconSelectPath" => "addon/tk_jhkd/diy/tabbar/my-select.png",
+                        "iconPath" => "addon/tk_jhkd/diy/tabbar/my.png"
                     ]
                 ]
             ]

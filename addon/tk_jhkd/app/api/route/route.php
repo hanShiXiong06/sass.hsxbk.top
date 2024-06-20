@@ -17,7 +17,7 @@ Route::group("tk_jhkd", function () {
  */
 Route::group("tk_jhkd", function () {
     //获取通知列表
-    Route::get('ceshi', 'addon\tk_jhkd\app\api\controller\Ceshi@ceshi');
+//    Route::get('ceshi', 'addon\tk_jhkd\app\api\controller\Ceshi@ceshi');
     //获取通知列表
     Route::get('notice', 'addon\tk_jhkd\app\api\controller\Notice@list');
     //地理位置逆编码
@@ -40,6 +40,8 @@ Route::group("tk_jhkd", function () {
     Route::get('address/:id', 'addon\tk_jhkd\app\api\controller\Address@info');
     //地址详情,基于框架地址库
     Route::get('addressinfo/:id', 'addon\tk_jhkd\app\api\controller\Address@getInfo');
+    //地址解析
+    Route::get('address/fanyiaddress','addon\tk_jhkd\app\api\controller\Address@fanyiAdress');
     // 协议
     Route::get('agreement/:key', 'addon\tk_jhkd\app\api\controller\Agreement@info');
     //添加地址
@@ -71,6 +73,7 @@ Route::group("tk_jhkd", function () {
     Route::get('getdeliveryinfo/:deliveryid', 'addon\tk_jhkd\app\api\controller\Order@deliveryInfo');
     //关闭订单
     Route::get('closeorder/:id', 'addon\tk_jhkd\app\api\controller\Order@closeOrder');
+    Route::post('checkfenxiao', 'addon\tk_jhkd\app\api\controller\Fenxiao@checkFenxiao');
 })->middleware(ApiChannel::class)
     ->middleware(ApiCheckToken::class, true)
     ->middleware(ApiLog::class);

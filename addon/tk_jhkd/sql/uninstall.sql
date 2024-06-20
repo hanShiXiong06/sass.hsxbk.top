@@ -8,6 +8,8 @@ DROP TABLE IF EXISTS `{{prefix}}tkjhkd_order_delivery_real`;
 DROP TABLE IF EXISTS `{{prefix}}tkjhkd_order_discount`;
 DROP TABLE IF EXISTS `{{prefix}}tkjhkd_order_log`;
 DROP TABLE IF EXISTS `{{prefix}}tkjhkd_shop_order`;
+DROP TABLE IF EXISTS `{{prefix}}tkjhkd_fenxiao_order`;
+DROP TABLE IF EXISTS `{{prefix}}tkjhkd_fenxiao_member`;
 DELETE FROM `{{prefix}}sys_dict` WHERE `key` = 'jhkd_is_send';
 DELETE FROM `{{prefix}}sys_dict` WHERE `key` = 'jhkd_is_pick';
 DELETE FROM `{{prefix}}sys_dict` WHERE `key` = 'jhkd_order_status';

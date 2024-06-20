@@ -29,7 +29,16 @@ class Config extends BaseAdminController
             ['bindMobile', ''],
             ['amapKey', ''],
             ['autosend', '1'],
-            ['cancelmin','0']
+            ['cancelmin','0'],
+            ['address_use','0'],
+            ['tx_id',''],
+            ['tx_secret',''],
+            ["is_webhook",0],
+            ["webhook_type",0],
+            ["qwurl",''],
+            ["fsurl",''],
+            ["ddurl",''],
+            ["min",''],
         ]);
         (new ConfigService())->setConfig($data);
         return success('TK_JHKD_SUCCESS');

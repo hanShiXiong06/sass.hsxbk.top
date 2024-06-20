@@ -113,7 +113,8 @@ class StorageConfigService extends BaseAdminService
         {
             $config[$storage_type][$k_param] = $data[$k_param] ?? '';
         }
-
+//        Cache::delete('123pan_dirid_' . $this->clientID);
+//        $access_token = Cache::delete('123pan_access_token_' . $this->clientID);
         return (new CoreConfigService())->setConfig($this->site_id, 'STORAGE', $config);
     }
 

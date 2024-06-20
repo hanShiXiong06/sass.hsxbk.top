@@ -4,16 +4,23 @@ return [
         // PAGE_BEGIN
 			// *********************************** 聚合快递 ***********************************
 			{
-				"path": "tk_jhkd/pages/addresslist",
+				"path": "tk_jhkd/pages/address/address",
 				"style": {
 					"navigationBarTitleText": "地址列表"
 				},
 				"needLogin": true
 			},
 			{
-				"path": "tk_jhkd/pages/addressedit",
+				"path": "tk_jhkd/pages/address/address_edit",
 				"style": {
-					"navigationBarTitleText": "地址操作"
+					"navigationBarTitleText": "快递地址"
+				},
+				"needLogin": true
+			},
+			{
+				"path": "tk_jhkd/pages/address/location_address_edit",
+				"style": {
+					"navigationBarTitleText": "同城地址"
 				},
 				"needLogin": true
 			},
@@ -35,8 +42,7 @@ return [
 				"path": "tk_jhkd/pages/ordersubmit",
 				"style": {
 					"navigationBarTitleText": "快递下单"
-				},
-				"needLogin": true
+				}
 			},
 			{
 				"path": "tk_jhkd/pages/orderlist",
@@ -69,6 +75,19 @@ return [
 					}
 					// #endif 
 
+				}
+
+			},
+			{
+				"path": "tk_jhkd/pages/member",
+				"style": {
+					"navigationBarTitleText": "个人中心",
+					// #ifndef H5
+					"navigationStyle": "custom",
+					"app-plus": {
+						"titleView": false
+					}
+					// #endif 
 				}
 
 			},

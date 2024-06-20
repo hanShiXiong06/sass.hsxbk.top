@@ -5,6 +5,13 @@ use addon\tk_jhkd\app\service\api\AddressService;
 use think\Response;
 class Address extends BaseController
 {
+    public function fanyiAdress()
+    {
+        $data = $this->request->params([
+            ["address",""],
+        ]);
+        return success((new AddressService())->fanyiAddress($data['address']));
+    }
     /**
      *地址详细信息/适配框架地址库
      */

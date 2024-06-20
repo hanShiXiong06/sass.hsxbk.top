@@ -4,12 +4,15 @@ namespace addon\tk_jhkd\app\service\core;
 
 use addon\tk_jhkd\app\dict\order\JhkdOrderAddDict;
 use addon\tk_jhkd\app\dict\order\JhkdOrderDict;
+use addon\tk_jhkd\app\job\notice\Webhook;
+use addon\tk_jhkd\app\job\order\SendOrder;
 use addon\tk_jhkd\app\model\TkjhkdBrand;
 use addon\tk_jhkd\app\model\tkjhkdorder\Tkjhkdorder;
 use addon\tk_jhkd\app\model\order\OrderAdd;
 use app\dict\pay\PayDict;
 use app\model\pay\Pay;
 use app\model\pay\Refund;
+use app\service\core\notice\NoticeService;
 use app\service\core\pay\CorePayService;
 use app\service\core\sys\CoreConfigService;
 use core\base\BaseApiService;
@@ -51,6 +54,7 @@ class OrderService extends BaseApiService
             $order_info = $order_model->where([['order_id', '=', $order_id]])->findOrEmpty();
             if (empty($order_info))
                 throw new CommonException('ORDER_NOT_EXIST');
+            if($order_info['is_send']==1) throw new CommonException('已经发单');
             $ordeDeliveryInfo = (new OrderDelivery())->where(['order_id' => $order_id])->findOrEmpty();
             if ($ordeDeliveryInfo->isEmpty()) throw new Exception('未找到运单数据');
             $params = $ordeDeliveryInfo;
@@ -143,8 +147,7 @@ class OrderService extends BaseApiService
      * @return array
      * @throws Exception
      */
-    public
-    function preOrder($params)
+    public function preOrder($params)
     {
         $startArr = explode("-", $params['startAddress']['address']);
         $endArr = explode("-", $params['endAddress']['address']);
@@ -192,6 +195,10 @@ class OrderService extends BaseApiService
         }
         //增加验证key
         $key = md5(create_no() . time());
+
+        usort($dataInfo, function($a, $b) {
+            return $a['showPrice'] <=>$b['showPrice'];
+        });
         Cache::set($key, $dataInfo, 180);
         $data = [
             'key' => $key,
@@ -285,8 +292,9 @@ class OrderService extends BaseApiService
     public
     function pay(array $pay_info)
     {
-        Db::startTrans();
+
         try {
+            Db::startTrans();
             $trade_id = $pay_info['trade_id'] ?? 0;
             $order_model = $this->model;
             $order_info = $order_model->where([['site_id', '=', $pay_info['site_id']], ['id', '=', $trade_id]])->findOrEmpty();
@@ -299,10 +307,7 @@ class OrderService extends BaseApiService
                 'out_trade_no' => $pay_info['out_trade_no']//支付后的交易流水号
             ];
             $order_info->save($order_data);
-            $sendauto = $this->getConfig()['autosend'];
-            if ($sendauto == 1) {
-                event('OrderSend', $order_info['order_id']);
-            }
+
             (new OrderLogService())->writeOrderLog(
                 $order_info['site_id'],
                 $order_info['order_id'],
@@ -312,6 +317,19 @@ class OrderService extends BaseApiService
                 $this->member_id
             );
             Db::commit();
+            (new NoticeService())->send($order_info['site_id'], 'tk_jhkd_order_pay', ['order_id' => $order_info['order_id']]);
+            //自动发单方式话，采取队列方式发单
+            $sendauto = $this->getConfig()['autosend'];
+            if ($sendauto == 1) {
+                (new OrderService())->sendOrder($order_info['order_id']);
+//                $is_pushed= SendOrder::dispatch(['order_id'=>$order_info['order_id']]);
+//                if ($is_pushed == false) {
+//                    Log::write('发单队列加入失败'.date('Y-m-d H:i:s'));
+//                }
+            }
+            $config=(new CommonService())->getConfig($order_info['site_id']);
+            $text = '订单号：'. $order_info['order_id'].',已经支付成功，订单金额：'. $order_info['order_money'].'元，请及时关注是否存在超重补差价';
+            Webhook::dispatch(['config' => $config, 'text' => $text]);
             return true;
         } catch (Exception $e) {
             Db::rollback();

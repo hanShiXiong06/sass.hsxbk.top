@@ -118,6 +118,8 @@ class Goods extends BaseAdminController
 
             // 商品详情
             [ "goods_desc", "", false ],
+            [ "goods_url", "", false ],
+
 
             [ 'member_discount', '' ], // 会员等级折扣，不参与：空，会员折扣：discount，指定会员价：fixed_price
             [ 'poster_id', 0 ] // 海报id
@@ -178,6 +180,8 @@ class Goods extends BaseAdminController
 
             // 商品详情
             [ "goods_desc", "", false ],
+            [ "goods_url", "", false ],
+
 
             [ 'member_discount', '' ], // 会员等级折扣，不参与：空，会员折扣：discount，指定会员价：fixed_price
 

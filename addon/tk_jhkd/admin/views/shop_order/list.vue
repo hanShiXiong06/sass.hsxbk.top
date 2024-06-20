@@ -2,7 +2,14 @@
   <div class="main-container">
     <el-card class="box-card !border-none" shadow="never">
       <div class="flex justify-between items-center">
-        <span class="text-[20px]">{{ pageName }}</span>
+        <el-card class="!border-none" shadow="never" style="width: 640px">
+          <el-alert
+            type="warning"
+            title="请在商家地址库先配置默认地址和发货地址"
+            :closable="false"
+            show-icon
+          />
+        </el-card>
         <div class="flex">
           <el-button type="info" @click="router.push('/shop/order/index')">
             商城订单

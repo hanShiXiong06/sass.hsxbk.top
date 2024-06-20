@@ -1,0 +1,1 @@
+import{N as r}from"./index-17984968.js";function s(e){return r.get("user/user",{params:e})}function u(e){return r.get(`user/user/${e}`)}function n(e){return r.get("user/user_all",{params:e})}export{n as a,u as b,s as g};
