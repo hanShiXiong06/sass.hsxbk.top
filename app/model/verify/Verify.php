@@ -72,6 +72,19 @@ class Verify extends BaseModel
             $query->where('relate_tag', '=', $value);
         }
     }
+    /**
+     * 核销员
+     * @param $query
+     * @param $value
+     * @param $data
+     * @return void
+     */
+    public function searchVerifierMemberIdAttr($query, $value, $data)
+    {
+        if ($value) {
+            $query->where('verifier_member_id', '=', $value);
+        }
+    }
 
     /**
      * 核销类型搜索

@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -18,6 +18,7 @@ use addon\o2o\app\model\OrderItem;
 use addon\o2o\app\model\OrderRefund;
 use addon\o2o\app\model\Technician;
 use addon\o2o\app\service\core\CoreOrderRefundLogService;
+use addon\o2o\app\service\core\CoreOrderRefundService;
 use app\service\core\pay\CoreRefundService;
 use core\base\BaseApiService;
 use core\exception\CommonException;
@@ -53,10 +54,14 @@ class RefundService extends BaseApiService
 
         Db::startTrans();
         try {
+
             //退款金额不能大于可退款总额
             if ($data['apply_money'] > ($order_item['item_money'])) throw new ApiException('O2O_ORDER_REFUND_MONEY_GT_ORDER_MONEY');//退款金额不能大于可退款总额
 
-            $order_refund_no = (new CoreRefundService())->create($this->site_id, $order->out_trade_no, $data['apply_money'], $data['remark'] ?? '');
+            $order_refund_no = create_no();
+            if($data['apply_money'] > 0){
+                $order_refund_no = (new CoreRefundService())->create($this->site_id, $order->out_trade_no, $data['apply_money'], $data['remark'] ?? '');
+            }
 
             $reason = $data['reason'];
             $insert_data = array(
@@ -81,6 +86,12 @@ class RefundService extends BaseApiService
             $order_item->refund_no = $order_refund_no;
             $order_item->refund_status = RefundDict::WAIT_REFUND;
             $order_item->save();
+
+            //金额为0，直接完成
+            if($data['apply_money'] <= 0){
+                (new CoreOrderRefundService())->refundSuccess($order_refund_no);
+            }
+
             Db::commit();
             return $res->refund_id;
         } catch (\Exception $e) {

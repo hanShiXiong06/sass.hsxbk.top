@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -39,7 +39,7 @@ class GoodsService extends BaseAdminService
     public function getPage(array $where = [])
     {
 
-        $field = 'goods_id,site_id,goods_name,goods_cover,sale_num,status,sort,create_time,price,buy_type';
+        $field = 'goods_id,member_discount,site_id,goods_name,goods_cover,sale_num,status,sort,create_time,price,buy_type';
         $order = 'create_time desc';
         $sku_where = [
             [ 'goodsSku.is_default', '=', 1 ],
@@ -96,7 +96,7 @@ class GoodsService extends BaseAdminService
 
         if (!empty($params[ 'goods_id' ])) {
             // 查询商品信息，用于编辑
-            $field = 'goods_id,site_id,goods_name,goods_cover,goods_image,goods_category,virtually_sale,status,sort,buy_type,after_sales,price_list,buy_info,goods_content';
+            $field = 'goods_id,site_id,goods_name,goods_cover,goods_image,goods_category,virtually_sale,status,sort,buy_type,after_sales,price_list,buy_info,goods_content,poster_id,member_discount';
             $goods_info = $this->model->field($field)->where([ [ 'goods_id', '=', $params[ 'goods_id' ] ] ])->findOrEmpty()->toArray();
             if (!empty($goods_info)) {
                 $goods_info[ 'status' ] = (string) $goods_info[ 'status' ];
@@ -112,6 +112,9 @@ class GoodsService extends BaseAdminService
                     // 多规格
                     $goods_info[ 'spec_type' ] = 'multi';
                 }
+
+                // 海报id，处理数据类型
+                if (empty($goods_info[ 'poster_id' ])) $goods_info[ 'poster_id' ] = '';
 
                 $res[ 'goods_info' ] = $goods_info;
             }
@@ -149,6 +152,8 @@ class GoodsService extends BaseAdminService
                 'buy_info' => $data[ 'buy_info' ],
                 'goods_content' => $data[ 'goods_content' ],
                 'virtually_sale' => $data[ 'virtually_sale' ],
+                'poster_id' => $data[ 'poster_id' ],
+                'member_discount' => $data[ 'buy_type' ] == 'buy' ? $data[ 'member_discount' ] : '',
             ];
 
             $res = $this->model->create($goods_data);
@@ -230,6 +235,8 @@ class GoodsService extends BaseAdminService
                 'buy_info' => $data[ 'buy_info' ],
                 'goods_content' => $data[ 'goods_content' ],
                 'virtually_sale' => $data[ 'virtually_sale' ],
+                'poster_id' => $data[ 'poster_id' ],
+                'member_discount' => $data[ 'buy_type' ] == 'buy' ? $data[ 'member_discount' ] : '',
                 'update_time' => time()
             ];
             $this->model->where([ [ 'goods_id', '=', $goods_id ], ['site_id', '=', $this->site_id ] ])->update($goods_data);
@@ -246,7 +253,20 @@ class GoodsService extends BaseAdminService
                     'min_buy' => $data[ 'min_buy' ],
                     'is_default' => 1
                 ];
-                $goods_sku_model->where([ [ 'goods_id', '=', $goods_id ] ])->update($sku_data);
+
+                $sku_count = $goods_sku_model->where([ [ 'goods_id', '=', $goods_id ] ])->count();
+                if ($sku_count > 1) {
+
+                    // 规格项发生变化，删除旧规格，添加新规格重新生成
+                    $goods_sku_model->where([ [ 'goods_id', '=', $goods_id ] ])->delete();
+
+                    // 新增规格
+                    $goods_sku_model->create($sku_data);
+
+                } else {
+
+                    $goods_sku_model->where([ [ 'goods_id', '=', $goods_id ] ])->update($sku_data);
+                }
             } elseif ($data[ 'spec_type' ] == 'multi') {
 
                 $data[ 'goods_sku_data' ] = json_decode($data[ 'goods_sku_data' ], true);
@@ -333,6 +353,59 @@ class GoodsService extends BaseAdminService
     }
 
     /**
+     * 编辑商品规格列表会员价格
+     * @param $params
+     * @return array|bool
+     */
+    public function editGoodsListMemberPrice($params)
+    {
+        try {
+            Db::startTrans();
+
+            $goods_info = $this->model->where([
+                [ 'goods_id', '=', $params[ 'goods_id' ] ],
+                [ 'site_id', '=', $this->site_id ]
+            ])->field('goods_id,buy_type')->findOrEmpty()->toArray();
+
+            if (empty($goods_info)) {
+                throw new CommonException('O2O_GOODS_NOT_EXIST');
+            }
+
+            if($goods_info['buy_type'] != GoodsDict::BUY){
+                throw new CommonException('O2O_GOODS_NOT_SET_MEMBER_PRICE');
+            }
+
+            // 修改商品的会员等级折扣
+            $this->model->where([
+                [ 'goods_id', '=', $params[ 'goods_id' ] ],
+                [ 'site_id', '=', $this->site_id ]
+            ])->update([
+                'member_discount' => $params[ 'member_discount' ]
+            ]);
+
+            $sku_list = $params[ 'sku_list' ];
+            if (!empty($sku_list)) {
+                $goods_sku_model = new GoodsSku();
+                foreach ($sku_list as $k => $v) {
+                    $update_data = [
+                        'member_price' => json_encode($v[ 'member_price' ]),
+                    ];
+
+                    $goods_sku_model->where([
+                        [ 'goods_id', '=', $params[ 'goods_id' ] ],
+                        [ 'sku_id', '=', $v[ 'sku_id' ] ]
+                    ])->update($update_data);
+                }
+            }
+            Db::commit();
+            return true;
+        } catch (\Exception $e) {
+            Db::rollback();
+            throw new CommonException($e->getMessage() . '，Line：' . $e->getLine() . '，File：' . $e->getFile());
+        }
+    }
+
+    /**
      * 删除商品
      * @param int $id
      * @return bool
@@ -341,6 +414,22 @@ class GoodsService extends BaseAdminService
     {
         $res = $this->model->where([['goods_id', '=', $id], ['site_id', '=', $this->site_id]])->update(['is_delete' => 1]);
         return $res;
+    }
+
+
+    /**
+     * 查询商品SKU规格列表
+     * @param $params
+     * @return array
+     */
+    public function getSkuList($params)
+    {
+        $goods_sku_model = new GoodsSku();
+
+        $field = 'sku_id, sku_name, sku_image,sku_no,goods_id,price,market_price,sale_num,sku_unit,min_buy,is_default,member_price';
+        $order = 'sku_id asc';
+        $list = $goods_sku_model->where([ [ 'site_id', '=', $this->site_id ] ])->withSearch([ "goods_id" ], [ 'goods_id' => $params[ 'goods_id' ] ])->with([ 'goods' ])->field($field)->order($order)->select()->toArray();
+        return $list;
     }
 
     /**
@@ -376,6 +465,66 @@ class GoodsService extends BaseAdminService
     {
         $this->model->where([['goods_id', '=', $id], ['site_id', '=', $this->site_id]])->update($data);
         return true;
+    }
+
+    /**
+     * 获取商品选择分页列表
+     * @param array $where
+     * @return array
+     */
+    public function getSelectPage(array $where = [])
+    {
+
+        $field = 'goods_id,member_discount,site_id,goods_name,goods_cover,sale_num,status,sort,create_time,price,buy_type';
+        $order = 'create_time desc';
+        $sku_where = [
+            [ 'goodsSku.is_default', '=', 1 ],
+            [ 'goods.is_delete', '=', 0 ],
+        ];
+
+        if (!empty($where[ 'start_price' ]) && !empty($where[ 'end_price' ])) {
+            $money = [ $where[ 'start_price' ], $where[ 'end_price' ] ];
+            sort($money);
+            $sku_where[] = [ 'goodsSku.price', 'between', $money ];
+        } else if (!empty($where[ 'start_price' ])) {
+            $sku_where[] = [ 'goodsSku.price', '>=', $where[ 'start_price' ] ];
+        } else if (!empty($where[ 'end_price' ])) {
+            $sku_where[] = [ 'goodsSku.price', '<=', $where[ 'end_price' ] ];
+        }
+
+        if (!empty($where[ 'goods_ids' ])) {
+            $sku_where[] = [ 'goods.goods_id', 'in', $where[ 'goods_ids' ] ];
+        }
+
+        if (!empty($where[ 'order' ])) {
+            $order = 'goods.'.$where[ 'order' ] . ' ' . $where[ 'sort' ];
+        }else{
+            $order = 'goods.sort desc,goods.create_time desc';
+        }
+
+        $verify_goods_ids = [];
+
+        // 检测商品id集合是否存在，移除不存在的商品id，纠正数据准确性
+        if (!empty($where[ 'verify_goods_ids' ])) {
+            $verify_goods_ids = $this->model->where([
+                [ 'goods_id', 'in', $where[ 'verify_goods_ids' ] ]
+            ])->field('goods_id')->select()->toArray();
+        }
+
+        $search_model = $this->model->where([ ['goods.site_id', '=', $this->site_id] ])->withSearch([ "create_time","goods_name", "goods_category"], $where)
+            ->field($field)
+            ->withJoin([
+                'goodsSku' => ['sku_id', 'goods_id', 'price'],
+            ])->where($sku_where)->order($order)->append(['goods_cover_thumb_small', 'price_list', 'buy_type_name' ]);
+        $list = $this->pageQuery($search_model);
+
+        if (!empty($verify_goods_ids)) {
+            $verify_goods_ids = array_column($verify_goods_ids, 'goods_id');
+        }
+        $list[ 'verify_goods_ids' ] = $verify_goods_ids;
+
+        return $list;
+
     }
 
 }

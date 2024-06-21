@@ -200,4 +200,26 @@ class Config extends BaseAdminController
         return success(data: ( new ConfigService() )->getLayout());
     }
 
+    /**
+     * 设置布局设置
+     * @return Response
+     */
+    public function setThemeColor()
+    {
+        $data = $this->request->params([
+            [ 'key', '' ],
+            [ 'value', '' ],
+        ]);
+        ( new ConfigService() )->setThemeColor($data);
+        return success();
+    }
+
+    /**
+     * 获取布局设置
+     * @return Response
+     */
+    public function getThemeColor()
+    {
+        return success(data: ( new ConfigService() )->getThemeColor());
+    }
 }

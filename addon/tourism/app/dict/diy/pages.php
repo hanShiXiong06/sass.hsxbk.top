@@ -20,12 +20,18 @@ return [
                     "imgWidth" => "",
                     "imgHeight" => "",
                     "topStatusBar" => [
-                        "bgColor" => "#ffffff",
-                        "isTransparent" => false,
-                        "isShow" => true,
-                        "style" => "style-1",
-                        "textColor" => "#333333",
-                        "textAlign" => "center"
+                        'isShow' => true,
+                        'bgColor' => "#ffffff",
+                        'isTransparent' => false,
+                        'style' => 'style-1',
+                        'styleName' => '风格1',
+                        'textColor' => "#333333",
+                        'textAlign' => 'center',
+                        'inputPlaceholder' => '请输入搜索关键词',
+                        'imgUrl' => '',
+                        'link' => [
+                            'name' => ""
+                        ]
                     ],
                     "bottomTabBarSwitch" => true,
                     "popWindow" => [
@@ -342,12 +348,18 @@ return [
                         ]
                     ],
                     "topStatusBar" => [
-                        "bgColor" => "#ffffff",
-                        "isTransparent" => false,
-                        "isShow" => true,
-                        "style" => "style-1",
-                        "textColor" => "#333333",
-                        "textAlign" => "center"
+                        'isShow' => true,
+                        'bgColor' => "#ffffff",
+                        'isTransparent' => false,
+                        'style' => 'style-1',
+                        'styleName' => '风格1',
+                        'textColor' => "#333333",
+                        'textAlign' => 'center',
+                        'inputPlaceholder' => '请输入搜索关键词',
+                        'imgUrl' => '',
+                        'link' => [
+                            'name' => ""
+                        ]
                     ],
                     "popWindow" => [
                         "imgUrl" => "",
@@ -793,12 +805,16 @@ return [
                             ],
                             [
                                 "id" => "6xhwid2el5c0",
-                                "title" => "开发者联盟",
+                                "title" => "订单核销",
                                 "imageUrl" => "static/resource/images/diy/vert_m_develop.png",
                                 "imgWidth" => 88,
                                 "imgHeight" => 88,
                                 "link" => [
-                                    "name" => ""
+                                    "parent" => "TOURISM_LINK",
+                                    "name" => "TOURISM_VERIFY",
+                                    "title"=> "核销",
+                                    "url" => "/addon/tourism/pages/verify/index",
+                                    "action"=> ""
                                 ],
                                 "label" => [
                                     "control" => false,

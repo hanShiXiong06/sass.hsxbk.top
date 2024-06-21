@@ -2,6 +2,7 @@
 
 return [
     'TOURISM_HOTEL_NOT_EXIST' => '未获取到酒店信息',
+    'TOURISM_GOODS_NOT_EXIST' => '未获取到信息',
     'HOTEL_STOCK_DEFICIENCY' => '所选时间内该房型剩余房间数不足',
     'ORDER_NOT_EXIST' => '未获取到订单信息',
     'ORDER_NOT_ALLOW_CLOSE' => '订单不允许关闭',

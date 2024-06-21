@@ -1,17 +1,25 @@
 <template>
-  <el-dialog v-model="showDialog" title="订单详情" width="50%" class="diy-dialog-wrap" :destroy-on-close="true">
+  <el-dialog
+    v-model="showDialog"
+    title="订单详情"
+    width="50%"
+    class="diy-dialog-wrap"
+    destroy-on-close
+  >
     <el-card v-if="detailData">
       <div>
         <div class="flex items-center mt-4">
           <div
             class="mr-[28px] p-4 pl-12 pr-12 rounded-md statistic-card bg-gradient-to-r from-indigo-50 from-10% via-sky-50 via-10% to-emerald-50 to-10%"
-            v-if="startaddress">
+            v-if="startaddress"
+          >
             <div class="font-bold text-slate-400">订单金额</div>
             <div class="text-2xl">{{ detailData.order_money }}</div>
           </div>
           <div
             class="mr-[28px] p-4 pl-12 pr-12 rounded-md statistic-card bg-gradient-to-r from-indigo-50 from-10% via-sky-50 via-10% to-emerald-50 to-10%"
-            v-if="startaddress">
+            v-if="startaddress"
+          >
             <div class="font-bold text-slate-400">优惠金额</div>
             <div class="text-2xl">{{ detailData.order_discount_money }}</div>
           </div>
@@ -26,13 +34,19 @@
             <span class="font-bold">
               {{ detailData.orderInfo.delivery_id }}
             </span>
+            <el-icon
+              class="ml-2"
+              @click="copyEvent(detailData.orderInfo.delivery_id)"
+            >
+              <DocumentCopy />
+            </el-icon>
           </div>
           <div class="mr-2">
             <span>创建时间：</span>
             <span class=""> {{ detailData.create_time }} </span>
           </div>
         </div>
-        <div class="flex mt-6">
+        <div v-if="detailData.memberInfo" class="flex mt-6">
           <span>用户：</span>
           <span class="font-bold">{{ detailData.memberInfo.nickname }} </span>
           <el-tag class="ml-2 mr-12">{{ detailData.order_from }}</el-tag>
@@ -79,7 +93,8 @@
       <div class="flex items-center mt-4">
         <div
           class="mr-[28px] p-4 rounded-md statistic-card bg-gradient-to-r from-indigo-50 from-10% via-sky-50 via-10% to-emerald-50 to-10%"
-          v-if="startaddress">
+          v-if="startaddress"
+        >
           <div class="font-bold">{{ startaddress.address }}</div>
           <div>{{ startaddress.full_address }}</div>
           <div class="flex text-xs text-current">
@@ -92,7 +107,8 @@
         </el-icon>
         <div
           class="p-4 rounded-md statistic-card bg-gradient-to-r from-indigo-50 from-10% via-sky-50 via-10% to-emerald-50 to-10%"
-          v-if="endaddress">
+          v-if="endaddress"
+        >
           <div class="font-bold">{{ endaddress.address }}</div>
           <div>{{ endaddress.full_address }}</div>
           <div class="flex text-xs text-current">
@@ -101,11 +117,15 @@
           </div>
         </div>
       </div>
-      <el-divider v-if="deliveryInfo" class="mt-4" content-position="left">轨迹跟踪</el-divider>
+      <el-divider v-if="deliveryInfo" class="mt-4" content-position="left"
+        >轨迹跟踪</el-divider
+      >
       <div class="mt-2">
         <div class="flex items-center mb-4">
-          <el-avatar v-if="detailData && detailData.orderInfo.delivery_arry.logo"
-            :src="img(detailData.orderInfo.delivery_arry.logo)" />
+          <el-avatar
+            v-if="detailData && detailData.orderInfo.delivery_arry.logo"
+            :src="img(detailData.orderInfo.delivery_arry.logo)"
+          />
           <div class="ml-1 p-2">
             <div>{{ detailData.orderInfo.delivery_arry.name }}</div>
             <div class="font-bold">{{ detailData.orderInfo.delivery_id }}</div>
@@ -128,7 +148,11 @@
         </div>
 
         <el-timeline>
-          <el-timeline-item v-for="(activity, index) in deliveryInfo" :key="index" :timestamp="activity.time">
+          <el-timeline-item
+            v-for="(activity, index) in deliveryInfo"
+            :key="index"
+            :timestamp="activity.time"
+          >
             {{ activity.desc }}
           </el-timeline-item>
         </el-timeline>
@@ -143,7 +167,26 @@ import { useDictionary } from "@/app/api/dict";
 import type { FormInstance } from "element-plus";
 import { img } from "@/utils/common";
 import { getOrderInfo, getDeliveryInfo } from "@/addon/tk_jhkd/api/order";
-
+/**
+ * 复制
+ */
+import { useClipboard } from "@vueuse/core";
+const { copy, isSupported, copied } = useClipboard();
+const copyEvent = (text: string) => {
+  console.log("ddddddd");
+  if (!isSupported.value) {
+    ElMessage({
+      message: "当前浏览器不支持一键复制，请手动复制",
+      type: "warning",
+    });
+    return;
+  }
+  copy(text);
+  ElMessage({
+    message: "复制成功",
+    type: "success",
+  });
+};
 const showDialog = ref(false);
 const loading = ref(false);
 

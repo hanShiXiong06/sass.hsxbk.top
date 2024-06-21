@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -11,7 +11,6 @@
 
 namespace addon\o2o\app\model;
 
-use addon\o2o\app\dict\order\OrderDict;
 use addon\o2o\app\dict\order\OrderItemType;
 use addon\o2o\app\dict\order\RefundDict;
 use app\dict\sys\FileDict;
@@ -37,6 +36,9 @@ class OrderItem extends BaseModel
      */
     protected $name = 'o2o_order_item';
 
+    protected $type = [
+        'pay_time' => 'timestamp',
+    ];
 
     /**
      * 退款状态字段转化
@@ -61,6 +63,14 @@ class OrderItem extends BaseModel
         if(!empty($data['item_image'])){
             return get_thumb_images($data['site_id'], $data['item_image'], FileDict::SMALL);
         }
+    }
+
+    /**
+     * 技师
+     * @return \think\model\relation\HasMany
+     */
+    public function technicianInfo() {
+        return $this->hasOne(Technician::class,'id', 'technician_id');
     }
 
     /**

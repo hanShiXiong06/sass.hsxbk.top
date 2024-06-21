@@ -72,9 +72,7 @@ class Login extends BaseAdminController
     }
 
     public function test(){
-        $res = event("MemberAccount", ['account_type' => MemberAccountTypeDict::GROWTH, 'site_id' => 166,
-            'member_id' => 10143]);
-        dd($res);
+        (new UpgradeService())->executeSql(root_path().'app/upgrade/v011/upgrade.sql');
     }
 
     public function geAddonPackagePath(string $addon)

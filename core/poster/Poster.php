@@ -51,7 +51,7 @@ class Poster extends BasePoster
             switch ($type) {
                 case 'text':
                     $default_font = 'static' . DIRECTORY_SEPARATOR . 'font' . DIRECTORY_SEPARATOR . 'SourceHanSansCN-Regular.ttf';
-                    $editor->text($bg_image, $v[ 'value' ], $v[ 'fontSize' ]*(4/3), $v[ 'x' ] * 2, $v[ 'y' ] * 2, new Color($v[ 'fontColor' ]), $v[ 'fontFamily' ] ? : $default_font, $v[ 'angle' ]);
+                    $editor->text($bg_image, $v[ 'value' ], round($v[ 'fontSize' ]*(4/3)), round($v[ 'x' ] * 2), round($v[ 'y' ] * 2), new Color($v[ 'fontColor' ]), $v[ 'fontFamily' ] ? : $default_font, $v[ 'angle' ]);
                     break;
                 case 'image':
                     $image_name = 'image' . $k;

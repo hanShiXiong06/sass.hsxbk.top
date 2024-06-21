@@ -12,10 +12,8 @@
 namespace app\service\admin\auth;
 
 use app\dict\sys\ConfigKeyDict;
-use app\model\sys\SysConfig;
 use app\service\core\sys\CoreConfigService;
 use core\base\BaseAdminService;
-use think\Model;
 
 /**
  * 登录服务层

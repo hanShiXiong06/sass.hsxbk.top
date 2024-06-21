@@ -77,28 +77,6 @@ class System extends BaseAdminController
     }
 
     /**
-     * 获取布局
-     * @return Response
-     */
-    public function layout() {
-        $layouts = event('SiteLayout');
-        if (count($layouts) > 1) {
-            array_multisort(array_column($layouts, 'sort'), SORT_ASC, $layouts);
-        }
-        return success($layouts);
-    }
-
-    /**
-     *
-     * 设置布局
-     * @return Response
-     */
-    public function setLayout(){
-        $key = input('key', '');
-        return success(data: (new SystemService())->setLayout($key));
-    }
-
-    /**
      * 环境变量查询
      * @return Response
      */

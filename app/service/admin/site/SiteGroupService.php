@@ -25,6 +25,7 @@ use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
 use think\db\exception\ModelNotFoundException;
 use think\facade\Cache;
+use think\facade\Db;
 
 /**
  * 站点分组服务层
@@ -182,7 +183,7 @@ class SiteGroupService extends BaseAdminService
                 $group = $this->model->findOrEmpty($group_id);
                 $addon = [];
                 if (!$group->isEmpty()) {
-                    $addon = array_merge([ $group['app'] ], $group['addon']);
+                    $addon = array_merge($group['app'], $group['addon']);
                 }
                 return $addon;
             },
@@ -204,4 +205,38 @@ class SiteGroupService extends BaseAdminService
         ];
         return $this->add($data);
     }
+
+    /**
+     * 查询店铺套餐以及用户创建的站点数量
+     * @param $uid
+     * @return array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     */
+    public function getUserSiteGroupAll($uid) {
+        $field = 'group_id, group_name, group_desc, create_time, update_time, app';
+        $list = $this->model->field($field)->select()->toArray();
+        foreach ($list as &$item) {
+            $item['site_num'] = self::getUserSiteGroupSiteNum($uid, $item['group_id']);
+        }
+        return $list;
+    }
+
+    /**
+     * 查询用户某个站点套餐的站点数量
+     * @param $uid
+     * @param $group_id
+     * @return void
+     */
+    public static function getUserSiteGroupSiteNum($uid, $group_id) {
+        return Db::name("sys_user_role")->alias('sur')
+            ->join('site s', 'sur.site_id = s.site_id')
+            ->where([
+                ['sur.uid', '=', $uid],
+                ['sur.is_admin', '=', 1],
+                ['s.group_id', '=', $group_id]
+            ])->count();
+    }
+
 }

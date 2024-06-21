@@ -32,19 +32,19 @@ class DiyConfigService extends BaseAdminService
      */
     public function getBottomList($params = [])
     {
-        $list = (new CoreDiyConfigService())->getBottomList($params);
+        $list = ( new CoreDiyConfigService() )->getBottomList($params);
 
-        $site_addon = (new CoreSiteService())->getSiteCache($this->site_id);
+        $site_addon = ( new CoreSiteService() )->getSiteCache($this->site_id);
 
         // 单应用，排除 系统 底部导航设置
         if (count($site_addon[ 'apps' ]) == 1) {
-            foreach ($list as $k=>$v){
-                if($v['key'] = 'app'){
-                    unset($list[$k]);
+            foreach ($list as $k => $v) {
+                if ($v[ 'key' ] = 'app') {
+                    unset($list[ $k ]);
                     break;
                 }
             }
-            $list  = array_values($list);
+            $list = array_values($list);
         }
         return $list;
     }
@@ -56,7 +56,7 @@ class DiyConfigService extends BaseAdminService
      */
     public function getBottomConfig($key)
     {
-        return (new CoreDiyConfigService())->getBottomConfig($this->site_id, $key);
+        return ( new CoreDiyConfigService() )->getBottomConfig($this->site_id, $key);
     }
 
     /**
@@ -67,7 +67,7 @@ class DiyConfigService extends BaseAdminService
      */
     public function setBottomConfig($data, $key)
     {
-        return (new CoreDiyConfigService())->setBottomConfig($this->site_id, $data, $key);
+        return ( new CoreDiyConfigService() )->setBottomConfig($this->site_id, $data, $key);
     }
 
     /**
@@ -77,7 +77,7 @@ class DiyConfigService extends BaseAdminService
      */
     public function setStartUpPageConfig($data)
     {
-        return (new CoreDiyConfigService())->setStartUpPageConfig($this->site_id, $data);
+        return ( new CoreDiyConfigService() )->setStartUpPageConfig($this->site_id, $data);
     }
 
     /**
@@ -87,7 +87,7 @@ class DiyConfigService extends BaseAdminService
      */
     public function getStartUpPageConfig($name)
     {
-        return (new CoreDiyConfigService())->getStartUpPageConfig($this->site_id, $name);
+        return ( new CoreDiyConfigService() )->getStartUpPageConfig($this->site_id, $name);
     }
 
 }

@@ -878,7 +878,7 @@ function file_copy(string $source_file, string $to_file)
  */
 function qrcode($url, $page, $data, $site_id, $dir = '', $channel = 'h5', $style = [ 'is_transparent' => true ], $outfile = true)
 {
-    if($outfile){
+    if ($outfile) {
         $dir = $dir ? : 'upload' . '/' . 'qrcode' . '/' . $site_id;//二维码默认存储位置
         if (!is_dir($dir) && !mkdir($dir, 0777, true) && !is_dir($dir)) {
             throw new \RuntimeException(sprintf('Directory "%s" was not created', $dir));
@@ -894,7 +894,7 @@ function qrcode($url, $page, $data, $site_id, $dir = '', $channel = 'h5', $style
         'filepath' => $path ?? '',
         'url' => $url,
         'page' => $page,
-        'data' => $data ,
+        'data' => $data,
         'site_id' => $site_id,
         'channel' => $channel,
         'outfile' => $outfile

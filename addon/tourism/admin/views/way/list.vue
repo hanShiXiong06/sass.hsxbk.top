@@ -35,10 +35,18 @@
             </el-card>
 
             <div class="mt-[10px]">
-                <el-table :data="tourismWayTable.data" size="large" v-loading="tourismWayTable.loading">
+
+                <div class="mb-[10px] flex items-center">
+                    <el-checkbox v-model="toggleCheckbox" size="large" class="px-[14px]" @change="toggleChange" :indeterminate="isIndeterminate" />
+                    <el-button @click="memberPriceAllEvent()" size="small">{{ t('memberPrice') }}</el-button>
+                    <el-button @click="dayMemberPriceAllEvent()" size="small">{{ t('dayMemberPrice') }}</el-button>
+                </div>
+
+                <el-table :data="tourismWayTable.data" size="large" v-loading="tourismWayTable.loading" ref="goodsListTableRef"  @selection-change="handleSelectionChange">
                     <template #empty>
                         <span>{{ !tourismWayTable.loading ? t('emptyData') : '' }}</span>
                     </template>
+                    <el-table-column type="selection" width="55" />
                     <el-table-column :label="t('wayInfo')" min-width="240" align="left" show-overflow-tooltip>
                         <template #default="{ row }">
                             <div class="flex items-center cursor-pointer">
@@ -83,6 +91,7 @@
                                 v-if="row.way_status == 1">{{ t('down') }}</el-button>
                             <el-button type="primary" link @click="statusChange(1, row.way_id)"
                                 v-if="row.way_status == 0">{{ t('up') }}</el-button>
+                            <el-button type="primary" link @click="memberPriceEvent(row)">{{ t('memberPrice') }}</el-button>
                             <el-button type="primary" link @click="editEvent(row)">{{ t('edit') }}</el-button>
                         </template>
                     </el-table-column>
@@ -96,6 +105,10 @@
             </div>
 
         </el-card>
+         <!-- 会员价弹出框 -->
+         <goods-member-price-popup ref="memberPricePopupRef" @load="loadTourismWayList" />
+        <!-- 日历会员价弹出框 -->
+        <goods-day-member-price-popup ref="memberDayPricePopupRef" @load="loadTourismWayList" />
     </div>
 </template>
 
@@ -104,8 +117,11 @@ import { reactive, ref } from 'vue'
 import { t } from '@/lang'
 import { getWayList, editWayStatus } from '@/addon/tourism/api/tourism'
 import { img } from '@/utils/common'
-import { FormInstance } from 'element-plus'
+import { FormInstance, ElMessage } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router'
+import { getMemberLevelAll } from '@/app/api/member'
+import goodsMemberPricePopup from '@/addon/tourism/views/components/goods-member-price-popup.vue'
+import goodsDayMemberPricePopup from '@/addon/tourism/views/components/goods-day-member-price-popup.vue'
 
 const route = useRoute()
 const pageName = route.meta.title
@@ -195,6 +211,91 @@ const statusChange = (status: number, id: number) => {
     }).then(() => {
         loadTourismWayList()
     })
+}
+
+/** ***************** 会员价-start *************************/
+// 会员等级
+const memberLevel = ref([])
+const getMemberLevelAllFn = () => {
+    getMemberLevelAll().then(res => {
+        memberLevel.value = res.data ? res.data : []
+    })
+}
+getMemberLevelAllFn()
+
+const memberPricePopupRef: any = ref(null)
+const memberPriceEvent = (data: any) => {
+    data.goods_type = 'way'
+    memberPricePopupRef.value.show(data, memberLevel.value)
+}
+const memberPriceAllEvent = () => {
+    if (multipleSelection.value.length == 0) {
+        ElMessage({
+            type: 'warning',
+            message: `${t('batchEmptySelectedGoodsTips')}`
+        })
+        return
+    }
+
+    const goodsIds: any = []
+    multipleSelection.value.forEach((item: any) => {
+        goodsIds.push(item.goods_id)
+    })
+
+    memberPricePopupRef.value.show({ goods_id: goodsIds.toString(), goods_type: 'way' }, memberLevel.value)
+}
+
+const memberDayPricePopupRef: any = ref(null)
+
+const dayMemberPriceAllEvent = () => {
+    if (multipleSelection.value.length == 0) {
+        ElMessage({
+            type: 'warning',
+            message: `${t('batchEmptySelectedGoodsTips')}`
+        })
+        return
+    }
+
+    const goodsIds: any = []
+    multipleSelection.value.forEach((item: any) => {
+        goodsIds.push(item.goods_id)
+    })
+    memberDayPricePopupRef.value.show({ goods_id: goodsIds.toString() }, memberLevel.value)
+}
+
+/** ***************** 会员价-end *************************/
+
+// 批量复选框
+const toggleCheckbox = ref()
+
+// 复选框中间状态
+const isIndeterminate = ref(false)
+
+// 监听批量复选框事件
+const toggleChange = (value: any) => {
+    isIndeterminate.value = false
+    goodsListTableRef.value.toggleAllSelection()
+}
+
+const goodsListTableRef = ref()
+
+// 选中数据
+const multipleSelection: any = ref([])
+
+// 监听表格单行选中
+const handleSelectionChange = (val: []) => {
+    multipleSelection.value = val
+
+    toggleCheckbox.value = false
+    if (multipleSelection.value.length > 0 && multipleSelection.value.length < tourismWayTable.data.length) {
+        isIndeterminate.value = true
+    } else {
+        isIndeterminate.value = false
+    }
+
+    if (multipleSelection.value.length == tourismWayTable.data.length) {
+        toggleCheckbox.value = true
+    }
 }
 </script>
 

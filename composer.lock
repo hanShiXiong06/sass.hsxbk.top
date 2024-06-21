@@ -4,8 +4,56 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6560fc4ccaa22130b5147f28adec811d",
+    "content-hash": "58d9753b0d3af0e968c66bbe65ae92ed",
     "packages": [
+        {
+            "name": "365taofang/huaweicloud-sdk-php-obs",
+            "version": "3.23.501",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/365taofang/huaweicloud-sdk-php-obs.git",
+                "reference": "85448144b10d26c1b4c15388a2ea11a76e41a1b5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/365taofang/huaweicloud-sdk-php-obs/zipball/85448144b10d26c1b4c15388a2ea11a76e41a1b5",
+                "reference": "85448144b10d26c1b4c15388a2ea11a76e41a1b5",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.3.0 || ^7.0",
+                "guzzlehttp/psr7": "^1.4.2 || ^2.0",
+                "monolog/monolog": "^1.23.0 || ^2.0",
+                "php": ">=5.6.0",
+                "psr/http-message": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Obs\\": "Obs/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "OBS PHP SDK",
+            "keywords": [
+                "OBS",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/365taofang/huaweicloud-sdk-php-obs/issues",
+                "source": "https://github.com/365taofang/huaweicloud-sdk-php-obs/tree/v3.23.501"
+            },
+            "time": "2023-09-15T00:55:23+00:00"
+        },
         {
             "name": "adbario/php-dot-notation",
             "version": "2.5.0",

@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -16,6 +16,7 @@ use addon\o2o\app\dict\order\RefundDict;
 use addon\o2o\app\model\OrderItem;
 use addon\o2o\app\model\OrderRefund;
 use addon\o2o\app\service\core\CoreOrderRefundLogService;
+use addon\o2o\app\service\core\CoreOrderRefundService;
 use app\model\pay\Refund;
 use app\service\core\notice\NoticeService;
 use app\service\core\pay\CoreRefundService;
@@ -114,20 +115,32 @@ class RefundService extends BaseAdminService
         if ($refund->status != RefundDict::WAIT_REFUND) throw new CommonException('REFUND_STATUS_ERROR');
         if (bccomp($money, $refund->orderMain->order_money, 2) == 1) throw new CommonException('REFUND_MONEY_CANNOT_GT_PAYMONEY');
 
+        if($refund->apply_money <= 0 && $money > 0) throw new CommonException('REFUND_MONEY_NOT_GT_APPLY_MONEY');
+
+        if($refund->apply_money > 0 && $money <= 0) throw new CommonException('REFUND_MONEY_GT_ZERO');
+
         Db::startTrans();
         try {
             // 添加维权日志
             CoreOrderRefundLogService::addLog($this->site_id, $refund_id, OrderRefundLogDict::REFUND, 'user', $this->uid);
 
+            $status = RefundDict::REFUNDING;
+
             (new OrderRefund())->where([ [ 'refund_id', '=', $refund_id ], [ 'site_id', '=', $this->site_id ] ])->update([
                 'money' => $money,
-                'status' => RefundDict::REFUNDING
+                'status' => $status
             ]);
 
-            (new OrderItem())->update(['refund_status' => RefundDict::REFUNDING ], [ ['order_item_id', '=', $refund->order_item_id ] ]);
+            (new OrderItem())->update(['refund_status' => $status ], [ ['order_item_id', '=', $refund->order_item_id ] ]);
 
             (new Refund())->update(['money' => $money], [ ['refund_no', '=', $refund->refund_no] ]);
-            (new CoreRefundService())->refund($this->site_id, $refund->refund_no);
+
+            //金额为0，直接完成
+            if($money > 0){
+                (new CoreRefundService())->refund($this->site_id, $refund->refund_no);
+            }else{
+                (new CoreOrderRefundService())->refundSuccess($refund->refund_no);
+            }
 
             Db::commit();
             return true;

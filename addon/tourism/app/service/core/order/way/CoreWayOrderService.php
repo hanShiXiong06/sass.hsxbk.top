@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -12,7 +12,6 @@
 namespace addon\tourism\app\service\core\order\way;
 
 use addon\tourism\app\dict\order\OrderLogDict;
-use addon\tourism\app\dict\order\RefundDict;
 use addon\tourism\app\dict\order\OrderDict;
 use addon\tourism\app\dict\order\WayOrderDict;
 use addon\tourism\app\job\OrderClose;
@@ -21,6 +20,7 @@ use addon\tourism\app\model\Goods;
 use addon\tourism\app\model\GoodsDay;
 use addon\tourism\app\model\TourismOrder;
 use addon\tourism\app\model\TourismOrderItem;
+use addon\tourism\app\service\core\CoreGoodsService;
 use addon\tourism\app\service\core\CoreStatService;
 use addon\tourism\app\service\core\order\CoreOrderLogService;
 use addon\tourism\app\service\core\order\CoreOrderRefundService;
@@ -103,12 +103,18 @@ class CoreWayOrderService extends BaseCoreService
      */
     public function calculate(array $data) {
 
+        $core_goods_service = new CoreGoodsService();
+        $member_info = $core_goods_service->getMemberInfo($data['member_id'], $data['site_id']);
+
         // 查询景点路线信息
         $way = $this->getWayInfo($data['way_id'], $data['site_id']);
         // 查询路线独立定价信息
         $separate = $this->getWaySeparateDays($data['way_id'], $data['reserve_time']);
 
         $sale_price = empty($separate) || $separate['is_set'] == 0 ? $way['price'] : $separate['price'];
+
+        $sale_price = $core_goods_service->getMemberPrice($member_info, $way['member_discount'], $sale_price, $separate, $way['fixed_discount']);
+
         if ($this->scene == 'create') {
 
             if (!$this->checkStock($data['num'], $way, $separate)) throw new CommonException('TICKET_STOCK_DEFICIENCY');
@@ -161,7 +167,7 @@ class CoreWayOrderService extends BaseCoreService
             'way' => function($query) {
                 $query->field('way_id,way_name,way_cover');
             }
-        ])->field('goods_id,goods_name,goods_image,goods_cover,goods_attribute,price,stock,way_id,buy_info')->findOrEmpty();
+        ])->field('goods_id,goods_name,member_discount,fixed_discount,goods_image,goods_cover,goods_attribute,price,stock,way_id,buy_info')->findOrEmpty();
         if ($goods->isEmpty()) throw new CommonException('TOURISM_TICKET_NOT_EXIST');
 
         return $goods->toArray();
@@ -180,7 +186,7 @@ class CoreWayOrderService extends BaseCoreService
         $goods_day = (new GoodsDay())->where([
             [ 'goods_id', '=', $goods_id ],
             [ 'time', '=', strtotime($reserve_time) ],
-        ])->field('price,year,month,day,sell_num,time,stock_all,is_set')->findOrEmpty()->toArray();
+        ])->field('price,year,month,day,sell_num,time,stock_all,is_set,member_price')->findOrEmpty()->toArray();
         return $goods_day;
     }
 
@@ -241,6 +247,8 @@ class CoreWayOrderService extends BaseCoreService
                         'year' => $item['year'],
                         'month' => $item['month'],
                         'day' => $item['day'],
+                        'stock_all' => $goods['stock'],
+                        'member_price' => 1,
                         'time' => strtotime("{$item['year']}-{$item['month']}-{$item['day']}"),
                         'create_time' => time(),
                         'time_date' => date('Y-m-d', strtotime("{$item['year']}-{$item['month']}-{$item['day']}"))
@@ -319,11 +327,6 @@ class CoreWayOrderService extends BaseCoreService
     public function close(TourismOrder $order) {
         if (!in_array($order['order_status'], [ OrderDict::WAIT_PAY, OrderDict::WAIT_USE  ] )) throw new CommonException('ORDER_NOT_ALLOW_CLOSE');
 
-        $order->order_status = OrderDict::CLOSE;
-        $order->close_time = time();
-        $order->is_enable_refund = 0;
-        $order->save();
-
         // 如果订单已支付 则扣除销量
         if ($order['order_status'] == OrderDict::WAIT_USE) {
             (new GoodsDay())->update([
@@ -333,6 +336,11 @@ class CoreWayOrderService extends BaseCoreService
                 [ 'time', '=', strtotime($order['start_time']) ]
             ]);
         }
+
+        $order->order_status = OrderDict::CLOSE;
+        $order->close_time = time();
+        $order->is_enable_refund = 0;
+        $order->save();
 
         return true;
     }

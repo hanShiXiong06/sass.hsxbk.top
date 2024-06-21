@@ -21,13 +21,25 @@ use think\facade\Route;
 Route::group('user', function () {
     /***************************************************** 用户 ****************************************************/
     //用户列表
-    Route::get('user', 'user.user/lists');
+    Route::get('user', 'user.User/lists');
     //全部用户列表
-    Route::get('user_all', 'user.user/pages');
+    Route::get('user_all', 'user.User/getUserAll');
     //用户详情
-    Route::get('user/:uid', 'user.user/info');
+    Route::get('user/:uid', 'user.User/info');
     // 查询账号是否存在
-    Route::get('isexist', 'user.user/checkUserIsExist');
+    Route::get('isexist', 'user.User/checkUserIsExist');
+    //添加用户
+    Route::post('user', 'user.User/add');
+    // 获取用户站点创建限制
+    Route::get('user/create_site_limit/:uid', 'user.User/getUserCreateSiteLimit');
+    // 获取用户站点创建限制
+    Route::get('user/create_site_limit/info/:id', 'user.User/getUserCreateSiteLimitInfo');
+    // 增加用户站点创建限制
+    Route::post('user/create_site_limit', 'user.User/addUserCreateSiteLimit');
+    // 编辑用户站点创建限制
+    Route::put('user/create_site_limit/:id', 'user.User/editUserCreateSiteLimit');
+    // 删除用户站点创建限制
+    Route::delete('user/create_site_limit/:id', 'user.User/delUserCreateSiteLimit');
 })->middleware([
     AdminCheckToken::class,
     AdminCheckRole::class,

@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -53,11 +53,13 @@ class ScenicService extends BaseAdminService
      */
     public function getInfo(int $id)
     {
-        $field = "scenic_id,site_id,scenic_name,scenic_level,open_time,create_time,province_id,city_id,district_id,address,telephone,scenic_desc,surround,scenic_cover,scenic_images,latitude,longitude,full_address";
+        $field = "scenic_id,site_id,poster_id,scenic_name,scenic_level,open_time,create_time,province_id,city_id,district_id,address,telephone,scenic_desc,surround,scenic_cover,scenic_images,latitude,longitude,full_address";
         $info = $this->model->field($field)->where([['scenic_id', '=', $id], ['site_id', '=', $this->site_id]])->append(['cover_thumb_small', 'image_thumb_small'])->findOrEmpty()->toArray();
         $info['province_name'] = (new AreaService())->getAreaName($info['province_id']);
         $info['city_name'] = (new AreaService())->getAreaName($info['city_id']);
         $info['district_name'] = (new AreaService())->getAreaName($info['district_id']);
+        // 海报id，处理数据类型
+        if (empty($info[ 'poster_id' ])) $info[ 'poster_id' ] = '';
         return $info;
     }
 

@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -87,9 +87,9 @@ class TourismOrder extends BaseModel
         $nick_name = '';
         if (!empty($data['verifier_id'])) {
             if ($data['verifier_type'] == 'user') {
-                $nick_name = (SysUser::find($data['verifier_id']))->username;
+                $nick_name = (SysUser::find($data['verifier_id']))['username'] ?? '';
             } else {
-                $nick_name = (Member::find($data['verifier_id']))->nickname;
+                $nick_name = (Member::find($data['verifier_id']))['nickname'] ?? '';
             }
         }
         return $nick_name;
@@ -156,7 +156,7 @@ class TourismOrder extends BaseModel
     public function searchVerifyCodeAttr($query, $value, $data)
     {
         if ($value) {
-            $query->where('verify_code', '=', $value);
+            $query->where("verify_code", "like", "%$value%");
         }
     }
 
@@ -183,7 +183,7 @@ class TourismOrder extends BaseModel
     public function searchMobileAttr($query, $value, $data)
     {
         if ($value) {
-            $query->where('mobile', '=', $value);
+            $query->where('mobile', 'like', '%'.$value.'%');
         }
     }
 
@@ -216,7 +216,7 @@ class TourismOrder extends BaseModel
     public function searchOutTradeNoAttr($query, $value, $data)
     {
         if ($value) {
-            $query->where('out_trade_no', '=', $value);
+            $query->where('out_trade_no', 'like', '%'.$value.'%');
         }
     }
 

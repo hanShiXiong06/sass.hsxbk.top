@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -15,6 +15,7 @@ use addon\tourism\app\model\Goods;
 use addon\tourism\app\model\GoodsDay;
 use addon\tourism\app\model\Way;
 use addon\tourism\app\service\api\calendar\GoodsDayService;
+use addon\tourism\app\service\core\CoreGoodsService;
 use app\dict\sys\FileDict;
 use Carbon\Carbon;
 use core\base\BaseApiService;
@@ -43,21 +44,30 @@ class WayService extends BaseApiService
         $field = 'way_id,site_id,group_buy_type,way_theme,travel_type,way_traffic,way_name,start_city,end_city,way_status,create_time';
         $order = $where['order'];
         $search_model = $this->model->where([['site_id', '=', $this->site_id],['way_status', '=', 1]])->withSearch(["way_name", "start_city", "end_city", "status", "create_time", "search_name"], $where)->field($field)->with(['goods' => function($query) {
-        $query->field('goods_id, site_id, goods_name, goods_type, way_id, goods_cover, goods_image, goods_content, sort, status, sale_num, price, buy_info');
+        $query->field('goods_id, site_id, goods_name, goods_type,member_discount, fixed_discount,way_id, goods_cover, goods_image, goods_content, sort, status, sale_num, price, buy_info');
         }])->order($order)->append(['group_buy_type_name', 'way_theme_name','travel_type_name', 'way_traffic_name']);
         $list = $this->pageQuery($search_model);
 
         $time = date("Y-m-d", time());
-        foreach ($list['data'] as $key => $val){
-            $price = (new GoodsDayService())->getGoodsDayPrice($time, $val['goods']['goods_id']) ?? $val['goods']['price'];
-            if($price == 0)
+
+        $goods_day_model = new GoodsDay();
+        $core_goods_service = new CoreGoodsService();
+        if($this->member_id) $member_info = $core_goods_service->getMemberInfo($this->member_id, $this->site_id);
+        foreach ($list['data'] as $key => &$val){
+            $list['data'][$key]['goods']['cover_thumb_mid'] = get_thumb_images($val['site_id'], $val['goods']['goods_cover'], FileDict::MID);
+
+            $day_info = $goods_day_model->where([['time_date', '=', $time], ['goods_id', '=', $val['goods']['goods_id']]])->findOrEmpty()->toArray();
+            $val['day_info'] = $day_info;
+            if(!empty($day_info) && $day_info['is_set'] > 0)
             {
-                $list['data'][$key]['price'] = $val['goods']['price'];
+                $list['data'][$key]['price'] = $day_info['price'];
             }else{
-                $list['data'][$key]['price'] = $price;
+                $list['data'][$key]['price'] = $val['goods']['price'];
+            }
+            if($this->member_id){
+                $val['member_price'] = $core_goods_service->getMemberPrice($member_info, $val['goods']['member_discount'], $val['price'], $val['day_info'] ?? [], $val['goods']['fixed_discount']);
             }
 
-            $list['data'][$key]['goods']['cover_thumb_mid'] = get_thumb_images($val['site_id'], $val['goods']['goods_cover'], FileDict::MID);
         }
 
         return $list;
@@ -70,10 +80,10 @@ class WayService extends BaseApiService
      */
     public function getInfo(int $id)
     {
-        $field = 'way_id,site_id,group_buy_type,way_theme,travel_type,way_traffic,way_name,start_city,end_city,way_status,create_time,way_character,fee_desc';
+        $field = 'way_id,poster_id,site_id,group_buy_type,way_theme,travel_type,way_traffic,way_name,start_city,end_city,way_status,create_time,way_character,fee_desc';
 
         $info = $this->model->field($field)->where([['way_id', '=', $id], ['site_id', '=', $this->site_id]])->field($field)->with(['goods' => function($query) {
-                $query->field('goods_id, site_id, goods_name, goods_type, way_id, goods_cover, goods_image, goods_content, sort, status, sale_num, price, stock, buy_info');
+                $query->field('goods_id, site_id, member_discount,fixed_discount, goods_name, goods_type, way_id, goods_cover, goods_image, goods_content, sort, status, sale_num, price, stock, buy_info');
             }])->append(['group_buy_type_name', 'way_theme_name','travel_type_name', 'way_traffic_name'])->findOrEmpty()->toArray();
 
         $info['goods']['image_thumb_big'] = [];
@@ -83,13 +93,24 @@ class WayService extends BaseApiService
         }
         $info['goods']['cover_thumb_big'] = get_thumb_images($info['site_id'], $info['goods']['goods_cover'], FileDict::BIG);
         $time = date("Y-m-d", time());
-        $price = (new GoodsDayService())->getGoodsDayPrice($time, $info['goods']['goods_id']) ?? $info['goods']['price'];
-        if($price == 0)
+
+        $goods_day_model = new GoodsDay();
+        $core_goods_service = new CoreGoodsService();
+        if($this->member_id) $member_info = $core_goods_service->getMemberInfo($this->member_id, $this->site_id);
+        $day_info = $goods_day_model->where([['time_date', '=', $time], ['goods_id', '=', $info['goods']['goods_id']]])->findOrEmpty()->toArray();
+        $info['day_info'] = $day_info;
+        $day_list = $goods_day_model->where([['goods_id', '=', $info['goods']['goods_id']]])->select()->toArray();
+        $info['day_list'] = array_column($day_list, null ,'time_date');
+        if(!empty($day_info) && $day_info['is_set'] > 0)
         {
-            $info['price'] = $info['goods']['price'];
+            $info['price'] = $day_info['price'];
         }else{
-            $info['price'] = $price;
+            $info['price'] = $info['goods']['price'];
         }
+        if($this->member_id){
+            $info['member_price'] = $core_goods_service->getMemberPrice($member_info, $info['goods']['member_discount'], $info['price'], $info['day_info'] ?? [], $info['goods']['fixed_discount']);
+        }
+
 
         return $info;
     }
@@ -110,21 +131,30 @@ class WayService extends BaseApiService
             $condition[] = ['way_id', 'in', $data['goods_ids']];
         }
         $list = $this->model->where($condition)->field($field)->with(['goods' => function($query) {
-            $query->field('goods_id, site_id, goods_name, goods_type, way_id, goods_cover, goods_image, goods_content, sort, status, sale_num, price');
+            $query->field('goods_id, site_id, goods_name, member_discount, fixed_discount, goods_type, way_id, goods_cover, goods_image, goods_content, sort, status, sale_num, price');
         }])->order($order)->limit($data['limit'])->append(['group_buy_type_name', 'way_theme_name','travel_type_name', 'way_traffic_name'])->select()->toArray();
 
         $time = date("Y-m-d", time());
-        foreach ($list as $key => $val){
-            $price = (new GoodsDayService())->getGoodsDayPrice($time, $val['goods']['goods_id']) ?? $val['goods']['price'];
-            if($price == 0)
-            {
-                $list[$key]['price'] = $val['goods']['price'];
-            }else{
-                $list[$key]['price'] = $price;
-            }
+        $goods_day_model = new GoodsDay();
+        $core_goods_service = new CoreGoodsService();
+        if($this->member_id) $member_info = $core_goods_service->getMemberInfo($this->member_id, $this->site_id);
+        foreach ($list as $key => &$val){
             $list[$key]['goods']['cover_thumb_big'] = get_thumb_images($val['site_id'], $val['goods']['goods_cover'], FileDict::BIG);
             $list[$key]['goods']['cover_thumb_mid'] = get_thumb_images($val['site_id'], $val['goods']['goods_cover'], FileDict::MID);
+
+            $day_info = $goods_day_model->where([['time_date', '=', $time], ['goods_id', '=', $val['goods']['goods_id']]])->findOrEmpty()->toArray();
+            $val['day_info'] = $day_info;
+            if(!empty($day_info) && $day_info['is_set'] > 0)
+            {
+                $val['price'] = $day_info['price'];
+            }else{
+                $val['price'] = $val['goods']['price'];
+            }
+            if($this->member_id){
+                $val['member_price'] = $core_goods_service->getMemberPrice($member_info, $val['goods']['member_discount'], $val['price'], $val['day_info'] ?? [], $val['goods']['fixed_discount']);
+            }
         }
+
         return $list;
     }
 
@@ -137,18 +167,19 @@ class WayService extends BaseApiService
      * @throws \think\db\exception\ModelNotFoundException
      */
     public function getGoodsDay(int $way_id){
-        $goods = (new Goods())->field("goods_id,price")->where([ ['site_id', '=', $this->site_id], ['way_id', '=', $way_id ] ])->findOrEmpty();
+        $goods = (new Goods())->field("goods_id,price,member_discount, fixed_discount")->where([ ['site_id', '=', $this->site_id], ['way_id', '=', $way_id ] ])->findOrEmpty();
         if ($goods->isEmpty()) throw new CommonException('GOODS_NOT_EXIST');
 
         $start_time = Carbon::today()->getTimestamp();
         $end_time = $start_time + (86400 * 31);
 
+        $core_goods_service = new CoreGoodsService();
+        if($this->member_id) $member_info = $core_goods_service->getMemberInfo($this->member_id, $this->site_id);
         $goods_day_list = (new GoodsDay())->where([
             [ 'goods_id', '=', $goods['goods_id'] ],
             [ 'time', '>=', $start_time ],
             [ 'time', '<=', $end_time ],
-            [ 'is_set', '>', 0]
-        ])->field('price,time')->select()->toArray();
+        ])->field('price,time,member_price,is_set')->select()->toArray();
 
         $list = [];
         if (!empty($goods_day_list)) {
@@ -158,11 +189,19 @@ class WayService extends BaseApiService
             }
         }
 
+        if($this->member_id) {
+            $goods['price'] = $core_goods_service->getMemberPrice($member_info, $goods['member_discount'], $goods['price'], [], $goods['fixed_discount']);
+            foreach ($list as $k => &$v) {
+                $list[$k]['price'] = $core_goods_service->getMemberPrice($member_info, $goods['member_discount'], $v['price'], $v, $goods['fixed_discount']);
+            }
+        }
+
         $data = [];
         for ($i = 0; $i <= 31; $i++) {
             $date = date('Y-m-d', $start_time + (86400 * $i));
-            $data[$date] = isset($list[$date]) ? $list[$date]['price'] : $goods['price'];
+            $data[$date] = isset($list[$date]) && $list[$date]['is_set'] ? $list[$date]['price'] : $goods['price'];
         }
+
         return $data;
     }
 }

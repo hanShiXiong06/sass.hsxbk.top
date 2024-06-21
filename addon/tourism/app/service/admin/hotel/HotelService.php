@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -11,7 +11,9 @@
 
 namespace addon\tourism\app\service\admin\hotel;
 
+use addon\tourism\app\dict\goods\GoodsDict;
 use addon\tourism\app\model\Hotel;
+use addon\tourism\app\service\admin\goods\GoodsService;
 use app\service\core\sys\CoreAreaService;
 use core\base\BaseAdminService;
 use app\service\admin\sys\AreaService;
@@ -54,11 +56,13 @@ class HotelService extends BaseAdminService
      */
     public function getInfo(int $id)
     {
-        $field = 'site_id,hotel_name,hotel_star,hotel_tag,hotel_desc,hotel_cover,hotel_images,hotel_attribute,create_time,province_id,city_id,district_id,address,full_address,longitude,latitude,hotel_status';
+        $field = 'site_id,hotel_name,poster_id,hotel_star,hotel_tag,hotel_desc,hotel_cover,hotel_images,hotel_attribute,create_time,province_id,city_id,district_id,address,full_address,longitude,latitude,hotel_status';
         $info = $this->model->field($field)->where([['hotel_id', '=', $id], ['site_id', '=', $this->site_id]])->append(['image_thumb_small','cover_thumb_small'])->findOrEmpty()->toArray();
         $info['province_name'] = (new AreaService())->getAreaName($info['province_id']);
         $info['city_name'] = (new AreaService())->getAreaName($info['city_id']);
         $info['district_name'] = (new AreaService())->getAreaName($info['district_id']);
+        // 海报id，处理数据类型
+        if (empty($info[ 'poster_id' ])) $info[ 'poster_id' ] = '';
         return $info;
     }
 
@@ -127,4 +131,6 @@ class HotelService extends BaseAdminService
         $this->model->where([['hotel_id', '=', $id], ['site_id', '=', $this->site_id]])->update($data);
         return true;
     }
+
+
 }

@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -62,6 +62,7 @@ class Way extends BaseAdminController
             ["way_theme", ""],
             ["travel_type", ""],
             ["way_traffic", ""],
+            ["poster_id", 0],
         ]);
 
         $goods_data = $this->request->params([
@@ -69,6 +70,7 @@ class Way extends BaseAdminController
             ["goods_image", ""],
             ["stock", ""],
             ["price", ""],
+            ["member_discount", ""],
             ["buy_info", ""]
         ]);
         $data['way_cover'] = $goods_data['goods_cover'] ?? '';
@@ -93,19 +95,20 @@ class Way extends BaseAdminController
             ["travel_type", ""],
             ["way_traffic", ""],
             ["way_image", ""],
+            ["poster_id", 0],
         ]);
         $goods_data = $this->request->params([
             ["goods_cover", ""],
             ["goods_image", ""],
             ["stock", ""],
             ["price", ""],
+            ["member_discount", ""],
             ["buy_info", ""]
         ]);
         
         (new WayService())->edit($way_id, $data, $goods_data);
         return success('EDIT_SUCCESS');
     }
-
 
     /**
      * 获取线路标签
@@ -136,6 +139,7 @@ class Way extends BaseAdminController
             [ "goods_id",""],
             [ "start_date",""],
             [ "end_date",""],
+            [ "member_price",""],
         ]);
         (new GoodsDayService())->addDatePrice($data);
         return success('EDIT_SUCCESS');

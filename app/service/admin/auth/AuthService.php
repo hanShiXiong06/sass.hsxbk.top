@@ -12,6 +12,7 @@
 namespace app\service\admin\auth;
 
 use app\dict\site\SiteDict;
+use app\dict\sys\AppTypeDict;
 use app\model\sys\SysUserRole;
 use app\Request;
 use app\service\admin\site\SiteUserService;
@@ -73,10 +74,18 @@ class AuthService extends BaseAdminService
 
         $menu_service = new MenuService();
         $all_menu_list = $menu_service->getAllApiList($this->app_type);
+
         //先判断当前访问的接口是否收到权限的限制
         $method_menu_list = $all_menu_list[$method] ?? [];
-        if(!in_array($rule, $method_menu_list))
-            return true;
+        if(!in_array($rule, $method_menu_list)) {
+            $other_menu_list = $menu_service->getAllApiList($this->app_type == AppTypeDict::ADMIN ? AppTypeDict::SITE : AppTypeDict::ADMIN);
+            $method_menu_list = $other_menu_list[$method] ?? [];
+            if(!in_array($rule, $method_menu_list)) {
+                return true;
+            } else {
+                throw new AuthException('NO_PERMISSION');
+            }
+        }
 
         $auth_role_list = $this->getAuthApiList();
         if(!empty($auth_role_list[$method]) && in_array($rule, $auth_role_list[$method]))

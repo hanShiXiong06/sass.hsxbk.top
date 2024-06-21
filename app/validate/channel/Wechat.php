@@ -23,8 +23,6 @@ class Wechat extends Validate
     protected $rule = [
         'app_id' => 'require',
         'app_secret' => 'require',//防止key值重复
-
-
     ];
 
     protected $message = [
@@ -34,7 +32,7 @@ class Wechat extends Validate
     ];
 
     protected $scene = [
-        'set' => ['app_id', 'app_secret'],
+        'set' => ['app_id'],
     ];
 
 

@@ -14,6 +14,7 @@ namespace app\service\api\sys;
 use app\model\sys\SysArea;
 use app\service\admin\sys\ConfigService;
 use core\base\BaseApiService;
+use core\exception\ApiException;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
 use think\db\exception\ModelNotFoundException;
@@ -197,15 +198,14 @@ class AreaService extends BaseApiService
 
                 ];
             } else {
-                return $res[ 'message' ];
+                throw new ApiException($res[ 'message' ]);
             }
 
         } else {
             $error = curl_errno($curl);
             curl_close($curl);
-            return $error;
+            throw new ApiException($error);
         }
-
     }
 
 }

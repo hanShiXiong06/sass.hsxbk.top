@@ -40,7 +40,8 @@ class  CoreWeappConfigService extends BaseCoreService
             'token'             => $info['token'] ?? '',
             'encoding_aes_key'  => $info['encoding_aes_key'] ?? '',
             'encryption_type'   => $info['encryption_type'] ?? 'not_encrypt',//加解密模式   not_encrypt 明文   compatible 兼容  safe 安全
-            'upload_private_key'=> $info['upload_private_key'] ?? ''
+            'upload_private_key'=> $info['upload_private_key'] ?? '',
+            'is_authorization'  => $info['is_authorization'] ?? 0
         ];
     }
 
@@ -51,6 +52,7 @@ class  CoreWeappConfigService extends BaseCoreService
      * @return SysConfig|bool|Model
      */
     public function setWeappConfig(int $site_id, array $data){
+        $old = $this->getWeappConfig($site_id);
         $config = [
             'weapp_name' => $data['weapp_name'] ?? '',//小程序名称
             'weapp_original' => $data['weapp_original'] ?? '',//原始ID
@@ -60,10 +62,28 @@ class  CoreWeappConfigService extends BaseCoreService
             'token'             => $data['token'] ?? '',
             'encoding_aes_key'  => $data['encoding_aes_key'] ?? '',
             'encryption_type'   => $data['encryption_type'] ?? 'not_encrypt',//加解密模式   not_encrypt 明文   compatible 兼容  safe 安全
-            'upload_private_key'=> $data['upload_private_key'] ?? ''
+            'upload_private_key'=> $data['upload_private_key'] ?? '',
+            'is_authorization'  => $data['is_authorization'] ?? $old['is_authorization']
         ];
         return (new CoreConfigService())->setConfig($site_id, ConfigKeyDict::WEAPP, $config);
     }
 
+    /**
+     * 获取小程序授权信息
+     * @param int $site_id
+     * @return mixed
+     */
+    public function getWeappAuthorizationInfo(int $site_id) {
+        return (new CoreConfigService())->getConfigValue($site_id, ConfigKeyDict::WEAPP_AUTHORIZATION_INFO);
+    }
 
+    /**
+     * 设置小程序授权信息
+     * @param int $site_id
+     * @param array $config
+     * @return SysConfig|bool|Model
+     */
+    public function setWeappAuthorizationInfo(int $site_id, array $config) {
+        return (new CoreConfigService())->setConfig($site_id, ConfigKeyDict::WEAPP_AUTHORIZATION_INFO, $config);
+    }
 }

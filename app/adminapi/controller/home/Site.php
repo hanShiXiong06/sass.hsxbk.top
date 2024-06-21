@@ -73,4 +73,19 @@ class Site extends BaseAdminController
         return success('MODIFY_SUCCESS');
     }
 
+    public function getSiteGroup() {
+        return success((new AuthSiteService())->getSiteGroup());
+    }
+
+    /**
+     * 创建站点
+     * @return Response
+     */
+    public function create() {
+        $data = $this->request->params([
+            ['site_name', ''],
+            ['group_id', 0]
+        ]);
+        return success((new AuthSiteService())->createSite($data));
+    }
 }

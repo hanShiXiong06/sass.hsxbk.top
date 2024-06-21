@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <template>
     <div class="main-container">
         <el-card class="box-card !border-none" shadow="never">
@@ -17,7 +16,7 @@
                     </template>
                     <el-table-column :label="t('memberInfo')" min-width="120">
                         <template #default="{ row }">
-                            <div class="flex items-center cursor-pointer " @click="toMember(row.member.member_id)">
+                            <div class="flex items-center cursor-pointer " @click="toMember(row.member.member_id)" v-if="row.member">
                                 <img class="w-[50px] h-[50px] mr-[10px]" v-if="row.member.headimg" :src="img(row.member.headimg)" alt="">
                                 <img class="w-[50px] h-[50px] mr-[10px]" v-else src="@/app/assets/images/default_headimg.png" alt="">
                                 <div class="flex flex flex-col">

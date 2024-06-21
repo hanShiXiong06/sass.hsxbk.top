@@ -20,9 +20,9 @@ class RefundRefuse extends BaseNoticeTemplate
             if (!$refund->isEmpty()) {
                 return $this->toReturn(
                     [
-                        '__wechat_page' => getWapDemain($refund['site_id']) . '/addon/pages/tourism/order/detail?order_id=' . $refund['tourism_order']['order_id'],//模板消息链接
+                        '__wechat_page' => get_wap_domain($refund['site_id']) . '/addon/pages/tourism/order/detail?order_id=' . $refund['tourism_order']['order_id'],//模板消息链接
                         '__weapp_page' => 'addon/pages/tourism/order/detail?order_id=' . $refund['tourism_order']['order_id'],//小程序链接
-                        'goods_name' => $refund['tourism_order']['full_goods_name'],
+                        'goods_name' => str_sub($refund['tourism_order']['full_goods_name']),
                         'order_no' => $refund['tourism_order']['order_no'],
                         'money' => $refund['money'],
                         'reason' => $refund['refuse_reason']

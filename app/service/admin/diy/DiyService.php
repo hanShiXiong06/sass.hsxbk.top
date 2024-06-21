@@ -17,7 +17,6 @@ use app\dict\diy\PagesDict;
 use app\dict\diy\TemplateDict;
 use app\model\diy\Diy;
 use app\service\admin\sys\SystemService;
-use app\service\core\addon\CoreAddonService;
 use core\base\BaseAdminService;
 use core\exception\AdminException;
 use Exception;
@@ -317,8 +316,6 @@ class DiyService extends BaseAdminService
         $data[ 'component' ] = $this->getComponentList($data[ 'type' ]);
         $data[ 'domain_url' ] = ( new SystemService() )->getUrl();
 
-        // 查询已安装的有效的应用
-        $data[ 'addon_list' ] = ( new CoreAddonService() )->getInstallAddonList();
         return $data;
     }
 
@@ -487,8 +484,8 @@ class DiyService extends BaseAdminService
             'type' => $params[ 'type' ], // 页面类型标识
             'name' => '', // 链接标识
             'parent' => '', // 链接标识
-            'title' => $default_page_data[ 'title' ], // 模板名称
-            'cover' => $default_page_data[ 'cover' ], // 封面图
+            'title' => $default_page_data[ 'title' ] ?? '', // 模板名称
+            'cover' => $default_page_data[ 'cover' ] ?? '', // 封面图
             'url' => '', // 自定义页面链接，实时预览效果
             'page' => $template[ 'page' ], // 页面地址
             'action' => $template[ 'action' ] // 是否存在操作，decorate 表示支持装修
@@ -537,6 +534,8 @@ class DiyService extends BaseAdminService
 
         // 如果没有预览图，并且没有地址，则赋值默认页面地址
         if (empty($use_template[ 'cover' ]) && empty($use_template[ 'url' ])) {
+            $use_template[ 'url' ] = $template[ 'page' ];
+        } elseif (empty($use_template[ 'url' ])) {
             $use_template[ 'url' ] = $template[ 'page' ];
         }
 

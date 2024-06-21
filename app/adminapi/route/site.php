@@ -50,6 +50,8 @@ Route::group('site', function () {
     Route::delete('group/:group_id', 'site.SiteGroup/del');
     //获取所有分组
     Route::get('group/all', 'site.SiteGroup/all');
+    //获取所有分组以及用户站点数
+    Route::get('group/user', 'site.SiteGroup/getUserSiteGroupAll');
     /***************************************************** 当前站点用户 *************************************************/
     //站点用户列表
     Route::get('user', 'site.User/lists');

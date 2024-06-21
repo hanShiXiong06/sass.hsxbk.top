@@ -58,7 +58,7 @@ class DiyRouteService extends BaseAdminService
                             $is_add = false;
                         }
 
-                        if (!empty($where[ 'addon_name' ]) && $where[ 'addon_name' ] != $v[ 'addon_info' ][ 'key' ]) {
+                        if (!empty($v[ 'addon_info' ]) && !empty($where[ 'addon_name' ]) && $where[ 'addon_name' ] != $v[ 'addon_info' ][ 'key' ]) {
                             $is_add = false;
                         }
 

@@ -13,13 +13,13 @@ class OrderPay extends BaseNoticeTemplate
     public function handle(array $params)
     {
         if ($this->key == $params['key']) {
-            $order = (new Order())->where([['order_id', '=', $params['data']['order_id']]])->findOrEmpty();
-            if (!$order->isEmpty()) {
+            $order = (new Order())->where([['order_id', '=', $params['data']['order_id']]])->findOrEmpty()->toArray();
+            if (!empty($order)) {
                 return $this->toReturn(
                     [
-                        '__wechat_page' => getWapDemain($order['site_id']) . '/addon/pages/o2o/order/detail?order_id=' . $order['order_id'],//模板消息链接
+                        '__wechat_page' => get_wap_domain($order['site_id']) . '/addon/pages/o2o/order/detail?order_id=' . $order['order_id'],//模板消息链接
                         '__weapp_page' => 'addon/pages/o2o/order/detail?order_id=' . $order['order_id'],//小程序链接
-                        'goods_name' => $order['order_name'],
+                        'goods_name' => str_sub($order['order_name']),
                         'order_no' => $order['order_no'],
                         'order_money' => $order['order_money'], //交易流水号
                         'create_time' => $order['create_time'],//创建时间

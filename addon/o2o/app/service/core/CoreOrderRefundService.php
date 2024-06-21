@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -11,12 +11,10 @@
 
 namespace addon\o2o\app\service\core;
 
-use addon\o2o\app\dict\MemberCardDict;
 use addon\o2o\app\dict\order\OrderDict;
 use addon\o2o\app\dict\order\OrderLogDict;
 use addon\o2o\app\dict\order\OrderRefundLogDict;
 use addon\o2o\app\dict\order\RefundDict;
-use addon\o2o\app\model\MemberCard;
 use addon\o2o\app\model\Order;
 use addon\o2o\app\model\OrderItem;
 use addon\o2o\app\model\OrderRefund;
@@ -46,6 +44,7 @@ class CoreOrderRefundService extends BaseCoreService
                 $pay_refund = (new RefundService())->getDetail($refund_no);
                 $refund->status = RefundDict::REFUND_COMPLETED;
                 $refund->money = $pay_refund['money'] ?? 0;
+                $refund->transfer_time = time();
                 $refund->save();
 
                 (new OrderItem())->update(['refund_status' => RefundDict::REFUND_COMPLETED ], [ ['order_item_id', '=', $refund->order_item_id ] ]);
@@ -62,6 +61,17 @@ class CoreOrderRefundService extends BaseCoreService
 
                 // 发送退款成功提醒通知
                 (new NoticeService())->send($refund['site_id'], 'o2o_refund_success', ['refund_id' => $refund['refund_id'] ]);
+
+                //商品销量减少
+                $item_info = (new OrderItem())->where([ ['order_item_id', '=', $refund['order_item_id']] ])->field('item_id, num, goods_id')->findOrEmpty()->toArray();
+                if($item_info) {
+                    $core_goods_sale_num_service = new CoreGoodsSaleNumService();
+                    $core_goods_sale_num_service->dec([
+                        'num' => $item_info['num'],
+                        'goods_id' => $item_info['goods_id'],
+                        'sku_id' => $item_info['item_id']
+                    ]);
+                }
 
                 Db::commit();
                 return true;

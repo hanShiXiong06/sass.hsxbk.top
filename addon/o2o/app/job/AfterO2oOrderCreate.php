@@ -10,9 +10,7 @@
 // +----------------------------------------------------------------------
 namespace addon\o2o\app\job;
 
-use app\service\core\notice\NoticeService;
 use core\base\BaseJob;
-use think\facade\Log;
 
 /**
  * 订单创建后调用

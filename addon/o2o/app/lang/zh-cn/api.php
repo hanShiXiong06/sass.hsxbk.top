@@ -4,9 +4,12 @@ return [
     'POSITION_NOT_EXIST' => '未获取到岗位信息',
 
     'O2O_GOODS_NOT_EXIST' => '未获取到项目信息',
+    'O2O_GOODS_NOT_SET_MEMBER_PRICE' => '该项目不能设置会员价',
     'ORDER_NOT_ALLOW_CLOSE' => '订单不允许关闭',
     'ORDER_NOT_ALLOW_DELETE' => '订单不允许删除',
     'REFUND_MONEY_CANNOT_GT_PAYMONEY' => '退款金额不能大于订单实付金额',
+    'REFUND_MONEY_NOT_GT_APPLY_MONEY' => '退款金额不能大于申请金额',
+    'REFUND_MONEY_GT_ZERO' => '退款金额必须大于0',
     'MEMBER_NOT_EXIST' => '未获取到会员信息',
     'TECHNICIAN_MEMBER_EXIST' => '该会员已经绑定其他技师',
 

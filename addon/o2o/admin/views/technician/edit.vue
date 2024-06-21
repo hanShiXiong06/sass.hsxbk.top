@@ -94,7 +94,7 @@
             <el-table-column prop="mobile" label="手机号" width="180" />
             <el-table-column :label="t('operation')" fixed="right" min-width="50" align="right">
                 <template #default="{ row }">
-                    <el-button type="primary" link @click="confimEvent(row)">确定</el-button>
+                    <el-button type="primary" link @click="confirmEvent(row)">确定</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -185,7 +185,6 @@ const setFormData = async (id: number = 0) => {
             return item.goods_id
         })
     }
-    console.log(formData)
 }
 if (id) setFormData(id)
 
@@ -228,7 +227,7 @@ const getMemberListFn = (page: number = 1) => {
 getMemberListFn()
 
 const dialogMemberVisible = ref(false)
-const confimEvent = (val: any) => {
+const confirmEvent = (val: any) => {
     formData.member_id = val.member_id
     formData.member_nickname = val.nickname
     dialogMemberVisible.value = false
@@ -291,7 +290,6 @@ const onSave = async (formEl: FormInstance | undefined) => {
             const data = cloneDeep(formData)
             data.label = data.label.join(',')
             data.goods_ids = data.goods_ids.toString()
-            console.log(data)
             const save = id ? editTechnician : addTechnician
             save(data).then(res => {
                 loading.value = false

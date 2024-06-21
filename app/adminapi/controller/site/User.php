@@ -29,10 +29,6 @@ class User extends BaseAdminController
     {
         $data = $this->request->params([
             ['username', ''],
-            ['realname', ''],
-            ['role', ''],
-            ['create_time', []],
-            ['last_time', []],
         ]);
         $list = (new SiteUserService())->getPage($data);
         return success($list);
@@ -121,7 +117,6 @@ class User extends BaseAdminController
      */
     public function lock($uid)
     {
-
         (new SiteUserService())->lock($uid);
         return success('MODIFY_SUCCESS');
     }
@@ -135,6 +130,4 @@ class User extends BaseAdminController
         (new SiteUserService())->unlock($uid);
         return success('MODIFY_SUCCESS');
     }
-
-
 }

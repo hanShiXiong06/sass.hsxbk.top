@@ -252,7 +252,6 @@ CREATE TABLE `member_address` (
    lng varchar(255) NOT NULL DEFAULT '' COMMENT '经度',
    lat varchar(255) NOT NULL DEFAULT '' COMMENT '纬度',
    is_default tinyint NOT NULL DEFAULT 0 COMMENT '是否是默认地址',
-   type varchar(30) NOT NULL DEFAULT '' COMMENT '地址类型  address 普通地址  location_address 定位地址',
    PRIMARY KEY (id)
 )
 ENGINE = INNODB,
@@ -946,6 +945,8 @@ CREATE TABLE `weapp_version`  (
   `update_time` int(11) NOT NULL DEFAULT 0,
   `fail_reason` text DEFAULT NULL,
   `task_key` varchar(20) NOT NULL DEFAULT '' COMMENT '上传任务key',
+  `from_type` VARCHAR(255) NOT NULL DEFAULT 'cloud_build',
+  `auditid` VARCHAR(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
@@ -1003,10 +1004,44 @@ CREATE TABLE `wechat_reply`  (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '公众号消息回调表' ROW_FORMAT = Dynamic;
 
-INSERT INTO `site`(site_id, site_name, group_id, keywords, app_type, logo, `desc`, status, latitude, longitude, province_id, city_id, district_id, address, full_address, phone, business_hours, create_time, expire_time, front_end_name, front_end_logo, front_end_icon, icon, member_no, app, addons, initalled_addon, site_domain) VALUES
-(0, 'niucloud-admin', 0, '', 'admin', '', '', 1, '', '', 0, 0, 0, '', '', '', '', 0, 0, '', '', '', '', '0', '', '', '', '');
+DROP TABLE IF EXISTS `wx_oplatfrom_weapp_version`;
+CREATE TABLE `wx_oplatfrom_weapp_version` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `site_group_id` INT(11) NOT NULL DEFAULT 0 COMMENT '站点套餐id',
+  `template_id` VARCHAR(255) NOT NULL DEFAULT '0' COMMENT '代码模板 ID',
+  `user_version` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '代码版本号',
+  `user_desc` VARCHAR(255) DEFAULT '' COMMENT '代码描述',
+  `task_key` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '上传任务key',
+  `status` TINYINT(4) NOT NULL DEFAULT 0 COMMENT '状态',
+  `fail_reason` TEXT DEFAULT NULL COMMENT '失败原因',
+  `version_no` INT(11) NOT NULL DEFAULT 0,
+  `create_time` INT(11) NOT NULL DEFAULT 0,
+  `update_time` INT(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+)
+ENGINE = INNODB,
+CHARACTER SET utf8mb4,
+COLLATE utf8mb4_general_ci;
 
-INSERT INTO `sys_user` VALUES ('1', '', '', '', '', '', '0', '0', '0', '1', '0', '0', '0');
+DROP TABLE IF EXISTS `user_create_site_limit`;
+CREATE TABLE `user_create_site_limit` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `group_id` INT(11) NOT NULL DEFAULT 0,
+  `uid` INT(11) NOT NULL DEFAULT 0,
+  `num` INT(11) NOT NULL DEFAULT 0,
+  `month` INT(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+)
+ENGINE = INNODB,
+CHARACTER SET utf8mb4,
+COLLATE utf8mb4_general_ci;
+
+INSERT INTO `site`(site_id, site_name, group_id, keywords, app_type, logo, `desc`, status, latitude, longitude, province_id, city_id, district_id, address, full_address, phone, business_hours, create_time, expire_time, front_end_name, front_end_logo, front_end_icon, icon, member_no, app, addons, initalled_addon, site_domain) VALUES
+(1, 'niucloud-admin', 0, '', 'admin', '', '', 1, '', '', 0, 0, 0, '', '', '', '', 0, 0, '', '', '', '', '0', '', '', '', '');
+
+UPDATE `site` SET site_id = 0 WHERE  site_id = 1;
+
+-- INSERT INTO `sys_user` VALUES ('1', '', '', '', '', '', '0', '0', '0', '1', '0', '0', '0');
 
 INSERT INTO `sys_user_role` VALUES ('1', '1', '0', '', '0', '1', '1');
 

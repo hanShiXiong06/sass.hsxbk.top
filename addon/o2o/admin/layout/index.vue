@@ -8,7 +8,7 @@
                     <layout-header></layout-header>
                 </el-header>
 
-                <el-main :class="['main-wrap h-full p-0',{'bg-page': dark}]">
+                <el-main :class="['main-wrap h-full p-0 bg-page']">
                     <el-scrollbar>
                         <div class="p-[10px]">
                             <router-view v-slot="{ Component, route }" v-if="appStore.routeRefreshTag">

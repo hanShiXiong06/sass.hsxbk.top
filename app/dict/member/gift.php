@@ -23,6 +23,24 @@ return [
                     'background' => '/static/resource/images/member/gift/gift_balance_bg.png'
                 ];
                 return $content;
+            },
+            // 会员签到（日签）
+            'member_sign' => function($site_id, $config) {
+                $content = [];
+                $content[] = [
+                    'text' => "{$config['money']}元",
+                    'icon' => '/static/resource/images/member/sign/packet.png'
+                ];
+                return $content;
+            },
+            // 会员签到（连签）
+            'member_sign_continue' => function($site_id, $config) {
+                $content = [];
+                $content[] = [
+                    'text' => "{$config['money']}元",
+                    'icon' => '/static/resource/images/member/sign/packet01.png'
+                ];
+                return $content;
             }
         ]
     ],
@@ -45,6 +63,24 @@ return [
                 $content[] = [
                     'text' => "{$config['num']}积分",
                     'background' => '/static/resource/images/member/gift/gift_point_bg.png'
+                ];
+                return $content;
+            },
+            // 会员签到（日签）
+            'member_sign' => function($site_id, $config) {
+                $content = [];
+                $content[] = [
+                    'text' => "{$config['num']}积分",
+                    'icon' => '/static/resource/images/member/sign/point.png'
+                ];
+                return $content;
+            },
+            // 会员签到（连签）
+            'member_sign_continue' => function($site_id, $config) {
+                $content = [];
+                $content[] = [
+                    'text' => "{$config['num']}积分",
+                    'icon' => '/static/resource/images/member/sign/point01.png'
                 ];
                 return $content;
             }

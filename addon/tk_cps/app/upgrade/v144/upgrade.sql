@@ -1,0 +1,2 @@
+ALTER TABLE cpsbwc_order
+    ADD COLUMN js_type TINYINT(1) NOT NULL DEFAULT 0;

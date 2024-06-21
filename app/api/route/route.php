@@ -23,6 +23,12 @@ Route::any('wechat/serve/:site_id', 'wechat.Serve/serve')
     ->middleware(ApiCheckToken::class)
     ->middleware(ApiLog::class);
 
+// 微信小程序消息推送
+Route::any('weapp/serve/:site_id', 'weapp.Serve/serve')
+    ->middleware(ApiChannel::class)
+    ->middleware(ApiCheckToken::class)
+    ->middleware(ApiLog::class);
+
 Route::group(function() {
     Route::post('niucloud/notify', function(){
         return (new CoreNotifyService())->notify();
@@ -36,6 +42,10 @@ Route::group(function() {
 Route::group(function() {
     //获取授权地址
     Route::get('wechat/codeurl', 'wechat.Wechat/getCodeUrl');
+    //获取授权信息
+    Route::get('wechat/user', 'wechat.Wechat/getWechatUser');
+    //公众号通过授权信息登录
+    Route::post('wechat/userlogin', 'wechat.Wechat/wechatLogin');
 
     //公众号通过code登录
     Route::post('wechat/login', 'wechat.Wechat/login');

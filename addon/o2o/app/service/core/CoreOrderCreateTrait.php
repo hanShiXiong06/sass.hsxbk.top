@@ -11,7 +11,6 @@
 
 namespace addon\o2o\app\service\core;
 
-use addon\o2o\app\dict\order\OrderLogDict;
 use addon\o2o\app\job\AfterO2oOrderCreate;
 use addon\o2o\app\model\Order;
 use addon\o2o\app\model\OrderItem;
@@ -104,22 +103,10 @@ trait CoreOrderCreateTrait
     /**
      * 配置设置或查询
      * @param $key
-     * @return array|mixed
      */
     public function config($key)
     {
-        //查询购物配置
-        $config = $this->config[$key] ?? [];
-        $site_id = $this->param['site_id'];
-        if (empty($this->config[$key])) {
-            switch ($key) {
-                case 'order'://交易配置
-                    $config = (new CoreOrderConfigService())->orderClose($site_id) ?? [];
-                    break;
-            }
-            $this->config[$key] = $config;
-        }
-        return $config;
+        return [];
     }
 
     /**
@@ -211,7 +198,7 @@ trait CoreOrderCreateTrait
         if (!empty($this->param['delivery']['take_address_id'])) {
             $this->delivery['take_address'] = (new CoreMemberAddressService())->getMemberAddressById($this->param['delivery']['take_address_id'], $this->member_id);
         } else {
-            $this->delivery['take_address'] = (new CoreMemberAddressService())->getDefaultAddressByMemberId($this->member_id, 'address');
+            $this->delivery['take_address'] = (new CoreMemberAddressService())->getDefaultAddressByMemberId($this->member_id);
         }
         if (empty($this->delivery['take_address'])) {
             $this->error[] = get_lang('NOT_SELECT_ADDRESS');

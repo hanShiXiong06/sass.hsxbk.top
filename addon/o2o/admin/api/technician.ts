@@ -77,7 +77,7 @@ export function getMemberList(params: Record<string, any>) {
 }
 /**
  * 获取技师列表(支持商品)
- * @param id
+ * @param params
  * @returns
  */
 export function getTechnicianGoods(params: Record<string, any>) {

@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -14,13 +14,13 @@ namespace addon\tourism\app\service\core\order\hotel;
 use addon\tourism\app\dict\order\OrderDict;
 use addon\tourism\app\dict\order\HotelOrderDict;
 use addon\tourism\app\dict\order\OrderLogDict;
-use addon\tourism\app\dict\order\RefundDict;
 use addon\tourism\app\job\OrderClose;
 use addon\tourism\app\job\OrderUseRemind;
 use addon\tourism\app\model\Goods;
 use addon\tourism\app\model\GoodsDay;
 use addon\tourism\app\model\TourismOrder;
 use addon\tourism\app\model\TourismOrderItem;
+use addon\tourism\app\service\core\CoreGoodsService;
 use addon\tourism\app\service\core\CoreStatService;
 use addon\tourism\app\service\core\hotel\CoreHotelConfigService;
 use addon\tourism\app\service\core\order\CoreOrderLogService;
@@ -107,6 +107,8 @@ class CoreHotelOrderService extends BaseCoreService
         // 查询酒店定价信息
         $separate_days = $this->getHotelSeparateDays($data['room_id'], $data['start_time'], $data['end_time']);
         $days = ceil( (strtotime($data['end_time']) - strtotime($data['start_time'])) / 86400);
+        $core_goods_service = new CoreGoodsService();
+        $member_info = $core_goods_service->getMemberInfo($data['member_id'], $data['site_id']);
 
         $order_money = 0;
         $items = [];
@@ -114,7 +116,7 @@ class CoreHotelOrderService extends BaseCoreService
             $day_time = strtotime($data['start_time']) + (86400 * $i);
             $separate = $separate_days[ date('Y-m-d', $day_time) ] ?? [];
             $sale_price = empty($separate) || $separate['is_set'] == 0 ? $hotel['price'] : $separate['price'];
-
+            $sale_price = $core_goods_service->getMemberPrice($member_info, $hotel['member_discount'], $sale_price, $separate,$hotel['fixed_discount']);
             if ($this->scene == 'create') {
                 if (!$this->checkStock($data['num'], $hotel, $separate)) throw new CommonException('HOTEL_STOCK_DEFICIENCY');
             }
@@ -165,7 +167,7 @@ class CoreHotelOrderService extends BaseCoreService
             'hotel' => function($query) {
                 $query->field('hotel_id,hotel_name,hotel_cover,hotel_attribute');
             }
-        ])->field('goods_id,goods_name,goods_cover,goods_cover,goods_attribute,price,stock,hotel_id,buy_info,goods_content,room_bed,room_area,room_stay,room_floor')->findOrEmpty();
+        ])->field('goods_id,member_discount,fixed_discount,goods_name,goods_cover,goods_cover,goods_attribute,price,stock,hotel_id,buy_info,goods_content,room_bed,room_area,room_stay,room_floor')->findOrEmpty();
         if ($goods->isEmpty()) throw new CommonException('TOURISM_HOTEL_NOT_EXIST');
 
         return $goods->toArray();
@@ -186,7 +188,7 @@ class CoreHotelOrderService extends BaseCoreService
             [ 'goods_id', '=', $goods_id ],
             [ 'time', '>=', strtotime($start_time) ],
             [ 'time', '<=', strtotime($end_time) ]
-        ])->field('price,year,month,day,sell_num,time,stock_all,is_set')->select()->toArray();
+        ])->field('price,year,month,day,sell_num,time,stock_all,is_set,member_price')->select()->toArray();
 
         if (!empty($goods_day_list)) {
             $list = [];
@@ -240,7 +242,7 @@ class CoreHotelOrderService extends BaseCoreService
 
             $goods = (new Goods())->where([ [
                 [ 'goods_id', '=', $order->goods_id ],
-            ]])->field('stock')->find()->toArray();
+            ]])->field('stock, price')->find()->toArray();
 
             // 处理订单项
             $order_item_list = (new TourismOrderItem())->where([ ['order_id', '=', $order->order_id ] ])->field('goods_id,year,month,day,num')->select()->toArray();
@@ -256,9 +258,11 @@ class CoreHotelOrderService extends BaseCoreService
                         'sell_num' => $item['num'],
                         'year' => $item['year'],
                         'month' => $item['month'],
+                        'stock_all' => $goods['stock'],
                         'day' => $item['day'],
                         'time' => strtotime("{$item['year']}-{$item['month']}-{$item['day']}"),
                         'create_time' => time(),
+                        'member_price' => 1,
                         'time_date' => date('Y-m-d', strtotime("{$item['year']}-{$item['month']}-{$item['day']}"))
                     ]);
                 } else {
@@ -335,11 +339,6 @@ class CoreHotelOrderService extends BaseCoreService
     public function close(TourismOrder $order) {
         if (!in_array($order['order_status'], [ OrderDict::WAIT_PAY, OrderDict::WAIT_USE  ] )) throw new CommonException('ORDER_NOT_ALLOW_CLOSE');
 
-        $order->order_status = OrderDict::CLOSE;
-        $order->close_time = time();
-        $order->is_enable_refund = 0;
-        $order->save();
-
         // 如果订单已支付 则扣除销量
         if ($order['order_status'] == OrderDict::WAIT_USE) {
             (new GoodsDay())->update([
@@ -350,6 +349,11 @@ class CoreHotelOrderService extends BaseCoreService
                 [ 'time', '<=', strtotime($order['end_time']) ]
             ]);
         }
+
+        $order->order_status = OrderDict::CLOSE;
+        $order->close_time = time();
+        $order->is_enable_refund = 0;
+        $order->save();
 
         return true;
     }

@@ -25,13 +25,9 @@ class PaySuccessListener
         $trade_type = $pay_info['trade_type'] ?? '';
         if ($trade_type == 'jhkdOrderPay') {
             (new OrderService())->pay($pay_info);
-            //账单记录添加
-            (new CoreSiteAccountService())->addPayLog($pay_info);
         }
         if ($trade_type == 'jhkdOrderAddPay') {
             (new OrderService())->payAdd($pay_info);
-            //账单记录添加
-            (new CoreSiteAccountService())->addPayLog($pay_info);
         }
 
     }

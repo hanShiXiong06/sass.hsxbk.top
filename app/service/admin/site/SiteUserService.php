@@ -12,12 +12,17 @@
 namespace app\service\admin\site;
 
 use app\dict\sys\UserDict;
+use app\model\sys\SysRole;
 use app\model\sys\SysUser;
 use app\model\sys\SysUserRole;
+use app\model\sys\UserCreateSiteLimit;
+use app\service\admin\auth\LoginService;
 use app\service\admin\user\UserRoleService;
 use app\service\admin\user\UserService;
 use core\base\BaseAdminService;
+use core\exception\AdminException;
 use Exception;
+use think\facade\Db;
 
 /**
  * 站点用户服务层
@@ -40,38 +45,20 @@ class SiteUserService extends BaseAdminService
      */
     public function getPage(array $where)
     {
-        $site_id = $this->site_id;
-        $field = 'id,SysUserRole.uid,site_id,role_ids,SysUserRole.create_time,is_admin,SysUserRole.status,count(site_id) as site_num';
-        $order = 'SysUserRole.create_time desc';
-        $search_model = (new SysUserRole())
-            ->field($field)
-            ->order($order)
-            ->with('userinfo')
-            ->hasWhere('userinfo', function ($query) use ($where, $site_id) {
-                $condition = [
-                    ['SysUserRole.site_id', '>', 0 ]
-                ];
+        $search_model = (new SysUserRole())->order('is_admin desc,id desc')
+            ->with('userinfo')->append(['status_name'])
+            ->hasWhere('userinfo', function ($query) use ($where) {
+                $condition = [];
                 if (!empty($where['username'])) $condition[] = ['username', 'like', "%{$where['username']}%"];
-                if (!empty($where['realname'])) $condition[] = ['realname', 'like', "%{$where['realname']}%"];
-
-                //最后登录时间
-                if (!empty($where['last_time'])) {
-                    $start_time = empty($where['last_time'][0]) ? 0 : strtotime($where['last_time'][0]);
-                    $end_time = empty($where['last_time'][1]) ? 0 : strtotime($where['last_time'][1]);
-                    if ($start_time > 0 && $end_time > 0) {
-                        $condition[] = ['last_time', 'between', [$start_time, $end_time]];
-                    } else if ($start_time > 0 && $end_time == 0) {
-                        $condition[] = ['last_time', '>=', $start_time];
-                    } else if ($start_time == 0 && $end_time > 0) {
-                        $condition[] = ['last_time', '<=', $end_time];
-                    }
-                }
                 $query->where($condition);
-            })
-            ->group('SysUserRole.uid')
-            ->append(['status_name']);
-
-        return $this->pageQuery($search_model);
+            })->where([ ['SysUserRole.site_id', '=', $this->site_id ] ]);
+        return $this->pageQuery($search_model, function ($item){
+            if (!empty($item['role_ids'])) {
+                $item['role_array'] = (new SysRole())->where([ ['role_id', 'in', $item['role_ids'] ] ])->column('role_name');
+            } else {
+                $item['role_array'] = [];
+            }
+        });
     }
 
     /**
@@ -81,15 +68,9 @@ class SiteUserService extends BaseAdminService
      */
     public function getInfo(int $uid)
     {
-        $field = 'uid, username, head_img, real_name, last_ip, last_time, create_time, login_count, delete_time, update_time';
-        $info = $this->model->where([ ['uid', '=', $uid] ])->field($field)->with(['roles' => function($query) {
-            $query->field('uid, site_id, is_admin')->with('siteInfo');
-        }])->findOrEmpty()->toArray();
-        if (!empty($info)) {
-            $info['roles'] = array_values(array_filter(array_map(function ($item) {
-                if ($item['site_id']) return $item;
-            }, $info['roles'])));
-        }
+        $info = (new SysUserRole())->where([ ['uid', '=', $uid], ['site_id', '=', $this->site_id] ])
+            ->with('userinfo')->append(['status_name'])
+            ->findOrEmpty()->toArray();
         return $info;
     }
 
@@ -111,7 +92,20 @@ class SiteUserService extends BaseAdminService
      */
     public function edit(int $uid, array $data)
     {
-        return (new UserService())->editSiteUser($uid, $data, $this->site_id);
+        Db::startTrans();
+        try {
+            (new UserService())->edit($uid, $data);
+
+            $role_ids = $data['role_ids'] ?? [];
+            //创建用户站点管理权限
+            (new UserRoleService())->edit($this->site_id, $uid, $role_ids, $data['status'] ?? UserDict::ON);
+
+            Db::commit();
+            return true;
+        } catch ( Exception $e) {
+            Db::rollback();
+            throw new AdminException($e->getMessage());
+        }
     }
 
     /**
@@ -152,7 +146,9 @@ class SiteUserService extends BaseAdminService
      * @return bool|true
      */
     public function lock(int $uid){
-        return (new UserService())->statusChange($uid, UserDict::OFF);
+        (new SysUserRole())->where([ ['uid', '=', $uid], ['site_id', '=', $this->site_id] ])->update(['status' => UserDict::OFF]);
+        LoginService::clearToken($uid);
+        return true;
     }
 
     /**
@@ -161,6 +157,8 @@ class SiteUserService extends BaseAdminService
      * @return bool|true
      */
     public function unlock(int $uid){
-        return (new UserService())->statusChange($uid, UserDict::ON);
+        (new SysUserRole())->where([ ['uid', '=', $uid], ['site_id', '=', $this->site_id] ])->update(['status' => UserDict::ON]);
+        LoginService::clearToken($uid);
+        return true;
     }
 }

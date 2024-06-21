@@ -35,7 +35,8 @@ class MemberLevel extends BaseModel
 
     protected $type = [
         'level_benefits' => 'json',
-        'level_gifts' => 'json'
+        'level_gifts' => 'json',
+        'style' => 'json'
     ];
 
     /**

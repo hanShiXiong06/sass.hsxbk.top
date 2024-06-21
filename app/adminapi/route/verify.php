@@ -30,6 +30,8 @@ Route::group('verify', function () {
     Route::post('verifier', 'verify.Verifier/add');
     // 获取核销员列表
     Route::get('verifier', 'verify.Verifier/lists');
+    // 获取核销员列表
+    Route::get('verifier/select', 'verify.Verifier/select');
     // 获取核销类型
     Route::get('verifier/type', 'verify.Verifier/getVerifyType');
     // 删除核销员

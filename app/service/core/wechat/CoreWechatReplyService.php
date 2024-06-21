@@ -16,7 +16,6 @@ use app\dict\channel\WechatDict;
 use app\model\wechat\WechatReply;
 use core\base\BaseCoreService;
 use core\exception\AdminException;
-use EasyWeChat\Kernel\Messages\Text;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
 use think\db\exception\ModelNotFoundException;

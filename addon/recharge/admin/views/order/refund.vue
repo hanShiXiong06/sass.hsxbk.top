@@ -205,15 +205,13 @@ checkRefundList()
 const refundStat = reactive({
     refund_all_money: 0.00,
     refund_have_money: 0.00,
-    refund_Success_money: 0.00,
-    refund_fail_moey: 0.00
+    refund_fail_money: 0.00
 })
 const checkRefundStat = () => {
     getRechargeRefundStat().then(res => {
         refundStat.refund_all_money = res.data.all.money
         refundStat.refund_have_money = res.data.have.money
-        refundStat.refund_Success_money = res.data['3'].money
-        refundStat.refund_fail_moey = res.data['-1'].money
+        refundStat.refund_fail_money = res.data['-1'].money
     })
 }
 checkRefundStat()

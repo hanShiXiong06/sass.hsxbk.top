@@ -1,7 +1,6 @@
 {
       "hotelName":"酒店名称",
       "fullAddress":"酒店地址",
-      "hotelStar":"酒店星级",
       "hotelStatus":"酒店状态",
       "roomList":"房型管理",
       "hotelNamePlaceholder":"请输入酒店名称",

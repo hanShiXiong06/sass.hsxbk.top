@@ -369,8 +369,9 @@ class CorePayService extends BaseCoreService
     public function closeByTrade(int $site_id, string $trade_type, int $trade_id)
     {
         $pay = $this->findPayInfoByTrade($site_id, $trade_type, $trade_id);
-        if ($pay->isEmpty()) throw new PayException('ALIPAY_TRANSACTION_NO_NOT_EXIST');
-        if ($pay['status'] == PayDict::STATUS_FINISH) throw new PayException('DOCUMENT_IS_PAID');//当前单据已支付
+//        if ($pay->isEmpty()) throw new PayException('ALIPAY_TRANSACTION_NO_NOT_EXIST');
+        if ($pay->isEmpty()) return true;
+//        if ($pay['status'] == PayDict::STATUS_FINISH) throw new PayException('DOCUMENT_IS_PAID');//当前单据已支付
         if (!in_array($pay['status'], [
             PayDict::STATUS_WAIT,
             PayDict::STATUS_ING

@@ -89,5 +89,17 @@
       "sortTips":"排序号格式输入错误",
       "minBuyNotZeroTips":"最小购买量不能小于0",
       "minBuyTips":"最小购买量格式错误",
-      "miniServiceTips":"最小购买数量，例如擦玻璃最少3平米"
+      "miniServiceTips":"最小购买数量，例如擦玻璃最少3平米",
+      "poster": "商品海报",
+      "posterPlaceholder": "请选择商品海报",
+      "addGoodsPoster": "添加海报",
+      "refresh": "刷新",
+      "refreshSuccess": "刷新成功",
+      "posterTips": "不设置将使用默认海报",
+      "memberDiscount": "会员等级折扣",
+      "discount": "会员折扣",
+      "goodsFixedPrice": "指定会员价",
+      "nonparticipation": "不参与",
+      "discountHint": "会员折扣说明：按照默认会员等级折扣优惠",
+      "fixedPriceHint": "会员价说明：指定优惠价格"
 }

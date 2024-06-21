@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -11,11 +11,7 @@
 
 namespace addon\tourism\app\listener;
 
-use addon\tourism\app\dict\order\HotelOrderDict;
-use addon\tourism\app\dict\order\TicketOrderDict;
-use addon\tourism\app\dict\order\WayOrderDict;
 use addon\tourism\app\service\core\order\CoreOrderRefundService;
-use addon\tourism\app\service\core\order\hotel\CoreScenicOrderService;
 
 /**
  * 退款异步回调事件

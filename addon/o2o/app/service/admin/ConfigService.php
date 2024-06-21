@@ -18,7 +18,7 @@ use core\base\BaseAdminService;
 /**
  * 订单设置服务层
  * Class ConfigService
- * @package adaddon\shop\app\service\admin\order
+ * @package adaddon\o2o\app\service\admin
  */
 class ConfigService extends BaseAdminService
 {

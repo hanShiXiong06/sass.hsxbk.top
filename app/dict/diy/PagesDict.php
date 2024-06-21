@@ -500,7 +500,7 @@ class PagesDict
                                     "color" => "#FFFFFF"
                                 ],
                                 "imageSize" => 25,
-                                "aroundRadius" => 25,
+                                "aroundRadius" => 0,
                                 "font" => [
                                     "size" => 13,
                                     "weight" => "normal",
@@ -943,7 +943,7 @@ class PagesDict
                                     "color" => "#FFFFFF"
                                 ],
                                 "imageSize" => 25,
-                                "aroundRadius" => 25,
+                                "aroundRadius" => 0,
                                 "font" => [
                                     "size" => 13,
                                     "weight" => "normal",

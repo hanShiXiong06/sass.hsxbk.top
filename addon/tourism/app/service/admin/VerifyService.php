@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -16,6 +16,7 @@ use addon\tourism\app\dict\order\OrderLogDict;
 use addon\tourism\app\dict\order\RefundDict;
 use addon\tourism\app\model\TourismOrder;
 use addon\tourism\app\service\core\order\CoreOrderLogService;
+use app\service\core\member\CoreMemberService;
 use app\service\core\notice\NoticeService;
 use core\base\BaseAdminService;
 use core\exception\CommonException;
@@ -113,6 +114,17 @@ class VerifyService extends BaseAdminService
         CoreOrderLogService::addLog($order['site_id'], $order['order_id'], OrderLogDict::ORDER_VERIFY, 'user', $this->uid, OrderDict::getStatus(OrderDict::FINISH));
         // 发送核销成功通知
         (new NoticeService())->send($order['site_id'], 'tourism_order_verify_success', ['order_id' => $order['order_id'] ]);
+
+        // 订单完成发放积分成长值
+        CoreMemberService::sendGrowth($order->site_id, $order->member_id, 'tourism_buy_goods', [
+            'order_money' => $order->order_money,
+            'from_type' => 'tourism_buy_goods',
+            'related_id' => $order['order_id']
+        ]);
+        CoreMemberService::sendGrowth($order->site_id, $order->member_id, 'tourism_buy_order', [
+            'from_type' => 'tourism_buy_order',
+            'related_id' => $order['order_id']
+        ]);
 
         return true;
     }

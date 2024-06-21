@@ -33,8 +33,11 @@ class CoreImageService extends CoreFileService
      */
     public function thumb(int $site_id, string $file_path,  $thumb_type = 'all', bool $is_throw_exception = false)
     {
+
+
         //文件转url
         $file_path = path_to_url($file_path);
+        return $file_path;
         $file_parse = parse_url($file_path);
         $scheme = $file_parse['scheme'] ?? '';
         $host = $file_parse['host'] ?? '';

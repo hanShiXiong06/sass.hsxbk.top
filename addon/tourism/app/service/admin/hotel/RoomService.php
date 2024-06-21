@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -11,11 +11,16 @@
 
 namespace addon\tourism\app\service\admin\hotel;
 
+use addon\tourism\app\dict\goods\GoodsDict;
 use addon\tourism\app\model\Goods;
+use addon\tourism\app\model\GoodsDay;
 use addon\tourism\app\service\admin\goods\GoodsDayService;
+use addon\tourism\app\service\admin\goods\GoodsService;
 use core\base\BaseAdminService;
 use addon\tourism\app\dict\hotel\RoomTagDict;
 use core\exception\AdminException;
+use core\exception\CommonException;
+use think\facade\Db;
 
 /**
  * 房型
@@ -37,7 +42,7 @@ class RoomService extends BaseAdminService
      */
     public function getPage(array $where = [])
     {
-        $field = 'site_id,hotel_id,goods_id,goods_name,goods_type,hotel_id,goods_cover,goods_image,goods_content,goods_attribute,status,sort,price,sale_price,cost_price,create_time,stock,sell_type,buy_info';
+        $field = 'site_id,hotel_id,goods_id,member_discount,fixed_discount,goods_name,goods_type,hotel_id,goods_cover,goods_image,goods_content,goods_attribute,status,sort,price,sale_price,cost_price,create_time,stock,sell_type,buy_info';
         $order = '';
         $search_model = $this->model->where([['site_id', '=', $this->site_id],['hotel_id', '=', $where['hotel_id']],['goods_type', '=', "room"]])->withSearch(["goods_name","create_time"], $where)->field($field)->order($order)->append(['status_name','cover_thumb_small']);
 
@@ -52,7 +57,7 @@ class RoomService extends BaseAdminService
      */
     public function getInfo(int $id)
     {
-        $field = 'site_id,goods_name,stock,goods_type,hotel_id,goods_cover,goods_image,goods_content,goods_attribute,status,sort,price,create_time,room_bed,room_area,room_stay,room_floor,buy_info';
+        $field = 'site_id,goods_name,stock,member_discount,fixed_discount,goods_type,hotel_id,goods_cover,goods_image,goods_content,goods_attribute,status,sort,price,create_time,room_bed,room_area,room_stay,room_floor,buy_info';
 
         $info = $this->model->field($field)->where([['goods_id', '=', $id], ['site_id', '=', $this->site_id]])->append(['image_thumb_small','cover_thumb_small'])->findOrEmpty()->toArray();
         return $info;
@@ -73,7 +78,6 @@ class RoomService extends BaseAdminService
 
         $res = $this->model->create($data);
         return $res->goods_id;
-
     }
 
     /**
@@ -165,4 +169,5 @@ class RoomService extends BaseAdminService
         $res = $this->model->where([['hotel_id', '=', $hotel_id], ['status', '=', 1]])->select()->count();
         return $res;
     }
+
 }

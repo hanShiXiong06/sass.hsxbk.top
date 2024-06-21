@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -11,13 +11,9 @@
 
 namespace addon\tourism\app\model;
 
-use addon\tourism\app\dict\order\WayOrderDict;
 use addon\tourism\app\dict\way\WayTagDict;
-use app\dict\member\MemberDict;
-use app\dict\sys\FileDict;
 use core\base\BaseModel;
 use think\db\Query;
-use think\model\concern\SoftDelete;
 
 /**
  * 线路模型

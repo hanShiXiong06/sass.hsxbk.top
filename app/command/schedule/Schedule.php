@@ -4,18 +4,14 @@ namespace app\command\schedule;
 
 use app\command\WorkerCommand;
 use app\dict\schedule\ScheduleDict;
-use app\service\core\addon\CoreAddonService;
 use app\service\core\schedule\CoreScheduleService;
 use think\console\Command;
 use think\console\Input;
 use think\console\input\Argument;
 use think\console\input\Option;
 use think\console\Output;
-use think\helper\Str;
 use Workerman\Crontab\Crontab;
-use Workerman\RedisQueue\Client;
 use Workerman\Worker;
-use yunwuxin\cron\Task;
 
 class Schedule extends Command
 {

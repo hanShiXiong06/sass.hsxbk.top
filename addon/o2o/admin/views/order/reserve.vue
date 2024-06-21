@@ -10,15 +10,14 @@
             <div class="flex items-center mt-5">
                 <span class="text-[14px] leading-[16px]">{{ t('orderStatus') }}</span>
                 <div v-for="(item, index) in orderStatus" :key="index" class="flex items-center">
-                    <span class="w-[16px] h-[16px] ml-[30px] mr-[10px]"
-                        :style="{ 'backgroundColor': orderStatusColor[item.status] }" v-if="item.status != 'close'"></span>
+                    <span class="w-[16px] h-[16px] ml-[30px] mr-[10px]" :style="{ 'backgroundColor': orderStatusColor[item.status] }" v-if="item.status != 'close'"></span>
                     <span class="text-[14px] leading-[16px]"  v-if="item.status != 'close'">{{ item.name }}</span>
                 </div>
             </div>
             <el-card class="box-card !border-none my-[10px] table-search-wrap" shadow="never">
                 <el-form :inline="true"  :model="searchParam" ref="searchFormRef">
                     <el-form-item :label="t('orderName')" prop="orderName">
-                        <el-input :placeholder="t('orderNnamePlaceholder')" v-model.trim="searchParam.orderName" class="w-[200px]" />
+                        <el-input :placeholder="t('orderNamePlaceholder')" v-model.trim="searchParam.orderName" class="w-[200px]" />
                     </el-form-item>
                     <el-form-item :label="t('technicianSearchText')" prop="technician_search_text">
                         <el-input v-model.trim="searchParam.technician_search_text" :placeholder="t('technicianSearchTextPlaceholder')" />

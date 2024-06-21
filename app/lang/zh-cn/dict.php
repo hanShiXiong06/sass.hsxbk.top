@@ -234,7 +234,9 @@ return [
         'member_verify_index' => '核销台',
 
         'diy_page' => '自定义页面',
-        'diy_link' => '自定义链接'
+        'diy_link' => '自定义链接',
+        'diy_jump_other_applet' => '小程序跳转',
+        'diy_make_phone_call' => '拨打电话'
     ],
     // 自定义海报
     'dict_diy_poster'=>[
@@ -249,12 +251,11 @@ return [
     //渠道
     'dict_channel' => [
         //渠道端口
-        'channel_wechat' => '公众号',
-        'channel_weapp' => '微信小程序',
+        'channel_pc' => 'PC',
         'channel_h5' => 'H5',
-        'channel_pc' => '电脑端',
         'channel_app' => 'APP',
-
+        'channel_wechat' => '微信公众号',
+        'channel_weapp' => '微信小程序',
     ],
     //会员提现
     'dict_member_cash_out' => [
@@ -352,6 +353,9 @@ return [
         'uploading' => '上传中',
         'upload_success' => '上传成功',
         'upload_fail' => '上传失败',
+        'auditing' => '审核中',
+        'audit_success' => '审核通过',
+        'audit_fail' => '审核失败'
     ],
     'dict_wechat_media' => [
         'type_image' => '图片',

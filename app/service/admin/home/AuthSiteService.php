@@ -15,12 +15,17 @@ namespace app\service\admin\home;
 use app\dict\sys\AppTypeDict;
 use app\dict\sys\MenuTypeDict;
 use app\model\site\Site;
+use app\model\site\SiteGroup;
 use app\model\sys\SysMenu;
 use app\model\sys\SysUserRole;
+use app\model\sys\UserCreateSiteLimit;
 use app\service\admin\auth\AuthService;
+use app\service\admin\site\SiteGroupService;
 use app\service\admin\site\SiteService;
+use app\service\admin\sys\ConfigService;
 use app\service\admin\sys\RoleService;
 use core\base\BaseAdminService;
+use core\exception\CommonException;
 use core\exception\HomeException;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
@@ -66,7 +71,16 @@ class AuthSiteService extends BaseAdminService
         ];
         if (!AuthService::isSuperAdmin()) $condition[] = ['site_id', 'in', $this->getSiteIds()];
         $search_model = $this->model->where($condition)->withSearch([ 'create_time', 'expire_time', 'keywords', 'status', 'group_id', 'app' ], $where)->with(['groupName'])->field($field)->append([ 'status_name' ])->order('create_time desc');
-        return $this->pageQuery($search_model);
+
+        $theme_color = (new ConfigService())->getThemeColor();
+
+        return $this->pageQuery($search_model, function ($item) use ($theme_color) {
+            if (is_array($item['app']) && count($item['app']) == 1) {
+                $item['theme_color'] = $theme_color[ $item['app'][0] ] ?? '';
+            } else {
+                $item['theme_color'] = $theme_color['system'] ?? '';
+            }
+        });
     }
 
     /**
@@ -112,5 +126,53 @@ class AuthSiteService extends BaseAdminService
     public function checkSite($site_id){
         $site_ids = $this->getSiteIds();
         if(!in_array($site_id, $site_ids)) throw new HomeException('USER_ROLE_NOT_HAS_SITE');//无效的站点
+    }
+
+    /**
+     * 获取可选择的店铺套餐
+     * @return array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     */
+    public function getSiteGroup() {
+        if (AuthService::isSuperAdmin()) {
+            $site_group = (new SiteGroup())->field('group_id,group_name,app,addon')->append(['app_name', 'addon_name'])->select()->toArray();
+            return array_map(function ($item){
+                return [
+                    'group_id' => $item['group_id'],
+                    'site_group' => $item
+                ];
+            }, $site_group);
+        } else {
+            return (new UserCreateSiteLimit())->where([ ['uid', '=', $this->uid] ])->with(['site_group' => function($query) {
+                $query->field('group_id,group_name,app,addon');
+            }])->select()->toArray();
+        }
+    }
+
+    /**
+     * 创建站点
+     * @param array $data
+     * @return void
+     */
+    public function createSite(array $data) {
+        if (!AuthService::isSuperAdmin()) {
+            $limit = (new UserCreateSiteLimit())->where([ ['uid', '=', $this->uid], ['group_id', '=', $data['group_id'] ] ])->findOrEmpty();
+            if ($limit->isEmpty()) throw new CommonException('NO_PERMISSION_TO_CREATE_SITE_GROUP');
+
+            if (SiteGroupService::getUserSiteGroupSiteNum($this->uid, $data['group_id']) > ($limit['num'] - 1)) throw new CommonException('SITE_GROUP_CREATE_SITE_EXCEEDS_LIMIT');
+        } else {
+            $limit = ['month' => 1];
+        }
+
+        (new SiteService())->add([
+            'site_name' => $data['site_name'],
+            'uid' => $this->uid,
+            'group_id' => $data['group_id'],
+            'expire_time' => strtotime("+ {$limit['month']} month")
+        ]);
+
+        return true;
     }
 }

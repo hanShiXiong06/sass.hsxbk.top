@@ -172,7 +172,7 @@
                 <h3 class="mt-[50px] mb-[20px]">{{ t('operateLog') }}</h3>
                 <div style="min-height: 300px">
                     <div class="flex" v-for="(items, index) in formData.order_log" :key="index">
-                        <div class="mr-[20px]">
+                        <div class="mr-[20px] min-w-[71px]">
                             <div class="leading-[1] w-full text-[14px] w-[100px] flex justify-end">{{ items.action_time.split(' ')[0] }}</div>
                             <div class="leading-[1] w-full text-[14px]  w-[100px] flex justify-end mt-[5px]">{{ items.action_time.split(' ')[1] }}</div>
                         </div>

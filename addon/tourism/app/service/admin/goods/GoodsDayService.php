@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -14,7 +14,6 @@ namespace addon\tourism\app\service\admin\goods;
 use addon\tourism\app\model\Goods;
 use addon\tourism\app\model\GoodsDay;
 use core\base\BaseAdminService;
-use think\facade\Db;
 
 /**
  * 房型
@@ -48,10 +47,14 @@ class GoodsDayService extends BaseAdminService
             $date_time = $i * 86400 + $start_date;
             $info = $this->getInfo(date("Y-m-d", $date_time), $data['goods_id']);
             if($info){
+                $update_data = [
+                    'member_price' => $data['member_price'],
+                    'price' => $data['price'],
+                ];
+                if(empty($info['is_set'])) $update_data['is_set'] = $data['is_set'] ?? 0;
+
                 $this->model->where([['time_date', '=', date("Y-m-d", $date_time)], ['goods_id', '=', $data['goods_id']]])->update(
-                    [
-                        'price' => $data['price'],
-                    ]
+                    $update_data
                 );
             }else{
                 $goods_info = $this->goods_model->field("stock")->where([['goods_id', '=', $data['goods_id']]])->findOrEmpty();
@@ -86,7 +89,7 @@ class GoodsDayService extends BaseAdminService
      */
     public function getPage(int $goods_id)
     {
-        $field = 'price,goods_id,sale_price,stock_all,stock,sell_num,year,month,day,is_set,time,time_date';
+        $field = 'price,goods_id,member_price,sale_price,stock_all,stock,sell_num,year,month,day,is_set,time,time_date,member_price';
         $order = '';
 
         $list = $this->model->where([['goods_id', '=', $goods_id]])->field($field)->order($order)->select()->toArray();

@@ -167,7 +167,16 @@ class MemberSignService extends BaseApiService
             $result['title'] = get_lang('SIGN_SUCCESS');
             $result['info'] = $continue_text.get_lang('GET_AWARD');
             $result['awards'] = $awards_total;
-            return $result;
+            if ($awards_total) {
+                return $result;
+            } else {
+                return [
+                    'title' => '',
+                    'info' => '',
+                    'awards' => [],
+                ];
+            }
+
         } catch (DbException $e) {
             Db::rollback();
             throw new CommonException($e->getMessage());
@@ -330,6 +339,12 @@ class MemberSignService extends BaseApiService
         $is_use_coupon_day = false;
         $is_use_coupon_continue = false;
 
+//        foreach ($awards['day_award'] as $key => $value) {
+//            if ($value['is_use'] == 1) {
+//                $awards['day_award'][$key] = $value;
+//            }
+//        }
+
         if (!empty($awards['day_award']['point'])) {
             if ($awards['day_award']['point']['is_use'] == 1) {
                 $is_use_point_day = true;
@@ -390,7 +405,7 @@ class MemberSignService extends BaseApiService
                 'coupon_list' => $coupon_list,
             ]
         ];
-        return (new CoreMemberService())->getGiftContent($this->site_id, $awards_total);
+        return (new CoreMemberService())->getGiftContent($this->site_id, $awards_total, 'member_sign');
     }
 
     /**
@@ -403,14 +418,34 @@ class MemberSignService extends BaseApiService
         $today = $this->model->where([['site_id', '=', $this->site_id], ['member_id', '=', $this->member_id]])->whereDay('create_time')->findOrEmpty()->toArray();
         $yesterday = $this->model->where([['site_id', '=', $this->site_id], ['member_id', '=', $this->member_id]])->whereDay('create_time', 'yesterday')->findOrEmpty()->toArray();
         if (!empty($info['day_award'])) {
-            $day_award = (new CoreMemberService())->getGiftContent($this->site_id, $info['day_award']);
+            $day_award = (new CoreMemberService())->getGiftContent($this->site_id, $info['day_award'],'member_sign');
             $info['day_award'] = $day_award;
         }
         if (!empty($info['continue_award'])) {
             foreach ($info['continue_award'] as $key => $value) {
                 $gift = $value;
                 unset($gift['continue_sign'], $gift['continue_tag'], $gift['receive_limit'], $gift['receive_num']);
-                $continue_award = (new CoreMemberService())->getGiftContent($this->site_id, $gift);
+                $gift_content = (new CoreMemberService())->getGiftContent($this->site_id, $gift, 'member_sign_continue');
+                $gift_count = 0;
+                $content_text = '';
+                $content_icon = '';
+                foreach ($gift_content as $vv) {
+                    if ($vv['is_use'] == 1) {
+                        foreach ($vv['content'] as $v) {
+                            $content_text = $content_text . ($gift_count == 0 ? '' : '+') . $v['text'];
+                            $content_icon = $v['icon'];
+                            $gift_count++;
+                        }
+                    }
+                }
+                if ($gift_count > 1) {
+                    $continue_award['gift'] = ['total' => ['text' => $content_text, 'icon' => '/static/resource/images/member/sign/pack01.png']];
+                } else if($gift_count == 1) {
+                    $continue_award['gift'] = ['total' => ['text' => $content_text, 'icon' => $content_icon]];
+                } else {
+                    $continue_award['gift'] = [];
+                }
+
                 $continue_award['continue_sign'] = $value['continue_sign'];
                 $info['continue_award'][$key] = $continue_award;
             }

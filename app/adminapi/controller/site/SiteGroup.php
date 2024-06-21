@@ -104,4 +104,15 @@ class SiteGroup extends BaseAdminController
         return success((new SiteGroupService())->getAll($data));
     }
 
+    /**
+     * 所有分组
+     * @return Response
+     */
+    public function getUserSiteGroupAll()
+    {
+        $data = $this->request->params([
+            ['uid', 0],
+        ]);
+        return success((new SiteGroupService())->getUserSiteGroupAll($data['uid']));
+    }
 }

@@ -148,6 +148,12 @@ Route::group('tourism', function () {
 
 
     Route::put('way/config', 'addon\tourism\app\adminapi\controller\way\Config@setConfig');
+
+    //会员折扣
+    Route::put('goods/memberprice', 'addon\tourism\app\adminapi\controller\Goods@editGoodsMemberPrice');
+    //日历会员折扣是否参与
+    Route::put('goods/daymemberprice', 'addon\tourism\app\adminapi\controller\Goods@editGoodsDayMemberPrice');
+
     /*****************************************************  统计相关接口 ****************************************************/
     // 全部统计
     Route::get('stat/total', 'addon\tourism\app\adminapi\controller\Stat@total');

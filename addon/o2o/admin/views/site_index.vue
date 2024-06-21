@@ -8,10 +8,10 @@
 							<p class="text-[18px] font-bold mb-[18px]">{{ t('commonFunctions') }}</p>
 							<el-row :gutter="15">
 								<el-col :span="6">
-									<div class="w-full py-[20px] flex items-center border-[#E6E6E6] border-[1px] cursor-pointer"
-										@click="toLink('/site/member/member')">
-										<div class="ml-[18px] mr-[21px]"><img class="min-w-[45px] h-[45px] max-w-[45px]"
-												src="@/addon/o2o/assets/images/reserve.png" /></div>
+									<div class="w-full py-[20px] flex items-center border-[#E6E6E6] border-[1px] cursor-pointer" @click="toLink('/site/member/member')">
+										<div class="ml-[18px] mr-[21px]">
+											<img class="min-w-[45px] h-[45px] max-w-[45px]" src="@/addon/o2o/assets/images/reserve.png" />
+										</div>
 										<div class="flex flex-wrap">
 											<span class="w-full text-[14px]">{{ t('memberManage') }}</span>
 											<span class="w-full text-[#999999] text-[12px]">{{ t('memberDesc') }}</span>
@@ -19,10 +19,10 @@
 									</div>
 								</el-col>
 								<el-col :span="6">
-									<div class="w-full py-[20px] flex items-center border-[#E6E6E6] border-[1px] cursor-pointer"
-										@click="toLink('/o2o/goods/list')">
-										<div class="ml-[18px] mr-[21px]"><img class="min-w-[45px] h-[45px] max-w-[45px]"
-												src="@/addon/o2o/assets/images/service.png" /></div>
+									<div class="w-full py-[20px] flex items-center border-[#E6E6E6] border-[1px] cursor-pointer" @click="toLink('/o2o/goods/list')">
+										<div class="ml-[18px] mr-[21px]">
+											<img class="min-w-[45px] h-[45px] max-w-[45px]" src="@/addon/o2o/assets/images/service.png" />
+										</div>
 										<div class="flex flex-wrap">
 											<span class="w-full text-[14px]">{{ t('serviceManage') }}</span>
 											<span class="w-full text-[#999999] text-[12px]">{{ t('serviceDesc') }}</span>
@@ -30,10 +30,10 @@
 									</div>
 								</el-col>
 								<el-col :span="6">
-									<div class="w-full py-[20px] flex items-center border-[#E6E6E6] border-[1px] cursor-pointer"
-										@click="toLink('/o2o/technician/list')">
-										<div class="ml-[18px] mr-[21px]"><img class="min-w-[45px] h-[45px] max-w-[45px]"
-												src="@/addon/o2o/assets/images/member.png" /></div>
+									<div class="w-full py-[20px] flex items-center border-[#E6E6E6] border-[1px] cursor-pointer" @click="toLink('/o2o/technician/list')">
+										<div class="ml-[18px] mr-[21px]">
+											<img class="min-w-[45px] h-[45px] max-w-[45px]" src="@/addon/o2o/assets/images/member.png" />
+										</div>
 										<div class="flex flex-wrap">
 											<span class="w-full text-[14px]">{{ t('technician') }}</span>
 											<span class="w-full text-[#999999] text-[12px]">{{ t('technicianDesc') }}</span>
@@ -41,14 +41,13 @@
 									</div>
 								</el-col>
 								<el-col :span="6">
-									<div class="w-full py-[20px] flex items-center border-[#E6E6E6] border-[1px] cursor-pointer"
-										@click="toLink('/o2o/order/list')">
-										<div class="ml-[18px] mr-[21px]"><img class="min-w-[45px] h-[45px] max-w-[45px]"
-												src="@/addon/o2o/assets/images/money.png" /></div>
+									<div class="w-full py-[20px] flex items-center border-[#E6E6E6] border-[1px] cursor-pointer" @click="toLink('/o2o/order/list')">
+										<div class="ml-[18px] mr-[21px]">
+											<img class="min-w-[45px] h-[45px] max-w-[45px]" src="@/addon/o2o/assets/images/money.png" />
+										</div>
 										<div class="flex flex-wrap">
 											<span class="w-full text-[14px]">{{ t('orderManage') }}</span>
-											<span class="w-full text-[#999999] text-[12px]">{{ t('orderDesc')
-											}}</span>
+											<span class="w-full text-[#999999] text-[12px]">{{ t('orderDesc') }}</span>
 										</div>
 									</div>
 								</el-col>
@@ -68,8 +67,7 @@
 										</div>
 										<div class="flex justify-between">
 											<span class="text-[14px]">{{ t('today') }}：{{ statToday.order_money }}</span>
-											<span class="mr-[60px] text-[14px]">{{ t('thisMonth') }}：{{
-												statMonth.order_money }}</span>
+											<span class="mr-[60px] text-[14px]">{{ t('thisMonth') }}：{{ statMonth.order_money }}</span>
 										</div>
 									</div>
 								</el-col>
@@ -91,12 +89,11 @@
 								<el-col :span="8">
 									<div class="w-full py-[16px] px-[20px] border-[#E6E6E6] border-[1px]">
 										<div class="flex justify-between">
-										<span class="text-[18px]">{{ t('refundMoney') }}</span>
+											<span class="text-[18px]">{{ t('refundMoney') }}</span>
 										</div>
 										<div class="my-[20px]">
-										<div class="flex justify-center"><span class="text-[14px]">{{
-											t('accumulateMoney') }}</span></div>
-										<div class="flex justify-center"><span class="text-[28px]">{{statTotal.refund_money }}</span></div>
+											<div class="flex justify-center"><span class="text-[14px]">{{ t('accumulateMoney') }}</span></div>
+											<div class="flex justify-center"><span class="text-[28px]">{{statTotal.refund_money }}</span></div>
 										</div>
 										<div class="flex justify-between">
 										<span class="text-[14px]">{{ t('today') }}：{{ statToday.refund_money }}</span>
@@ -167,7 +164,4 @@ const toLink = (link) => {
 </script>
 
 <style lang="scss" scoped>
-.manage-item {
-	background-color: rgba(0, 0, 0, 0.10);
-}
 </style>

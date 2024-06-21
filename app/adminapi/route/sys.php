@@ -111,6 +111,11 @@ Route::group('sys', function() {
     // 布局设置
     Route::put('config/layout', 'sys.Config/setLayout');
 
+    // 色调设置
+    Route::get('config/themecolor', 'sys.Config/getThemeColor');
+    // 色调设置
+    Route::put('config/themecolor', 'sys.Config/setThemeColor');
+
     /***************************************************** 图片上传 ****************************************************/
     //附件图片上传
     Route::post('image', 'upload.Upload/image');
@@ -210,10 +215,6 @@ Route::group('sys', function() {
     /***************************************************** 公共字典数据 ****************************************************/
     Route::get('date/month', 'sys.Common/getMonth');
     Route::get('date/week', 'sys.Common/getWeek');
-
-    /***************************************************** 获取布局 ****************************************************/
-    Route::get('layout', 'sys.System/layout');
-    Route::put('layout', 'sys.System/setLayout');
     /***************************************************** 获取导出数据 ****************************************************/
     //报表导出列表
     Route::get('export', 'sys.Export/lists');

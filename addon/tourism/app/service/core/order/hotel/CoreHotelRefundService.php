@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -14,10 +14,6 @@ namespace addon\tourism\app\service\core\order\hotel;
 use addon\tourism\app\model\TourismOrder;
 use addon\tourism\app\service\core\hotel\CoreHotelConfigService;
 use addon\tourism\app\service\core\order\CoreOrderRefundService;
-use addon\tourism\app\service\core\order\hotel\CoreScenicOrderService;
-use app\model\order\Order;
-use app\model\order\OrderItem;
-use app\model\order\OrderItemRefund;
 use core\base\BaseCoreService;
 use core\exception\CommonException;
 

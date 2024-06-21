@@ -93,7 +93,7 @@ class RechargeOrderItemRefund extends BaseModel
     public function searchRefundNoAttr($query, $value, $data)
     {
         if ($value) {
-            $query->where('refund_no', '=', $value);
+            $query->where('refund_no', 'like', '%'.$value.'%');
         }
     }
 
@@ -107,7 +107,7 @@ class RechargeOrderItemRefund extends BaseModel
     public function searchOrderNoAttr($query, $value, $data)
     {
         if ($value) {
-            $query->where('order_no', '=', $value);
+            $query->where('order_no', 'like', '%'.$value.'%');
         }
     }
 

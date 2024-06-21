@@ -3,13 +3,22 @@
         'name' => 'topthink/think',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => 'bae20a9f6c76fb67dc5ac0d66e572567b6217cef',
+        'reference' => '783127440ec6e7540af2a2126eefb22fad7895ff',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
         'dev' => true,
     ),
     'versions' => array(
+        '365taofang/huaweicloud-sdk-php-obs' => array(
+            'pretty_version' => '3.23.501',
+            'version' => '3.23.501.0',
+            'reference' => '85448144b10d26c1b4c15388a2ea11a76e41a1b5',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../365taofang/huaweicloud-sdk-php-obs',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'adbario/php-dot-notation' => array(
             'pretty_version' => '2.5.0',
             'version' => '2.5.0.0',
@@ -774,7 +783,7 @@
         'topthink/think' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => 'bae20a9f6c76fb67dc5ac0d66e572567b6217cef',
+            'reference' => '783127440ec6e7540af2a2126eefb22fad7895ff',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

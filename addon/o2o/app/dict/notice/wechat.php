@@ -2,38 +2,41 @@
 return [
     //需要进行整理
     'o2o_order_pay' => [
-        'temp_key' => 'OPENTM402074360',
+        'temp_key' => '43216',
         'content' => [
-            ['下单时间', '{create_time}', 'keyword1'],
-            ['订单编号', '{order_no}', 'keyword2'],
-            ['商品信息', '{goods_name}', 'keyword3'],
-            ['订单金额', '{order_money}', 'keyword4']
+            ['下单时间', '{create_time}', 'time4'],
+            ['订单编号', '{order_no}', 'character_string2'],
+            ['商品信息', '{goods_name}', 'thing3'],
+            ['订单金额', '{order_money}', 'amount5']
         ],
+        'keyword_name_list' => ["下单时间", "订单号", "商品名称", "支付金额"],
+        'tips' => '使用该消息请将微信公众号服务类目选择为：生活服务——>百货/超市/便利店'
     ],
     'o2o_order_auto_close' => [
-        'temp_key' => 'OPENTM205543831',
+        'temp_key' => '47563',
         'content' => [
-            ['订单商品', '{goods_name}', 'keyword1'],
-            ['订单编号', '{order_no}', 'keyword2'],
-            ['下单时间', '{create_time}', 'keyword3'],
-            ['订单金额', '{order_money}', 'keyword4'],
-            ['关闭时间', '{close_time}', 'keyword5'],
+            ['订单号', '{order_no}', 'character_string1'],
+            ['商品名称', '{goods_name}', 'thing7'],
         ],
+        'keyword_name_list' => ["订单号", "商品名称"],
+        'tips' => '使用该消息请将微信公众号服务类目选择为：生活服务——>百货/超市/便利店'
     ],
     'o2o_refund_success' => [
-        'temp_key' => 'OPENTM417988131',
+        'temp_key' => '48058',
         'content' => [
-            ['订单编号', '{order_no}', 'keyword1'],
-            ['商品名称', '{goods_name}', 'keyword2'],
-            ['退款金额', '{money}', 'keyword3']
-        ]
+            ['订单编号', '{order_no}', 'character_string5'],
+            ['退款金额', '{money}', 'amount2'],
+        ],
+        'keyword_name_list' => ["订单编号", "退款金额"],
+        'tips' => '使用该消息请将微信公众号服务类目选择为：商业服务——>软件/建站/技术开发'
     ],
     'o2o_refund_refuse' => [
-        'temp_key' => 'OPENTM418276608',
+        'temp_key' => '49580',
         'content' => [
-            ['订单号', '{order_no}', 'keyword1'],
-            ['退款金额', '{money}', 'keyword2'],
-            ['拒绝退款理由', '{reason}', 'keyword3'],
-        ]
+            ['订单编号', '{order_no}', 'character_string1'],
+            ['退款金额', '{money}', 'amount2']
+        ],
+        'keyword_name_list' => ["订单编号", "退款金额"],
+        'tips' => '使用该消息请将微信公众号服务类目选择为：商业服务——>软件/建站/技术开发'
     ]
 ];

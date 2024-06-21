@@ -34,7 +34,7 @@ class VerifyService extends BaseAdminService
      * @throws \think\db\exception\DbException
      */
     public function getPage(array $where  = []) {
-        $search_model = $this->model->where([['site_id', '=', $this->site_id]])->withSearch(['code', 'type', 'create_time'], $where)
+        $search_model = $this->model->where([['site_id', '=', $this->site_id]])->withSearch(['code', 'type', 'create_time', 'verifier_member_id'], $where)
             ->with(['member' => function($query){
                 $query->field('member_id, nickname, mobile, headimg');
             }])->field('*')->order('create_time desc')->append(['type_name']);
@@ -48,13 +48,17 @@ class VerifyService extends BaseAdminService
      * @return array
      */
     public function getDetail(string $verify_code) {
-        return $this->model->where([
+        $info = $this->model->where([
             ['site_id', '=', $this->site_id],
             ['code', '=', $verify_code]
         ])->field('*')
           ->with(['member' => function($query){
             $query->field('member_id, nickname, mobile, headimg');
         }])->append(['type_name'])->findOrEmpty()->toArray();
+
+        $info['verify_info'] = event('VerifyInfo',$info);
+        return $info;
+
     }
 
 }

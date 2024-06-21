@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -11,22 +11,16 @@
 
 namespace addon\o2o\app\service\core;
 
-use addon\o2o\app\dict\GoodsDict;
 use addon\o2o\app\dict\order\OrderDict;
 use addon\o2o\app\dict\order\OrderLogDict;
-use addon\o2o\app\dict\ReserveDict;
-use addon\o2o\app\model\Goods;
 use addon\o2o\app\model\Order;
 use addon\o2o\app\model\OrderItem;
-use addon\o2o\app\model\Reserve;
 use addon\o2o\app\model\Technician;
-use app\dict\pay\PayDict;
+use app\service\core\member\CoreMemberService;
 use app\service\core\notice\NoticeService;
-use app\service\core\pay\CorePayService;
 use core\base\BaseCoreService;
 use core\exception\CommonException;
 use think\facade\Db;
-use addon\o2o\app\job\OrderClose;
 
 /**
  * 订单
@@ -69,6 +63,7 @@ class  CoreOrderService extends BaseCoreService
             $order->save();
             // 添加订单日志
             CoreOrderLogService::addLog($order['site_id'], $order->order_id, OrderLogDict::ORDER_CANCEL, 'member', $order->member_id, OrderDict::getStatus(OrderDict::CLOSE));
+
             Db::commit();
             return true;
         } catch (\Exception $e) {
@@ -307,6 +302,20 @@ class  CoreOrderService extends BaseCoreService
             (new CoreOrderLogService())->addLog($order->site_id, $data['order_id'], OrderLogDict::ORDER_FINISH,$action_way, $id ?? 0, OrderDict::getStatus(OrderDict::FINISH));
             (new Technician())->where([ ['id', '=', $order->technician_id] ])->inc('order_num', 1)->update();
             Db::commit();
+
+            $order_money = (new OrderItem())->where([ ['order_id', '=', $data['order_id']], ['pay_time', '>', 0] ])->sum('item_money');
+
+            // 订单完成发放积分成长值
+            CoreMemberService::sendGrowth($order->site_id, $order->member_id, 'o2o_buy_goods', [
+                'order_money' => $order_money,
+                 'from_type' => 'o2o_buy_order',
+                 'related_id' => $order['order_id']
+            ]);
+            CoreMemberService::sendGrowth($order->site_id, $order->member_id, 'o2o_buy_order',[
+                'from_type' => 'o2o_buy_order',
+                'related_id' => $order['order_id']
+            ]);
+
             return true;
         } catch (\Exception $e) {
             throw new CommonException($e->getMessage());

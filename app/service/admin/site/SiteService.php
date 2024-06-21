@@ -100,10 +100,8 @@ class SiteService extends BaseAdminService
      */
     public function add(array $data)
     {
-        $user_service = new UserService();
-        if ($user_service->checkUsername($data[ 'username' ])) throw new AdminException('USERNAME_REPEAT');
-
         $site_group = (new SiteGroup())->where([ ['group_id', '=', $data[ 'group_id' ] ] ])->field('app,addon')->findOrEmpty();
+        if ($site_group->isEmpty()) throw new CommonException('SITE_GROUP_NOT_EXIST');
 
         $data[ 'app_type' ] = 'site';
         //添加站点
@@ -276,7 +274,7 @@ class SiteService extends BaseAdminService
             $is_admin = $user_role_info['is_admin'];//是否是超级管理员组
         }
 
-        if ($app_type == AppTypeDict::ADMIN || $is_admin) {
+        if ($is_admin) {
             return ( new MenuService() )->getAllMenuList($app_type, $status, $is_tree, $is_button);
         } else {
             $user_role_ids = $user_role_info['role_ids'];

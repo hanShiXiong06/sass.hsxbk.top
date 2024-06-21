@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -15,7 +15,6 @@ use addon\tourism\app\dict\order\HotelOrderDict;
 use addon\tourism\app\dict\order\OrderRefundLogDict;
 use addon\tourism\app\dict\order\RefundDict;
 use addon\tourism\app\dict\order\ScenicOrderDict;
-use addon\tourism\app\dict\order\TicketOrderDict;
 use addon\tourism\app\dict\order\WayOrderDict;
 use addon\tourism\app\model\TourismOrder;
 use addon\tourism\app\model\TourismOrderRefund;
@@ -151,6 +150,7 @@ class CoreOrderRefundService extends BaseCoreService
         if (!$refund->isEmpty()) {
             Db::startTrans();
             try {
+                $refund->transfer_time = time();
                 $refund->status = RefundDict::REFUND_COMPLETED;
                 $refund->save();
                 $refund->tourismOrder->refund_status = RefundDict::REFUND_COMPLETED;

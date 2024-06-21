@@ -3,25 +3,26 @@
 		<u-row gutter="12" class="flex item-center">
 			<u-col span="2">
 				<view class="">
-					<text class="tag">取</text>
+					<text class="tag">寄</text>
 				</view>
 
 				<view class="mt-[4rpx] mb-[4rpx]">
 					<u-line color="#2979ff" direction="col" length="98rpx" border-style="dotted"></u-line>
 				</view>
 				<view class="">
-					<text class="tag" style="background: #2979ff;color: #ffffff;">送</text>
+					<text class="tag" style="background: #2979ff;color: #ffffff;">收</text>
 				</view>
 			</u-col>
 			<u-col span="10">
 				<view class="fb flex item-center">
 					<view class="w-[380rpx]">
-						<text v-if="form.startAddress==[]" class="font-bold">从哪里取？</text>
-						<text v-if="form.startAddress==[]" class="tk-sltext">请选择取件地址</text>
+						<text v-if="form.startAddress==[]" class="font-bold">从哪里寄？</text>
+						<text v-if="form.startAddress==[]" class="tk-sltext">请选择寄件地址</text>
+
 						<text v-if="form.startAddress"
-							class="font-bold tk-sltext text-sm">{{form.startAddress.address}}</text>
+							class="font-bold tk-sltext text-sm"> {{ form.startAddress.name }}  <text class="font-light text-xs"> {{ form.startAddress.mobile }} </text> </text>
 						<text v-if="form.startAddress"
-							class="tk-sltext text-sm">{{form.startAddress.full_address}}</text>
+							class=" text-xs">{{form.startAddress.address}}{{form.startAddress.full_address}}</text>
 					</view>
 					<view class="">
 						<text class="bt text-sm" @click="toSelectAddress('startaddress')">地址簿</text>
@@ -30,12 +31,13 @@
 				</view>
 				<view class="fb fb flex item-center mt-[28rpx]">
 					<view class="w-[380rpx]">
-						<view v-if="form.endAddress==[]" class="font-bold">送去哪里？</view>
-						<text v-if="form.endAddress==[]" class="tk-sltext">请选择送件地址</text>
-						<view v-if="form.endAddress" class="font-bold tk-sltext text-sm">{{form.endAddress.address}}
-						</view>
-						<text v-if="form.endAddress" class="tk-sltext text-sm">{{form.endAddress.full_address}}</text>
-					</view>
+						<view v-if="form.endAddress==[]" class="font-bold">收件人信息？</view>
+						<text v-if="form.endAddress==[]" class="tk-sltext">请选择收件地址</text>
+            <text v-if="form.endAddress"
+                  class="font-bold tk-sltext text-sm"> {{ form.endAddress.name }}  <text class="font-light text-xs"> {{ form.endAddress.mobile }} </text> </text>
+            <text v-if="form.endAddress"
+                  class=" text-xs">{{form.endAddress.address}}{{form.endAddress.full_address}}</text>
+          </view>
 					<view class="">
 						<text class="bt text-sm" @click="toSelectAddress('endaddress')">地址簿</text>
 					</view>
@@ -60,9 +62,14 @@
 	<view class="pl-2 pr-2">
 		<u-alert :title="tip.title" type="info" :closable="tip.closable" :description="tip.description"></u-alert>
 	</view>
-	<view v-if="preData" class="tk-card mt-[40rpx] overflow-y-auto">
+	<view v-if="preData"
+        class="tk-card mt-[40rpx] overflow-y-auto "
+  >
 		<block v-for="(item,index) in preData" :key=index>
-			<view class="fb p-[12rpx]" @click="selectPre(index)" v-if="item.onlinePay=='Y'">
+
+			<view class="fb p-[12rpx]"
+            :class="currentIndex == index ? 'bg-red-200 text-red-500 rounded ':''"
+            @click="selectPre(index)" v-if="item.onlinePay=='Y'">
 				<view class="fl">
 					<image style="width: 68rpx;height: 68rpx;border-radius: 8rpx;" :src="img(item.logo)" mode="">
 					</image>
@@ -220,6 +227,7 @@
 	const isReadJhkdService = ref(false)
 	const isOpenAgreement = ref(true)
 	const bjshow = ref(false)
+  const currentIndex = ref(null)
 	const tip = ref({
 		title: '快速下单必读',
 		description: '先地址簿添加/编辑地址，选择取/收货地址，填写物品信息，选择渠道下单',
@@ -432,6 +440,7 @@
 		payRef.value?.open(data.data.trade_type, data.data.trade_id, '/addon/tk_jhkd/pages/orderlist')
 	}
 	const selectPre = (e) => {
+    currentIndex.value = e
 		selectData.value = preData.value[e]
 		form.showPrice = selectData.value.showPrice
 		form.delivery_info = selectData.value
@@ -558,4 +567,5 @@
 		color: #ffffff;
 		font-size: 28rpx;
 	}
+
 </style>

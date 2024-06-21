@@ -10,8 +10,7 @@
             <el-card class="box-card !border-none my-[10px] table-search-wrap" shadow="never">
                 <el-form :inline="true" :model="technicianTable.searchParam" ref="searchFormRef">
                     <el-form-item :label="t('positionName')" prop="name">
-                        <el-input v-model.trim="technicianTable.searchParam.name"
-                            :placeholder="t('positionNamePlaceholder')" />
+                        <el-input v-model.trim="technicianTable.searchParam.name" :placeholder="t('positionNamePlaceholder')" />
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="getPositionFn()">{{  t("search")}}</el-button>
@@ -51,6 +50,7 @@ import { useRoute } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
 import editPosition from './components/edit-position.vue'
 import { getPositionList, deletePosition } from '@/addon/o2o/api/technician'
+
 const route = useRoute()
 const pageName = route.meta.title
 const technicianTable = reactive({

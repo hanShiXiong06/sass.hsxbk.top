@@ -27,6 +27,7 @@ class Verify extends BaseAdminController
             ['relate_tag', 0],
             ['type', ''],
             ['code', ''],
+            ['verifier_member_id', ''],
             ['create_time', []]
         ]);
         return success((new VerifyService())->getPage($data));

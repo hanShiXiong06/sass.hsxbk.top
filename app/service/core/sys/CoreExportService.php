@@ -13,11 +13,9 @@ namespace app\service\core\sys;
 
 use app\dict\sys\ExportDict;
 use app\model\sys\SysExport;
-use app\service\admin\sys\ExportService;
 use core\base\BaseCoreService;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use think\facade\App;
 use think\facade\Log;
 
 /**

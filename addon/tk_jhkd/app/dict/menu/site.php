@@ -463,7 +463,7 @@ return [
         'menu_short_name' => '快递',
         'parent_key' => 'shop',
         'menu_type' => '1',
-        'icon' => '',
+        'icon' => 'nc-iconfont nc-icon-fenxiangV6xx-2',
         'api_url' => '',
         'router_path' => 'thkd_shop_order/list',
         'view_path' => 'shop_order/list',

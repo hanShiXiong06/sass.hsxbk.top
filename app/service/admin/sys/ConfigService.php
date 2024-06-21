@@ -240,7 +240,7 @@ class ConfigService extends BaseAdminService
     }
 
     /**
-     * 设置开发者key
+     * 设置布局风格
      * @param array $data
      * @return array
      */
@@ -251,5 +251,28 @@ class ConfigService extends BaseAdminService
         $config[ $data[ 'key' ] ] = $data[ 'value' ];
         return ( new CoreConfigService() )->setConfig(0, "LAYOUT_SETTING", $config);
     }
+
+    /**
+     * 获取色调设置
+     * @return array
+     */
+    public function getThemeColor()
+    {
+        return ( new CoreConfigService() )->getConfigValue(0, "THEMECOLOR_SETTING");
+    }
+
+    /**
+     * 设置色调
+     * @param array $data
+     * @return array
+     */
+    public function setThemeColor(array $data)
+    {
+        $config_service = new CoreConfigService();
+        $config = $config_service->getConfigValue(0, "THEMECOLOR_SETTING");
+        $config[ $data[ 'key' ] ] = $data[ 'value' ];
+        return ( new CoreConfigService() )->setConfig(0, "THEMECOLOR_SETTING", $config);
+    }
+
 
 }

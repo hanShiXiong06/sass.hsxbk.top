@@ -17,7 +17,7 @@ use core\base\BaseAdminController;
 /**
  * 订单交易设置
  * Class Config
- * @package addon\shop\app\adminapi\controller\config
+ * @package addon\o2o\app\adminapi\controller\config
  */
 class Config extends BaseAdminController
 {

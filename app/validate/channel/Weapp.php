@@ -34,7 +34,7 @@ class Weapp extends Validate
     ];
 
     protected $scene = [
-        'set' => ['app_id', 'app_secret'],
+        'set' => ['app_id'],
     ];
 
 

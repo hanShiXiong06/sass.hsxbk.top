@@ -128,7 +128,8 @@ trait WapTrait
 
         $content .= "   import topTabbar from '@/components/top-tabbar/top-tabbar.vue'\n";
         $content .= "   import useDiyStore from '@/app/stores/diy';\n";
-        $content .= "   import { ref, onMounted, nextTick, computed } from 'vue';\n";
+        $content .= "   import { ref, onMounted, nextTick, computed, watch } from 'vue';\n";
+        $content .= "   import { useRouter } from 'vue-router';\n";
         $content .= "   import { getLocation } from '@/utils/common';\n";
         $content .= "   import Sortable from 'sortablejs';\n";
         $content .= "   import { range } from 'lodash-es';\n";
@@ -136,7 +137,27 @@ trait WapTrait
         $content .= "   import useConfigStore from '@/stores/config'\n\n";
 
         $content .= "   const props = defineProps(['data','pullDownRefreshCount']);\n";
-        $content .= "   const diyStore = useDiyStore();\n\n";
+        $content .= "   const diyStore = useDiyStore();\n";
+        $content .= "   const router = useRouter();\n\n";
+
+        $content .= "   // 兼容轮播搜索组件-切换分类时，导致个人中心白屏 - start\n";
+        $content .= "   // #ifdef H5\n";
+        $content .= "   watch(() => router.currentRoute.value, (newRoute) => {\n";
+        $content .= "       if(newRoute.path != \"/addon/shop/pages/index\"){\n";
+        $content .= "           diyStore.topFixedStatus = 'home'\n";
+        $content .= "       }\n";
+        $content .= "   });\n\n";
+
+        $content .= "   // #endif\n\n";
+
+        $content .= "   // #ifdef MP\n";
+        $content .= "   wx.onAppRoute(function(res) {\n";
+        $content .= "       if(res.path != \"addon/shop/pages/index\"){\n";
+        $content .= "           diyStore.topFixedStatus = 'home'\n";
+        $content .= "       }\n";
+        $content .= "   });\n";
+        $content .= "   // #endif\n";
+        $content .= "   // 兼容轮播搜索组件-切换分类时，导致个人中心白屏 - end\n\n";
 
         $content .= "   const data = computed(() => {\n";
         $content .= "       if (diyStore.mode == 'decorate') {\n";

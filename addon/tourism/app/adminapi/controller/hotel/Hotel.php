@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -63,6 +63,7 @@ class Hotel extends BaseAdminController
             ["address",""],
             ["latitude", ''],
             ["longitude", ''],
+            ["poster_id", 0],
             ["hotel_desc", '', false],
             ["around_traffic", '', false],
             ["around_food", '', false],
@@ -100,6 +101,7 @@ class Hotel extends BaseAdminController
             ["hotel_desc", '', false],
             ["around_traffic", '', false],
             ["around_food", '', false],
+            ["poster_id", 0],
         ]);
         $address = $this->request->params([
             ["province_name", ""],
@@ -136,4 +138,5 @@ class Hotel extends BaseAdminController
         (new HotelService())->editStatus($hotel_id, $data);
         return success();
     }
+
 }

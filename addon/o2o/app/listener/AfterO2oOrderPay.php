@@ -5,6 +5,8 @@ namespace addon\o2o\app\listener;
 
 use addon\o2o\app\dict\order\OrderDict;
 use addon\o2o\app\dict\order\OrderLogDict;
+use addon\o2o\app\model\OrderItem;
+use addon\o2o\app\service\core\CoreGoodsSaleNumService;
 use addon\o2o\app\service\core\CoreOrderLogService;
 use addon\o2o\app\service\core\CoreOrderService;
 use addon\o2o\app\service\core\CoreStatService;
@@ -26,5 +28,17 @@ class AfterO2oOrderPay
 
         //消息发送
         (new NoticeService())->send($order_data['site_id'], 'o2o_order_pay', ['order_id' => $data['order_id'] ]);
+
+        //累增销量
+        $order_goods_data = (new OrderItem())->where([ ['order_id', '=', $data['order_id']] ])->select()->toArray();
+        $core_goods_sale_num_service = new CoreGoodsSaleNumService();
+        foreach($order_goods_data as $v){
+            $core_goods_sale_num_service->inc([
+                'num' => $v['num'],
+                'goods_id' => $v['goods_id'],
+                'sku_id' => $v['item_id']
+            ]);
+        }
+
     }
 }

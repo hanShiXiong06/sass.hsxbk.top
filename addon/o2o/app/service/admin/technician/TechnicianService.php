@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -14,7 +14,6 @@ namespace addon\o2o\app\service\admin\technician;
 use addon\o2o\app\dict\TechnicianDict;
 use addon\o2o\app\model\Technician;
 use addon\o2o\app\model\TechnicianGoods;
-use addon\o2o\app\service\admin\technician\PositionService;
 use app\model\member\Member;
 use core\base\BaseAdminService;
 use core\exception\CommonException;
@@ -73,7 +72,7 @@ class TechnicianService extends BaseAdminService
     public function getInfo(int $id)
     {
         $field = 'id,site_id,member_id,sex,name,age,mobile,working_age,status,label,position_id,position_name,order_num,service_time,create_time,bad_evaluate,headimg,images,desc';
-        return $this->model->where([ [ 'id', '=', $id ], [ 'site_id', '=', $this->site_id ] ])->with(
+        $info = $this->model->where([ [ 'id', '=', $id ], [ 'site_id', '=', $this->site_id ] ])->with(
             [
                 'goods' => function($query) {
                     $query->field('goods_id,technician_id');
@@ -83,6 +82,12 @@ class TechnicianService extends BaseAdminService
                 }
             ]
         )->field($field)->append([ 'status_name', 'headimg_mid', 'images_mid'])->findOrEmpty()->toArray();
+
+        if(!empty($info) && empty($info['position_id'])){
+            $info['position_id'] = '';
+        }
+
+        return $info;
 
     }
 

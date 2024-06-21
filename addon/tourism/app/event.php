@@ -21,6 +21,40 @@ return [
         ],
         'WapIndex' => [ 'addon\tourism\app\listener\WapIndexListener' ],
         'BottomNavigation' => [ 'addon\tourism\app\listener\BottomNavigationListener' ],
+       // 'VerifyType' => ['addon\tourism\app\listener\verify\VerifyTypeListener'],
+        //'Verify' => [ 'addon\tourism\app\listener\verify\VerifyListener' ],
+
+
+        //获取海报数据
+        'GetPosterType' => [ 'addon\tourism\app\listener\poster\TourismPosterType' ],
+        'GetPosterData' => [ 'addon\tourism\app\listener\poster\TourismPoster' ],
+
+        //导出数据类型
+        'ExportDataType' => [
+            //酒店订单导出
+            'addon\tourism\app\listener\order\TourismHotelOrderExportTypeListener',
+            //景点订单导出
+            'addon\tourism\app\listener\order\TourismScenicOrderExportTypeListener',
+            //路线订单导出
+            'addon\tourism\app\listener\order\TourismWayOrderExportTypeListener',
+            //退款维权导出
+            'addon\tourism\app\listener\refund\TourismOrderRefundExportTypeListener',
+
+        ],
+        //导出数据源
+        'ExportData' => [
+            //酒店订单导出
+            'addon\tourism\app\listener\order\TourismHotelOrderExportDataListener',
+            //景点订单导出
+            'addon\tourism\app\listener\order\TourismScenicOrderExportDataListener',
+            //路线订单导出
+            'addon\tourism\app\listener\order\TourismWayOrderExportDataListener',
+            //退款维权导出
+            'addon\tourism\app\listener\refund\TourismOrderRefundExportDataListener',
+
+        ],
+
+
     ],
 
     'subscribe' => [

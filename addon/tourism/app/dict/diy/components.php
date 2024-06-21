@@ -6,7 +6,7 @@ return [
         'list' => [
             'TourismTravel' => [
                 'title' => '线路',
-                'icon' => 'iconfont-icona-02_luxian',
+                'icon' => 'iconfont icona-02_luxian',
                 'path' => 'edit-tourism-travel',
                 'support_page' => [],
                 'uses' => 0,
@@ -19,7 +19,7 @@ return [
                     ],
                     'count' => 8,
                     'articleIds' => [],
-                    'layout' => 'oneLines',
+                    'layout' => 'twoLines',
                     'source' => 'all',
                     'num' => 10,
                     'way_id' => []
@@ -27,7 +27,7 @@ return [
             ],
             'TourismTickets' => [
                 'title' => '景点',
-                'icon' => 'iconfont-iconjingdian',
+                'icon' => 'iconfont iconjingdian',
                 'path' => 'edit-tourism-tickets',
                 'support_page' => [],
                 'uses' => 0,
@@ -48,7 +48,7 @@ return [
             ],
             'TourismHotel' => [
                 'title' => '酒店',
-                'icon' => 'iconfont-iconjiudian',
+                'icon' => 'iconfont iconjiudian',
                 'path' => 'edit-tourism-hotel',
                 'support_page' => [],
                 'uses' => 0,

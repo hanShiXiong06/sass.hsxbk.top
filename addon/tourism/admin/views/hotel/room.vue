@@ -35,10 +35,18 @@
             </el-card>
 
             <div class="mt-[10px]">
-                <el-table :data="tourismGoodsTable.data" size="large" v-loading="tourismGoodsTable.loading">
+
+                <div class="mb-[10px] flex items-center">
+                    <el-checkbox v-model="toggleCheckbox" size="large" class="px-[14px]" @change="toggleChange" :indeterminate="isIndeterminate" />
+                    <el-button @click="memberPriceAllEvent()" size="small">{{ t('memberPrice') }}</el-button>
+                    <el-button @click="dayMemberPriceAllEvent()" size="small">{{ t('dayMemberPrice') }}</el-button>
+                </div>
+
+                <el-table :data="tourismGoodsTable.data" size="large"  ref="goodsListTableRef" v-loading="tourismGoodsTable.loading" @selection-change="handleSelectionChange">
                     <template #empty>
                         <span>{{ !tourismGoodsTable.loading ? t('emptyData') : '' }}</span>
                     </template>
+                    <el-table-column type="selection" width="55" />
                     <el-table-column :label="t('roomInfo')" min-width="240" align="left">
                         <template #default="{ row }">
                             <div class="flex">
@@ -62,6 +70,7 @@
                                 @click="editStatusEvent(1, row.goods_id)">{{ t('up') }}</el-button>
                             <el-button type="primary" v-if="row.status == 1" link
                                 @click="editStatusEvent(0, row.goods_id)">{{ t('down') }}</el-button>
+                            <el-button type="primary" link @click="memberPriceEvent(row)">{{ t('memberPrice') }}</el-button>
                             <el-button type="primary" link @click="editEvent(row)">{{ t('edit') }}</el-button>
                             <el-button type="primary" link @click="deleteEvent(row.goods_id)">{{ t('delete') }}</el-button>
                         </template>
@@ -75,6 +84,10 @@
                 </div>
             </div>
         </el-card>
+        <!-- 会员价弹出框 -->
+        <goods-member-price-popup ref="memberPricePopupRef" @load="loadTourismGoodsList" />
+        <!-- 日历会员价弹出框 -->
+        <goods-day-member-price-popup ref="memberDayPricePopupRef" @load="loadTourismGoodsList" />
     </div>
 </template>
 
@@ -83,8 +96,11 @@ import { reactive, ref } from 'vue'
 import { t } from '@/lang'
 import { getRoomList, deleteRoom, editRoomStatus } from '@/addon/tourism/api/tourism'
 import { img } from '@/utils/common'
-import { ElMessageBox, FormInstance } from 'element-plus'
+import { ElMessageBox, FormInstance, ElMessage } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router'
+import { getMemberLevelAll } from '@/app/api/member'
+import goodsMemberPricePopup from '@/addon/tourism/views/components/goods-member-price-popup.vue'
+import goodsDayMemberPricePopup from '@/addon/tourism/views/components/goods-day-member-price-popup.vue'
 
 const route = useRoute()
 const pageName = route.meta.title
@@ -188,6 +204,91 @@ const resetForm = (formEl: FormInstance | undefined) => {
     formEl.resetFields()
     loadTourismGoodsList()
 }
+
+/** ***************** 会员价-start *************************/
+// 会员等级
+const memberLevel = ref([])
+const getMemberLevelAllFn = () => {
+    getMemberLevelAll().then(res => {
+        memberLevel.value = res.data ? res.data : []
+    })
+}
+getMemberLevelAllFn()
+
+const memberPricePopupRef: any = ref(null)
+const memberPriceEvent = (data: any) => {
+    memberPricePopupRef.value.show(data, memberLevel.value)
+}
+const memberPriceAllEvent = () => {
+    if (multipleSelection.value.length == 0) {
+        ElMessage({
+            type: 'warning',
+            message: `${t('batchEmptySelectedGoodsTips')}`
+        })
+        return
+    }
+
+    const goodsIds: any = []
+    multipleSelection.value.forEach((item: any) => {
+        goodsIds.push(item.goods_id)
+    })
+
+    memberPricePopupRef.value.show({ goods_id: goodsIds.toString(), goods_type: 'room' }, memberLevel.value)
+}
+
+const memberDayPricePopupRef: any = ref(null)
+
+const dayMemberPriceAllEvent = () => {
+    if (multipleSelection.value.length == 0) {
+        ElMessage({
+            type: 'warning',
+            message: `${t('batchEmptySelectedGoodsTips')}`
+        })
+        return
+    }
+
+    const goodsIds: any = []
+    multipleSelection.value.forEach((item: any) => {
+        goodsIds.push(item.goods_id)
+    })
+    memberDayPricePopupRef.value.show({ goods_id: goodsIds.toString() }, memberLevel.value)
+}
+
+/** ***************** 会员价-end *************************/
+
+// 批量复选框
+const toggleCheckbox = ref()
+
+// 复选框中间状态
+const isIndeterminate = ref(false)
+
+// 监听批量复选框事件
+const toggleChange = (value: any) => {
+    isIndeterminate.value = false
+    goodsListTableRef.value.toggleAllSelection()
+}
+
+const goodsListTableRef = ref()
+
+// 选中数据
+const multipleSelection: any = ref([])
+
+// 监听表格单行选中
+const handleSelectionChange = (val: []) => {
+    multipleSelection.value = val
+
+    toggleCheckbox.value = false
+    if (multipleSelection.value.length > 0 && multipleSelection.value.length < tourismGoodsTable.data.length) {
+        isIndeterminate.value = true
+    } else {
+        isIndeterminate.value = false
+    }
+
+    if (multipleSelection.value.length == tourismGoodsTable.data.length) {
+        toggleCheckbox.value = true
+    }
+}
+
 </script>
 
 <style lang="scss" scoped></style>

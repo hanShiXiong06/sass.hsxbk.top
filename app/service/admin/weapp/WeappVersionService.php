@@ -11,8 +11,12 @@
 
 namespace app\service\admin\weapp;
 
+use app\dict\sys\CloudDict;
 use app\dict\sys\FileDict;
+use app\service\core\site\CoreSiteService;
 use app\service\core\weapp\CoreWeappCloudService;
+use app\service\core\weapp\CoreWeappConfigService;
+use app\service\core\weapp\CoreWeappService;
 use core\base\BaseAdminService;
 use app\dict\sys\StorageDict;
 use app\service\core\upload\CoreUploadService;
@@ -43,7 +47,14 @@ class WeappVersionService extends BaseAdminService
         $version_no += 1;
         $version = "1.0.{$version_no}";
 
-        $upload_res = (new CoreWeappCloudService())->uploadWeapp([
+        $upload_res = (new CoreWeappCloudService())->setConfig(function () {
+            $config = (new CoreWeappConfigService())->getWeappConfig($this->site_id);
+            return [
+                'app_id' => $config['app_id'],
+                'upload_private_key' => $config['upload_private_key'],
+                'addon' => (new CoreSiteService())->getAddonKeysBySiteId($this->site_id)
+            ];
+        })->uploadWeapp([
             'site_id' => $this->site_id,
             'version' => $version,
             'desc' => $data['desc'] ?? ''
@@ -62,7 +73,14 @@ class WeappVersionService extends BaseAdminService
 
     public function getPreviewImage() {
         try {
-            return (new CoreWeappCloudService())->getWeappPreviewImage();
+            $version = $this->model->where([ ['site_id', '=', $this->site_id] ])->order('id desc')->findOrEmpty();
+            if (!$version->isEmpty() || in_array($version['status'], [CloudDict::APPLET_UPLOAD_SUCCESS, CloudDict::APPLET_AUDITING])) {
+                if ($version['from_type'] == 'cloud_build') {
+                    return (new CoreWeappCloudService())->getWeappPreviewImage();
+                } else {
+                    return image_to_base64((new CoreWeappService())->getWeappPreviewImage($this->site_id), true);
+                }
+            }
         } catch (\Exception $e) {
             return '';
         }
@@ -112,6 +130,18 @@ class WeappVersionService extends BaseAdminService
      * @return null
      */
     public function getUploadLog(string $key) {
-        return (new CoreWeappCloudService())->getWeappCompileLog($key);
+        $build_log = (new CoreWeappCloudService())->getWeappCompileLog($key);
+
+        if (isset($build_log['data']) && isset($build_log['data'][0]) && is_array($build_log['data'][0])) {
+            $last = end($build_log['data'][0]);
+            if ($last['code'] == 0) {
+                (new WeappVersion())->update(['status' => CloudDict::APPLET_UPLOAD_FAIL, 'fail_reason' => $last['msg'] ?? '', 'update_time' => time() ], ['task_key' => $key]);
+                return $build_log;
+            }
+            if ($last['percent'] == 100) {
+                (new WeappVersion())->update(['status' => CloudDict::APPLET_UPLOAD_SUCCESS, 'update_time' => time() ], ['task_key' => $key]);
+            }
+        }
+        return $build_log;
     }
 }

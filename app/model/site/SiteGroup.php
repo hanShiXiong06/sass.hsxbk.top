@@ -64,7 +64,7 @@ class SiteGroup extends BaseModel
      */
     public function getAddonNameAttr($value, $data)
     {
-        if (empty($data['app']))
+        if (empty($data['addon']))
             return [];
         return (new Addon())->where([['key', 'in', $data['addon']]])->column('title');
     }

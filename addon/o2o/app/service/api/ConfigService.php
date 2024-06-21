@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -11,17 +11,8 @@
 
 namespace addon\o2o\app\service\api;
 
-use addon\o2o\app\dict\order\OrderDict;
-use addon\o2o\app\dict\order\OrderLogDict;
-use addon\o2o\app\job\OrderClose;
-use addon\o2o\app\model\Order;
 use addon\o2o\app\service\core\CoreOrderConfigService;
-use addon\o2o\app\service\core\CoreOrderCreateService;
-use addon\o2o\app\service\core\CoreOrderLogService;
-use addon\o2o\app\service\core\CoreOrderService;
 use core\base\BaseApiService;
-use core\exception\CommonException;
-use think\facade\Db;
 
 /**
  * 配置服务层

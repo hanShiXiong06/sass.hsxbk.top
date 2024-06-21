@@ -622,3 +622,22 @@ export function orderStat() {
     return request.get(`tourism/stat/order`);
 }
 
+/**
+ * 编辑会员价
+ * @param params
+ * @returns
+ */
+export function editGoodsMemberPrice(params: Record<string, any>) {
+    return request.put(`tourism/goods/memberprice`, params, {showSuccessMessage: true})
+}
+
+
+/**
+ * 编辑日历会员价
+ * @param params
+ * @returns
+ */
+export function editGoodsDayMemberPrice(params: Record<string, any>) {
+    return request.put(`tourism/goods/daymemberprice`, params, {showSuccessMessage: true})
+}
+

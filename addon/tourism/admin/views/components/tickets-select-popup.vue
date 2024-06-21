@@ -14,8 +14,8 @@
             :close-on-press-escape="false" :destroy-on-close="true" :close-on-click-modal="false">
 
             <el-form :inline="true" :model="tourismScenicTable.searchParam" ref="searchFormRef">
-                <el-form-item :label="t('scenicNameSelectPopup')" prop="goods_name" class="form-item-wrap">
-                    <el-input v-model="tourismScenicTable.searchParam.goods_name"
+                <el-form-item :label="t('scenicNameSelectPopup')" prop="scenic_name" class="form-item-wrap">
+                    <el-input v-model="tourismScenicTable.searchParam.scenic_name"
                         :placeholder="t('scenicNameSelectPopupPlaceholder')" maxlength="60" />
                 </el-form-item>
                 <el-form-item :label="t('createTime')" prop="create_time" class="form-item-wrap">
@@ -41,12 +41,17 @@
                             <div class="min-w-[60px] h-[60px] flex items-center justify-center">
                                 <img class="max-w-[60px] max-h-[60px]" :src="img(row.cover_thumb_small)" />
                             </div>
-                            <a href="javascript:;" :title="row.goods_name" class="multi-hidden ml-2">{{ row.goods_name}}</a>
+                            <a href="javascript:;" :title="row.scenic_name" class="multi-hidden ml-2">{{ row.scenic_name}}</a>
                         </div>
                     </template>
                 </el-table-column>
-                <el-table-column prop="price" :label="t('goodsSelectPopupPrice')" min-width="200" />
-                <el-table-column prop="stock" :label="t('goodsSelectPopupStock')" min-width="120" />
+                <el-table-column prop="scenic_star" :label="t('scenicStar')" min-width="100">
+                        <template #default="{ row }">
+                            {{ star[row.scenic_level] }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="full_address" :label="t('scenicFullAddress')" min-width="150" />
+                    <el-table-column prop="status_name" :label="t('scenicStatus')" min-width="100" />
                 <el-table-column prop="create_time" :label="t('goodsSelectPopupCreateTime')" min-width="120" />
             </el-table>
             <div class="mt-[16px] flex">
@@ -81,7 +86,7 @@ import { ref, reactive, computed, nextTick } from 'vue'
 import { cloneDeep } from 'lodash-es'
 import { img } from '@/utils/common'
 import { ElMessage } from 'element-plus'
-import { getTourismList } from '@/addon/tourism/api/tourism'
+import { getScenicList } from '@/addon/tourism/api/tourism'
 
 const prop = defineProps({
     modelValue: {
@@ -96,6 +101,14 @@ const prop = defineProps({
         type: Number,
         default: 0
     }
+})
+
+const star = reactive<any>({
+    1: t('oneStar'),
+    2: t('twoStar'),
+    3: t('threeStar'),
+    4: t('fourStar'),
+    5: t('fiveStar')
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -126,7 +139,7 @@ const tourismScenicTable = reactive({
     loading: true,
     data: [],
     searchParam: {
-        goods_name: '',
+        scenic_name: '',
         create_time: '',
         goods_type: 'scenic'
     }
@@ -147,10 +160,10 @@ const handleSelectChange = (selection: any, row: any) => {
         }
     }
     if (isSelected) {
-        selectScenic['goods_' + row.scenic_id] = row
+        selectScenic['scenic_' + row.scenic_id] = row
     } else {
         // 未选中，删除当前商品
-        delete selectScenic['goods_' + row.scenic_id]
+        delete selectScenic['scenic_' + row.scenic_id]
     }
 }
 
@@ -158,12 +171,12 @@ const handleSelectChange = (selection: any, row: any) => {
 const handleSelectAllChange = (selection: any) => {
     if (selection.length) {
         selection.forEach((item: any) => {
-            selectScenic['goods_' + item.scenic_id] = item
+            selectScenic['scenic_' + item.scenic_id] = item
         })
     } else {
         // 未选中，删除当前页面的数据
         tourismScenicTable.data.forEach((item: any) => {
-            delete selectScenic['goods_' + item.scenic_id]
+            delete selectScenic['scenic_' + item.scenic_id]
         })
     }
 }
@@ -175,7 +188,7 @@ const loadScenicList = (page: number = 1, callback: any = null) => {
     tourismScenicTable.loading = true
     tourismScenicTable.page = page
     const searchData = cloneDeep(tourismScenicTable.searchParam)
-    getTourismList({
+    getScenicList({
         page: tourismScenicTable.page,
         limit: tourismScenicTable.limit,
         ...searchData
@@ -196,7 +209,7 @@ const setGoodsSelected = () => {
         if (!scenicListTableRef.value) return
         for (let i = 0; i < tourismScenicTable.data.length; i++) {
             scenicListTableRef.value.toggleRowSelection(tourismScenicTable.data[i], false)
-            if (selectScenic['goods_' + tourismScenicTable.data[i].scenic_id]) {
+            if (selectScenic['scenic_' + tourismScenicTable.data[i].scenic_id]) {
                 scenicListTableRef.value.toggleRowSelection(tourismScenicTable.data[i], true)
             }
         }
@@ -216,11 +229,11 @@ const show = () => {
         // 第一次打开弹出框时，纠正数据，并且赋值已选商品
         if (goodsIds.value) {
             // 赋值已选择的商品
-            let obj = []
+            const obj = []
             for (let i = 0; i < tourismScenicTable.data.length; i++) {
                 if (goodsIds.value.indexOf(tourismScenicTable.data[i].scenic_id) != -1) {
                     obj.push(tourismScenicTable.data[i].scenic_id)
-                    selectScenic['goods_' + tourismScenicTable.data[i].scenic_id] = tourismScenicTable.data[i]
+                    selectScenic['scenic_' + tourismScenicTable.data[i].scenic_id] = tourismScenicTable.data[i]
                 }
             }
             goodsIds.value = obj
@@ -231,7 +244,7 @@ const show = () => {
 
 // 清空已选商品
 const clear = () => {
-    for (let k in selectScenic) {
+    for (const k in selectScenic) {
         delete selectScenic[k]
     }
     setGoodsSelected()
@@ -241,9 +254,9 @@ const save = () => {
     if (prop.min && selectGoodsNum.value < prop.min) {
         ElMessage({
             type: 'warning',
-            message: `${t('ticketsSelectPopupGoodsMinTip')}${prop.min}${t('goodsSelectPopupPiece')}`,
+            message: `${t('ticketsSelectPopupGoodsMinTip')}${prop.min}${t('goodsSelectPopupPiece')}`
         })
-        return;
+        return
     }
 
     if (prop.max && prop.max > 0 && selectGoodsNum.value && selectGoodsNum.value > prop.max) {
@@ -254,9 +267,9 @@ const save = () => {
         return
     }
 
-    let ids: any = []
-    for (let k in selectScenic) {
-        ids.push(parseInt(k.replace('goods_', '')))
+    const ids: any = []
+    for (const k in selectScenic) {
+        ids.push(parseInt(k.replace('scenic_', '')))
     }
     goodsIds.value.splice(0, goodsIds.value.length, ...ids)
 

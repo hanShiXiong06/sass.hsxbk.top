@@ -1,6 +1,6 @@
 <template>
 	<div class="main-container flex min-h-[300px]" v-loading="loading">
-		<div class="main-body flex-1 mr-[15px]" v-if="!loading">
+		<div class="main-body flex-1" v-if="!loading">
 			<el-card class="box-card !border-none" shadow="never">
 				<div class="flex items-end">
 					<span class="text-[24px] font-bold">{{ t('write') }}</span>

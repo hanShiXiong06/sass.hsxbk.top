@@ -11,6 +11,7 @@
 
 namespace app\adminapi\controller\user;
 
+use app\dict\sys\UserDict;
 use app\service\admin\user\UserService;
 use core\base\BaseAdminController;
 use think\Response;
@@ -21,12 +22,12 @@ class User extends BaseAdminController
     {
         $data = $this->request->params([
             ['username', ''],
-            ['real_name', '']
+            ['real_name', ''],
+            ['last_time', []]
         ]);
 
-        $list = (new UserService())->getUserAdminPage($data);
+        $list = (new UserService())->getPage($data);
         return success($list);
-
     }
 
     /**
@@ -36,17 +37,17 @@ class User extends BaseAdminController
      */
     public function info($uid)
     {
-        return success((new UserService())->getUserAdminInfo($uid));
+        return success((new UserService())->getInfo($uid));
     }
 
-    public function pages()
+    public function getUserAll()
     {
         $data = $this->request->params([
             ['username', ''],
             ['realname', ''],
             ['create_time', []],
         ]);
-        $list = (new UserService())->getUserAllPage($data);
+        $list = (new UserService())->getUserAll($data);
         return success($list);
     }
 
@@ -56,5 +57,81 @@ class User extends BaseAdminController
         ]);
         $is_exist = (new UserService())->checkUsername($data['username']);
         return success(data:$is_exist);
+    }
+
+    /**
+     * 添加用户
+     * @return Response
+     * @throws \Exception
+     */
+    public function add() {
+        $data = $this->request->params([
+            ['username', ''],
+            ['password', ''],
+            ['real_name', ''],
+            ['status', UserDict::ON],
+            ['head_img', ''],
+            ['create_site_limit', []]
+        ]);
+        (new UserService())->add($data);
+        return success();
+    }
+
+    /**
+     * 获取用户站点创建限制
+     * @param $uid
+     * @return Response
+     */
+    public function getUserCreateSiteLimit($uid){
+        return success(data:(new UserService())->getUserCreateSiteLimit($uid));
+    }
+
+    /**
+     * 获取用户站点创建限制
+     * @param $uid
+     * @return Response
+     */
+    public function getUserCreateSiteLimitInfo($id){
+        return success(data:(new UserService())->getUserCreateSiteLimitInfo($id));
+    }
+
+    /**
+     * 添加用户站点创建限制
+     * @param $uid
+     * @return Response
+     */
+    public function addUserCreateSiteLimit($uid){
+        $data = $this->request->params([
+            ['uid', 0],
+            ['group_id', 0],
+            ['num', 1],
+            ['month', 1],
+        ]);
+        (new UserService())->addUserCreateSiteLimit($data);
+        return success('SUCCESS');
+    }
+
+    /**
+     * 编辑用户站点创建限制
+     * @param $uid
+     * @return Response
+     */
+    public function editUserCreateSiteLimit($id){
+        $data = $this->request->params([
+            ['num', 1],
+            ['month', 1],
+        ]);
+        (new UserService())->editUserCreateSiteLimit($id, $data);
+        return success('SUCCESS');
+    }
+
+    /**
+     * 删除用户站点创建限制
+     * @param $uid
+     * @return Response
+     */
+    public function delUserCreateSiteLimit($id){
+        (new UserService())->delUserCreateSiteLimit($id);
+        return success('SUCCESS');
     }
 }

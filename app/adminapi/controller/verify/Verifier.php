@@ -28,6 +28,15 @@ class Verifier extends BaseAdminController
     }
 
     /**
+     * 核销人员列表
+     * @return Response
+     */
+    public function select()
+    {
+        return success(data:(new VerifierService())->getList());
+    }
+
+    /**
      * 添加核销员
      * @param int $order_id
      * @return Response

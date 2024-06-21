@@ -46,6 +46,18 @@ class VerifierService extends BaseAdminService
     }
 
     /**
+     * 获取核销员表列表
+     * @param array $where
+     * @return array
+     */
+    public function getList(array $where = [])
+    {
+        return $this->model->where([['site_id', '=', $this->site_id]])->with(['member' => function ($query) {
+            $query->field('member_id, nickname, mobile, headimg');
+        }])->field('*')->order('create_time desc')->select()->toArray();
+    }
+
+    /**
      * 组合整理数据
      * @param $data
      */

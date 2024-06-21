@@ -14,8 +14,8 @@
             :close-on-press-escape="false" :destroy-on-close="true" :close-on-click-modal="false">
 
             <el-form :inline="true" :model="tourismHotelTable.searchParam" ref="searchFormRef">
-                <el-form-item :label="t('hotelNameSelectPopup')" prop="goods_name" class="form-item-wrap">
-                    <el-input v-model="tourismHotelTable.searchParam.goods_name"
+                <el-form-item :label="t('hotelNameSelectPopup')" prop="hotel_name" class="form-item-wrap">
+                    <el-input v-model="tourismHotelTable.searchParam.hotel_name"
                         :placeholder="t('hotelNameSelectPopupPlaceholder')" maxlength="60" />
                 </el-form-item>
                 <el-form-item :label="t('createTime')" prop="create_time" class="form-item-wrap">
@@ -41,13 +41,18 @@
                             <div class="min-w-[60px] h-[60px] flex items-center justify-center">
                                 <img class="max-w-[60px] max-h-[60px]" :src="img(row.cover_thumb_small)" />
                             </div>
-                            <a href="javascript:;" :title="row.goods_name" class="multi-hidden ml-2">{{ row.goods_name}}</a>
+                            <a href="javascript:;" :title="row.hotel_name" class="multi-hidden ml-2">{{ row.hotel_name}}</a>
                         </div>
                     </template>
                 </el-table-column>
 
-                <el-table-column prop="price" :label="t('goodsSelectPopupPrice')" min-width="200" />
-                <el-table-column prop="stock" :label="t('goodsSelectPopupStock')" min-width="120" />
+                <el-table-column prop="hotel_star" :label="t('hotelStar')" min-width="100">
+                        <template #default="{ row }">
+                            {{ star[row.hotel_star] }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="full_address" :label="t('fullAddress')" min-width="150" />
+                    <el-table-column prop="hotel_status_name" :label="t('hotelStatus')" min-width="100" />
                 <el-table-column prop="create_time" :label="t('goodsSelectPopupCreateTime')" min-width="120" />
             </el-table>
             <div class="mt-[16px] flex">
@@ -82,7 +87,7 @@ import { ref, reactive, computed, nextTick } from 'vue'
 import { cloneDeep } from 'lodash-es'
 import { img } from '@/utils/common'
 import { ElMessage } from 'element-plus'
-import { getTourismList } from '@/addon/tourism/api/tourism'
+import { getHotelList } from '@/addon/tourism/api/tourism'
 
 const prop = defineProps({
     modelValue: {
@@ -126,7 +131,7 @@ const tourismHotelTable = reactive({
     loading: true,
     data: [],
     searchParam: {
-        goods_name: '',
+        hotel_name: '',
         create_time: '',
         goods_type: 'room'
     }
@@ -147,10 +152,10 @@ const handleSelectChange = (selection: any, row: any) => {
         }
     }
     if (isSelected) {
-        selectHotel['goods_' + row.hotel_id] = row
+        selectHotel['hotel_' + row.hotel_id] = row
     } else {
         // 未选中，删除当前商品
-        delete selectHotel['goods_' + row.hotel_id]
+        delete selectHotel['hotel_' + row.hotel_id]
     }
 }
 
@@ -158,12 +163,12 @@ const handleSelectChange = (selection: any, row: any) => {
 const handleSelectAllChange = (selection: any) => {
     if (selection.length) {
         selection.forEach((item: any) => {
-            selectHotel['goods_' + item.hotel_id] = item
+            selectHotel['hotel_' + item.hotel_id] = item
         })
     } else {
         // 未选中，删除当前页面的数据
         tourismHotelTable.data.forEach((item: any) => {
-            delete selectHotel['goods_' + item.hotel_id]
+            delete selectHotel['hotel_' + item.hotel_id]
         })
     }
 }
@@ -175,7 +180,7 @@ const loadHotelList = (page: number = 1, callback: any = null) => {
     tourismHotelTable.loading = true
     tourismHotelTable.page = page
     const searchData = cloneDeep(tourismHotelTable.searchParam)
-    getTourismList({
+    getHotelList({
         page: tourismHotelTable.page,
         limit: tourismHotelTable.limit,
         ...searchData
@@ -193,11 +198,11 @@ const loadHotelList = (page: number = 1, callback: any = null) => {
 // 表格设置选中状态
 const setGoodsSelected = () => {
     nextTick(() => {
-        if (!scenicListTableRef.value) return;
+        if (!scenicListTableRef.value) return
         for (let i = 0; i < tourismHotelTable.data.length; i++) {
-            scenicListTableRef.value.toggleRowSelection(tourismHotelTable.data[i], false);
-            if (selectHotel['goods_' + tourismHotelTable.data[i].hotel_id]) {
-                scenicListTableRef.value.toggleRowSelection(tourismHotelTable.data[i], true);
+            scenicListTableRef.value.toggleRowSelection(tourismHotelTable.data[i], false)
+            if (selectHotel['hotel_' + tourismHotelTable.data[i].hotel_id]) {
+                scenicListTableRef.value.toggleRowSelection(tourismHotelTable.data[i], true)
             }
         }
     })
@@ -216,11 +221,11 @@ const show = () => {
         // 第一次打开弹出框时，纠正数据，并且赋值已选商品
         if (goodsIds.value) {
             // 赋值已选择的商品
-            let obj = []
+            const obj = []
             for (let i = 0; i < tourismHotelTable.data.length; i++) {
                 if (goodsIds.value.indexOf(tourismHotelTable.data[i].hotel_id) != -1) {
                     obj.push(tourismHotelTable.data[i].hotel_id)
-                    selectHotel['goods_' + tourismHotelTable.data[i].hotel_id] = tourismHotelTable.data[i] || {}
+                    selectHotel['hotel_' + tourismHotelTable.data[i].hotel_id] = tourismHotelTable.data[i] || {}
                 }
             }
             goodsIds.value = obj
@@ -231,17 +236,25 @@ const show = () => {
 
 // 清空已选商品
 const clear = () => {
-    for (let k in selectHotel) {
+    for (const k in selectHotel) {
         delete selectHotel[k]
     }
     setGoodsSelected()
 }
 
+const star = reactive<any>({
+    1: t('oneStar'),
+    2: t('twoStar'),
+    3: t('threeStar'),
+    4: t('fourStar'),
+    5: t('fiveStar')
+})
+
 const save = () => {
     if (prop.min && selectGoodsNum.value < prop.min) {
         ElMessage({
             type: 'warning',
-            message: `${t('hotelSelectPopupGoodsMinTip')}${prop.min}${t('goodsSelectPopupPiece')}`,
+            message: `${t('hotelSelectPopupGoodsMinTip')}${prop.min}${t('goodsSelectPopupPiece')}`
         })
         return
     }
@@ -249,14 +262,14 @@ const save = () => {
     if (prop.max && prop.max > 0 && selectGoodsNum.value && selectGoodsNum.value > prop.max) {
         ElMessage({
             type: 'warning',
-            message: `${t('hotelSelectPopupGoodsMaxTip')}${prop.max}${t('goodsSelectPopupPiece')}`,
-        });
-        return;
+            message: `${t('hotelSelectPopupGoodsMaxTip')}${prop.max}${t('goodsSelectPopupPiece')}`
+        })
+        return
     }
 
-    let ids: any = [];
-    for (let k in selectHotel) {
-        ids.push(parseInt(k.replace('goods_', '')));
+    const ids: any = []
+    for (const k in selectHotel) {
+        ids.push(parseInt(k.replace('hotel_', '')))
     }
     goodsIds.value.splice(0, goodsIds.value.length, ...ids)
 

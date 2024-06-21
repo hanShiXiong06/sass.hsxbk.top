@@ -15,6 +15,7 @@ use app\dict\sys\MenuDict;
 use app\dict\sys\MenuTypeDict;
 use app\model\sys\SysMenu;
 use app\service\admin\addon\AddonService;
+use app\service\admin\site\SiteService;
 use core\base\BaseAdminService;
 use core\dict\DictLoader;
 use core\exception\AdminException;
@@ -193,20 +194,36 @@ class MenuService extends BaseAdminService
      */
     public function getAllMenuList($app_type = '', $status = 'all', $is_tree = 0, $is_button = 0)
     {
-        $cache_name = 'menu_api_' .$app_type.'_'. $status . '_' . $is_tree . '_' . $is_button;
+        $site_id = $this->site_id;
+        $cache_name = 'site_menu_api_' .$app_type.'_'. $status . '_' . $is_tree . '_' . $is_button . '_' . $this->site_id;
         $menu_list = cache_remember(
             $cache_name,
-            function () use ($status, $is_tree, $is_button, $app_type) {
+            function () use ($status, $is_tree, $is_button, $app_type, $site_id) {
                 $where = [
-//                ['menu_type', 'in', [0,1]]
                     ['app_type', '=', $app_type],
+                    ['addon', 'in', array_merge([''], get_site_addons($site_id)) ]
                 ];
                 if ($status != 'all') {
                     $where[] = ['status', '=', $status];
                 }
+
+                // 排除菜单
+                $delete_menu_addon = [];
+                $addon_loader = new DictLoader("Menu");
+                foreach (get_site_addons($site_id) as $addon) {
+                    $delete_menu = $addon_loader->load(["addon" => $addon, "app_type" => $app_type])['delete'] ?? [];
+                    if (!empty($delete_menu) && is_array($delete_menu)) $delete_menu_addon[] = $delete_menu;
+                }
+                if (!empty($delete_menu_addon)) {
+                    $delete_intersect = array_intersect(...$delete_menu_addon);
+                    if (!empty($delete_intersect)) {
+                        $where[] = ['menu_key', 'not in', $delete_intersect];
+                    }
+                }
+
                 return $this->model->where($where)->order('sort desc')->select()->toArray();
             },
-            self::$cache_tag_name
+            [self::$cache_tag_name, SiteService::$cache_tag_name]
         );
         foreach ($menu_list as &$v)
         {
@@ -218,9 +235,7 @@ class MenuService extends BaseAdminService
                 $v['menu_name'] = $lang_menu_name;
             }
         }
-
         return $is_tree ? $this->menuToTree($menu_list, 'menu_key', 'parent_key', 'children', 'auth', '', $is_button) : $menu_list;
-
     }
 
 

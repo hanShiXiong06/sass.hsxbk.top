@@ -4,15 +4,18 @@
             <div class="w-[64px] bg-[#282c34] h-screen one-menu">
                 <el-header class="logo-wrap">
                     <div class="logo flex items-center m-auto h-[64px]" v-if="!systemStore.menuIsCollapse">
-                        <img class="max-h-[40px] max-w-[40px] rounded-full" v-if="siteInfo.logo" :src="img(siteInfo.logo)" alt="">
-                        <img class="max-h-[40px] max-w-[40px] rounded-full" v-else src="@/app/assets/images/icon-addon.png" alt="">
+                        <el-image style="width: 40px; height: 40px" :src="img(logoUrl)" fit="contain">
+                            <template #error>
+                                <div class="flex justify-center items-center w-full h-[40px]"><img class="max-w-[40px]" src="@/app/assets/images/icon-addon.png" alt=""  object-fit="contain"></div>
+                            </template>
+                        </el-image>
                     </div>
                     <div class="logo flex items-center justify-center h-[64px]" v-else>
                         <i class="text-3xl iconfont iconyunkongjian"></i>
                     </div>
                 </el-header>
                 <el-scrollbar class="h-[calc( 100vh - 64px )]">
-                    <el-menu :default-active="oneMenuActive" :router="true" class="aside-menu" unique-opened="true">
+                    <el-menu :default-active="oneMenuActive" :router="true" class="aside-menu" :unique-opened="true">
                         <template v-for="(item, index) in oneMenuData" :key="index">
                             <el-menu-item :index="item.original_name" @click="router.push({ name: item.name })" v-if="item.meta.show">
                                 <div v-if="item.meta.icon" class="w-[16px] h-[16px] relative flex justify-center">
@@ -32,7 +35,7 @@
             <el-scrollbar v-if="twoMenuData.length" class="two-menu w-[190px]">
                 <div class="w-[190px] h-[64px] flex items-center justify-center text-[16px] border-0 border-b-[1px] border-solid border-[#eee]">{{ route.matched[1].meta.title }}</div>
                 <el-menu :default-active="route.name" :router="true" class="aside-menu" :collapse="systemStore.menuIsCollapse">
-                    <menu-item v-for="(route, index) in twoMenuData" :routes="route" :route-path="route.path" :key="index" />
+                    <menu-item v-for="(route, index) in twoMenuData" :routes="route" :key="index" />
                 </el-menu>
                 <div class="h-[48px]"></div>
             </el-scrollbar>
@@ -41,7 +44,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
+import { ref, watch,computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import useSystemStore from '@/stores/modules/system'
 import useUserStore from '@/stores/modules/user'
@@ -60,7 +63,9 @@ const addonIndexRoute = userStore.addonIndexRoute
 const oneMenuData = ref<Record<string, any>[]>([])
 const twoMenuData = ref<Record<string, any>[]>([])
 const addonRouters: Record<string, any> = {}
-
+const logoUrl = computed(() => {
+    return userStore.siteInfo.icon ? userStore.siteInfo.icon : systemStore.website.icon
+})
 routers.forEach(item => {
     item.original_name = item.name
     if (item.meta.addon == '') {
@@ -92,7 +97,7 @@ if (siteInfo?.apps.length > 1) {
         routers.push({
             path: addonRouters[item.key] ? addonRouters[item.key].path : '',
             meta: {
-                icon: addonRouters[item.key]?.meta.icon || 'element-Setting',
+                icon: addonRouters[item.key]?.meta.icon || 'element Setting',
                 addon: item.key,
                 title: item.title,
                 app: item.app,
@@ -156,12 +161,12 @@ watch(route, () => {
                 }
             }
             &:hover{
-                background-color: var(--el-color-primary);
-                color: #fff;
+                background-color: transparent;
+                color: var(--el-color-primary);
             }
             &.is-active{
                 background-color: var(--el-color-primary) !important;
-                color: #fff;
+                color: #fff !important;
             }
             span{
                 font-size: 14px;

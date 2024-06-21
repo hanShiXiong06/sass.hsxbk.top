@@ -82,7 +82,7 @@ class MemberLevel extends BaseAdminController
             [ 'growth', 0 ],
             [ 'remark', '' ],
             [ 'level_benefits', [] ],
-            [ 'level_gifts', [] ]
+            [ 'level_gifts', [] ],
         ]);
         $this->validate($data, 'app\validate\member\MemberLevel.edit');
         ( new MemberLevelService() )->edit($id, $data);

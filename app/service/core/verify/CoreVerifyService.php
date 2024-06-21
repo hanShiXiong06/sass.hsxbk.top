@@ -110,13 +110,13 @@ class CoreVerifyService extends BaseCoreService
             'create_time' => time(),
             'verifier_member_id' => $verify_member_id,
         ];
-
+        //核销
+        event('Verify', $verify_data); //todo:相关核销业务回调
         $model = new Verify();
         $model->create($verify_data);
         //是核销码失效
         $this->clearCode($verify_code);
-        //核销
-        event('Verify', $verify_data); //todo:相关核销业务回调
+
 
         return true;
     }

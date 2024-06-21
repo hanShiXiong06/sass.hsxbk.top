@@ -11,6 +11,7 @@
 
 namespace app\service\api\member;
 
+use app\dict\member\MemberLevelDict;
 use app\model\member\MemberLevel;
 use app\service\core\member\CoreMemberService;
 use core\base\BaseApiService;
@@ -33,6 +34,7 @@ class MemberLevelService extends BaseApiService
      */
     public function getList(){
         $list = (new MemberLevel())->where([ ['site_id', '=', $this->site_id] ])->field('level_id,site_id,level_name,growth,remark,level_benefits,level_gifts')->order('growth asc')->select()->toArray();
+        $level_style = MemberLevelDict::getStyle();
         if (!empty($list)) {
             foreach ($list as $k => $item) {
                 if (!empty($item['level_benefits'])) $list[$k]['level_benefits'] = array_filter(array_map(function ($item){
@@ -57,7 +59,14 @@ class MemberLevelService extends BaseApiService
                     }
                 }
 
-                $list[$k]['level_bg'] = '/static/resource/images/member/level/bg_'. ($k % 8 + 1) .'.png';
+                $level_key = $k % 8 + 1;
+                $list[$k]['level_bg'] = '/static/resource/images/member/level/bg_'. $level_key .'.png';
+                $list[$k]['member_bg'] = '/static/resource/images/member/level/member_'. $level_key .'.png';
+                $list[$k]['level_icon'] = '/static/resource/images/member/level/level_icon'. $level_key .'.png';
+                $list[$k]['level_tag'] = '/static/resource/images/member/level/level_'. $level_key .'.png';
+
+                $list[$k]['level_style'] = $level_style['level_'.$level_key] ?? [];
+
             }
         }
         return $list;

@@ -11,6 +11,17 @@ import request from '@/utils/request'
 export function getGoodsList(params: Record<string, any>) {
     return request.get(`o2o/goods`, {params})
 }
+
+/**
+ * 获取项目选择分页列表
+ * @param params
+ * @returns
+ */
+export function getGoodsSelectPageList(params: Record<string, any>) {
+    return request.get(`o2o/goods/select`, {params})
+}
+
+
 /**
  * 获取项目列表（不分页）
  * @returns
@@ -39,7 +50,7 @@ export function editGoods(params: Record<string, any>) {
 
 /**
  * 项目详情
- * @param id
+ * @param params
  * @returns
  */
 export function getGoodsDetail(params: Record<string, any>) {
@@ -47,7 +58,7 @@ export function getGoodsDetail(params: Record<string, any>) {
 }
 /**
  * 修改项目状态(上架,下架)
- * @param id
+ * @param params
  * @returns
  */
 export function editGoodsStatus(params: Record<string, any>) {
@@ -58,7 +69,7 @@ export function editGoodsStatus(params: Record<string, any>) {
 }
 /**
  * 修改项目排序
- * @param id
+ * @param params
  * @returns
  */
 export function editGoodsSort(params: Record<string, any>) {
@@ -74,4 +85,22 @@ export function editGoodsSort(params: Record<string, any>) {
  */
 export function deleteGoods(id: number) {
     return request.delete(`o2o/goods/${id}`, {showErrorMessage: true, showSuccessMessage: true})
+}
+
+/**
+ * 获取商品SKU规格列表
+ * @param params
+ * @returns
+ */
+export function getGoodsSkuList(params: Record<string, any>) {
+    return request.get(`o2o/goods/sku`, {params})
+}
+
+/**
+ * 编辑商品SKU规格会员价格
+ * @param params
+ * @returns
+ */
+export function editGoodsListMemberPrice(params: Record<string, any>) {
+    return request.put(`o2o/goods/member_price`, params, {showSuccessMessage: true})
 }

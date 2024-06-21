@@ -32,6 +32,7 @@ class ApiChannel
         //微信或支付宝
         $channel_rules = [
             'wechat/serve/<site_id>',
+            'weapp/serve/<site_id>',
             'pay/notify/<site_id>/<channel>/<type>/<action>'
         ];
         if (in_array($request->rule()->getRule(), $channel_rules)) {

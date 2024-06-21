@@ -65,7 +65,7 @@ class CoreWeappTemplateService extends BaseCoreService
         return $api->postJson('wxaapi/newtmpl/addtemplate', [
             'tid' => $tid,
             'kidList' => $kidList,
-            'kidList' => $sceneDesc,
+            'sceneDesc' => $sceneDesc,
         ]);
     }
 

@@ -44,6 +44,7 @@ return [
     'ADDON_DIR_FAIL' => '插件文件操作失败',
     'LAYOUT_NOT_EXIST' => '该布局不存在',
     'ZIP_FILE_NOT_FOUND' => '找不到可用的压缩文件',
+    'ZIP_ARCHIVE_NOT_INSTALL' => 'ZipArchive扩展未安装',
     'DOWNLOAD_SUCCESS' => '下载成功',
     'APP_NOT_ALLOW_UNINSTALL' => '该应用下存在站点卸载前请先删除相关站点',
     'ADDON_INSTALL_FAIL' => '插件安装失败',
@@ -192,6 +193,9 @@ return [
     'SITE_EXPIRE_NOT_ALLOW' => '站点已打烊，续费后可继续使用此项功能',
     'SITE_CLOSE_NOT_ALLOW' => '站点已停止',
     'SITE_GROUP_APP_NOT_EXIST' => '存在无效的应用',
+    'NO_PERMISSION_TO_CREATE_SITE_GROUP' => '没有创建该站点套餐的权限',
+    'SITE_GROUP_CREATE_SITE_EXCEEDS_LIMIT' => '该套餐的创建数量已达上限',
+    'SITE_GROUP_NOT_EXIST' => '站点套餐不存在',
 
     //支付相关(todo  注意:7段不共享)
     'ALIPAY_TRANSACTION_NO_NOT_EXIST' => '无效的支付交易号',
@@ -263,7 +267,7 @@ return [
 
     //核销相关
     'VERIFY_TYPE_ERROR' => '核销类型错误',
-    'VERIFY_CODE_EXPIRED' => '核销码已过期',
+    'VERIFY_CODE_EXPIRED' => '当前核销码已核销或已失效',
     'VERIFIER_NOT_EXIST' => '核销员不存在',
 
     //签到相关
@@ -281,4 +285,10 @@ return [
     'EXPORT_NO_DATA' => '暂无可导出数据',
     'DIRECTORY' => '目录',
     'WAS_NOT_CREATED' => '创建失败',
+
+    /********************************************************* 微信开放平台 **************************************/
+    'WECHAT_OPLATFORM_NOT_EXIST' => '未配置微信开放平台',
+    'WEAPP_EXIST' => '该小程序已经授权给其他站点',
+    'WECHAT_EXIST' => '该公众号已经授权给其他站点',
+    'PLEASE_ADD_FIRST_SITE_GROUP' => '请先添加站点套餐'
 ];

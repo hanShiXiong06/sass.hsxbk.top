@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -11,12 +11,12 @@
 
 namespace addon\o2o\app\service\api\technician;
 
+use addon\o2o\app\dict\GoodsDict;
 use addon\o2o\app\dict\TechnicianDict;
 use addon\o2o\app\model\Technician;
 use addon\o2o\app\model\TechnicianGoods;
-use core\base\BaseAdminService;
+use addon\o2o\app\service\api\goods\GoodsService;
 use core\base\BaseApiService;
-use core\exception\CommonException;
 
 /**
  * 技师服务层
@@ -81,10 +81,18 @@ class TechnicianService extends BaseApiService
         $info['goods'] = (new TechnicianGoods())->where([ ['technician_id', '=', $id], ['site_id', '=', $this->site_id] ])->with(
             [
                 'goods_info' => function($query) {
-                    $query->field('site_id,goods_name,goods_id,goods_cover, sale_num,goods_image,price')->append([ 'cover_thumb_small' ]);
+                    $query->field('site_id,goods_name,goods_id,goods_cover, sale_num,goods_image,price,buy_type,member_discount')->append([ 'cover_thumb_small' ]);
                 }
             ]
         )->select()->toArray();
+
+        if (!empty($this->member_id)) {
+            $goods_service = new GoodsService();
+            $member_info = $goods_service->getMemberInfo();
+            foreach ($info['goods'] as $k => &$v) {
+                if($v['goods_info']['buy_type'] == GoodsDict::BUY) $v['goods_info'][ 'goodsSku' ][ 'member_price' ] = $goods_service->getMemberPrice($member_info, $v['goods_info'][ 'member_discount' ], $v['goods_info'][ 'goodsSku' ][ 'member_price' ], $v['goods_info'][ 'goodsSku' ][ 'price' ]);
+            }
+        }
 
         return $info;
     }

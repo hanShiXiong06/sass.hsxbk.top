@@ -24,5 +24,8 @@
 	"memberSearchText":"下单会员",
 	"memberSearchTextPlaceholder":"请输入昵称/手机号/会员编码",
 	"technicianSearchText":"服务技师",
-	"technicianSearchTextPlaceholder":"请输入技师姓名/手机号"
+	"technicianSearchTextPlaceholder":"请输入技师姓名/手机号",
+	"exportOrderType": "导出订单类型",
+	"o2oOrder": "订单数据表",
+	"o2oOrderGoods": "订单商品表"
 }

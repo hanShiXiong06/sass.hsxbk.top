@@ -18,6 +18,7 @@ CREATE TABLE {{prefix}}tourism_way (
   way_image text NOT NULL COMMENT '线路图片',
   create_time int NOT NULL DEFAULT 0 COMMENT '添加时间',
   update_time int NOT NULL DEFAULT 0 COMMENT '更新时间',
+  poster_id int NOT NULL DEFAULT 0 COMMENT '海报id',
   PRIMARY KEY (way_id)
 )
 ENGINE = INNODB,
@@ -100,6 +101,7 @@ CREATE TABLE {{prefix}}tourism_scenic (
   scenic_status tinyint NOT NULL DEFAULT 1 COMMENT '景点上架状态',
   create_time int NOT NULL DEFAULT 0 COMMENT '添加时间',
   update_time int NOT NULL DEFAULT 0 COMMENT '修改时间',
+  poster_id int NOT NULL DEFAULT 0 COMMENT '海报id',
   PRIMARY KEY (scenic_id)
 )
 ENGINE = INNODB,
@@ -287,6 +289,7 @@ CREATE TABLE {{prefix}}tourism_hotel (
   create_time int NOT NULL DEFAULT 0 COMMENT '添加时间',
   is_delete tinyint NOT NULL DEFAULT 0 COMMENT '是否删除',
   delete_time int NOT NULL DEFAULT 0 COMMENT '删除时间',
+  poster_id int NOT NULL DEFAULT 0 COMMENT '海报id',
   PRIMARY KEY (hotel_id)
 )
 ENGINE = INNODB,
@@ -312,6 +315,7 @@ CREATE TABLE {{prefix}}tourism_goods_day (
   update_time int NOT NULL DEFAULT 0 COMMENT '修改时间',
   time int NOT NULL DEFAULT 0 COMMENT '当天开始时间',
   time_date varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  member_price int NOT NULL DEFAULT 0 COMMENT '会员价是否参与',
   PRIMARY KEY (id)
 )
 ENGINE = INNODB,
@@ -368,6 +372,8 @@ CREATE TABLE {{prefix}}tourism_goods (
   room_stay varchar(255) NOT NULL DEFAULT '' COMMENT '入住人数（room）',
   room_floor varchar(255) NOT NULL DEFAULT '' COMMENT '入住楼层（room）',
   is_default tinyint NOT NULL DEFAULT 0 COMMENT '是否默认',
+  member_discount varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '会员等级折扣，不参与：空，会员折扣：discount',
+  fixed_discount text COLLATE utf8mb4_general_ci COMMENT '等级折扣',
   PRIMARY KEY (goods_id)
 )
 ENGINE = INNODB,

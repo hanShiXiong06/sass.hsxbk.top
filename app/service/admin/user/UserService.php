@@ -16,12 +16,15 @@ use app\dict\sys\AppTypeDict;
 use app\dict\sys\UserDict;
 use app\model\sys\SysUser;
 use app\model\sys\SysUserRole;
+use app\model\sys\UserCreateSiteLimit;
+use app\service\admin\auth\AuthService;
 use app\service\admin\auth\LoginService;
 use core\base\BaseAdminService;
 use core\exception\AdminException;
 use core\exception\CommonException;
 use Exception;
 use think\db\exception\DbException;
+use think\facade\Cache;
 use think\facade\Db;
 use think\Model;
 
@@ -45,7 +48,15 @@ class UserService extends BaseAdminService
      */
     public function getPage(array $where)
     {
-        return $this->getPageList($this->model, $where, 'uid,username,head_img,real_name,last_ip,last_time,login_count,status', 'uid desc',['status_name']);
+        AuthService::isSuperAdmin();
+        $super_admin_uid = Cache::get('super_admin_uid');
+
+        $field = 'uid,username,head_img,real_name,last_ip,last_time,login_count,status';
+        $search_model = $this->model->withSearch([ 'username', 'real_name', 'last_time' ], $where)->field($field)->append([ 'status_name' ])->order('uid desc');
+        return $this->pageQuery($search_model, function ($item) use ($super_admin_uid) {
+            $item['site_num'] = (new SysUserRole())->where([['uid', '=', $item['uid']], ['site_id', '<>', request()->defaultSiteId() ] ])->count();
+            $item['is_super_admin'] = $super_admin_uid == $item['uid'];
+        });
     }
 
 
@@ -55,68 +66,26 @@ class UserService extends BaseAdminService
      * @return array
      */
     public function getInfo(int $uid){
+        AuthService::isSuperAdmin();
+        $super_admin_uid = Cache::get('super_admin_uid');
+
         $where = array(
             ['uid', '=', $uid],
         );
-        $field = 'uid, username, head_img, real_name, last_ip, last_time, create_time, login_count, status, delete_time, update_time';
-        $user = $this->model->where($where)->field($field)->append(['status_name'])->findOrEmpty();
-        return $user->toArray();
-    }
-
-    /**
-     * 获取用户列表
-     * @param array $where
-     * @return array
-     */
-    public function getUserAdminPage(array $where)
-    {
-        $site_id = $this->site_id;
-        $field = 'id,SysUserRole.uid,site_id,role_ids,SysUserRole.create_time,is_admin,SysUserRole.status';
-        $order = 'SysUserRole.create_time desc';
-        $search_model = (new SysUserRole())
-            ->field($field)
-            ->order($order)
-            ->with('userinfo')
-            ->hasWhere('userinfo', function ($query) use ($where, $site_id) {
-                $condition = [
-                    ['SysUserRole.site_id', '=', $site_id ]
-                ];
-                if (!empty($where['username'])) $condition[] = ['username', 'like', "%{$where['username']}%"];
-                if (!empty($where['realname'])) $condition[] = ['realname', 'like', "%{$where['realname']}%"];
-                $query->where($condition);
-            })
-            ->append(['status_name']);
-
-        return $this->pageQuery($search_model, function ($item, $key) {
-            if (!empty($item->role_ids)) {
-                $item->role_array = (new UserRoleService())->getRoleByUserRoleIds($item->role_ids, $this->site_id);
-            } else {
-                $item->role_array = [];
-            }
-        });
-    }
-
-    /**
-     * 获取用户信息
-     * @param int $uid
-     * @return array
-     */
-    public function getUserAdminInfo(int $uid)
-    {
-        $field = 'id,uid,site_id,role_ids,create_time,is_admin,status';
-        $info = (new SysUserRole())->where([ ['uid', '=', $uid], ['site_id', '=', $this->site_id ] ])
-            ->field($field)
-            ->with('userinfo')
-            ->findOrEmpty()
-            ->toArray();
+        $field = 'uid, username, head_img, real_name, last_ip, last_time, create_time, login_count, delete_time, update_time';
+        $info = $this->model->where($where)->field($field)->findOrEmpty()->toArray();
 
         if (!empty($info)) {
-            if (!empty($info['role_ids'])) {
-                $info['role_array'] = (new UserRoleService())->getRoleByUserRoleIds($info['role_ids'], $this->site_id);
-            } else {
-                $info['role_array'] = [];
-            }
+            $info['roles'] = (new SysUserRole())->where([['uid', '=', $info['uid']], ['site_id', '<>', request()->defaultSiteId() ] ])
+                ->field('*')
+                ->with(['site_info' => function($query) {
+                    $query->field('site_id, site_name, app_type, status, expire_time');
+                }])
+                ->select()
+                ->toArray();
+            $info['is_super_admin'] = $super_admin_uid == $info['uid'];
         }
+
         return $info;
     }
 
@@ -127,15 +96,40 @@ class UserService extends BaseAdminService
      * @throws Exception
      */
     public function add(array $data){
-        $user_data = [
-            'username' => $data['username'],
-            'head_img' => $data['head_img'],
-            'status' => $data['status'],
-            'real_name' => $data['real_name'],
-            'password' => create_password($data['password'])
-        ];
-        $user = $this->model->create($user_data);
-        return $user?->uid;
+        if ($this->checkUsername($data['username'])) throw new CommonException('USERNAME_REPEAT');
+
+        Db::startTrans();
+        try {
+            $user_data = [
+                'username' => $data['username'],
+                'head_img' => $data['head_img'],
+                'status' => $data['status'],
+                'real_name' => $data['real_name'],
+                'password' => create_password($data['password'])
+            ];
+            $user = $this->model->create($user_data);
+
+            // 添加用户建站限制
+            $create_site_limit = $data['create_site_limit'] ?? [];
+            if (!empty($create_site_limit)) {
+                $create_site_limit_save = [];
+                foreach ($create_site_limit as $item) {
+                    $create_site_limit_save[] = [
+                        'group_id' => $item['group_id'],
+                        'uid' => $user?->uid,
+                        'num' => $item['num'],
+                        'month' => $item['month']
+                    ];
+                }
+                (new UserCreateSiteLimit())->saveAll($create_site_limit_save);
+            }
+
+            Db::commit();
+            return $user?->uid;
+        } catch (\Exception $e) {
+            Db::rollback();
+            throw new AdminException($e->getMessage());
+        }
     }
 
     /**
@@ -162,34 +156,9 @@ class UserService extends BaseAdminService
             $role_ids = $data['role_ids'] ?? [];
             $is_admin = $data['is_admin'] ?? 0;
             //创建用户站点管理权限
-            (new UserRoleService())->add($uid, ['role_ids' => $role_ids, 'is_admin' => $is_admin], $site_id);
+            (new UserRoleService())->add($uid, ['role_ids' => $role_ids, 'is_admin' => $is_admin, 'status' => $data['status'] ], $site_id);
             Db::commit();
             return $uid;
-        } catch ( Exception $e) {
-            Db::rollback();
-            throw new AdminException($e->getMessage());
-        }
-    }
-
-    /**
-     * 更新对应站点用户
-     * @param $uid
-     * @param $data
-     * @param $site_id
-     * @return true
-     */
-    public function editSiteUser($uid, $data, $site_id)
-    {
-        Db::startTrans();
-        try {
-            //添加用户
-            $this->edit($uid, $data);
-            $role_ids = $data['role_ids'] ?? [];
-            $is_admin = $data['is_admin'] ?? 0;
-            //创建用户站点管理权限
-            (new UserRoleService())->edit($site_id, $uid, $role_ids);
-            Db::commit();
-            return true;
         } catch ( Exception $e) {
             Db::rollback();
             throw new AdminException($e->getMessage());
@@ -237,7 +206,6 @@ class UserService extends BaseAdminService
         ];
         $is_off_status = false;
         if(isset($data['status'])){
-            $this->statusChange($uid, $data['status']);
             if($data['status'] == UserDict::OFF)
                 $is_off_status = true;
         }
@@ -272,9 +240,7 @@ class UserService extends BaseAdminService
      * @return true
      */
     public function statusChange($uid, $status) {
-        (new SysUserRole())->where([ ['uid', '=', $uid], ['site_id', '=', $this->site_id] ])->update(['status' => $status]);
-        LoginService::clearToken($uid);
-        return true;
+
     }
 
     /**
@@ -306,7 +272,7 @@ class UserService extends BaseAdminService
      * @param array $where
      * @return array
      */
-    public function getUserAllPage(array $where)
+    public function getUserAll(array $where)
     {
         $field = 'uid, username, head_img';
         return $this->model->withSearch(['username', 'realname', 'create_time'], $where)
@@ -314,5 +280,64 @@ class UserService extends BaseAdminService
             ->order('uid desc')
             ->select()
             ->toArray();
+    }
+
+    /**
+     * 获取用户站点创建限制
+     * @param int $uid
+     * @return void
+     */
+    public function getUserCreateSiteLimit(int $uid) {
+        return (new UserCreateSiteLimit())->where([ ['uid', '=', $uid] ])->select()->toArray();
+    }
+
+    /**
+     * 获取用户站点创建限制
+     * @param int $uid
+     * @return void
+     */
+    public function getUserCreateSiteLimitInfo(int $id) {
+        return (new UserCreateSiteLimit())->where([ ['id', '=', $id] ])->findOrEmpty()->toArray();
+    }
+
+    /**
+     * 添加用户站点创建限制
+     * @param array $data
+     * @return void
+     */
+    public function addUserCreateSiteLimit(array $data) {
+        (new UserCreateSiteLimit())->where(['uid' => $data['uid'], 'group_id' => $data['group_id']])->delete();
+
+        (new UserCreateSiteLimit())->save( [
+            'uid' => $data['uid'],
+            'group_id' => $data['group_id'],
+            'num' => $data['num'],
+            'month' => $data['month']
+        ]);
+        return true;
+    }
+
+    /**
+     * 编辑用户站点创建限制
+     * @param $id
+     * @param array $data
+     * @return true
+     */
+    public function editUserCreateSiteLimit($id, array $data) {
+        (new UserCreateSiteLimit())->update( [
+            'num' => $data['num'],
+            'month' => $data['month']
+        ], ['id' => $id ]);
+        return true;
+    }
+
+    /**
+     * 删除用户站点创建限制
+     * @param $id
+     * @return true
+     */
+    public function delUserCreateSiteLimit($id) {
+        (new UserCreateSiteLimit())->where(['id' => $id ])->delete();
+        return true;
     }
 }

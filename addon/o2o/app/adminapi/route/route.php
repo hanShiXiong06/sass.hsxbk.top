@@ -72,6 +72,8 @@ Route::group('o2o', function () {
     /*****************************************************  服务管理 ****************************************************/
     // 项目列表
     Route::get('goods', 'addon\o2o\app\adminapi\controller\goods\Goods@lists');
+    // 获取商品选择分页列表
+    Route::get('goods/select', 'addon\o2o\app\adminapi\controller\goods\Goods@select');
     // 项目列表
     Route::get('goods/list', 'addon\o2o\app\adminapi\controller\goods\Goods@getLists');
     // 项目详情
@@ -82,6 +84,10 @@ Route::group('o2o', function () {
     Route::get('goods/init', 'addon\o2o\app\adminapi\controller\goods\Goods@init');
     //编辑 项目
     Route::put('goods/:id', 'addon\o2o\app\adminapi\controller\goods\Goods@edit');
+    //商品sku
+    Route::get('goods/sku', 'addon\o2o\app\adminapi\controller\goods\Goods@sku');
+    // 编辑商品规格列表会员价格
+    Route::put('goods/member_price', 'addon\o2o\app\adminapi\controller\goods\Goods@editGoodsListMemberPrice');
     //删除 项目
     Route::delete('goods/:id', 'addon\o2o\app\adminapi\controller\goods\Goods@del');
     //编辑 项目状态

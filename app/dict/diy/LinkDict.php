@@ -132,6 +132,22 @@ class LinkDict
                     'key' => 'app'
                 ],
                 'child_list' => []
+            ],
+            'DIY_JUMP_OTHER_APPLET' => [
+                'title' => get_lang('dict_diy.diy_jump_other_applet'),
+                'addon_info' => [
+                    'title' => '系统',
+                    'key' => 'app'
+                ],
+                'child_list' => []
+            ],
+            'DIY_MAKE_PHONE_CALL' => [
+                'title' => get_lang('dict_diy.diy_make_phone_call'),
+                'addon_info' => [
+                    'title' => '系统',
+                    'key' => 'app'
+                ],
+                'child_list' => []
             ]
         ];
 

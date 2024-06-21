@@ -106,7 +106,7 @@ class CoreTransferService extends BaseCoreService
                 $this->transferNotify($site_id, $transfer_no, $result);
                 return true;
             }catch( Throwable $e){
-                $this->fail($site_id, $transfer_no, $transfer_type, ['reason' => get_lang($e->getMessage())]);
+                $this->fail($site_id, $transfer_no, ['reason' => get_lang($e->getMessage())]);
                 throw new PayException($e->getMessage());
             }
         }

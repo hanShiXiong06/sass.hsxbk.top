@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -42,7 +42,7 @@ class WayService extends BaseAdminService
         $field = 'way_id,site_id,group_buy_type,way_theme,travel_type,way_traffic,way_name,way_cover,way_status,create_time,start_city,end_city';
         $order = 'create_time desc';
         $search_model = $this->model->where([['site_id', '=', $this->site_id]])->withSearch(["way_name", "start_city", "end_city", "status", "create_time"], $where)->field($field)->with(['goods' => function($query) {
-        $query->field('goods_id, site_id, stock, goods_name, goods_type, way_id, goods_cover, goods_image, goods_content, sort, status, sale_num, price,sale_price, buy_info');
+        $query->field('goods_id, site_id, member_discount, fixed_discount,stock, goods_name, goods_type, way_id, goods_cover, goods_image, goods_content, sort, status, sale_num, price,sale_price, buy_info');
         }])->order($order)->append(['group_buy_type_name', 'way_theme_name','travel_type_name', 'way_traffic_name', 'status_name']);
         $list = $this->pageQuery($search_model);
         $goodsDayModel = new GoodsDay();
@@ -51,6 +51,10 @@ class WayService extends BaseAdminService
             $list['data'][$key]['sell_sum'] = $goodsDayModel->where([['goods_id', '=', $val['goods']['goods_id']]])->sum('sell_num');
 
             $list['data'][$key]['goods']['cover_thumb_small'] = get_thumb_images($val['site_id'], $val['goods']['goods_cover'], FileDict::SMALL);
+            $list['data'][$key]['member_discount'] = $val['goods']['member_discount'] ?? '';
+            $list['data'][$key]['fixed_discount'] = $val['goods']['fixed_discount'] ?? '';
+            $list['data'][$key]['goods_id'] = $val['goods']['goods_id'] ?? 0;
+
         }
         return $list;
     }
@@ -62,10 +66,10 @@ class WayService extends BaseAdminService
      */
     public function getInfo(int $id)
     {
-        $field = 'way_id,site_id,group_buy_type,way_theme,travel_type,way_traffic,way_name,way_cover,way_status,create_time,start_city,end_city,way_character,fee_desc';
+        $field = 'way_id,site_id,poster_id,group_buy_type,way_theme,travel_type,way_traffic,way_name,way_cover,way_status,create_time,start_city,end_city,way_character,fee_desc';
 
         $info = $this->model->field($field)->where([['way_id', '=', $id], ['site_id', '=', $this->site_id]])->field($field)->with(['goods' => function($query) {
-                $query->field('goods_id, site_id, stock, goods_name, goods_type, way_id, goods_cover, goods_image, goods_content, sort, status, sale_num, price, sale_price, buy_info');
+                $query->field('goods_id, site_id, member_discount,fixed_discount, stock, goods_name, goods_type, way_id, goods_cover, goods_image, goods_content, sort, status, sale_num, price, sale_price, buy_info');
             }])->append(['group_buy_type_name', 'way_theme_name','travel_type_name', 'way_traffic_name', 'image_thumb_mid', 'cover_thumb_mid'])->findOrEmpty()->toArray();
 
         $info['goods']['image_thumb_small'] = [];
@@ -74,6 +78,12 @@ class WayService extends BaseAdminService
             $info['goods']['image_thumb_small'][] = get_thumb_images($info['site_id'], $val, FileDict::SMALL);
         }
         $info['goods']['cover_thumb_small'] = get_thumb_images($info['site_id'], $info['goods']['goods_cover'], FileDict::SMALL);
+
+        $info['member_discount'] = $info['goods']['member_discount'];
+        $info['fixed_discount'] = $info['goods']['fixed_discount'];
+
+        // 海报id，处理数据类型
+        if (empty($info[ 'poster_id' ])) $info[ 'poster_id' ] = '';
 
         return $info;
     }

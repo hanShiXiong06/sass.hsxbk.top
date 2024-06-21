@@ -63,6 +63,26 @@
                         <el-form-item :label="t('endCity')" prop="end_city">
                             <el-input v-model.trim="formData.end_city" clearable :placeholder="t('endCityPlaceholder')" class="input-width" />
                         </el-form-item>
+                        <el-form-item :label="t('memberDiscount')" >
+                            <div>
+                            <el-radio-group v-model="formData.member_discount">
+                                <el-radio label="">{{ t('nonparticipation') }}</el-radio>
+                                <el-radio label="discount">{{ t('discount') }}</el-radio>
+                                <el-radio label="fixed_discount">{{ t('fixedDiscount') }}</el-radio>
+                            </el-radio-group>
+                            <div class="text-[12px] text-[#999] leading-[20px]" v-if="formData.member_discount == 'discount'">{{t('discountHint')}}</div>
+                            <div class="text-[12px] text-[#999] leading-[20px]" v-if="formData.member_discount == 'fixed_discount'">{{t('fixedDiscountHint')}}</div>
+                            </div>
+                        </el-form-item>
+                        <el-form-item :label="t('poster')">
+                          <el-select v-model="formData.poster_id" :placeholder="t('posterPlaceholder')" clearable>
+                            <el-option v-for="item in posterOptions" :key="item.id" :label="item.name" :value="item.id" />
+                          </el-select>
+                          <div class="ml-[10px]">
+                            <span class="cursor-pointer text-primary mr-[10px]" @click="refreshGoodsPoster(true)">{{ t('refresh') }}</span>
+                            <span class="cursor-pointer text-primary" @click="toPosterEvent">{{ t('addGoodsPoster') }}</span>
+                          </div>
+                        </el-form-item>
                         <el-form-item :label="t('buyDesc')">
                             <editor v-model="formData.buy_info" />
                         </el-form-item>
@@ -130,6 +150,12 @@
                 <el-form-item :label="t('wayPrice')" class="input-width" prop="price">
                     <el-input v-model="saleArr.price" clearable :placeholder="t('wayPricePlaceholder')" class="input-width" @keyup="filterDigit($event)"/>
                 </el-form-item>
+                <el-form-item :label="t('memberPrice')" prop="member_price" class="items-center" v-if="formData.member_discount != ''">
+					<el-radio-group v-model="saleArr.member_price" class="ml-4 input-width">
+						<el-radio :label="1" size="large">{{ t('involved') }}</el-radio>
+						<el-radio :label="0" size="large">{{ t('noInvolved') }}</el-radio>
+					</el-radio-group>
+				</el-form-item>
             </el-form>
 
             <template #footer>
@@ -145,7 +171,7 @@
 <script lang="ts" setup>
 import { ref, reactive, computed } from 'vue'
 import { t } from '@/lang'
-import type { FormInstance } from 'element-plus'
+import { ElMessage, FormInstance } from 'element-plus'
 import {
     getWayInfo,
     addWay,
@@ -155,7 +181,8 @@ import {
     wayDatePriceList
 } from '@/addon/tourism/api/tourism'
 import { useRoute, useRouter } from 'vue-router'
-import { filterNumber,filterDigit } from '@/utils/common'
+import { filterNumber, filterDigit } from '@/utils/common'
+import { getPosterList } from '@/app/api/poster'
 
 const route = useRoute()
 const router = useRouter()
@@ -181,7 +208,9 @@ const initialFormData = {
     goods_cover: '',
     goods_image: '',
     price: '',
-    buy_info: ''
+    buy_info: '',
+    member_discount: '',
+    poster_id: ''
 }
 const formData: Record<string, any> = reactive({ ...initialFormData })
 
@@ -286,6 +315,37 @@ const onSave = async (formEl: FormInstance | undefined) => {
     })
 }
 
+// 海报列表下拉框
+const posterOptions = reactive([])
+
+// 跳转到海报列表，添加海报
+const toPosterEvent = () => {
+    const url = router.resolve({
+        path: '/poster/list'
+    })
+    window.open(url.href)
+}
+
+// 商品海报
+const refreshGoodsPoster = (bool = false) => {
+    getPosterList({
+        type: 'tourism_way'
+    }).then((res) => {
+        const data = res.data
+        if (data) {
+            posterOptions.splice(0, posterOptions.length, ...data)
+            if (bool) {
+                ElMessage({
+                    message: t('refreshSuccess'),
+                    type: 'success'
+                })
+            }
+        }
+    })
+}
+
+refreshGoodsPoster()
+
 const back = () => {
     history.back()
 }
@@ -310,8 +370,10 @@ const check = (res:any) => {
     saleArr.is_set = 1
     saleArr.price = ''
     saleArr.end_date = ''
+    saleArr.member_price = 1
     if (date_price_list.value[res.day]) {
         saleArr.price = date_price_list.value[res.day].price
+        saleArr.member_price = date_price_list.value[res.day].member_price
     }
 }
 interface saleData {
@@ -320,12 +382,14 @@ interface saleData {
     end_date: string
     price: string
     goods_id?: number|string
+    member_price?: number|string
 }
 const saleArr = reactive<saleData>({
     is_set: 1,
     start_date: '',
     end_date: '',
-    price: ''
+    price: '',
+    member_price: 1
 })
 
 const goodsDay = ref(false)

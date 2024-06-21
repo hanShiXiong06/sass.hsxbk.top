@@ -14,30 +14,23 @@
                         <el-input v-model.trim="o2oGoodsTable.searchParam.goods_name" :placeholder="t('goodsNamePlaceholder')" />
                     </el-form-item>
                     <el-form-item :label="t('categoryId')" prop="goods_category">
-                        <el-cascader class="input-width" v-model="o2oGoodsTable.searchParam.goods_category"
-                            :options="categoryList" clearable  :props="{ value: 'value', label: 'label', emitPath:false }" />
+                        <el-cascader class="input-width" v-model="o2oGoodsTable.searchParam.goods_category" :options="categoryList" clearable  :props="{ value: 'value', label: 'label', emitPath:false }" />
                     </el-form-item>
                     <el-form-item :label="t('createTime')" prop="create_time">
-                        <el-date-picker v-model="o2oGoodsTable.searchParam.create_time" type="datetimerange"
-                            value-format="YYYY-MM-DD HH:mm:ss" :start-placeholder="t('startDate')"
-                            :end-placeholder="t('endDate')" />
+                        <el-date-picker v-model="o2oGoodsTable.searchParam.create_time" type="datetimerange" value-format="YYYY-MM-DD HH:mm:ss" :start-placeholder="t('startDate')" :end-placeholder="t('endDate')" />
                     </el-form-item>
                     <el-form-item :label="t('saleNum')" prop="start_sale_num">
                         <div class="region-input">
-                            <input type="text" :placeholder="t('startSaleNumPlaceholder')" maxlength="10"
-                                v-model="o2oGoodsTable.searchParam.start_sale_num" @keyup="filterDigit($event)">
+                            <input type="text" :placeholder="t('startSaleNumPlaceholder')" maxlength="10" v-model="o2oGoodsTable.searchParam.start_sale_num" @keyup="filterDigit($event)">
                             <span class="separator">-</span>
-                            <input type="text" :placeholder="t('endSaleNumPlaceholder')" maxlength="10"
-                                v-model="o2oGoodsTable.searchParam.end_sale_num" @keyup="filterDigit($event)">
+                            <input type="text" :placeholder="t('endSaleNumPlaceholder')" maxlength="10" v-model="o2oGoodsTable.searchParam.end_sale_num" @keyup="filterDigit($event)">
                         </div>
                     </el-form-item>
                     <el-form-item :label="t('skuPrice')" prop="start_price">
                         <div class="region-input">
-                            <input type="text" :placeholder="t('startPricePlaceholder')" maxlength="10"
-                                v-model="o2oGoodsTable.searchParam.start_price" @keyup="filterDigit($event)">
+                            <input type="text" :placeholder="t('startPricePlaceholder')" maxlength="10" v-model="o2oGoodsTable.searchParam.start_price" @keyup="filterDigit($event)">
                             <span class="separator">-</span>
-                            <input type="text" :placeholder="t('endPricePlaceholder')" maxlength="10"
-                                v-model="o2oGoodsTable.searchParam.end_price" @keyup="filterDigit($event)">
+                            <input type="text" :placeholder="t('endPricePlaceholder')" maxlength="10" v-model="o2oGoodsTable.searchParam.end_price" @keyup="filterDigit($event)">
                         </div>
                     </el-form-item>
                     <el-form-item>
@@ -52,8 +45,7 @@
                 <el-tab-pane :label="t('statusOff')" name="0"></el-tab-pane>
             </el-tabs>
             <div class="mt-[10px]">
-                <el-table :data="o2oGoodsTable.data" size="large" v-loading="o2oGoodsTable.loading" ref="goodsListTableRef"
-                  @sort-change="sortChange">
+                <el-table :data="o2oGoodsTable.data" size="large" v-loading="o2oGoodsTable.loading" ref="goodsListTableRef" @sort-change="sortChange">
                     <template #empty>
                         <span>{{ !o2oGoodsTable.loading ? t('emptyData') : '' }}</span>
                     </template>
@@ -62,23 +54,23 @@
                             <div class="flex items-center">
                                 <div class="w-[60px] max-h-[60px]">
                                     <div class="min-w-[60px] h-[60px] flex items-center justify-center">
-                                        <el-image v-if="row.goods_cover" class="w-[60px] h-[60px]"
-                                            :src="img(row.goods_cover)" fit="contain">
+                                        <el-image v-if="row.goods_cover" class="w-[60px] h-[60px]" :src="img(row.goods_cover)" fit="contain">
                                             <template #error>
                                                 <div class="image-slot">
-                                                    <img class="w-[60px] h-[60px]"
-                                                        src="@/addon/o2o/assets/goods_default.png" />
+                                                    <img class="w-[60px] h-[60px]" src="@/addon/o2o/assets/goods_default.png" />
                                                 </div>
                                             </template>
                                         </el-image>
-                                        <img v-else class="w-[60px] h-[60px]" src="@/addon/o2o/assets/goods_default.png"
-                                            fit="contain" />
+                                        <img v-else class="w-[60px] h-[60px]" src="@/addon/o2o/assets/goods_default.png" fit="contain" />
                                     </div>
                                 </div>
                                 <div class="ml-2">
-                                    <div><a href="javascript:;" class="flex-1 multi-hidden" :title="row.goods_name">{{
-                                    row.goods_name }}</a></div>
-                                    <div><el-tag>{{ row.buy_type_name }}</el-tag></div>
+                                    <div>
+                                        <a href="javascript:;" class="flex-1 multi-hidden" :title="row.goods_name">{{ row.goods_name }}</a>
+                                    </div>
+                                    <div>
+                                        <el-tag>{{ row.buy_type_name }}</el-tag>
+                                    </div>
                                 </div>
                             </div>
                         </template>
@@ -98,15 +90,15 @@
                     <el-table-column prop="sort" :label="t('sort')" min-width="120"  sortable="custom">
                         <template #default="{ row }">
                             <el-input v-model="row.sort" class="!w-[70px]" maxlength="10" @input="sortInputListener($event,row)"/>
-
                         </template>
                     </el-table-column>
                     <el-table-column prop="create_time" :label="t('createTime')" min-width="150" />
-                    <el-table-column :label="t('operation')" fixed="right" align="right" min-width="240">
+                    <el-table-column :label="t('operation')" fixed="right" align="right" min-width="120">
                         <template #default="{ row }">
                             <el-button type="primary" link @click="spreadEvent(row)">{{ t('spreadGoods') }}</el-button>
                             <el-button type="primary" link @click="statusEvent(row, 1)" v-if="row.status == 0">{{ t('up')}}</el-button>
                             <el-button type="primary" link @click="statusEvent(row, 0)" v-if="row.status == 1">{{ t('down')}}</el-button>
+                            <el-button type="primary" link @click="memberPriceEvent(row)" v-if="row.buy_type == 'buy'">{{ t('memberPrice') }}</el-button>
                             <el-button type="primary" link @click="editEvent(row)">{{ t('edit') }}</el-button>
                             <el-button type="primary" link @click="deleteEvent(row.goods_id)">{{ t('delete') }}</el-button>
                         </template>
@@ -122,6 +114,9 @@
         </el-card>
         <!-- 商品推广弹出框 -->
         <goods-spread-popup ref="goodsSpreadPopupRef" />
+
+        <!-- 会员价弹出框 -->
+        <goods-member-price-popup ref="memberPricePopupRef" @load="loadO2oGoodsList" />
     </div>
 </template>
 
@@ -135,6 +130,9 @@ import { ElMessageBox, FormInstance, ElMessage } from 'element-plus'
 import { useRouter, useRoute } from 'vue-router'
 import { cloneDeep } from 'lodash-es'
 import goodsSpreadPopup from '@/addon/o2o/views/goods/components/goods-spread-popup.vue'
+import { getMemberLevelAll } from '@/app/api/member'
+import goodsMemberPricePopup from '@/addon/o2o/views/goods/components/goods-member-price-popup.vue'
+
 const route = useRoute()
 const pageName = route.meta.title
 
@@ -182,7 +180,7 @@ const checkCategory = async (row: any = null) => {
                 goodsCategoryTree.push({
                     value: item.category_id,
                     label: item.category_name,
-                    children: children
+                    children
                 })
             })
             categoryList.splice(0, categoryList.length, ...goodsCategoryTree)
@@ -349,6 +347,22 @@ const resetForm = (formEl: FormInstance | undefined) => {
     o2oGoodsTable.searchParam.end_price = ''
     loadO2oGoodsList()
 }
+
+/** ***************** 会员价-start *************************/
+// 会员等级
+const memberLevel = ref([])
+const getMemberLevelAllFn = () => {
+    getMemberLevelAll().then(res => {
+        memberLevel.value = res.data ? res.data : []
+    })
+}
+getMemberLevelAllFn()
+
+const memberPricePopupRef: any = ref(null)
+const memberPriceEvent = (data: any) => {
+    memberPricePopupRef.value.show(data, memberLevel.value)
+}
+/** ***************** 会员价-end *************************/
 </script>
 
 <style lang="scss" scoped></style>

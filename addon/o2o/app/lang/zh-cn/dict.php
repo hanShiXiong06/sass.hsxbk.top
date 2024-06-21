@@ -42,7 +42,7 @@ return [
         'order_service' => '订单开始服务',
         'order_transfer' => '订单转单',
         'order_add_pay' => '师傅报单',
-        'order_del_pay' => '删除师傅报单',
+        'order_del_pay' => '师傅删除报单',
         'order_edit_pay' => '师傅修改报单',
         'order_item_pay' => '客户服务项支付',
         'order_status_finish' => '订单完成',
@@ -88,6 +88,9 @@ return [
         'buy_more_or_dislike' => '拍错/多拍/不喜欢',
         'negotiation_completed' => '协商一致退款',
         'other' => '其他',
+    ],
+    'dict_diy_poster' => [
+        'o2o_goods_component_type_basic' => '上门服务组件',
     ],
     'dict_evaluate' => [
         'wait_evaluate' => '待评价',

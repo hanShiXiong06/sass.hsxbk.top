@@ -12,7 +12,6 @@
 namespace app\service\core\wechat;
 
 use core\base\BaseCoreService;
-use EasyWeChat\Kernel\Exceptions\InvalidArgumentException;
 use EasyWeChat\Kernel\Exceptions\InvalidConfigException;
 use GuzzleHttp\Exception\GuzzleException;
 

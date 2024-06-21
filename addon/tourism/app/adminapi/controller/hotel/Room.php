@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -63,6 +63,7 @@ class Room extends BaseAdminController
             ["room_area", ''],
             ["room_stay", ''],
             ["room_floor", ''],
+            ["member_discount", ''],
             ["buy_info", '']
         ]);
         $this->validate($data, 'addon\tourism\app\validate\hotel\Room.add');
@@ -88,6 +89,7 @@ class Room extends BaseAdminController
             ["room_area", ''],
             ["room_stay", ''],
             ["room_floor", ''],
+            ["member_discount", ''],
             ["buy_info", '']
         ]);
         $this->validate($data, 'addon\tourism\app\validate\hotel\Room.edit');
@@ -114,6 +116,7 @@ class Room extends BaseAdminController
             [ "goods_id",""],
             [ "start_date",""],
             [ "end_date",""],
+            [ "member_price",0],
             [ "is_set", 1]
         ]);
         (new GoodsDayService())->addDatePrice($data);
@@ -169,4 +172,5 @@ class Room extends BaseAdminController
         ]);
         return success((new GoodsService())->getListOfSelect($data));
     }
+
 }

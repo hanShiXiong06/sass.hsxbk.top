@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -92,6 +92,8 @@ class Goods extends BaseAdminController
             [ "buy_info", '' ],
             [ "min_buy", 1 ],
             [ "goods_content", '' ],
+            [ 'poster_id', 0 ],
+            [ 'member_discount', '' ], // 会员等级折扣，不参与：空，会员折扣：discount，指定会员价：fixed_price
 
         ]);
         $this->validate($data, 'addon\o2o\app\validate\Goods.add');
@@ -126,10 +128,27 @@ class Goods extends BaseAdminController
             [ "buy_info", '' ],
             [ "min_buy", 1 ],
             [ "goods_content", '' ],
+            [ 'poster_id', 0 ],
+            [ 'member_discount', '' ], // 会员等级折扣，不参与：空，会员折扣：discount，指定会员价：fixed_price
         ]);
 
         $this->validate($data, 'addon\o2o\app\validate\Goods.edit');
         (new GoodsService())->edit($id, $data);
+        return success('EDIT_SUCCESS');
+    }
+
+    /**
+     * 编辑商品规格列表会员价格
+     * @return \think\Response
+     */
+    public function editGoodsListMemberPrice()
+    {
+        $data = $this->request->params([
+            [ 'goods_id', 0 ],
+            [ 'member_discount', '' ], // 会员等级折扣，不参与：空，会员折扣：discount，指定会员价：fixed_price
+            [ 'sku_list', '' ]
+        ]);
+        ( new GoodsService() )->editGoodsListMemberPrice($data);
         return success('EDIT_SUCCESS');
     }
 
@@ -158,6 +177,19 @@ class Goods extends BaseAdminController
     }
 
     /**
+     * 查询商品SKU规格列表
+     * @return \think\Response
+     */
+    public function sku()
+    {
+        $data = $this->request->params([
+            [ 'goods_id', '' ]
+        ]);
+
+        return success(( new GoodsService() )->getSkuList($data));
+    }
+
+    /**
      * 服务上下架
      */
     public function editStatus($id)
@@ -181,5 +213,22 @@ class Goods extends BaseAdminController
         ]);
         (new GoodsService())->editSort($id, $data);
         return success('SUCCESS');
+    }
+
+    /**
+     * 商品选择分页列表
+     * @return \think\Response
+     */
+    public function select()
+    {
+        $data = $this->request->params([
+            [ 'goods_name', '' ], // 搜索关键词
+            [ "goods_category", "" ], // 商品分类
+            [ 'goods_ids', '' ], // 已选商品id集合
+            [ 'verify_goods_ids', '' ], // 检测商品id集合是否存在，移除不存在的商品id，纠正数据准确性
+            [ 'create_time', [] ],
+        ]);
+
+        return success(( new GoodsService() )->getSelectPage($data));
     }
 }

@@ -15,12 +15,9 @@ use core\base\BaseCoreService;
 use EasyWeChat\Kernel\Exceptions\BadRequestException;
 use EasyWeChat\Kernel\Exceptions\InvalidArgumentException;
 use EasyWeChat\Kernel\Exceptions\InvalidConfigException;
-use EasyWeChat\Kernel\Exceptions\RuntimeException;
 use Overtrue\Socialite\Contracts\UserInterface;
-use Psr\Http\Message\ResponseInterface;
 use ReflectionException;
 use Symfony\Component\HttpFoundation\Response;
-use Throwable;
 
 /**
  * 微信服务提供
@@ -116,7 +113,7 @@ class CoreWechatServeService extends BaseCoreService
             jsApiList: [],
             openTagList: [],
             debug: false,
-        );;
+        );
     }
 
     /**
@@ -142,7 +139,9 @@ class CoreWechatServeService extends BaseCoreService
         $param = [
             'expire_seconds' => $expire_seconds,
             'action_name' => $type,
-            'action_info' => $scene,
+            'action_info' => [
+                'scene' => $scene
+            ],
         ];
         return $api->postJson('cgi-bin/qrcode/create', $param);
     }

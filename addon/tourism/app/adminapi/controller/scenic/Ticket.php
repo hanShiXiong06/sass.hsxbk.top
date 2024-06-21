@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -55,6 +55,7 @@ class Ticket extends BaseAdminController
             ["goods_content",""],
             ["price",0.00],
             ["stock",0],
+            ["member_discount",''],
             ["buy_info", ""]
         ]);
         $this->validate($data, 'addon\tourism\app\validate\scenic\Ticket.add');
@@ -73,6 +74,7 @@ class Ticket extends BaseAdminController
             ["goods_content",""],
             ["price",0.00],
             ["stock",0],
+            ["member_discount",''],
             ["buy_info", ""]
         ]);
         $this->validate($data, 'addon\tourism\app\validate\scenic\Ticket.edit');
@@ -110,7 +112,8 @@ class Ticket extends BaseAdminController
             [ "price",0.00 ],
             [ "goods_id",""],
             [ "start_date",""],
-            [ "end_date",""]
+            [ "end_date",""],
+            [ "member_price",""]
         ]);
         (new GoodsDayService())->addDatePrice($data);
         return success('EDIT_SUCCESS');

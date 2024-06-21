@@ -26,7 +26,7 @@ class UniappTemplate extends BaseDict
         if (!empty($params[ 'params' ][ 'addon' ])) {
             $addons = [ $params[ 'params' ][ 'addon' ] ];
         } else {
-            $addons = (new SiteService())->getAddonKeysBySiteId();
+            $addons = ( new SiteService() )->getAddonKeysBySiteId();
         }
 
         $app_keys = []; // 应用插件key集合

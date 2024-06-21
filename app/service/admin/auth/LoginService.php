@@ -23,6 +23,7 @@ use core\exception\AuthException;
 use core\util\TokenAuth;
 use Exception;
 use Throwable;
+use app\service\admin\home\AuthSiteService as HomeAuthSiteService;
 
 /**
  * 登录服务层
@@ -49,6 +50,8 @@ class LoginService extends BaseAdminService
     {
         if(!array_key_exists($app_type, AppTypeDict::getAppType())) throw new AuthException('APP_TYPE_NOT_EXIST');
 
+        $this->site_id = $this->request->adminSiteId();
+
         $config = (new ConfigService())->getConfig();
         switch($app_type){
             case AppTypeDict::SITE:
@@ -67,7 +70,11 @@ class LoginService extends BaseAdminService
         if ($userinfo->isEmpty()) return false;
 
         if (!check_password($password, $userinfo->password)) return false;
+        $this->request->uid($userinfo->uid);
 
+        $auth_site_service = (new HomeAuthSiteService());
+
+        $default_site_id = 0;
         if($app_type == AppTypeDict::ADMIN){
             $default_site_id = $this->request->defaultSiteId();
             $userrole = (new UserRoleService())->getUserRole($default_site_id, $userinfo->uid);
@@ -77,7 +84,10 @@ class LoginService extends BaseAdminService
                 $app_type = AppTypeDict::SITE;
             }
         } else if($app_type == AppTypeDict::SITE){
-            $default_site_id = $this->site_id;
+            $site_ids = $auth_site_service->getSiteIds();
+            if(!empty($site_ids)){
+                $default_site_id = in_array($this->site_id, $site_ids) || AuthService::isSuperAdmin() ? $this->site_id : $site_ids[0];
+            }
         } else {
             throw new AuthException('APP_TYPE_NOT_EXIST');
         }
@@ -98,22 +108,20 @@ class LoginService extends BaseAdminService
             'userinfo' => [
                 'uid' => $userinfo->uid,
                 'username' => $userinfo->username,
-                'is_super_admin' => AuthService::isSuperAdmin()
+                'is_super_admin' => AuthService::isSuperAdmin(),
+                'head_img' => $userinfo->head_img
             ],
             'site_id' => $default_site_id,
             'site_info' => null,
             'userrole' => $app_type == AppTypeDict::ADMIN ? $userrole : []
         ];
         if ($app_type == AppTypeDict::ADMIN || ($app_type == AppTypeDict::SITE && $data['site_id']) ) {
-            $data['site_info'] = (new SiteService())->getInfo($data['site_id']);
+            $this->request->siteId($data['site_id']);
+            $data['site_info'] = (new AuthSiteService())->getSiteInfo();
         }
         if ($app_type == AppTypeDict::ADMIN && !$data['userinfo']['is_super_admin']) {
-            $data['userinfo']['site_ids'] = (new \app\service\admin\home\AuthSiteService())->getSiteIds();
+            $data['userinfo']['site_ids'] = $auth_site_service->getSiteIds();
         }
-
-        // 获取站点布局
-        $layout_config = (new CoreConfigService())->getConfig($data['site_id'], 'SITE_LAYOUT');
-        $data['layout'] = empty($layout_config) ? 'default' : $layout_config['value']['key'];
         return $data;
     }
 

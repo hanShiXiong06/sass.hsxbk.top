@@ -1,6 +1,8 @@
 <?php
 
-return [
+use core\dict\DictLoader;
+
+$system = [
     'default' => 'local',//默认驱动
     'drivers' => [
         //本地上传
@@ -84,3 +86,5 @@ return [
 
     ]
 ];
+
+return (new DictLoader("Config"))->load(['data' => $system, 'name' => 'upload']);

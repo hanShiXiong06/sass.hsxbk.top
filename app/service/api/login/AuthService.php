@@ -78,7 +78,7 @@ class AuthService extends BaseApiService
     public function checkSite(Request $request){
         $site_id = $request->apiSiteId();//todo  可以是依赖传值,也可以通过domain域名来获取site_id
         $site_info = (new CoreSiteService())->getSiteCache($site_id);
-        if(empty($site_info)) throw new AuthException('SITE_NOT_EXIST');
+        if(empty($site_info)) throw new AuthException('SITE_NOT_EXIST', 403);
         $rule = strtolower(trim($request->rule()->getRule()));
         if($rule != 'site'){
             if ($site_info['status'] == SiteDict::CLOSE || $site_info['expire_time'] < time()) throw new AuthException('SITE_CLOSE_NOT_ALLOW', 402);
@@ -98,6 +98,7 @@ class AuthService extends BaseApiService
         if(empty($mobile)){
             $result = (new CoreWeappAuthService())->getUserPhoneNumber($this->site_id, $mobile_code);
             if(empty($result)) throw new ApiException('WECHAT_EMPOWER_NOT_EXIST');
+            if ($result[ 'errcode' ] != 0) throw new ApiException($result[ 'errmsg' ]);
             $phone_info = $result['phone_info'];
             $mobile = $phone_info['purePhoneNumber'];
             if(empty($mobile)) throw new ApiException('WECHAT_EMPOWER_NOT_EXIST');

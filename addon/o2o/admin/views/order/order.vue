@@ -33,6 +33,7 @@
                     <el-form-item>
                         <el-button type="primary" @click="loadOrderList()">{{ t('search') }}</el-button>
                         <el-button @click="resetForm(searchFormRef)">{{ t('reset') }}</el-button>
+                        <el-button type="primary" @click="exportSelectEvent">{{ t('export') }}</el-button>
                     </el-form-item>
                 </el-form>
             </el-card>
@@ -163,6 +164,10 @@
                     @size-change="getTechnicianListFn" @current-change="getTechnicianListFn" />
             </div>
         </el-dialog>
+
+        <order-export-select ref="selectExportDialog" @complete="exportEvent" />
+        <export-sure ref="exportSureDialog" :show="flag" :type="export_type" :searchParam="orderTable.searchParam"
+                   @close="handleClose" />
     </div>
 </template>
 
@@ -171,6 +176,7 @@ import { reactive, ref } from 'vue'
 import { t } from '@/lang'
 import { getOrderList, getOrderStatus, setSendOders } from '@/addon/o2o/api/order'
 import { getTechnicianGoods } from '@/addon/o2o/api/technician'
+import OrderExportSelect from '@/addon/o2o/views/order/components/order-export-select.vue'
 import { img } from '@/utils/common'
 import { FormInstance } from 'element-plus'
 import { useRouter, useRoute } from 'vue-router'
@@ -285,6 +291,30 @@ const sendOrderFn = (data) => {
         loadOrderList()
     })
 }
+
+/**
+ * 订单导出
+ */
+const exportSureDialog = ref(null)
+const export_type = ref('')
+const flag = ref(false)
+const handleClose = (val) => {
+  flag.value = val
+}
+const exportEvent = (data: any) => {
+  export_type.value = data
+  flag.value = true
+}
+
+const selectExportDialog: Record<string, any> | null = ref(null)
+
+/**
+ * 订单导出类型选择
+ */
+const exportSelectEvent = () => {
+  selectExportDialog.value.showDialog = true
+}
+
 
 // // 合并表格行
 const arraySpanMethod = ({

@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -14,6 +14,7 @@ namespace addon\tourism\app\service\api\hotel;
 use addon\tourism\app\model\Goods;
 use addon\tourism\app\model\GoodsDay;
 use addon\tourism\app\service\api\calendar\GoodsDayService;
+use addon\tourism\app\service\core\CoreGoodsService;
 use Carbon\Carbon;
 use core\base\BaseApiService;
 use core\exception\CommonException;
@@ -37,14 +38,16 @@ class RoomService extends BaseApiService
      */
     public function getListByHotelId(int $hotel_id, $order = "create_time desc", $date = '')
     {
-        $field = 'site_id,hotel_id,goods_id,stock,goods_name,goods_type,hotel_id,goods_cover,goods_image,goods_content,goods_attribute,status,price,create_time,room_bed,room_area,room_stay,room_floor,buy_info';
+        $field = 'site_id,hotel_id,goods_id,member_discount,fixed_discount,stock,goods_name,goods_type,hotel_id,goods_cover,goods_image,goods_content,goods_attribute,status,price,create_time,room_bed,room_area,room_stay,room_floor,buy_info';
         $list = $this->model->where([['site_id', '=', $this->site_id],['hotel_id', '=', $hotel_id],['goods_type', '=', "room"],['status', '=', 1]])->field($field)->order($order)->append(['attr_name', 'image_thumb_mid','image_thumb_big','cover_thumb_mid','cover_thumb_big'])->select()->toArray();
         $time = date("Y-m-d", $date ? strtotime($date) : time());
+        $core_goods_service = new CoreGoodsService();
+        if($this->member_id ) $member_info = $core_goods_service->getMemberInfo($this->member_id, $this->site_id);
         foreach ($list as $k => $v)
         {
-            $goods_day = (new GoodsDay())->where([ ['goods_id', '=', $v['goods_id'] ], ['time_date', '=', $time] ])->field('price,stock_all,sell_num,stock')->findOrEmpty();
-            if (!$goods_day->isEmpty()) {
-                $list[$k]['price'] = $goods_day['price'];
+            $goods_day = (new GoodsDay())->where([ ['goods_id', '=', $v['goods_id'] ], ['time_date', '=', $time] ])->field('is_set,price,stock_all,sell_num,stock,member_price')->findOrEmpty()->toArray();
+            if (!empty($goods_day)) {
+                if($goods_day['is_set'] > 0) $list[$k]['price'] = $goods_day['price'];
                 $stock = $goods_day['stock_all'] - $goods_day['sell_num'];
                 if($stock <= 0)
                 {
@@ -52,27 +55,31 @@ class RoomService extends BaseApiService
                 }
                 $list[$k]['stock'] = $stock;
             }
+
+            if($this->member_id){
+                $list[$k]['member_price'] = (new CoreGoodsService())->getMemberPrice($member_info, $v['member_discount'], $list[$k]['price'], $goods_day, $v['fixed_discount']);
+            }
         }
+
         return $list;
     }
 
     /**
      * 获取房型当前价格
-     * @param $day
-     * @param int $room_id
+     * @param $info
      * @return \addon\tourism\app\model\GoodsDay|array|mixed|\think\Model
      */
-    public function getRoomPrice($day, int $room_id)
+    public function getRoomPrice($info)
     {
-        $price = (new GoodsDayService())->getGoodsDayPrice($day, $room_id);
-        if(empty((float)$price))
-        {
-            $field = 'price';
-            $info = $this->model->field($field)->where([['goods_id', '=', $room_id], ['site_id', '=', $this->site_id]])->findOrEmpty()->toArray();
-            $price = $info['price'];
-        }
-        return $price;
 
+        $info['price'] = $info['goods']['price'];
+        $date = date('Y-m-d');
+        $day_info = (new GoodsDay())->where([ ['goods_id', '=', $info['goods']['goods_id'] ], ['time_date', '=', $date] ])->field('price,is_set,stock_all,sell_num,stock,member_price')->findOrEmpty()->toArray();
+        if(!empty($day_info)){
+            if($day_info['is_set'] > 0) $info['price'] = $day_info['price'];
+            $info['day_info'] = $day_info;
+        }
+        return $info;
     }
 
     /**
@@ -107,8 +114,8 @@ class RoomService extends BaseApiService
             [ 'goods_id', '=', $goods['goods_id'] ],
             [ 'time', '>=', $start_time ],
             [ 'time', '<=', $end_time ],
-            [ 'is_set', '>', 0]
-        ])->field('price,time')->select()->toArray();
+
+        ])->field('price,time,is_set')->select()->toArray();
 
         $list = [];
         if (!empty($goods_day_list)) {
@@ -121,7 +128,7 @@ class RoomService extends BaseApiService
         $data = [];
         for ($i = 0; $i <= 30; $i++) {
             $date = date('Y-m-d', $start_time + (86400 * $i));
-            $data[$date] = isset($list[$date]) ? $list[$date]['price'] : $goods['price'];
+            $data[$date] = isset($list[$date]) && $list[$date]['is_set'] > 0 ? $list[$date]['price'] : $goods['price'];
         }
         return $data;
     }

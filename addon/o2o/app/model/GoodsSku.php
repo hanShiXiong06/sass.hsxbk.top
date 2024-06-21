@@ -173,7 +173,7 @@ class GoodsSku extends BaseModel
     {
         return $this->hasOne(Goods::class, 'goods_id', 'goods_id')
             ->joinType('left')
-            ->withField('goods_id, site_id, goods_name, goods_cover, goods_image, sale_num + virtually_sale as sale_num, status, goods_category,after_sales,buy_type,price_list,goods_content,buy_info')
+            ->withField('goods_id, poster_id, member_discount, site_id, goods_name, goods_cover, goods_image, sale_num + virtually_sale as sale_num, status, goods_category,after_sales,buy_type,price_list,goods_content,buy_info')
             ->append([ 'goods_image_thumb_big','goods_cover_thumb_small', 'goods_cover_thumb_mid', 'goods_cover_thumb_big', 'goods_image_thumb_small', 'goods_image_thumb_mid', 'goods_image_thumb_big' ]);
     }
 

@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -37,7 +37,7 @@ class TicketService extends BaseAdminService
      */
     public function getPage(array $where = [])
     {
-        $field = 'site_id,scenic_id,goods_id,goods_name,goods_type,hotel_id,goods_cover,goods_image,goods_content,goods_attribute,status,sort,price,sale_price,cost_price,create_time,stock,sell_type, buy_info';
+        $field = 'site_id,scenic_id,goods_id,member_discount,fixed_discount,goods_name,goods_type,hotel_id,goods_cover,goods_image,goods_content,goods_attribute,status,sort,price,sale_price,cost_price,create_time,stock,sell_type, buy_info';
         $order = '';
         $search_model = $this->model->where([['site_id', '=', $this->site_id],['goods_type', '=', "scenic"], ["scenic_id", "=", $where['scenic_id']]])->withSearch(["goods_name", "create_time"], $where)->field($field)->order($order)->append(["status_name"]);
         $list = $this->pageQuery($search_model);
@@ -51,7 +51,7 @@ class TicketService extends BaseAdminService
      */
     public function getInfo(int $id)
     {
-        $field = 'site_id,goods_name,goods_type,hotel_id,goods_cover,goods_image,goods_content,goods_attribute,status,sort,price,sale_price,cost_price,create_time,stock,sell_type, buy_info';
+        $field = 'site_id,goods_name,goods_type,member_discount,fixed_discount,hotel_id,goods_cover,goods_image,goods_content,goods_attribute,status,sort,price,sale_price,cost_price,create_time,stock,sell_type, buy_info';
         $info = $this->model->field($field)->where([['goods_id', '=', $id], ['site_id', '=', $this->site_id]])->findOrEmpty()->toArray();
         return $info;
     }

@@ -26,7 +26,32 @@ return [
             'addon\o2o\app\listener\notice_template\RefundSuccess',
             'addon\o2o\app\listener\notice_template\RefundRefuse',
             'addon\o2o\app\listener\notice_template\O2oOrderService',
-        ]
+        ],
+
+        //获取海报数据
+        'GetPosterType' => [ 'addon\o2o\app\listener\poster\O2oPosterType' ],
+        'GetPosterData' => [ 'addon\o2o\app\listener\poster\O2oPoster' ],
+
+        //导出数据类型
+        'ExportDataType' => [
+            //订单列表导出
+            'addon\o2o\app\listener\order\O2oOrderExportTypeListener',
+            //订单项导出
+            'addon\o2o\app\listener\order\O2oOrderGoodsExportTypeListener',
+            //退款维权导出
+            'addon\o2o\app\listener\refund\O2oOrderRefundExportTypeListener',
+
+        ],
+        //导出数据源
+        'ExportData' => [
+            //订单列表导出
+            'addon\o2o\app\listener\order\O2oOrderExportDataListener',
+            //订单项导出
+            'addon\o2o\app\listener\order\O2oOrderGoodsExportDataListener',
+            //退款维权导出
+            'addon\o2o\app\listener\refund\O2oOrderRefundExportDataListener',
+
+        ],
     ],
 
     'subscribe' => [

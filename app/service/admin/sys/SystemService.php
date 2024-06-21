@@ -179,15 +179,4 @@ class SystemService extends BaseAdminService
         }
         return false;
     }
-
-    /**
-     * 设置布局
-     * @param string $key
-     */
-    public function setLayout(string $key) {
-        $layouts = array_column(event('SiteLayout'), 'key');
-        if (!in_array($key, $layouts)) throw new CommonException('LAYOUT_NOT_EXIST');
-        (new CoreConfigService())->setConfig($this->site_id, 'SITE_LAYOUT', [ 'key' => $key ]);
-        return true;
-    }
 }

@@ -281,6 +281,7 @@ const confirmRefund = () => {
     rechargeRefund(refundData?.order_id).then(res => {
         refundShowDialog.value = false
         refundLoading.value = false
+		loadOrderList()
     }).catch(() => {
         refundLoading.value = false
     })

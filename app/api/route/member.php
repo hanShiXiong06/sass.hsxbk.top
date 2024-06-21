@@ -39,6 +39,8 @@ Route::group('member', function () {
     Route::get('account/point', 'member.Account/point');
     //会员余额流水
     Route::get('account/balance', 'member.Account/balance');
+    //会员余额流水(新)
+    Route::get('account/balance_list', 'member.Account/balanceList');
     //会员零钱流水
     Route::get('account/money', 'member.Account/money');
     //会员零钱流水
@@ -47,8 +49,11 @@ Route::group('member', function () {
     Route::get('account/commission', 'member.Account/commission');
     //账户来源
     Route::get('account/fromtype/:account_type', 'member.Account/getFromType');
+    //积分数量
+    Route::get('account/pointcount', 'member.Account/pointCount');
+
     /***************************************************** 会员提现 ****************************************************/
-    Route::get('account/point', 'member.Account/point');
+
     //会员提现列表
     Route::get('cash_out', 'member.MemberCashOut/lists');
     //会员提现详情
@@ -85,8 +90,6 @@ Route::group('member', function () {
     Route::put('address/:id', 'member.Address/edit');
     //删除会员收货地址
     Route::delete('address/:id', 'member.Address/del');
-    //解析用户地址的接口
-    Route::get('address/parser' , 'member.Address/addressParser');
 
     /***************************************************** 会员等级 **************************************************/
     Route::get('level', 'member.Level/lists');

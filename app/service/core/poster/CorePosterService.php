@@ -88,7 +88,7 @@ class CorePosterService extends BaseCoreService
      * @param bool $is_throw_exception
      * @return string|void
      */
-    public function get(int $site_id, $id, $type, array $param = [], string $channel = '', bool $is_throw_exception = true)
+    public function get(int $site_id, $id, $type, array $param = [], $channel = '', $is_throw_exception = true)
     {
         $condition = [
             [ 'site_id', '=', $site_id ],
@@ -110,7 +110,7 @@ class CorePosterService extends BaseCoreService
                 // 查询指定类型的海报模板
                 $template = $this->getTemplateList('', $type);
                 if (!empty($template)) {
-                    $poster = $template[ 0 ]['data'];
+                    $poster = $template[ 0 ][ 'data' ];
                 }
             } else {
                 $poster = $poster->toArray();
@@ -135,7 +135,7 @@ class CorePosterService extends BaseCoreService
             $dir = 'upload/poster/' . $site_id;
             $temp1 = md5(json_encode($poster));
             $temp2 = md5(json_encode($poster_data));
-            $file_path = 'poster' . $temp1 . '_' . $temp2 . '.png';
+            $file_path = 'poster' . $temp1 . '_' . $temp2 .'_'.$channel. '.png';
             $path = $dir . '/' . $file_path;
 
             //判断当前海报是否存在,存在直接返回地址,不存在的话则创建
@@ -204,6 +204,7 @@ class CorePosterService extends BaseCoreService
                 }
             }
         }
+        
         if (!is_dir($dir) && !mkdir($dir, 0777, true) && !is_dir($dir)) {
             throw new \RuntimeException(sprintf('Directory "%s" was not created', $dir));
         }

@@ -20,12 +20,18 @@ return [
                     "imgWidth" => "",
                     "imgHeight" => "",
                     "topStatusBar" => [
-                        "bgColor" => "#ffffff",
-                        "isTransparent" => false,
-                        "isShow" => true,
-                        "style" => "style-1",
-                        "textColor" => "#333333",
-                        "textAlign" => "center"
+                        'isShow' => true,
+                        'bgColor' => "#ffffff",
+                        'isTransparent' => false,
+                        'style' => 'style-1',
+                        'styleName' => '风格1',
+                        'textColor' => "#333333",
+                        'textAlign' => 'center',
+                        'inputPlaceholder' => '请输入搜索关键词',
+                        'imgUrl' => '',
+                        'link' => [
+                            'name' => ""
+                        ]
                     ],
                     "bottomTabBarSwitch" => true,
                     "popWindow" => [
@@ -411,7 +417,7 @@ return [
                         "source" => "all",
                         "num" => 10,
                         "goods_category" => 0,
-                        "goods_ids" => "",
+                        "goods_ids" => [],
                         "title_is_show" => true,
                         "title_link" => "",
                         "title_font_size" => 16,
@@ -661,12 +667,18 @@ return [
                         ]
                     ],
                     "topStatusBar" => [
-                        "bgColor" => "#ffffff",
-                        "isTransparent" => false,
-                        "isShow" => true,
-                        "style" => "style-1",
-                        "textColor" => "#333333",
-                        "textAlign" => "center"
+                        'isShow' => true,
+                        'bgColor' => "#ffffff",
+                        'isTransparent' => false,
+                        'style' => 'style-1',
+                        'styleName' => '风格1',
+                        'textColor' => "#333333",
+                        'textAlign' => 'center',
+                        'inputPlaceholder' => '请输入搜索关键词',
+                        'imgUrl' => '',
+                        'link' => [
+                            'name' => ""
+                        ]
                     ],
                     "popWindow" => [
                         "imgUrl" => "",

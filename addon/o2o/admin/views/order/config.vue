@@ -1,5 +1,5 @@
 <template>
-    <div class="main-container pt-[20px]">
+    <div class="main-container pt-[20px] bg-[#fff]">
         <div class="flex ml-[18px] justify-between items-center">
             <span class="text-page-title">{{ pageName }}</span>
         </div>

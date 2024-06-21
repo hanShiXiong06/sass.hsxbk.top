@@ -107,7 +107,7 @@ class RechargeOrder extends BaseModel
     public function searchOutTradeNoAttr($query, $value, $data)
     {
         if ($value) {
-            $query->where('out_trade_no', '=', $value);
+            $query->where('out_trade_no', 'like', '%'.$value.'%');
         }
     }
 

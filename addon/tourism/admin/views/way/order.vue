@@ -30,6 +30,7 @@
                     <el-form-item>
                         <el-button type="primary" @click="loadOrderList()">{{ t('search') }}</el-button>
                         <el-button @click="resetForm(searchFormRef)">{{ t('reset') }}</el-button>
+                        <el-button type="primary" @click="exportEvent">{{ t('export') }}</el-button>
                     </el-form-item>
                 </el-form>
             </el-card>
@@ -96,6 +97,8 @@
             </div>
 
         </el-card>
+        <export-sure ref="exportSureDialog" :show="flag" type="tourism_way_order" :searchParam="orderTable.searchParam"
+                   @close="handleClose" />
     </div>
 </template>
 
@@ -165,6 +168,18 @@ const checkOrderStatus = () => {
     })
 }
 checkOrderStatus()
+
+/**
+ * 订单导出
+ */
+const exportSureDialog = ref(null)
+const flag = ref(false)
+const handleClose = (val) => {
+  flag.value = val
+}
+const exportEvent = (data: any) => {
+  flag.value = true
+}
 
 const infoEvent = (info: AnyObject) => {
     router.push(`/tourism/order/way/detail?order_id=${info.order_id}`)

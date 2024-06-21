@@ -11,6 +11,7 @@
 
 namespace app\service\admin\stat;
 
+use app\model\member\Member;
 use app\model\site\Site;
 use app\service\admin\site\SiteGroupService;
 use app\service\admin\site\SiteService;
@@ -83,7 +84,11 @@ class StatService extends BaseAdminService
                     'image' => 'static/resource/icon/index_icon/wework_qrcode.png',
                     'desc' => '更多内容请扫码加入'
                 ]
-            ]
+            ],
+            'member_count_stat' => [
+                'date' => [],
+                'value' => []
+            ],
         ];
 
         $day_start_time = strtotime(date('Y-m-d'));
@@ -95,6 +100,10 @@ class StatService extends BaseAdminService
         $data['today_data']['today_site_count'] = (new SiteService())->getCount(['create_time' => [$day_start_time, $day_end_time]]);
         $data['today_data']['norma_site_count'] = (new SiteService())->getCount(['status' => [1],'app_type' => ['site']]);
         $data['today_data']['expire_site_count'] = (new SiteService())->getCount(['status' => [2]]);
+        $data['today_data']['week_expire_site_count'] = (new Site())->where([
+            ['status', '=', 1],
+            ['expire_time', 'BETWEEN', [time(), time() + 86400*7 ] ]
+        ])->count();
 
         $data['system'] = (new SystemService())->getInfo();
         $data['version'] = $data['system']['version'] ?? [];
@@ -103,6 +112,9 @@ class StatService extends BaseAdminService
             $item_day = date('Y-m-d', strtotime('+' . $i - 7 . ' days', $time));
             $data['site_stat']['date'][] = $item_day;
             $data['site_stat']['value'][] = (new Site())->where([['create_time','between',get_start_and_end_time_by_day($item_day)]])->count();
+
+            $data['member_count_stat']['date'][] = $item_day;
+            $data['member_count_stat']['value'][] = (new Member())->where([['create_time','between',get_start_and_end_time_by_day($item_day)]])->count();
         }
         $man_count = (new CoreMemberService())->getCount(['sex' => '1']);
         $woman_count = (new CoreMemberService())->getCount(['sex' => '2']);

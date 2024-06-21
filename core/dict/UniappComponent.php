@@ -22,7 +22,7 @@ class UniappComponent extends BaseDict
      */
     public function load(array $data)
     {
-        $addons = (new SiteService())->getAddonKeysBySiteId();
+        $addons = ( new SiteService() )->getAddonKeysBySiteId();
         $components_files = [];
 
         foreach ($addons as $v) {

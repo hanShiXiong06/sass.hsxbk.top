@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -14,7 +14,6 @@ namespace addon\tourism\app\service\api\calendar;
 use addon\tourism\app\model\GoodsDay;
 use addon\tourism\app\model\Goods;
 use core\base\BaseApiService;
-use addon\tourism\app\service\api\hotel\RoomService;
 
 /**
  * 酒店服务层
@@ -38,7 +37,8 @@ class GoodsDayService extends BaseApiService
     public function getGoodsDayPrice($day, $goods_id){
         $field = "price";
         $info = $this->model->field($field)->where([['time_date', '=', $day], ['goods_id', '=', $goods_id]])->findOrEmpty()->toArray();
-        return $info['price'] ?? 0;
+        if($info && $info['is_set'] > 0) return $info['price'];
+        return 0;
     }
 
     /**

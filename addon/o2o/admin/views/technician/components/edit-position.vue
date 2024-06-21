@@ -1,8 +1,6 @@
 <template>
-    <el-dialog v-model="showDialog" :title="formData.id ? t('updatePosition') : t('addPosition')" width="500px"
-        :destroy-on-close="true">
-        <el-form :model="formData" label-width="90px" ref="formRef" :rules="formRules" class="page-form"
-            v-loading="loading">
+    <el-dialog v-model="showDialog" :title="formData.id ? t('updatePosition') : t('addPosition')" width="500px" :destroy-on-close="true">
+        <el-form :model="formData" label-width="90px" ref="formRef" :rules="formRules" class="page-form" v-loading="loading">
             <el-form-item :label="t('positionName')" prop="name">
                 <el-input v-model.trim="formData.name" clearable :placeholder="t('positionNamePlaceholder')" class="input-width" />
             </el-form-item>

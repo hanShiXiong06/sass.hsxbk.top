@@ -27,5 +27,11 @@
 	"threeStar": "三星",
 	"fourStar": "四星",
 	"fiveStar": "五星",
-	"hotelAddressPlaceholder": "请选择省、市、县"
+	"hotelAddressPlaceholder": "请选择省、市、县",
+	"poster": "酒店海报",
+	"posterPlaceholder": "请选择酒店海报",
+	"addGoodsPoster": "添加海报",
+	"refresh": "刷新",
+	"refreshSuccess": "刷新成功",
+	"posterTips": "不设置将使用默认海报"
 }

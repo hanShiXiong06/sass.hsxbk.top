@@ -11,7 +11,6 @@
 
 namespace addon\o2o\app\listener\pay;
 
-use addon\o2o\app\dict\order\OrderDict;
 use addon\o2o\app\service\core\CoreOrderRefundService;
 
 /**
@@ -23,7 +22,7 @@ class RefundSuccessListener
     {
         if($params['trade_type'] == 'o2o'){
 
-            (new CoreOrderRefundService())->refundSuccess($params['refund_no']);
+            $res = (new CoreOrderRefundService())->refundSuccess($params['refund_no']);
             return true;
         }
     }

@@ -13,9 +13,9 @@ namespace addon\o2o\app\service\core;
 
 use addon\o2o\app\dict\GoodsDict;
 use addon\o2o\app\dict\order\OrderDict;
-use addon\o2o\app\model\Goods;
 use addon\o2o\app\model\GoodsSku;
 use addon\o2o\app\model\Order;
+use app\model\member\MemberLevel;
 use app\service\core\member\CoreMemberService;
 use core\base\BaseCoreService;
 use core\exception\CommonException;
@@ -127,6 +127,7 @@ class CoreOrderCreateService extends BaseCoreService
         //服务地址
         $this->selectTakeAddress();
 
+
         //金额格式化
         $discount_money = $this->moneyFormat($this->basic['discount_money'] ?? 0);//优惠金额
         $goods_money = $this->moneyFormat($this->basic['goods_money'] ?? 0);
@@ -154,9 +155,13 @@ class CoreOrderCreateService extends BaseCoreService
         //查看会员信息
         $member_id = $this->param['member_id'];
         $this->member_id = $member_id;
-        $member_info = (new CoreMemberService())->getInfoByMemberId($this->site_id, $member_id, 'nickname, point');
+        $member_info = (new CoreMemberService())->getInfoByMemberId($this->site_id, $member_id, 'nickname, point, member_level');
 
-        if (empty($member_info)) throw new CommonException('SHOP_ORDER_BUYER_NOT_FOUND');//无效的账号
+        if (empty($member_info)) throw new CommonException('O2O_ORDER_BUYER_NOT_FOUND');//无效的账号
+
+        // 查询会员等级信息
+        $member_info[ 'member_level' ] = ( new MemberLevel() )->where([ [ 'level_id', '=', $member_info[ 'member_level' ] ] ])->field('site_id,level_id,level_benefits')->findOrEmpty()->toArray() ?? [];
+
         //会员账户信息
         $this->buyer = $member_info;
         //查询商品信息
@@ -186,8 +191,10 @@ class CoreOrderCreateService extends BaseCoreService
     {
 
         $sku_id = $this->param['sku']['sku_id'] ?? 0;
-        $sku_info = (new  GoodsSku())->where([ ['sku_id', '=', $sku_id], ['site_id', '=', $this->site_id] ])->with(['goods'])->field('sku_id, site_id, sku_name, sku_image, goods_id, price,sku_unit,min_buy')->findOrEmpty()->toArray();
+        $sku_info = (new  GoodsSku())->where([ ['sku_id', '=', $sku_id], ['site_id', '=', $this->site_id] ])->with(['goods'])->field('sku_id, site_id, sku_name, sku_image, goods_id, price,sku_unit,min_buy,member_price')->findOrEmpty()->toArray();
         if (empty($sku_info)) throw new CommonException('O2O_GOODS_NOT_EXIST');//无效的数据
+        if($sku_info['sku_name'] != $sku_info['goods']['goods_name']) $sku_info['sku_name'] = $sku_info['goods']['goods_name'].' '.$sku_info['sku_name'];
+
         if($sku_info['goods']['status'] != GoodsDict::UP) throw new CommonException('O2O_GOODS_NOT_EXIST');//无效的数据
         $goods_list = [];
         $total_num = $num = $this->param['sku']['num'] ?? 1;
@@ -197,6 +204,7 @@ class CoreOrderCreateService extends BaseCoreService
         //默认金额填充
         $sku_info['discount_money'] = 0;
         $sku_info['num'] = $num;
+        $sku_info['price'] = $this->getMemberPrice($sku_info);;
 
         $price = $sku_info['price'];
         $sku_info['goods_money'] = $price * $num;//小计
@@ -207,6 +215,49 @@ class CoreOrderCreateService extends BaseCoreService
         $this->basic['goods_money'] = $goods_money;
         $this->basic['body'] = $sku_info['sku_name'];
         $this->basic['order_name'] = $sku_info['sku_name'];
+    }
+
+    /**
+     * 获取商品的会员价
+     * @param $sku_info
+     * @return string
+     */
+    public function getMemberPrice($sku_info)
+    {
+        if (empty($sku_info[ 'goods' ][ 'member_discount' ]) || $sku_info[ 'goods' ]['buy_type'] != GoodsDict::BUY) {
+            return $sku_info[ 'price' ];
+        }
+
+        // 没有会员等级，排除
+        if (empty($this->buyer[ 'member_level' ])) {
+            return $sku_info[ 'price' ];
+        }
+
+        $price = $sku_info[ 'price' ];
+
+        if ($sku_info[ 'goods' ][ 'member_discount' ] == 'discount') {
+            // 按照会员等级折扣计算
+
+            // 默认按会员享受折扣计算
+            if (isset($this->buyer[ 'member_level' ][ 'level_benefits' ])
+                && isset($this->buyer[ 'member_level' ][ 'level_benefits' ][ 'discount' ])
+                && $this->buyer[ 'member_level' ][ 'level_benefits' ][ 'discount' ][ 'is_use' ]) {
+
+                $price = number_format($price * $this->buyer[ 'member_level' ][ 'level_benefits' ][ 'discount' ][ 'discount' ] / 10, 2, '.', '');
+            }
+
+        } elseif ($sku_info[ 'goods' ][ 'member_discount' ] == 'fixed_price') {
+            // 指定会员价
+            if (!empty($sku_info[ 'member_price' ])) {
+                $sku_info[ 'member_price' ] = json_decode($sku_info[ 'member_price' ], true);
+                if (!empty($sku_info[ 'member_price' ][ 'level_' . $this->buyer[ 'member_level' ][ 'level_id' ] ])) {
+                    $member_level_price = $sku_info[ 'member_price' ][ 'level_' . $this->buyer[ 'member_level' ][ 'level_id' ] ];
+                    $price = number_format($member_level_price, 2, '.', '');
+                }
+            }
+        }
+
+        return $price;
     }
 
 

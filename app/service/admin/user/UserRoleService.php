@@ -12,6 +12,7 @@
 namespace app\service\admin\user;
 
 
+use app\dict\sys\UserDict;
 use app\model\sys\SysRole;
 use app\model\sys\SysUserRole;
 use app\service\admin\sys\RoleService;
@@ -52,13 +53,16 @@ class UserRoleService extends BaseAdminService
         $role_data = array(
             'uid' => $uid,
             'is_admin' => $is_admin,
-            'site_id' => $site_id == 0 ? $this->site_id : $site_id
+            'site_id' => $site_id == 0 ? $this->site_id : $site_id,
+            'status' => $data['status'] ?? UserDict::ON
         );
         if(!$is_admin){
             //校验权限越界
             $role_data['role_ids'] = $data['role_ids'] ?? [];
         }
         $user_role_model->save($role_data);
+        Cache::delete('user_role_'.$uid.'_'.$site_id);
+        Cache::delete('user_role_list_' .$uid);
         return true;
     }
 
@@ -69,7 +73,7 @@ class UserRoleService extends BaseAdminService
      * @param array $role_ids
      * @return bool
      */
-    public function edit(int $site_id, int $uid, array $role_ids){
+    public function edit(int $site_id, int $uid, array $role_ids, $status = UserDict::ON){
         $user_role = $this->model->where([['uid', '=', $uid], ['site_id', '=', $site_id]])->findOrEmpty();
         if ($user_role->isEmpty())
             throw new AdminException('NO_SITE_USER_ROLE');
@@ -77,14 +81,15 @@ class UserRoleService extends BaseAdminService
         $is_admin = $user_role->is_admin;
         if($is_admin)//超级管理员不允许改动权限
             throw new AdminException('ADMIN_NOT_ALLOW_EDIT_ROLE');
+        $user_role->status = $status;
         if (!empty(array_diff_assoc($role_ids, $user_role->role_ids))) {
             //校验权限越界
-            $user_role->save(['role_ids' => $role_ids]);
-            $cache_name = 'user_role_'.$uid.'_'.$site_id;
-            Cache::delete($cache_name);
-            return true;
+            $user_role->role_ids = $role_ids;
         }
-        return false;
+        Cache::delete('user_role_'.$uid.'_'.$site_id);
+        Cache::delete('user_role_list_' .$uid);
+        $user_role->save();
+        return true;
     }
 
     /**

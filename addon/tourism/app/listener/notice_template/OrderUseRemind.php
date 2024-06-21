@@ -18,9 +18,9 @@ class OrderUseRemind extends BaseNoticeTemplate
             if (!$order->isEmpty() || $order['order_status'] == OrderDict::WAIT_USE) {
                 return $this->toReturn(
                     [
-                        '__wechat_page' => getWapDemain($order['site_id']) . '/addon/pages/tourism/order/detail?order_id=' . $order['order_id'],//模板消息链接
+                        '__wechat_page' => get_wap_domain($order['site_id']) . '/addon/pages/tourism/order/detail?order_id=' . $order['order_id'],//模板消息链接
                         '__weapp_page' => 'addon/pages/tourism/order/detail?order_id=' . $order['order_id'],//小程序链接
-                        'goods_name' => $order['full_goods_name'],
+                        'goods_name' => str_sub($order['full_goods_name']),
                         'start_time' => $order['start_time'],
                         'mobile' => $order['mobile']
                     ],

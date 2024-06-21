@@ -31,7 +31,7 @@ class ComponentDict
                     'Text' => [
                         'title' => "文本", // 组件名称
                         'type' => 'text', // 组件类型，文本：text，image：图片，qrcode：二维码
-                        'icon' => "iconfont-iconbiaoti", // 组件图标
+                        'icon' => "iconfont iconbiaoti", // 组件图标
                         'path' => "text", // 组件预览，前缀 edit-，编辑组件属性，前缀 preview-
                         'uses' => 0,
                         'sort' => 10000,
@@ -41,7 +41,7 @@ class ComponentDict
                     'Image' => [
                         'title' => "图片",
                         'type' => 'image',
-                        'icon' => "iconfont-icontupian1",
+                        'icon' => "iconfont icontupian1",
                         'path' => "image",
                         'uses' => 0,
                         'sort' => 10001,
@@ -51,7 +51,7 @@ class ComponentDict
                     'Qrcode' => [
                         'title' => "二维码",
                         'type' => 'qrcode',
-                        'icon' => "iconfont-iconerweima",
+                        'icon' => "iconfont iconerweima",
                         'path' => "qrcode",
                         'uses' => 1,
                         'sort' => 10002,
@@ -61,7 +61,7 @@ class ComponentDict
                     'HeadImg' => [
                         'title' => "头像",
                         'type' => 'image',
-                        'icon' => "iconfont-icongeren",
+                        'icon' => "iconfont icongeren",
                         'path' => "headimg",
                         'uses' => 1,
                         'sort' => 10003,
@@ -77,7 +77,7 @@ class ComponentDict
                     'NickName' => [
                         'title' => "昵称",
                         'type' => 'text',
-                        'icon' => "iconfont-iconnicheng1",
+                        'icon' => "iconfont iconnicheng1",
                         'path' => "nickname",
                         'uses' => 1,
                         'sort' => 10004,
@@ -93,7 +93,7 @@ class ComponentDict
                     'Draw' => [
                         'title' => "绘画",
                         'type' => 'draw',
-                        'icon' => "iconfont-iconhuihua1",
+                        'icon' => "iconfont iconhuihua1",
                         'path' => "draw",
                         'uses' => 0,
                         'sort' => 10005,

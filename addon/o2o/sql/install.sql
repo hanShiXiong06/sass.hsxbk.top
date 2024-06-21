@@ -21,6 +21,8 @@ CREATE TABLE `{{prefix}}o2o_goods`  (
   `update_time` int NOT NULL DEFAULT 0 COMMENT '修改时间',
   `delete_time` int NOT NULL DEFAULT 0 COMMENT '删除时间',
   `is_delete` int NOT NULL DEFAULT 0 COMMENT '是否删除',
+  `poster_id` int NOT NULL DEFAULT 0 COMMENT '海报id',
+  `member_discount` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '会员等级折扣，不参与：空，会员折扣：discount，指定会员价：fixed_price',
   PRIMARY KEY (`goods_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 38 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '项目表' ROW_FORMAT = Compact;
 
@@ -54,6 +56,7 @@ CREATE TABLE `{{prefix}}o2o_goods_sku`  (
   `sku_unit` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT 'sku单位名称',
   `min_buy` int NOT NULL DEFAULT 0 COMMENT '最小服务量',
   `is_default` tinyint NOT NULL DEFAULT 0 COMMENT '是否默认',
+  `member_price` text COLLATE utf8mb4_general_ci COMMENT '会员价，json格式，指定会员价，数据结构为：{"level_1":"10.00","level_2":"10.00"}',
   PRIMARY KEY (`sku_id`) USING BTREE,
   INDEX `idx_goods_sku_is_default`(`is_default`) USING BTREE,
   INDEX `idx_goods_sku_price`(`price`) USING BTREE
@@ -103,6 +106,7 @@ CREATE TABLE `{{prefix}}o2o_order`  (
   `order_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
   `is_evaluate` int NOT NULL DEFAULT 0 COMMENT '是否评论',
   `reserve_service_time` varchar(50) NOT NULL DEFAULT '' COMMENT '客户希望服务时间',
+  `reserve_service_time_stamp` int(0) NOT NULL DEFAULT 0 COMMENT '客户希望服务时间时间戳',
   `technician_id` int NOT NULL DEFAULT 0 COMMENT '技师id',
   `taker_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '收货人',
   `taker_mobile` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '收货人手机号',
@@ -114,7 +118,6 @@ CREATE TABLE `{{prefix}}o2o_order`  (
   `taker_longitude` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '收货地址经度',
   `taker_latitude` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '收货详细纬度',
   `check_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '上门校验码',
-  `reserve_service_time_stamp` int(0) NOT NULL DEFAULT 0 COMMENT '客户希望服务时间时间戳',
   PRIMARY KEY (`order_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 146 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '订单表' ROW_FORMAT = Dynamic;
 

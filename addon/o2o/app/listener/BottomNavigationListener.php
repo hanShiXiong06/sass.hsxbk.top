@@ -26,10 +26,10 @@ class BottomNavigationListener
     public function handle($params = [])
     {
         $key = 'o2o';
-        $site_addon = (new CoreSiteService())->getAddonKeysBySiteId(request()->siteId());
+        $site_addon = ( new CoreSiteService() )->getAddonKeysBySiteId(request()->siteId());
         if (!in_array($key, $site_addon)) return;
 
-        if (!empty($params) && $params[ 'key' ] != $key) return;
+        if (!empty($params) && !empty($params[ 'key' ]) && $params[ 'key' ] != $key) return;
 
         $core_addon_service = new CoreAddonService();
         $addon_info = $core_addon_service->getAddonConfig($key);

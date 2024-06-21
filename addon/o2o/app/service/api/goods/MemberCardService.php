@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -46,10 +46,10 @@ class MemberCardService extends BaseApiService
         $field = 'goods_id, member_id, site_id, card_id, card_no, card_type, status, create_time';
         $info = $this->model->field($field)->where([['card_id', '=', $id], ['site_id', '=', $this->site_id], ['goods_type', '=', 2]])->with([
             'member_card_item' => function($query){
-                $query->where([])->field("num,use_num,verify_code,expire_time");
+                $query->field("num,use_num,verify_code,expire_time");
             },
             'member' => function($query){
-                $query->where([])->field("nickname,username,mobile,heading,member_id");
+                $query->field("nickname,username,mobile,heading,member_id");
             }
         ])->findOrEmpty()->toArray();
 

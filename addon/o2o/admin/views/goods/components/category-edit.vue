@@ -1,6 +1,5 @@
 <template>
-    <el-dialog v-model="showDialog" :title="formData.category_id ? t('updateO2oGoodsCategory') : t('addO2oGoodsCategory')"
-        width="500px" :destroy-on-close="true">
+    <el-dialog v-model="showDialog" :title="formData.category_id ? t('updateO2oGoodsCategory') : t('addO2oGoodsCategory')" width="500px" :destroy-on-close="true">
         <el-form :model="formData" label-width="90px" ref="formRef" :rules="formRules" class="page-form" v-loading="loading">
             <el-form-item :label="t('categoryName')" prop="category_name">
                 <el-input v-model.trim="formData.category_name" clearable :placeholder="t('categoryNamePlaceholder')" class="input-width" />
@@ -48,6 +47,7 @@ const initialFormData = {
     sort: 0,
     pid: 0
 }
+
 const formData: Record<string, any> = reactive({ ...initialFormData })
 
 const formRef = ref<FormInstance>()

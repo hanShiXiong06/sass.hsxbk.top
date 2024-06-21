@@ -35,10 +35,10 @@ class AddressService extends BaseApiService
      */
     public function getList(array $where = [])
     {
-        $field = 'id,member_id,name,mobile,address,address_name,full_address,is_default,type';
+        $field = 'id,member_id,name,mobile,address,address_name,full_address,is_default,lng,lat';
         $order = 'is_default desc, id desc';
 
-        $list = $this->model->where([ ['site_id', '=', $this->site_id],['member_id', '=', $this->member_id ] ])->withSearch(["type"], $where)->field($field)->order($order)->select()->toArray();
+        $list = $this->model->where([ ['site_id', '=', $this->site_id],['member_id', '=', $this->member_id ] ])->field($field)->order($order)->select()->toArray();
         return $list;
     }
 
@@ -49,7 +49,7 @@ class AddressService extends BaseApiService
      */
     public function getInfo(int $id)
     {
-        $field = 'id,member_id,name,mobile,province_id,city_id,district_id,address,address_name,full_address,lng,lat,is_default,type';
+        $field = 'id,member_id,name,mobile,province_id,city_id,district_id,address,address_name,full_address,lng,lat,is_default';
 
         $info = $this->model->field($field)->where([ ['id', '=', $id], ['site_id', '=', $this->site_id], ['member_id', '=', $this->member_id ] ])->findOrEmpty()->toArray();
         return $info;
@@ -63,7 +63,7 @@ class AddressService extends BaseApiService
     public function add(array $data)
     {
         if ($data['is_default']) {
-            $this->model->where([ ['member_id', '=', $this->member_id ], ['type', '=', $data['type']] ])->update(['is_default' => 0]);
+            $this->model->where([ ['member_id', '=', $this->member_id ]  ])->update(['is_default' => 0]);
         }
         $data['member_id'] = $this->member_id;
         $data['site_id'] = $this->site_id;
@@ -80,7 +80,7 @@ class AddressService extends BaseApiService
     public function edit(int $id, array $data)
     {
         if ($data['is_default']) {
-            $this->model->where([ ['member_id', '=', $this->member_id ], ['type', '=', $data['type']] ])->update(['is_default' => 0]);
+            $this->model->where([ ['member_id', '=', $this->member_id ] ])->update(['is_default' => 0]);
         }
         $this->model->where([ ['id', '=', $id], ['site_id', '=', $this->site_id], ['member_id', '=', $this->member_id ] ])->update($data);
         return true;
@@ -96,41 +96,6 @@ class AddressService extends BaseApiService
         $model = $this->model->where([ ['id', '=', $id], ['site_id', '=', $this->site_id], ['member_id', '=', $this->member_id ] ])->find();
         $res = $model->delete();
         return $res;
-    }
-    /*
-     * addressParser
-     * */
-    public function addressParser($address){
-        // 发送网络请求
-        // 接口地址 : http://cloud.kuaidi100.com
-        // methods : post
-        /*
-        * 名称	类型	是否必须	描述
-          secret_key	string	true	用户授权key
-          secret_code	string	true	接口编号
-          secret_sign	string	true	加密签名：md5(secret_key+secret_secret)转大写
-          content	string	true	例如：张三,13800138000,广东省深圳市南山区科技园十二路金蝶软件园
-
-      * */
-
-        // 将key 转大写
-         $key = '22AB0B4E2EC0927439DD48F0FC761753';
-        // 接口编号
-        $params="";
-        $params.='secret_key=3vyYxUHA8w3RQZ5BZ3'.'&';
-        $params.='secret_code=0db4f037e2094f15a811261722e8a6e9'.'&';
-        $params.='secret_sign='.$key.'&';
-        $params.='content='.$address.'&';
-        $params.=substr($params,0,-1);
-        $ch=curl_init();
-        curl_setopt($ch,CURLOPT_POST,1);
-        curl_setopt($ch,CURLOPT_HEADER,0);
-        curl_setopt($ch,CURLOPT_URL,'http://cloud.kuaidi100.com/api');
-        curl_setopt($ch,CURLOPT_POSTFIELDS,$params);
-        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
-        $result=curl_exec($ch);
-
-        return  json_decode($result, true);;
     }
 
 }

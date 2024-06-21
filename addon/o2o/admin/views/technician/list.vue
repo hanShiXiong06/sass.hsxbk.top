@@ -31,14 +31,12 @@
                     <template #empty>
                         <span>{{ !technicianTable.loading ? t("emptyData") : "" }}</span>
                     </template>
-                    <el-table-column :show-overflow-tooltip="true" :label="t('technicianInfo')" min-width="300"
-                        align="left">
+                    <el-table-column :show-overflow-tooltip="true" :label="t('technicianInfo')" min-width="300" align="left">
                         <template #default="{ row }">
                             <div class="flex items-center">
                                 <div class="w-[60px] max-h-[60px] mr-[10px]">
                                     <img class="max-w-[60px] w-[60px] max-h-[60px] flex-shrink-0" :src="img(row.headimg_mid)" v-if="row.headimg_mid"/>
-                                    <img class="w-[60px] h-[60px] " v-else
-                                    src="@/addon/o2o/assets/default_headimg.png" alt="">
+                                    <img class="w-[60px] h-[60px] " v-else src="@/addon/o2o/assets/default_headimg.png" alt="">
                                 </div>
                                 <div class="flex flex-wrap">
                                     <p class="w-[100%] truncate">{{ row.name }}</p>
@@ -47,8 +45,7 @@
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column :show-overflow-tooltip="true" :label="t('member')" min-width="300"
-                        align="left">
+                    <el-table-column :show-overflow-tooltip="true" :label="t('member')" min-width="300" align="left">
                         <template #default="{ row }">
                             <div class="flex items-center cursor-pointer" v-if="row.member" @click="toLink(row.member.member_id)">
                                 <div class="w-[60px] max-h-[60px] mr-[10px]">
@@ -99,6 +96,7 @@ import { img } from '@/utils/common'
 import { useRoute, useRouter } from 'vue-router'
 import { getTechnicianList, deleteTechnician } from '@/addon/o2o/api/technician'
 import { ElMessageBox } from 'element-plus'
+
 const route = useRoute()
 const router = useRouter()
 const pageName = route.meta.title
@@ -120,6 +118,7 @@ const searchFormRef = ref()
 const addevent = () => {
     router.push('/o2o/technician/edit')
 }
+
 /**
  * 获取技师列表
  */

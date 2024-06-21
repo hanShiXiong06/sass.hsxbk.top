@@ -14,8 +14,8 @@
             :close-on-press-escape="false" :destroy-on-close="true" :close-on-click-modal="false">
 
             <el-form :inline="true" :model="tourismWayTable.searchParam" ref="searchFormRef">
-                <el-form-item :label="t('wayNameSelectPopup')" prop="goods_name" class="form-item-wrap">
-                    <el-input v-model="tourismWayTable.searchParam.goods_name"
+                <el-form-item :label="t('wayNameSelectPopup')" prop="way_name" class="form-item-wrap">
+                    <el-input v-model="tourismWayTable.searchParam.way_name"
                         :placeholder="t('wayNameSelectPopupPlaceholder')" maxlength="60" />
                 </el-form-item>
                 <el-form-item :label="t('createTime')" prop="create_time" class="form-item-wrap">
@@ -35,19 +35,40 @@
                     <span>{{ !tourismWayTable.loading ? t('emptyData') : '' }}</span>
                 </template>
                 <el-table-column type="selection" width="55" />
-                <el-table-column :label="t('wayInfoPopup')" min-width="180" align="left" show-overflow-tooltip>
-                     <template #default="{ row }">
-                         <div class="flex items-center cursor-pointer">
-                            <div class="min-w-[60px] h-[60px] flex items-center justify-center">
-                                <img class="max-w-[60px] max-h-[60px]" :src="img(row.cover_thumb_small)" />
+                <el-table-column :label="t('wayInfo')" min-width="240" align="left" show-overflow-tooltip>
+                        <template #default="{ row }">
+                            <div class="flex items-center cursor-pointer">
+                                <div class="min-w-[60px] h-[60px] flex items-center justify-center">
+                                    <img class="max-w-[60px] max-h-[60px]" :src="img(row.goods.cover_thumb_small)" />
+                                </div>
+                                <a href="javascript:;" :title="row.way_name" class="multi-hidden ml-2">{{ row.way_name
+                                }}</a>
                             </div>
-                            <a href="javascript:;" :title="row.goods_name" class="multi-hidden ml-2">{{ row.goods_name}}</a>
-                         </div>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="price" :label="t('tourismPricePopup')" min-width="120" align="right"></el-table-column>
-                <el-table-column prop="stock"  :label="t('tourismStockPopup')" min-width="120" align="right"></el-table-column>
-                <el-table-column prop="create_time" :label="t('goodsSelectPopupCreateTime')" min-width="120" />
+                        </template>
+                    </el-table-column>
+                    <el-table-column :label="t('wayCity')" min-width="200" align="left">
+                        <template #default="{ row }">
+                            <div><span>{{ t('startCity') }}：{{ row.start_city }}</span></div>
+                            <div><span>{{ t('endCity') }}：{{ row.end_city }}</span></div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column :label="t('linePrice')" min-width="120" align="left">
+                        <template #default="{ row }">
+                            {{ row.goods.price }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column :label="t('stock')" min-width="120" align="left">
+                        <template #default="{ row }">
+                            {{ row.goods.stock }}
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column :label="t('createTime')" min-width="180" align="center">
+                        <template #default="{ row }">
+                            {{ row.create_time || '' }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="status_name" :label="t('wayStatus')" min-width="120" />
 
             </el-table>
             <div class="mt-[16px] flex">
@@ -82,7 +103,7 @@ import { ref, reactive, computed, nextTick } from 'vue'
 import { cloneDeep } from 'lodash-es'
 import { img } from '@/utils/common'
 import { ElMessage } from 'element-plus'
-import { getTourismList } from '@/addon/tourism/api/tourism'
+import { getWayList } from '@/addon/tourism/api/tourism'
 
 const prop = defineProps({
     modelValue: {
@@ -127,7 +148,7 @@ const tourismWayTable = reactive({
     loading: true,
     data: [],
     searchParam: {
-        goods_name: '',
+        way_name: '',
         create_time: '',
         goods_type: 'way'
     }
@@ -148,10 +169,10 @@ const handleSelectChange = (selection: any, row: any) => {
         }
     }
     if (isSelected) {
-        selectTravel['goods_' + row.way_id] = row
+        selectTravel['way_' + row.way_id] = row
     } else {
         // 未选中，删除当前商品
-        delete selectTravel['goods_' + row.way_id]
+        delete selectTravel['way_' + row.way_id]
     }
 }
 
@@ -159,12 +180,12 @@ const handleSelectChange = (selection: any, row: any) => {
 const handleSelectAllChange = (selection: any) => {
     if (selection.length) {
         selection.forEach((item: any) => {
-            selectTravel['goods_' + item.way_id] = item
+            selectTravel['way_' + item.way_id] = item
         })
     } else {
         // 未选中，删除当前页面的数据
         tourismWayTable.data.forEach((item: any) => {
-            delete selectTravel['goods_' + item.way_id]
+            delete selectTravel['way_' + item.way_id]
         })
     }
 }
@@ -177,7 +198,7 @@ const loadTravelList = (page: number = 1, callback: any = null) => {
     tourismWayTable.page = page
     const searchData = cloneDeep(tourismWayTable.searchParam)
 
-    getTourismList({
+    getWayList({
         page: tourismWayTable.page,
         limit: tourismWayTable.limit,
         ...searchData
@@ -198,7 +219,7 @@ const setGoodsSelected = () => {
         if (!travelListTableRef.value) return
         for (let i = 0; i < tourismWayTable.data.length; i++) {
             travelListTableRef.value.toggleRowSelection(tourismWayTable.data[i], false)
-            if (selectTravel['goods_' + tourismWayTable.data[i].way_id]) {
+            if (selectTravel['way_' + tourismWayTable.data[i].way_id]) {
                 travelListTableRef.value.toggleRowSelection(tourismWayTable.data[i], true)
             }
         }
@@ -218,11 +239,11 @@ const show = () => {
         // 第一次打开弹出框时，纠正数据，并且赋值已选商品
         if (goodsIds.value) {
             // 赋值已选择的商品
-            let obj = []
+            const obj = []
             for (let i = 0; i < tourismWayTable.data.length; i++) {
                 if (goodsIds.value.indexOf(tourismWayTable.data[i].way_id) != -1) {
                     obj.push(tourismWayTable.data[i].way_id)
-                    selectTravel['goods_' + tourismWayTable.data[i].way_id] = tourismWayTable.data[i] || {}
+                    selectTravel['way_' + tourismWayTable.data[i].way_id] = tourismWayTable.data[i] || {}
                 }
             }
             goodsIds.value = obj
@@ -233,7 +254,7 @@ const show = () => {
 
 // 清空已选商品
 const clear = () => {
-    for (let k in selectTravel) {
+    for (const k in selectTravel) {
         delete selectTravel[k]
     }
     setGoodsSelected()
@@ -243,22 +264,22 @@ const save = () => {
     if (prop.min && selectGoodsNum.value < prop.min) {
         ElMessage({
             type: 'warning',
-            message: `${t('travelSelectPopupGoodsMinTip')}${prop.min}${t('goodsSelectPopupPiece')}`,
+            message: `${t('travelSelectPopupGoodsMinTip')}${prop.min}${t('goodsSelectPopupPiece')}`
         })
-        return;
+        return
     }
 
     if (prop.max && prop.max > 0 && selectGoodsNum.value && selectGoodsNum.value > prop.max) {
         ElMessage({
             type: 'warning',
-            message: `${t('travelSelectPopupGoodsMaxTip')}${prop.max}${t('goodsSelectPopupPiece')}`,
+            message: `${t('travelSelectPopupGoodsMaxTip')}${prop.max}${t('goodsSelectPopupPiece')}`
         })
-        return;
+        return
     }
 
-    let ids: any = []
-    for (let k in selectTravel) {
-        ids.push(parseInt(k.replace('goods_', '')))
+    const ids: any = []
+    for (const k in selectTravel) {
+        ids.push(parseInt(k.replace('way_', '')))
     }
     goodsIds.value.splice(0, goodsIds.value.length, ...ids)
 

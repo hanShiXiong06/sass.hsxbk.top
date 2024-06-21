@@ -40,7 +40,15 @@
 				<el-form-item :label="t('scenicImgs')" prop="scenic_images">
 					<upload-image v-model="formData.scenic_images" limit="10" />
 				</el-form-item>
-
+        <el-form-item :label="t('poster')">
+          <el-select v-model="formData.poster_id" :placeholder="t('posterPlaceholder')" clearable>
+            <el-option v-for="item in posterOptions" :key="item.id" :label="item.name" :value="item.id" />
+          </el-select>
+          <div class="ml-[10px]">
+            <span class="cursor-pointer text-primary mr-[10px]" @click="refreshGoodsPoster(true)">{{ t('refresh') }}</span>
+            <span class="cursor-pointer text-primary" @click="toPosterEvent">{{ t('addGoodsPoster') }}</span>
+          </div>
+        </el-form-item>
 				<el-form-item :label="t('address')" prop="addressId">
 					<el-select v-model="formData.province_name" value-key="name" clearable class="input-width"
 						@change="checkCity">
@@ -94,6 +102,8 @@ import type { FormInstance } from 'element-plus'
 import { getAreaListByPid, getAreatree, getAddressInfo, getContraryAddress, getMap } from '@/app/api/sys'
 import { getScenicInfo, addScenic, editScenic } from '@/addon/tourism/api/tourism'
 import { useRoute, useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
+import {getPosterList} from "@/app/api/poster";
 
 const route = useRoute()
 // const pageName = route.meta.title
@@ -226,14 +236,21 @@ const getAddressInfoTo = (lat:any, lng:any, type:any) => {
     getContraryAddress({
         location: lat + ',' + lng
     }).then(res => {
-        formData.province_name = res.data.result.address_component.province
-        formData.city_name = res.data.result.address_component.city
-        formData.district_name = res.data.result.address_component.district
-        if (type == 1) {
-            formData.address = res.data.result.formatted_addresses.recommend
-            formData.full_address = formData.province_name + formData.city_name + formData.district_name + formData.address
-            formData.latitude = lat
-            formData.longitude = lng
+        if(res.data.result) {
+            formData.province_name = res.data.result.address_component.province
+            formData.city_name = res.data.result.address_component.city
+            formData.district_name = res.data.result.address_component.district
+            if (type == 1) {
+                formData.address = res.data.result.formatted_addresses.recommend
+                formData.full_address = formData.province_name + formData.city_name + formData.district_name + formData.address
+                formData.latitude = lat
+                formData.longitude = lng
+            }
+        }else{
+            ElMessage({
+                type: 'warning',
+                message: res.data.message
+            })
         }
     })
 }
@@ -260,7 +277,8 @@ const initialFormData = {
     surround: '',
     scenic_cover: '',
     scenic_images: '',
-    full_address: ''
+    full_address: '',
+    poster_id: ''
 }
 const formData: Record<string, any> = reactive({ ...initialFormData })
 
@@ -319,6 +337,37 @@ const onSave = async (formEl: FormInstance | undefined) => {
         }
     })
 }
+
+// 海报列表下拉框
+const posterOptions = reactive([])
+
+// 跳转到海报列表，添加海报
+const toPosterEvent = () => {
+  const url = router.resolve({
+    path: '/poster/list'
+  })
+  window.open(url.href)
+}
+
+// 商品海报
+const refreshGoodsPoster = (bool = false) => {
+  getPosterList({
+    type: 'tourism_scenic'
+  }).then((res) => {
+    const data = res.data
+    if (data) {
+      posterOptions.splice(0, posterOptions.length, ...data)
+      if (bool) {
+        ElMessage({
+          message: t('refreshSuccess'),
+          type: 'success'
+        })
+      }
+    }
+  })
+}
+
+refreshGoodsPoster()
 
 const back = () => {
     history.back()

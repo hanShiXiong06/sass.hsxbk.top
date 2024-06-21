@@ -24,7 +24,8 @@
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="loadRefundList()">{{ t('search') }}</el-button>
-                        <el-button @click="searchFormRef?.resetFields()">{{ t('reset') }}</el-button>
+                        <el-button @click="resetForm(searchFormRef)">{{ t('reset') }}</el-button>
+                        <el-button type="primary" @click="exportEvent">{{ t('export') }}</el-button>
                     </el-form-item>
                 </el-form>
             </el-card>
@@ -85,6 +86,9 @@
             </div>
 
         </el-card>
+
+      <export-sure ref="exportSureDialog" :show="flag" type="o2o_order_refund" :searchParam="refundTable.searchParam" @close="handleClose" />
+
     </div>
 </template>
 
@@ -186,14 +190,30 @@ const handleRefuse = (info: AnyObject) => {
         inputPattern: /\S/,
         inputType: 'textarea'
     }).then(({ value }) => {
-        refuseRefund({ refund_id: info.refund_id, refuse_reason: value })
-            .then(() => {
-                loadRefundList()
-            })
-            .catch()
+        refuseRefund({ refund_id: info.refund_id, refuse_reason: value }).then(() => {
+            loadRefundList()
+        }).catch()
     }).catch(() => {
 
     })
+}
+
+const resetForm = (formEl: FormInstance | undefined) => {
+    if (!formEl) return
+    formEl.resetFields()
+    loadRefundList()
+}
+
+/**
+ * 订单导出
+ */
+const exportSureDialog = ref(null)
+const flag = ref(false)
+const handleClose = (val) => {
+    flag.value = val
+}
+const exportEvent = (data: any) => {
+    flag.value = true
 }
 // 退款详情
 // 订单详情

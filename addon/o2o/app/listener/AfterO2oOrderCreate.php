@@ -10,9 +10,6 @@ use addon\o2o\app\job\OrderPayRemind;
 use addon\o2o\app\service\core\CoreGoodsSaleNumService;
 use addon\o2o\app\service\core\CoreOrderConfigService;
 use addon\o2o\app\service\core\CoreOrderLogService;
-use core\exception\CommonException;
-use think\facade\Db;
-use think\facade\Log;
 
 class AfterO2oOrderCreate
 {
@@ -23,19 +20,6 @@ class AfterO2oOrderCreate
         $order_data = $data['order_data'] ?? [];
         $order_goods_data = $data['order_goods_data'] ?? [];
         $site_id = $order_data['site_id'];
-
-        //累增销量
-        $core_goods_sale_num_service = new CoreGoodsSaleNumService();
-        foreach($order_goods_data as $v){
-
-            //商品累计销量
-            $core_goods_sale_num_service->inc([
-                'num' => $v['num'],
-                'goods_id' => $v['goods_id'],
-                'sku_id' => $v['item_id']
-            ]);
-        }
-
 
         //发布日志
         $main_type = $data['main_type'] ?? 'member';

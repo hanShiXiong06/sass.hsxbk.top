@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的saas管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -13,10 +13,8 @@ namespace addon\tourism\app\service\api\hotel;
 
 use addon\tourism\app\dict\hotel\HotelTagDict;
 use addon\tourism\app\model\Hotel;
-use app\service\admin\sys\AreaService;
+use addon\tourism\app\service\core\CoreGoodsService;
 use core\base\BaseApiService;
-use addon\tourism\app\service\api\hotel\RoomService;
-use addon\tourism\app\service\api\calendar\GoodsDayService;
 
 /**
  * 酒店服务层
@@ -42,17 +40,17 @@ class HotelService extends BaseApiService
         $order = $where['order'];
 
         $search_model = $this->model->where([['site_id', '=', $this->site_id],['hotel_status', '=', 1]])->withSearch(["hotel_name","create_time","search_name"], $where)->field($field)->with(["goods" => function($query){
-            $query->where([['is_default', '=', 1]])->field("hotel_id,goods_id,price");
+            $query->where([['is_default', '=', 1]]);
         }])->order($order)->append(['cover_thumb_mid']);
         $list = $this->pageQuery($search_model);
-        $time = date("Y-m-d", time());
-        foreach ($list['data'] as $key => $val){
-            $price = (new RoomService())->getRoomPrice($time, $val['goods']['goods_id']);
-            if($price == 0)
-            {
-                $list['data'][$key]['price'] = $val['goods']['price'];
-            }else{
-                $list['data'][$key]['price'] = $price;
+        $room_service = new RoomService();
+        $core_goods_service = new CoreGoodsService();
+        if($this->member_id) $member_info = $core_goods_service->getMemberInfo($this->member_id, $this->site_id);
+
+        foreach ($list['data'] as $key => &$val){
+            $val = $room_service->getRoomPrice($val);
+            if($this->member_id){
+                $val['member_price'] = $core_goods_service->getMemberPrice($member_info, $val['goods']['member_discount'], $val['price'], $val['day_info'] ?? [], $val['goods']['fixed_discount']);
             }
         }
         return $list;
@@ -65,7 +63,7 @@ class HotelService extends BaseApiService
      */
     public function getInfo(int $id)
     {
-        $field = 'hotel_id,site_id,hotel_star,hotel_tag,hotel_desc,hotel_name,hotel_cover,hotel_images,hotel_attribute,create_time,province_id,city_id,district_id,address,full_address,longitude,latitude';
+        $field = 'hotel_id,site_id,poster_id,hotel_star,hotel_tag,hotel_desc,hotel_name,hotel_cover,hotel_images,hotel_attribute,create_time,province_id,city_id,district_id,address,full_address,longitude,latitude';
         $info = $this->model->field($field)->where([['hotel_id', '=', $id], ['site_id', '=', $this->site_id]])->append(['image_thumb_big', 'cover_thumb_big'])->findOrEmpty()->toArray();
         if($info){
             $info['room_list'] = (new RoomService())->getListByHotelId($info['hotel_id']);
@@ -122,17 +120,16 @@ class HotelService extends BaseApiService
             $condition[] = ['hotel_id', 'in', $data['goods_ids']];
         }
         $list = $this->model->where($condition)->field($field)->with(["goods" => function($query){
-            $query->where([['is_default', '=', 1]])->field("hotel_id,goods_id,price");
+            $query->where([['is_default', '=', 1]]);
         }])->order($order)->append(['cover_thumb_mid', 'cover_thumb_big'])->limit($data['limit'])->select()->toArray();
+        $room_service = new RoomService();
+        $core_goods_service = new CoreGoodsService();
+        if($this->member_id) $member_info = $core_goods_service->getMemberInfo($this->member_id, $this->site_id);
 
-        $time = date("Y-m-d", time());
-        foreach ($list as $key => $val){
-            $price = (new RoomService())->getRoomPrice($time, $val['goods']['goods_id']);
-            if($price == 0)
-            {
-                $list[$key]['price'] = $val['goods']['price'];
-            }else{
-                $list[$key]['price'] = $price;
+        foreach ($list as $key => &$val){
+            $val = $room_service->getRoomPrice($val);
+            if($this->member_id){
+                $val['member_price'] = $core_goods_service->getMemberPrice($member_info, $val['goods']['member_discount'], $val['price'], $val['day_info'] ?? [], $val['goods']['fixed_discount']);
             }
         }
         return $list;

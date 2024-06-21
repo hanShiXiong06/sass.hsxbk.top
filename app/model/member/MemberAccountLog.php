@@ -126,6 +126,32 @@ class MemberAccountLog extends BaseModel
     }
 
     /**
+     * 金额大于
+     * @param $query
+     * @param $value
+     * @param $data
+     */
+    public function searchAccountDataGtAttr($query, $value, $data)
+    {
+        if ($value !== '' && $value !== null) {
+            $query->where('account_data', '>',$value);
+        }
+    }
+
+    /**
+     * 金额小于
+     * @param $query
+     * @param $value
+     * @param $data
+     */
+    public function searchAccountDataLtAttr($query, $value, $data)
+    {
+        if ($value !== '' && $value !== null) {
+            $query->where('account_data', '<',$value);
+        }
+    }
+
+    /**
      * 会员搜索(用于关联表查询)
      * @param $query
      * @param $value

@@ -103,6 +103,9 @@ $system_event = [
 
         // 获取海报数据
         'GetPosterData' => ['app\listener\system\Poster'],
+
+        // 小程序授权变更事件
+        'WeappAuthChangeAfter' => ['app\listener\system\WeappAuthChangeAfter']
     ],
     'subscribe' => [
     ],

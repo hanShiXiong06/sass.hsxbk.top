@@ -51,6 +51,11 @@ return [
         'tourism' => '旅游系统',
         'tourism_desc' => '酒店预定，景点门票，团购线路',
     ],
+    'dict_diy_poster' => [
+        'tourism_hotel_component_type_basic' => '酒店组件',
+        'tourism_scenic_component_type_basic' => '景点组件',
+        'tourism_way_component_type_basic' => '线路组件',
+    ],
     'dict_diy' => [
         'tourism_component_type_basic' => '旅游组件',
         'page_tourism_index' => '旅游首页',

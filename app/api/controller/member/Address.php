@@ -27,9 +27,7 @@ class Address extends BaseApiController
     * @return \think\Response
     */
     public function lists(){
-        $data = $this->request->params([
-             ["type",""]
-        ]);
+        $data = $this->request->params([]);
         return success((new AddressService())->getList($data));
     }
 
@@ -59,7 +57,6 @@ class Address extends BaseApiController
              ["lng",""],
              ["lat",""],
              ["is_default",0],
-             ["type",'']
         ]);
         $this->validate($data, 'app\validate\member\Address.add');
         $id = (new AddressService())->add($data);
@@ -84,7 +81,6 @@ class Address extends BaseApiController
              ["lng",""],
              ["lat",""],
              ["is_default",0],
-             ["type",'']
         ]);
         $this->validate($data, 'app\validate\member\Address.edit');
         (new AddressService())->edit($id, $data);
@@ -99,15 +95,5 @@ class Address extends BaseApiController
     public function del(int $id){
         (new AddressService())->del($id);
         return success('DELETE_SUCCESS');
-    }
-
-    /*
-     * 参数解析
-     * */
-    public function addressParser(){
-        $data = $this->request->params([
-             ["address",""]
-        ]);
-        return success( (new AddressService())->addressParser($data['address']) );
     }
 }

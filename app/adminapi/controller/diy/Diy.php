@@ -114,6 +114,8 @@ class Diy extends BaseAdminController
             [ "page_title", "" ],
             [ "title", "" ],
             [ "name", "" ],
+            [ 'template', '' ],
+            [ 'mode', 'diy' ], // 页面展示模式，diy：自定义，fixed：固定
             [ "value", "", false ],
             [ 'is_change', '' ]
         ]);

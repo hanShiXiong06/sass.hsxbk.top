@@ -24,6 +24,30 @@ class DiyConfigService extends BaseApiService
 {
 
     /**
+     * 获取底部导航列表
+     * @param array $params
+     * @return array|mixed
+     */
+    public function getBottomList($params = [])
+    {
+        $list = ( new CoreDiyConfigService() )->getBottomList($params);
+
+        $site_addon = ( new CoreSiteService() )->getSiteCache($this->site_id);
+
+        // 单应用，排除 系统 底部导航设置
+        if (count($site_addon[ 'apps' ]) == 1) {
+            foreach ($list as $k => $v) {
+                if ($v[ 'key' ] = 'app') {
+                    unset($list[ $k ]);
+                    break;
+                }
+            }
+            $list = array_values($list);
+        }
+        return $list;
+    }
+
+    /**
      * 获取底部导航配置
      * @param $key
      * @return array
@@ -32,12 +56,12 @@ class DiyConfigService extends BaseApiService
     {
         // 检测当前站点是多应用还是单应用
         if ($key == 'app') {
-            $site_addon = (new CoreSiteService())->getSiteCache($this->site_id);
+            $site_addon = ( new CoreSiteService() )->getSiteCache($this->site_id);
             if (count($site_addon[ 'apps' ]) == 1) {
                 $key = $site_addon[ 'apps' ][ 0 ][ 'key' ];
             }
         }
-        return (new CoreDiyConfigService())->getBottomConfig($this->site_id, $key);
+        return ( new CoreDiyConfigService() )->getBottomConfig($this->site_id, $key);
     }
 
     /**
@@ -46,7 +70,7 @@ class DiyConfigService extends BaseApiService
      */
     public function getStartUpPageConfig($type)
     {
-        return (new CoreDiyConfigService())->getStartUpPageConfig($this->site_id, $type);
+        return ( new CoreDiyConfigService() )->getStartUpPageConfig($this->site_id, $type);
     }
 
 }

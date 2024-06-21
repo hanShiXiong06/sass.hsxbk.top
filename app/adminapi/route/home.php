@@ -28,6 +28,9 @@ Route::group('home', function () {
     Route::get('site/:id', 'home.Site/info');
     //更新站点信息
     Route::put('site/:id', 'home.Site/edit');
-
+    // 获取可选择的店铺套餐
+    Route::get('site/group', 'home.Site/getSiteGroup');
+    // 获取可选择的店铺套餐
+    Route::post('site/create', 'home.Site/create');
 })->middleware(AdminCheckToken::class, true)
     ->middleware(AdminLog::class);

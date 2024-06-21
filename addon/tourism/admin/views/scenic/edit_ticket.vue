@@ -26,6 +26,19 @@
 						<el-form-item :label="t('ticketStock')" prop="stock">
 							<el-input v-model.trim="formData.stock" clearable :placeholder="t('ticketStockPlaceholder')" class="input-width"  @keyup="filterNumber($event)" @blur="formData.stock = $event.target.value"/>
 						</el-form-item>
+
+                        <el-form-item :label="t('memberDiscount')" >
+                            <div>
+                            <el-radio-group v-model="formData.member_discount">
+                                <el-radio label="">{{ t('nonparticipation') }}</el-radio>
+                                <el-radio label="discount">{{ t('discount') }}</el-radio>
+                                <el-radio label="fixed_discount">{{ t('fixedDiscount') }}</el-radio>
+                            </el-radio-group>
+                            <div class="text-[12px] text-[#999] leading-[20px]" v-if="formData.member_discount == 'discount'">{{t('discountHint')}}</div>
+                            <div class="text-[12px] text-[#999] leading-[20px]" v-if="formData.member_discount == 'fixed_discount'">{{t('fixedDiscountHint')}}</div>
+                            </div>
+                        </el-form-item>
+
 						<el-form-item :label="t('ticketIllustrate')">
 							<editor v-model="formData.goods_content" />
 						</el-form-item>
@@ -94,6 +107,12 @@
 				<el-form-item :label="t('tickePrice')" prop="price" class="input-width">
 					<el-input v-model="saleArr.price" clearable :placeholder="t('tickePricePlaceholder')" @keyup="filterDigit($event)" class="input-width" />
 				</el-form-item>
+                <el-form-item :label="t('memberPrice')" prop="member_price" class="items-center" v-if="formData.member_discount != ''">
+					<el-radio-group v-model="saleArr.member_price" class="ml-4 input-width">
+						<el-radio :label="1" size="large">{{ t('involved') }}</el-radio>
+						<el-radio :label="0" size="large">{{ t('noInvolved') }}</el-radio>
+					</el-radio-group>
+				</el-form-item>
 			</el-form>
 
 			<template #footer>
@@ -118,7 +137,7 @@ import {
     datePriceList
 } from '@/addon/tourism/api/tourism'
 import { useRoute, useRouter } from 'vue-router'
-import { filterDigit, filterNumber} from '@/utils/common'
+import { filterDigit, filterNumber } from '@/utils/common'
 
 const route = useRoute()
 const router = useRouter()
@@ -149,15 +168,18 @@ const check = (res:any) => {
     saleArr.is_set = 1
     saleArr.price = ''
     saleArr.end_date = ''
+    saleArr.member_price = 1
     showDialog.value = true
     if (date_price_list.value[res.day]) {
         saleArr.price = date_price_list.value[res.day].price
+        saleArr.member_price = date_price_list.value[res.day].member_price
     }
 }
 const saleArr = reactive({
     is_set: 1,
     start_date: '',
     end_date: '',
+    member_price: 1,
     price: ''
 })
 
@@ -170,7 +192,24 @@ const initialFormData = {
     is_vip: 0,
     stock: '',
     scenic_id: 0,
+    member_discount: '',
     buy_info: ''
+}
+interface DatePriceType{
+	price:string
+	sell_num:number|string
+	tock_all:number|string
+	stock_all:number|string
+}
+
+const date_price_list = ref<DatePriceType[]>([])
+
+const checkDatePrice = (id: number = 0) => {
+    datePriceList({
+        goods_id: id
+    }).then(res => {
+        date_price_list.value = res.data
+    })
 }
 const formData: Record<string, any> = reactive({ ...initialFormData })
 const setFormData = async (id: number = 0) => {
@@ -271,20 +310,6 @@ const saveSale = async (formEl: FormInstance | undefined) => {
 
 const back = () => {
     history.back()
-}
-interface DatePriceType{
-	price:string
-	sell_num:number|string
-	tock_all:number|string
-	stock_all:number|string
-}
-const date_price_list = ref<DatePriceType[]>([])
-const checkDatePrice = (id: number = 0) => {
-    datePriceList({
-        goods_id: id
-    }).then(res => {
-        date_price_list.value = res.data
-    })
 }
 
 </script>

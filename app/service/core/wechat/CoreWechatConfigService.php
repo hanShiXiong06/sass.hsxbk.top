@@ -42,6 +42,7 @@ class CoreWechatConfigService extends BaseCoreService
             'token'             => $info['token'] ?? '',
             'encoding_aes_key'  => $info['encoding_aes_key'] ?? '',
             'encryption_type'   => $info['encryption_type'] ?? 'not_encrypt',//加解密模式   not_encrypt 明文   compatible 兼容  safe 安全
+            'is_authorization'  => $info['is_authorization'] ?? 0
         ];
     }
 
@@ -52,6 +53,7 @@ class CoreWechatConfigService extends BaseCoreService
      * @return SysConfig|bool|Model
      */
     public function setWechatConfig(int $site_id, array $data){
+        $old = $this->getWechatConfig($site_id);
         $config = [
             'wechat_name' => $data['wechat_name'] ?? '',//公众号名称
             'wechat_original' => $data['wechat_original'] ?? '',//原始ID
@@ -61,6 +63,7 @@ class CoreWechatConfigService extends BaseCoreService
             'token'             => $data['token'] ?? '',
             'encoding_aes_key'  => $data['encoding_aes_key'] ?? '',
             'encryption_type'   => $data['encryption_type'] ?? '',
+            'is_authorization'  => $data['is_authorization'] ?? $old['is_authorization']
         ];
         return (new CoreConfigService())->setConfig($site_id, ConfigKeyDict::WECHAT, $config);
     }
@@ -71,12 +74,7 @@ class CoreWechatConfigService extends BaseCoreService
      * @return array
      */
     public function getWechatStaticInfo($site_id){
-//        $domain = request()->domain();
         $wap_domain = (new CoreSysConfigService())->getSceneDomain($site_id)['wap_url'] ?? '';
-        $wap_domain_array = explode('/', $wap_domain);
-//        if(count($wap_domain_array) > 2){
-//            $wap_domain = $wap_domain_array[0].'/'.$wap_domain_array[1].'/'.$wap_domain_array[2];
-//        }
         return [
             'serve_url' => (string)url('/api/wechat/serve/'.$site_id, [],'',true),
             'business_domain'   => $wap_domain,
@@ -84,5 +82,24 @@ class CoreWechatConfigService extends BaseCoreService
             'web_auth_domain'   => $wap_domain,
             'encryption_type' => WechatDict::getEncryptionType()
         ];
+    }
+
+    /**
+     * 获取小程序授权信息
+     * @param int $site_id
+     * @return mixed
+     */
+    public function getWechatAuthorizationInfo(int $site_id) {
+        return (new CoreConfigService())->getConfigValue($site_id, ConfigKeyDict::WECHAT_AUTHORIZATION_INFO);
+    }
+
+    /**
+     * 设置小程序授权信息
+     * @param int $site_id
+     * @param array $config
+     * @return SysConfig|bool|Model
+     */
+    public function setWechatAuthorizationInfo(int $site_id, array $config) {
+        return (new CoreConfigService())->setConfig($site_id, ConfigKeyDict::WECHAT_AUTHORIZATION_INFO, $config);
     }
 }

@@ -54,6 +54,19 @@
 						<el-form-item :label="t('goodsImage')" prop="goods_image">
 							<upload-image v-model="formData.goods_cover" />
 						</el-form-item>
+
+                        <el-form-item :label="t('memberDiscount')" >
+                            <div>
+                            <el-radio-group v-model="formData.member_discount">
+                                <el-radio label="">{{ t('nonparticipation') }}</el-radio>
+                                <el-radio label="discount">{{ t('discount') }}</el-radio>
+                                <el-radio label="fixed_discount">{{ t('fixedDiscount') }}</el-radio>
+                            </el-radio-group>
+                            <div class="text-[12px] text-[#999] leading-[20px]" v-if="formData.member_discount == 'discount'">{{t('discountHint')}}</div>
+                            <div class="text-[12px] text-[#999] leading-[20px]" v-if="formData.member_discount == 'fixed_discount'">{{t('fixedDiscountHint')}}</div>
+                            </div>
+                        </el-form-item>
+
 						<el-form-item :label="t('goodsContent')">
 							<editor v-model="formData.goods_content" />
 						</el-form-item>
@@ -117,6 +130,12 @@
 				<el-form-item :label="t('price')" prop="price" class="input-width">
 					<el-input v-model="saleArr.price" clearable :placeholder="t('pricePlaceholder')" class="input-width" @keyup="filterDigit($event)"/>
 				</el-form-item>
+                <el-form-item :label="t('memberPrice')" prop="member_price" class="items-center" v-if="formData.member_discount != ''">
+					<el-radio-group v-model="saleArr.member_price" class="ml-4 input-width">
+						<el-radio :label="1" size="large">{{ t('involved') }}</el-radio>
+						<el-radio :label="0" size="large">{{ t('noInvolved') }}</el-radio>
+					</el-radio-group>
+				</el-form-item>
 			</el-form>
 
 			<template #footer>
@@ -142,7 +161,7 @@ import {
     getRoomFacilities
 } from '@/addon/tourism/api/tourism'
 import { useRoute, useRouter } from 'vue-router'
-import { filterNumber,filterDigit } from '@/utils/common'
+import { filterNumber, filterDigit } from '@/utils/common'
 
 const route = useRoute()
 const router = useRouter()
@@ -171,15 +190,18 @@ const check = (res:any) => {
     saleArr.end_date = ''
     saleArr.price = ''
     showDialog.value = true
+    saleArr.member_price = 1
     if (datePriceList.value[res.day]) {
         saleArr.price = datePriceList.value[res.day].price
+        saleArr.member_price = datePriceList.value[res.day].member_price
     }
 }
 const saleArr = reactive({
     is_set: 1,
     start_date: '',
     end_date: '',
-    price: ''
+    price: '',
+    member_price: 1
 })
 
 const initialFormData = {
@@ -201,7 +223,8 @@ const initialFormData = {
     room_stay: '',
     room_floor: '',
     buy_info: '',
-    image_thumb_small: ''
+    image_thumb_small: '',
+    member_discount: ''
 }
 const formData: Record<string, any> = reactive({ ...initialFormData })
 

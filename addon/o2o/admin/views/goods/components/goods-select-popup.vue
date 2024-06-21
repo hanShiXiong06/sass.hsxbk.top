@@ -10,8 +10,7 @@
                 </div>
             </slot>
         </div>
-        <el-dialog v-model="showDialog" :title="t('goodsSelectPopupSelectGoodsDialog')" width="1000px"
-            :close-on-press-escape="false" :destroy-on-close="true" :close-on-click-modal="false">
+        <el-dialog v-model="showDialog" :title="t('goodsSelectPopupSelectGoodsDialog')" width="1000px" :close-on-press-escape="false" :destroy-on-close="true" :close-on-click-modal="false">
 
             <el-form :inline="true" :model="goodsTable.searchParam" ref="searchFormRef">
                 <el-form-item prop="select_type" class="form-item-wrap">
@@ -21,13 +20,10 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item :label="t('goodsSelectPopupGoodsName')" prop="goods_name" class="form-item-wrap">
-                    <el-input v-model="goodsTable.searchParam.goods_name"
-                        :placeholder="t('goodsSelectPopupGoodsNamePlaceholder')" maxlength="60" />
+                    <el-input v-model="goodsTable.searchParam.goods_name" :placeholder="t('goodsSelectPopupGoodsNamePlaceholder')" maxlength="60" />
                 </el-form-item>
                 <el-form-item :label="t('goodsSelectPopupGoodsCategory')" prop="goods_category" class="form-item-wrap">
-                    <el-cascader v-model="goodsTable.searchParam.goods_category" :props="{ value: 'value', label: 'label', emitPath:false }" 
-                        :options="goodsCategoryOptions" :placeholder="t('goodsSelectPopupGoodsCategoryPlaceholder')"
-                        clearable  />
+                    <el-cascader v-model="goodsTable.searchParam.goods_category" :props="{ value: 'value', label: 'label', emitPath:false }" :options="goodsCategoryOptions" :placeholder="t('goodsSelectPopupGoodsCategoryPlaceholder')" clearable  />
                 </el-form-item>
                 <el-form-item class="form-item-wrap">
                     <el-button type="primary" @click="loadGoodsList()">{{ t('search') }}</el-button>
@@ -35,8 +31,7 @@
                 </el-form-item>
             </el-form>
 
-            <el-table :data="goodsTable.data" size="large" v-loading="goodsTable.loading" ref="goodsListTableRef"
-                max-height="400" @select="handleSelectChange" @select-all="handleSelectAllChange">
+            <el-table :data="goodsTable.data" size="large" v-loading="goodsTable.loading" ref="goodsListTableRef" max-height="400" @select="handleSelectChange" @select-all="handleSelectAllChange">
                 <template #empty>
                     <span>{{ !goodsTable.loading ? t('emptyData') : '' }}</span>
                 </template>
@@ -45,16 +40,14 @@
                     <template #default="{ row }">
                         <div class="flex items-center cursor-pointer">
                             <div class="min-w-[60px] h-[60px] flex items-center justify-center">
-                                <el-image v-if="row.goods_cover" class="w-[60px] h-[60px]"
-                                    :src="img(row.goods_cover)" fit="contain">
+                                <el-image v-if="row.goods_cover" class="w-[60px] h-[60px]" :src="img(row.goods_cover)" fit="contain">
                                     <template #error>
                                         <div class="image-slot">
                                             <img class="w-[60px] h-[60px]" src="@/addon/o2o/assets/goods_default.png" />
                                         </div>
                                     </template>
                                 </el-image>
-                                <img v-else class="w-[70px] h-[60px]" src="@/addon/o2o/assets/goods_default.png"
-                                    fit="contain" />
+                                <img v-else class="w-[70px] h-[60px]" src="@/addon/o2o/assets/goods_default.png" fit="contain" />
                             </div>
                             <div class="ml-2">
                                 <span :title="row.goods_name" class="multi-hidden">{{ row.goods_name }}</span>
@@ -80,9 +73,7 @@
                         <span class="text-primary mx-[2px]">{{ selectGoodsNum }}</span>
                         <span>{{ t('goodsSelectPopupAfterTip') }}</span>
                     </div>
-                    <el-button type="primary" link @click="clear" v-show="selectGoodsNum">{{
-                        t('goodsSelectPopupClearGoods') }}
-                    </el-button>
+                    <el-button type="primary" link @click="clear" v-show="selectGoodsNum">{{ t('goodsSelectPopupClearGoods') }}</el-button>
                 </div>
                 <el-pagination v-model:current-page="goodsTable.page" v-model:page-size="goodsTable.limit"
                     layout="total, sizes, prev, pager, next, jumper" :total="goodsTable.total"
@@ -106,7 +97,7 @@ import { cloneDeep } from 'lodash-es'
 import { img } from '@/utils/common'
 import { ElMessage } from 'element-plus'
 import {  getCategoryTree } from '@/addon/o2o/api/category'
-import {  getGoodsList } from '@/addon/o2o/api/goods'
+import {  getGoodsSelectPageList } from '@/addon/o2o/api/goods'
 
 const prop = defineProps({
     modelValue: {
@@ -124,7 +115,6 @@ const prop = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue'])
-
 const goodsIds: any = computed({
     get () {
         return prop.modelValue
@@ -155,6 +145,7 @@ const goodsTable = reactive({
         goods_category: '',
         select_type: 'all',
         goods_ids: '',
+        verify_goods_ids: '',
     }
 })
 
@@ -169,7 +160,6 @@ const handleSelectTypeChange = (value: any) => {
 
 // 商品分类
 const goodsCategoryOptions: any = reactive([])
-
 
 // 初始化数据
 const initData = () => {
@@ -258,7 +248,7 @@ const loadGoodsList = (page: number = 1, callback: any = null) => {
         searchData.goods_ids = '';
     }
 
-    getGoodsList({
+    getGoodsSelectPageList({
         page: goodsTable.page,
         limit: goodsTable.limit,
         ...searchData
@@ -266,6 +256,9 @@ const loadGoodsList = (page: number = 1, callback: any = null) => {
         goodsTable.loading = false
         goodsTable.data = res.data.data
         goodsTable.total = res.data.total
+
+        if (callback) callback(res.data.verify_goods_ids)
+
         setGoodsSelected();
 
     }).catch(() => {
@@ -295,24 +288,29 @@ const resetForm = (formEl: FormInstance | undefined) => {
 }
 
 const show = () => {
+    for (let k in selectGoods) {
+        delete selectGoods[k];
+    }
     // 检测商品id集合是否存在，移除不存在的商品id，纠正数据准确性
     goodsTable.searchParam.verify_goods_ids = goodsIds.value;
     loadGoodsList(1, (verify_goods_ids: any) => {
         // 第一次打开弹出框时，纠正数据，并且赋值已选商品
+        
         if (goodsIds.value) {
             goodsIds.value.splice(0, goodsIds.value.length, ...verify_goods_ids)
+            
             goodsIds.value.forEach((item: any) => {
                 if (!selectGoods['goods_' + item]) {
                     selectGoods['goods_' + item] = {};
                 }
             })
-
             // 赋值已选择的商品
             for (let i = 0; i < goodsTable.data.length; i++) {
                 if (goodsIds.value.indexOf(goodsTable.data[i].goods_id) != -1) {
                     selectGoods['goods_' + goodsTable.data[i].goods_id] = goodsTable.data[i];
                 }
             }
+            
         }
     })
     showDialog.value = true
@@ -347,7 +345,7 @@ const save = () => {
     for (let k in selectGoods) {
         ids.push(parseInt(k.replace('goods_', '')));
     }
-
+    
     goodsIds.value.splice(0, goodsIds.value.length, ...ids)
 
     showDialog.value = false

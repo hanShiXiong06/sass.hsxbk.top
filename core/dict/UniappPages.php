@@ -26,7 +26,7 @@ class UniappPages extends BaseDict
         if (!empty($data[ 'addon' ])) {
             $addons = [ $data[ 'addon' ] ];
         } else {
-            $addons = (new SiteService())->getAddonKeysBySiteId();
+            $addons = ( new SiteService() )->getAddonKeysBySiteId();
         }
 
         $page_files = [];

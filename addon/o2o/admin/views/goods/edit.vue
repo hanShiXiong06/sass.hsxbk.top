@@ -34,8 +34,7 @@
                             <el-input v-model.trim="formData.virtually_sale" clearable :placeholder="t('virtualSaleNumPlaceholder')" class="input-width" />
                         </el-form-item>
                         <el-form-item :label="t('sort')" prop="sort">
-                            <el-input v-model.trim="formData.sort" clearable :placeholder="t('sortPlaceholder')"
-                                class="input-width" show-word-limit maxlength="10" />
+                            <el-input v-model.trim="formData.sort" clearable :placeholder="t('sortPlaceholder')" class="input-width" show-word-limit maxlength="10" />
                         </el-form-item>
                         <el-form-item :label="t('status')" >
                             <el-radio-group v-model="formData.status" class="ml-4">
@@ -43,6 +42,17 @@
                                 <el-radio label="0">{{ t('down') }}</el-radio>
                             </el-radio-group>
                         </el-form-item>
+
+                        <el-form-item :label="t('poster')">
+                          <el-select v-model="formData.poster_id" :placeholder="t('posterPlaceholder')" clearable>
+                            <el-option v-for="item in posterOptions" :key="item.id" :label="item.name" :value="item.id" />
+                          </el-select>
+                          <div class="ml-[10px]">
+                            <span class="cursor-pointer text-primary mr-[10px]" @click="refreshGoodsPoster(true)">{{ t('refresh') }}</span>
+                            <span class="cursor-pointer text-primary" @click="toPosterEvent">{{ t('addGoodsPoster') }}</span>
+                          </div>
+                        </el-form-item>
+
                     </el-form>
                 </el-tab-pane>
                 <el-tab-pane :label="t('goodsChargeTab')" name="goods_charge">
@@ -204,15 +214,17 @@
                                                     </div>
                                                 </template>
                                                 <template #default="scope">
-                                                    <el-form-item  :prop="`goods_sku_data[${scope.$index}].min_buy`" :rules="[{required: true, message: t('miniGoodsPlaceholder'), trigger: 'blur' },
+                                                    <el-form-item  :prop="`goods_sku_data[${scope.$index}].min_buy`" :rules="[
+                                                         {required: true, message: t('miniGoodsPlaceholder'), trigger: 'blur' },
                                                          {trigger: 'blur',
                                                             validator: (rule: any, value: any, callback: any) => {
                                                                 if (value <= 0) {
-                                                                    callback(new Error(t('minBuyNotZeroTips')))
+                                                                    callback(t('minBuyNotZeroTips'))
                                                                 } else {
                                                                     callback()
                                                                 }
-                                                            }}]">
+                                                            }
+                                                        }]">
                                                         <el-input v-model.trim="scope.row.min_buy" clearable :placeholder="t('miniGoodsPlaceholder')" class="!w-[160px]" @keyup="filterNumber($event)" />
                                                     </el-form-item>
                                                 </template>
@@ -243,6 +255,7 @@
                                     </div>
                                 </el-form-item>
                             </template>
+
                         </template>
                         <!-- <el-form-item :label="t('ifaAfterSale')">
                             <el-radio-group v-model="formData.after_sales" class="ml-4">
@@ -250,6 +263,17 @@
                                 <el-radio :label="1">{{ t('noAfterSale') }}</el-radio>
                             </el-radio-group>
                         </el-form-item> -->
+                      <el-form-item :label="t('memberDiscount')" v-if="formData.buy_type == 'buy'">
+                        <div>
+                          <el-radio-group v-model="formData.member_discount">
+                            <el-radio label="">{{ t('nonparticipation') }}</el-radio>
+                            <el-radio label="discount">{{ t('discount') }}</el-radio>
+                            <el-radio label="fixed_price">{{ t('goodsFixedPrice') }}</el-radio>
+                          </el-radio-group>
+                          <div class="text-[12px] text-[#999] leading-[20px]" v-if="formData.member_discount == 'discount'">{{t('discountHint')}}</div>
+                          <div class="text-[12px] text-[#999] leading-[20px]" v-if="formData.member_discount == 'fixed_price'">{{t('fixedPriceHint')}}</div>
+                        </div>
+                      </el-form-item>
                     </el-form>
                 </el-tab-pane>
                 <el-tab-pane :label="t('goodsDescTab')" name="detail">
@@ -280,10 +304,12 @@ import { cloneDeep } from 'lodash-es'
 import type { FormInstance, ElMessage } from 'element-plus'
 import { getCategoryTree } from '@/addon/o2o/api/category'
 import { addGoods, editGoods, getGoodsDetail } from '@/addon/o2o/api/goods'
-import { useRoute } from 'vue-router'
-import { filterNumber,filterDigit } from '@/utils/common'
+import { useRoute, useRouter } from 'vue-router'
+import { filterNumber, filterDigit } from '@/utils/common'
+import { getPosterList } from '@/app/api/poster'
 
 const route = useRoute()
+const router = useRouter()
 const id:number = parseInt(route.query.id)
 const loading = ref(false)
 const activeName = ref('basic')
@@ -309,7 +335,9 @@ const initialFormData = {
     goods_sku_data: [], // 多规格
     after_sales: 0, // 是否支持售后0-是 1-否
     goods_content: '',
-    buy_info: ''
+    buy_info: '',
+    poster_id: '',
+    member_discount: ''
 }
 const formData: Record<string, any> = reactive({ ...initialFormData })
 
@@ -353,7 +381,7 @@ const checkCategory = async (row: any = null) => {
                 goodsCategoryTree.push({
                     value: item.category_id,
                     label: item.category_name,
-                    children: children
+                    children
                 })
             })
             categoryList.splice(0, categoryList.length, ...goodsCategoryTree)
@@ -361,6 +389,37 @@ const checkCategory = async (row: any = null) => {
     })
 }
 checkCategory()
+
+// 海报列表下拉框
+const posterOptions = reactive([])
+
+// 跳转到海报列表，添加海报
+const toPosterEvent = () => {
+    const url = router.resolve({
+        path: '/poster/list'
+    })
+    window.open(url.href)
+}
+
+// 商品海报
+const refreshGoodsPoster = (bool = false) => {
+    getPosterList({
+        type: 'o2o_goods'
+    }).then((res) => {
+        const data = res.data
+        if (data) {
+            posterOptions.splice(0, posterOptions.length, ...data)
+            if (bool) {
+                ElMessage({
+                    message: t('refreshSuccess'),
+                    type: 'success'
+                })
+            }
+        }
+    })
+}
+
+refreshGoodsPoster()
 
 const basicFormRef = ref<FormInstance>()
 const goodsFormRef = ref<FormInstance>()

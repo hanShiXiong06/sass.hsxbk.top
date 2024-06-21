@@ -25,6 +25,7 @@
                     <el-form-item>
                         <el-button type="primary" @click="loadRefundList()">{{ t('search') }}</el-button>
                         <el-button @click="resetForm(searchFormRef)">{{ t('reset') }}</el-button>
+                        <el-button type="primary" @click="exportEvent">{{ t('export') }}</el-button>
                     </el-form-item>
                 </el-form>
             </el-card>
@@ -43,7 +44,7 @@
                     </el-table-column>
                     <el-table-column :show-overflow-tooltip="true" :label="t('memberInfo')" align="left" min-width="200">
                         <template #default="{ row }">
-                            <div class="flex items-center cursor-pointer " @click="toMember(row.member.member_id)">
+                            <div class="flex items-center cursor-pointer " @click="toMember(row.member.member_id)" v-if="row.member">
                                 <img class="w-[50px] h-[50px] mr-[10px]" v-if="row.member.headimg" :src="img(row.member.headimg)" alt="">
                                 <img class="w-[50px] h-[50px] mr-[10px]" v-else src="@/app/assets/images/default_headimg.png" alt="">
                                 <div class="flex flex flex-col">
@@ -79,6 +80,8 @@
             </div>
 
         </el-card>
+        <export-sure ref="exportSureDialog" :show="flag" type="tourism_order_refund" :searchParam="refundTable.searchParam"
+                   @close="handleClose" />
     </div>
 </template>
 
@@ -182,6 +185,18 @@ const handleRefuse = (info: AnyObject) => {
     }).catch(() => {
 
     })
+}
+
+/**
+ * 订单导出
+ */
+const exportSureDialog = ref(null)
+const flag = ref(false)
+const handleClose = (val) => {
+  flag.value = val
+}
+const exportEvent = (data: any) => {
+  flag.value = true
 }
 
 // 重置
