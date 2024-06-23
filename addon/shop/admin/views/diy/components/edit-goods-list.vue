@@ -163,9 +163,6 @@ const categoryShowDialog = ref(false)
 const categoryTable = reactive({
     loading: true,
     data: [],
-    searchParam: {
-        category_name: ''
-    }
 })
 onMounted(() => {
     loadCategoryList()
@@ -175,13 +172,11 @@ const categoryTableRef = ref<InstanceType<typeof ElTable>>()
 /**
  * 获取商品分类列表
  */
-let currCategoryData: string | null = null
+let currCategoryData: any = null
 const loadCategoryList = () => {
     categoryTable.loading = true
 
-    getCategoryTree({
-        ...categoryTable.searchParam
-    }).then(res => {
+    getCategoryTree().then(res => {
         categoryTable.loading = false
         categoryTable.data = res.data
     }).catch(() => {
@@ -210,8 +205,9 @@ const categoryShowDialogOpen = () => {
 		setRowSelection()
 	})
 }
+
 //分类数据选中回填,设置展开行
-const expand_category_ids = ref<Array<any>>([76])
+const expand_category_ids = ref<Array<any>>([])
 const setRowSelection = ()=>{
 	expand_category_ids.value = []
 	categoryTable.data.forEach((el:any)=>{

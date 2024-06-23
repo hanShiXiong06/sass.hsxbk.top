@@ -97,7 +97,8 @@ class Coupon extends BaseApiController
      * @param int $id
      * @return Response
      */
-    public function qrcode(int $id){
+    public function qrcode(int $id)
+    {
         return success(data:( new CouponService() )->getQrcode($id));
     }
 

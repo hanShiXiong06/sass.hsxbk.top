@@ -133,15 +133,15 @@ interface goodsDataType{
 }
 const goodsDataArr = ref<goodsDataType[]>([])
 const deliveryChange = () => {
-    let arr = []
+    let arr: any = []
     if (formData.delivery_type && formData.delivery_type == 'virtual') {
-        goodsData.value.forEach((item,index)=>{
+        goodsData.value.forEach((item: any, index) => {
             if (item.goods_type == 'virtual') {
                 arr.push(item);
             }
         })
     } else if (formData.delivery_type && formData.delivery_type != 'virtual') {
-        goodsData.value.forEach((item,index)=>{
+        goodsData.value.forEach((item: any, index) => {
             if (item.goods_type != 'virtual') {
                 arr.push(item);
             }
@@ -203,7 +203,6 @@ const setFormData = async (row: any = null) => {
             delivery_type: row.delivery_type
         }).then((data) => {
             deliveryType.value = data.data
-            // eslint-disable-next-line no-unreachable-loop
             for (const v in data.data) {
                 formData.delivery_type = v
                 break

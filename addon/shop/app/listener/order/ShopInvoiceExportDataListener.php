@@ -29,11 +29,29 @@ class ShopInvoiceExportDataListener
             $model = new Invoice();
             $order = 'id desc';
             //查询导出订单数据
-            $search_model = $model->withSearch(["header_name", "create_time", "invoice_time"], $param['where'])->where([['site_id', '=', $param['site_id']], ['status', '=', InvoiceDict::OPEN]])->append(['header_type_name', 'type_name', 'is_invoice_name'])->field('*')->order($order);
+            $search_model = $model->withSearch(["header_name", "create_time", "invoice_time"], $param['where'])
+                ->with([
+                    'member' => function ($query) {
+                        $query->field('member_id, nickname');
+                    },
+                    'shop_order' => function ($query) {
+                        $query->field('order_id, order_no, order_money');
+                    }
+                ])
+                ->where([['site_id', '=', $param['site_id']], ['status', '=', InvoiceDict::OPEN]])->append(['header_type_name', 'type_name', 'is_invoice_name'])->field('*')->order($order);
             if ($param['page']['page'] > 0 && $param['page']['limit'] > 0) {
                 $data = $search_model->page($param['page']['page'], $param['page']['limit'])->select()->toArray();
             } else {
                 $data = $search_model->select()->toArray();
+            }
+            foreach ($data as $key => $val) {
+                $data[$key]['order_no'] = !empty($val['shop_order']) ? $val['shop_order']['order_no']."\t" : '';
+                $data[$key]['order_money'] = !empty($val['shop_order']) ? $val['shop_order']['order_money'] : '';
+                $data[$key]['nickname'] = !empty($val['member']) ? $val['member']['nickname'] : '';
+                $data[$key]['tax_number'] = $val['tax_number']."\t";
+                $data[$key]['bank_card_number'] = $val['bank_card_number']."\t";
+                $data[$key]['create_time'] = !empty($val['create_time']) ? $val['create_time'] : '0000-00-00 00:00:00';
+                $data[$key]['invoice_time'] = !empty($val['invoice_time']) ? $val['invoice_time'] : '0000-00-00 00:00:00';
             }
         }
         return $data;

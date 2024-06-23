@@ -62,15 +62,16 @@ class ExchangeService extends BaseApiService
     {
 
         $field = 'total_exchange_num,id,site_id,type,names,title,image,status,product_detail,point,price,limit_num,content,sort,total_point_num,total_price_num,total_order_num,total_member_num,update_time,create_time';
-        $info = $this->model->where([['id', '=', $id], ['site_id', '=', $this->site_id]])->append(['type_name'])->field($field)->findOrEmpty()->toArray();
+        $info = $this->model->where([['id', '=', $id], ['site_id', '=', $this->site_id]])->append(['type_name','goods_cover_thumb_big','goods_cover_thumb_small','goods_cover_thumb_mid', 'goods_image_thumb_small', 'goods_image_thumb_mid', 'goods_image_thumb_big'])->field($field)->findOrEmpty()->toArray();
         if (!empty($info)) {
             $goods_info = (new  \addon\shop\app\service\api\goods\GoodsService)->getDetail(['goods_id' => $info['product_detail'][0]['goods_id'], 'sku_id' => $info['product_detail'][0]['sku_id']]);
+
             $goods_info['goods']['goods_desc'] = $info['content'];
             $goods_info['sale_num'] = $info['total_exchange_num'];
             $goods_info['goods']['goods_name'] = $info['names'];
             $goods_info['goods']['goods_image'] = $info['image'];
-            $goods_info['goods']['goods_image_thumb_big'] = explode(',', $info['image']);
-            $goods_info['goods']['goods_cover_thumb_mid'] = $goods_info['goods']['goods_image_thumb_big'][0] ?? '';
+            $goods_info['goods']['goods_image_thumb_big'] = $info['goods_image_thumb_big'];
+            $goods_info['goods']['goods_cover_thumb_mid'] =  $info['goods_cover_thumb_mid'];
             $goods_info['goods']['sub_title'] = $info['title'];
             $product_detail_array = $info['product_detail'];
             $product_detail_array = array_column($product_detail_array, null, 'sku_id');

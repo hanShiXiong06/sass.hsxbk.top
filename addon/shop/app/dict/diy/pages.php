@@ -462,8 +462,8 @@ return [
                         "componentStartBgColor" => "rgba(255, 255, 255, 1)",
                         "componentEndBgColor" => "",
                         "componentGradientAngle" => "to bottom",
-                        "topRounded" => 8,
-                        "bottomRounded" => 8,
+                        "topRounded" => 0,
+                        "bottomRounded" => 0,
                         "elementBgColor" => "",
                         "topElementRounded" => 0,
                         "bottomElementRounded" => 0,
@@ -1987,7 +1987,7 @@ return [
                     "pageStartBgColor" => "rgba(246, 246, 246, 1)",
                     "pageEndBgColor" => "",
                     "pageGradientAngle" => "to bottom",
-                    "bgHeightScale" => 100
+                    "bgHeightScale" => 0
                 ],
                 "value" => [
                     [
@@ -2055,104 +2055,28 @@ return [
                         "componentGradientAngle" => "to bottom"
                     ],
                     [
-                        "path" => "edit-horz-blank",
-                        "uses" => 0,
-                        "id" => "5j2pwe3p2ck0",
-                        "componentName" => "HorzBlank",
-                        "componentTitle" => "辅助空白",
-                        "ignore" => [
-                            "pageBgColor",
-                            "componentBgUrl"
-                        ],
+                        "path" => "edit-shop-order-info",
+                        "uses" => 1,
+                        "id" => "2jmnqqhc8ri0",
+                        "componentName" => "ShopOrderInfo",
+                        "componentTitle" => "订单中心",
+                        "ignore" => [],
                         "textColor" => "#303133",
+                        "fontSize" => 16,
+                        "fontWeight" => "normal",
+                        "text" => "订单中心",
+                        "more" => [
+                            "text" => "全部订单",
+                            "color" => "#999999",
+                        ],
+                        "item" => [
+                            "fontSize" => 12,
+                            "fontWeight" => "normal",
+                            "color" => "#303133"
+                        ],
                         "componentStartBgColor" => "rgba(255, 255, 255, 1)",
                         "componentEndBgColor" => "",
                         "topRounded" => 8,
-                        "bottomRounded" => 0,
-                        "elementBgColor" => "",
-                        "topElementRounded" => 0,
-                        "bottomElementRounded" => 0,
-                        "margin" => [
-                            "top" => 0,
-                            "bottom" => 0,
-                            "both" => 15
-                        ],
-                        "pageStartBgColor" => "",
-                        "pageEndBgColor" => "",
-                        "pageGradientAngle" => "to bottom",
-                        "componentBgUrl" => "",
-                        "componentBgAlpha" => 2,
-                        "componentGradientAngle" => "to bottom",
-                        "height" => 10
-                    ],
-                    [
-                        "path" => "edit-text",
-                        "uses" => 0,
-                        "id" => "35n72xwipje",
-                        "componentName" => "Text",
-                        "componentTitle" => "标题",
-                        "ignore" => [],
-                        "textColor" => "#303133",
-                        "componentStartBgColor" => "rgba(255, 255, 255, 1)",
-                        "componentEndBgColor" => "",
-                        "topRounded" => 0,
-                        "bottomRounded" => 0,
-                        "elementBgColor" => "",
-                        "topElementRounded" => 0,
-                        "bottomElementRounded" => 0,
-                        "margin" => [
-                            "top" => 0,
-                            "bottom" => 0,
-                            "both" => 15
-                        ],
-                        "pageStartBgColor" => "",
-                        "pageEndBgColor" => "",
-                        "pageGradientAngle" => "to bottom",
-                        "componentBgUrl" => "",
-                        "componentBgAlpha" => 2,
-                        "componentGradientAngle" => "to bottom",
-                        "position" => "",
-                        "style" => "style-2",
-                        "styleName" => "风格2",
-                        "text" => "订单中心",
-                        "link" => [
-                            "name" => ""
-                        ],
-                        "fontSize" => 16,
-                        "fontWeight" => "normal",
-                        "textAlign" => "left",
-                        "subTitle" => [
-                            "text" => "",
-                            "color" => "#999999",
-                            "fontSize" => 14,
-                            "control" => true,
-                            "fontWeight" => "normal"
-                        ],
-                        "more" => [
-                            "text" => "全部订单",
-                            "control" => true,
-                            "isShow" => true,
-                            "link" => [
-                                "parent" => "SHOP_LINK",
-                                "name" => "SHOP_ORDER_LIST",
-                                "title" => "订单列表",
-                                "url" => "/addon/shop/pages/order/list",
-                                "action" => ""
-                            ],
-                            "color" => "#999999"
-                        ]
-                    ],
-                    [
-                        "path" => "edit-graphic-nav",
-                        "uses" => 0,
-                        "id" => "2ifc2led8oo0",
-                        "componentName" => "GraphicNav",
-                        "componentTitle" => "图文导航",
-                        "ignore" => [],
-                        "textColor" => "#303133",
-                        "componentStartBgColor" => "rgba(255, 255, 255, 1)",
-                        "componentEndBgColor" => "",
-                        "topRounded" => 0,
                         "bottomRounded" => 8,
                         "elementBgColor" => "",
                         "topElementRounded" => 0,
@@ -2167,130 +2091,7 @@ return [
                         "pageGradientAngle" => "to bottom",
                         "componentBgUrl" => "",
                         "componentBgAlpha" => 2,
-                        "componentGradientAngle" => "to bottom",
-                        "layout" => "horizontal",
-                        "mode" => "graphic",
-                        "showStyle" => "fixed",
-                        "rowCount" => 5,
-                        "pageCount" => 2,
-                        "carousel" => [
-                            "type" => "circle",
-                            "color" => "#FFFFFF"
-                        ],
-                        "imageSize" => 22,
-                        "aroundRadius" => 0,
-                        "font" => [
-                            "size" => 12,
-                            "weight" => "normal",
-                            "color" => "#303133"
-                        ],
-                        "list" => [
-                            [
-                                "title" => "待付款",
-                                "link" => [
-                                    "parent" => "DIY_LINK",
-                                    "title" => "待付款订单",
-                                    "url" => "/addon/shop/pages/order/list?status=1",
-                                    "name" => "DIY_LINK",
-                                    "action" => ""
-                                ],
-                                "imageUrl" => "addon/shop/diy/member/order1.png",
-                                "label" => [
-                                    "control" => false,
-                                    "text" => "热门",
-                                    "textColor" => "#FFFFFF",
-                                    "bgColorStart" => "#F83287",
-                                    "bgColorEnd" => "#FE3423"
-                                ],
-                                "id" => "12w6auana7jk",
-                                "imgWidth" => 44,
-                                "imgHeight" => 44
-                            ],
-                            [
-                                "title" => "待发货",
-                                "link" => [
-                                    "parent" => "DIY_LINK",
-                                    "url" => "/addon/shop/pages/order/list?status=2",
-                                    "title" => "待发货订单",
-                                    "name" => "DIY_LINK",
-                                    "action" => ""
-                                ],
-                                "imageUrl" => "addon/shop/diy/member/order2.png",
-                                "label" => [
-                                    "control" => false,
-                                    "text" => "热门",
-                                    "textColor" => "#FFFFFF",
-                                    "bgColorStart" => "#F83287",
-                                    "bgColorEnd" => "#FE3423"
-                                ],
-                                "id" => "61fwl68irb80",
-                                "imgWidth" => 44,
-                                "imgHeight" => 44
-                            ],
-                            [
-                                "title" => "待收货",
-                                "link" => [
-                                    "parent" => "DIY_LINK",
-                                    "url" => "/addon/shop/pages/order/list?status=3",
-                                    "title" => "待收货订单",
-                                    "name" => "DIY_LINK",
-                                    "action" => ""
-                                ],
-                                "imageUrl" => "addon/shop/diy/member/order3.png",
-                                "label" => [
-                                    "control" => false,
-                                    "text" => "热门",
-                                    "textColor" => "#FFFFFF",
-                                    "bgColorStart" => "#F83287",
-                                    "bgColorEnd" => "#FE3423"
-                                ],
-                                "id" => "1tg2aem3ymxs",
-                                "imgWidth" => 44,
-                                "imgHeight" => 44
-                            ],
-                            [
-                                "title" => "待评价",
-                                "link" => [
-                                    "parent" => "DIY_LINK",
-                                    "url" => "/addon/shop/pages/order/list?status=5",
-                                    "title" => "待评价",
-                                    "name" => "DIY_LINK",
-                                    "action" => ""
-                                ],
-                                "imageUrl" => "addon/shop/diy/member/order4.png",
-                                "label" => [
-                                    "control" => false,
-                                    "text" => "热门",
-                                    "textColor" => "#FFFFFF",
-                                    "bgColorStart" => "#F83287",
-                                    "bgColorEnd" => "#FE3423"
-                                ],
-                                "id" => "3gxy8l1dst60",
-                                "imgWidth" => 45,
-                                "imgHeight" => 44
-                            ],
-                            [
-                                "id" => "77dy65ml08o0",
-                                "title" => "售后退款",
-                                "imageUrl" => "addon/shop/diy/member/order5.png",
-                                "imgWidth" => 44,
-                                "imgHeight" => 44,
-                                "link" => [
-                                    "parent" => "SHOP_LINK",
-                                    "name" => "SHOP_REFUND_LIST",
-                                    "title" => "退款列表",
-                                    "url" => "/addon/shop/pages/refund/list",
-                                    "action" => ""
-                                ],
-                                "label" => [
-                                    "control" => false,
-                                    "text" => "热门",
-                                    "textColor" => "#FFFFFF",
-                                    "bgColorStart" => "#F83287",
-                                    "bgColorEnd" => "#FE3423"
-                                ]
-                            ]
-                        ]
+                        "componentGradientAngle" => "to bottom"
                     ],
                     [
                         "path" => "edit-image-ads",
@@ -3256,7 +3057,7 @@ return [
                     "pageStartBgColor" => "#F6F6F6",
                     "pageEndBgColor" => "",
                     "pageGradientAngle" => "to bottom",
-                    "bgHeightScale" => 100,
+                    "bgHeightScale" => 0,
                     "topStatusBar" => [
                         'isShow' => false,
                         'bgColor' => "#ffffff",
@@ -3350,7 +3151,7 @@ return [
                             "color" => "#FFFFFF"
                         ],
                         "imageSize" => 40,
-                        "aroundRadius" => 25,
+                        "aroundRadius" => 0,
                         "font" => [
                             "size" => 14,
                             "weight" => "normal",

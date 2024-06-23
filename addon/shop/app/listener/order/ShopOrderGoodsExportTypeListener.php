@@ -25,9 +25,6 @@ class ShopOrderGoodsExportTypeListener
             'shop_order_goods' => [
                 'name' => '订单项列表',
                 'column' => [
-                    'order_goods_id' => [ 'name' => '订单项id'],
-                    'order_id' => [ 'name' => '订单id'],
-                    'member_id' => [ 'name' => '会员id'],
                     'goods_name' => [ 'name' => '商品名称'],
                     'sku_name' => [ 'name' => '商品规格名称'],
                     'price' => [ 'name' => '商品单价'],
@@ -35,7 +32,8 @@ class ShopOrderGoodsExportTypeListener
                     'goods_money' => [ 'name' => '商品总价'],
                     'goods_type_name' => [ 'name' => '商品类型'],
                     'delivery_status_name' => [ 'name' => '配送状态'],
-                    'express_number' => [ 'name' => '配送单号'],
+                    'express_number' => [ 'name' => '物流单号'],
+                    'company_name' => [ 'name' => '物流公司'],
                     'discount_money' => [ 'name' => '优惠金额'],
                     'status_name' => [ 'name' => '状态'],
                     'order_refund_no' => [ 'name' => '退款单号'],

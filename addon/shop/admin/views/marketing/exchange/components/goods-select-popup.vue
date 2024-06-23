@@ -5,7 +5,7 @@
 				<el-input v-model.trim="tableData.searchParam.name" :placeholder="t('goodsSelectPopupGoodsNamePlaceholder')" />
 			</el-form-item>
 			<el-form-item :label="t('status')" prop='status'>
-				<el-select v-model="tableData.searchParam.status" clearable :placeholder="t('goodsSelectPopupGoodsStayusPlaceholder')" class="input-item">
+				<el-select v-model="tableData.searchParam.status" clearable :placeholder="t('goodsSelectPopupGoodsStatusPlaceholder')" class="input-item">
 					<el-option v-for="(item, key) in statusOption" :key="key" :label="item" :value="key"></el-option>
 				</el-select>
 			</el-form-item>
@@ -69,8 +69,8 @@
 
 <script lang="ts" setup>
     import {t} from "@/lang";
-    import {img, deepClone} from "@/utils/common";
-    import {getActiveExchangePageList, getActiveExchangeStutas} from "@/addon/shop/api/marketing";
+    import {img} from "@/utils/common";
+    import {getActiveExchangePageList, getActiveExchangeStatus} from "@/addon/shop/api/marketing";
     import {ref, nextTick, reactive} from "vue";
     import {FormInstance, ElMessage} from 'element-plus'
 
@@ -130,7 +130,7 @@
     //获取状态列表
     const statusOption = ref([])
     const getActiveExchangeStatusFn = () => {
-        getActiveExchangeStutas().then(res => {
+        getActiveExchangeStatus().then(res => {
             statusOption.value = res.data
         })
     }

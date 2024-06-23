@@ -99,7 +99,7 @@ if (siteInfo?.apps.length > 1) {
         routers.push({
             path: addonRouters[item.key] ? addonRouters[item.key].path : '',
             meta: {
-                icon: addonRouters[item.key]?.meta.icon || 'element-Setting',
+                icon: addonRouters[item.key]?.meta.icon || 'element Setting',
                 addon: item.key,
                 title: item.title,
                 app: item.app,

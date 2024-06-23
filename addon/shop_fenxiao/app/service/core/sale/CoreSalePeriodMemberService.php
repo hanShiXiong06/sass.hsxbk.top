@@ -23,8 +23,6 @@ use think\db\exception\ModelNotFoundException;
  */
 class CoreSalePeriodMemberService extends BaseCoreService
 {
-    //系统配置文件
-    public $core_config_service;
 
     public function __construct()
     {

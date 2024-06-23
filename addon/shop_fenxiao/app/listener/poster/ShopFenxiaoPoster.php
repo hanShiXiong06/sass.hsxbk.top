@@ -49,7 +49,7 @@ class ShopFenxiaoPoster
             $member = ( new Member() )->where([ [ 'member_id', '=', $member_id ], [ 'site_id', '=', $site_id ] ])->findOrEmpty();
             if ($member->isEmpty()) return [];
 
-            if (empty($member[ 'headimg' ]) || !is_file($member[ 'headimg' ])) {
+            if (empty($member[ 'headimg' ])) {
                 $member[ 'headimg' ] = 'static/resource/images/default_headimg.jpg';
             }
 

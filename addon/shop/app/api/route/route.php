@@ -130,6 +130,9 @@ Route::group('shop', function () {
     //列表
     Route::get('order', 'addon\shop\app\api\controller\order\Order@lists');
 
+    //数量
+    Route::get('order/num', 'addon\shop\app\api\controller\order\Order@getNum');
+
     //详情
     Route::get('order/:order_id', 'addon\shop\app\api\controller\order\Order@detail');
 
@@ -173,6 +176,12 @@ Route::group('shop', function () {
     Route::get('order/refund', 'addon\shop\app\api\controller\refund\Refund@lists');
     //订单维权 详
     Route::get('order/refund/:order_refund_no', 'addon\shop\app\api\controller\refund\Refund@detail');
+
+    // 查询订单项可退款信息
+    Route::get('refund/refund_data', 'addon\shop\app\api\controller\refund\Refund@getRefundData');
+    // 查询订单项退款信息
+    Route::get('refund/refund_data_by_no', 'addon\shop\app\api\controller\refund\Refund@getRefundDataByOrderRefundNo');
+
     // 申请维权
     Route::post('refund/apply', 'addon\shop\app\api\controller\refund\Refund@apply');
     // 修改退款申请

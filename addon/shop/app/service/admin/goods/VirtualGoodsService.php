@@ -52,7 +52,7 @@ class VirtualGoodsService extends BaseAdminService
 
         if (!empty($params[ 'goods_id' ])) {
             // 查询商品信息，用于编辑
-            $field = 'goods_id,goods_name,sub_title,goods_type,goods_cover,goods_image,goods_desc,goods_url,brand_id,goods_category,label_ids,service_ids,unit,stock,virtual_sale_num,status,sort,supplier_id,attr_id,attr_format,virtual_auto_delivery,virtual_receive_type,virtual_verify_type,virtual_indate,member_discount,poster_id';
+            $field = 'goods_id,goods_name,sub_title,goods_type,goods_cover,goods_image,goods_desc,brand_id,goods_category,label_ids,service_ids,unit,stock,virtual_sale_num,status,sort,supplier_id,attr_id,attr_format,virtual_auto_delivery,virtual_receive_type,virtual_verify_type,virtual_indate,member_discount,poster_id';
             $goods_info = $this->model->field($field)->where([ [ 'goods_id', '=', $params[ 'goods_id' ] ], [ 'site_id', '=', $this->site_id ] ])->findOrEmpty()->toArray();
             if (!empty($goods_info)) {
 
@@ -70,14 +70,14 @@ class VirtualGoodsService extends BaseAdminService
                 if (empty($goods_info[ 'label_ids' ])) {
                     $goods_info[ 'label_ids' ] = [];
                 } else {
-                    $goods_info[ 'label_ids' ] = array_map(function($item) { return (int)$item; }, $goods_info[ 'label_ids' ]);
+                    $goods_info[ 'label_ids' ] = array_map(function($item) { return (int) $item; }, $goods_info[ 'label_ids' ]);
                 }
 
                 // 商品服务
                 if (empty($goods_info[ 'service_ids' ])) {
                     $goods_info[ 'service_ids' ] = [];
                 } else {
-                    $goods_info[ 'service_ids' ] = array_map(function($item) { return (int)$item; }, $goods_info[ 'service_ids' ]);
+                    $goods_info[ 'service_ids' ] = array_map(function($item) { return (int) $item; }, $goods_info[ 'service_ids' ]);
                 }
 
                 // 商品参数，处理数据类型
@@ -162,7 +162,6 @@ class VirtualGoodsService extends BaseAdminService
                 'goods_image' => $data[ 'goods_image' ],
                 'goods_category' => array_map(function($item) { return (string) $item; }, $data[ 'goods_category' ]),
                 'goods_desc' => $data[ 'goods_desc' ],
-                'goods_url' => $data[ 'goods_url' ],
                 'brand_id' => $data[ 'brand_id' ],
                 'label_ids' => array_map(function($item) { return (string) $item; }, $data[ 'label_ids' ]),
                 'service_ids' => array_map(function($item) { return (string) $item; }, $data[ 'service_ids' ]),
@@ -290,7 +289,6 @@ class VirtualGoodsService extends BaseAdminService
                 'goods_image' => $data[ 'goods_image' ],
                 'goods_category' => array_map(function($item) { return (string) $item; }, $data[ 'goods_category' ]),
                 'goods_desc' => $data[ 'goods_desc' ],
-                'goods_url'=> $data[ 'goods_url' ],
                 'brand_id' => $data[ 'brand_id' ],
                 'label_ids' => array_map(function($item) { return (string) $item; }, $data[ 'label_ids' ]),
                 'service_ids' => array_map(function($item) { return (string) $item; }, $data[ 'service_ids' ]),
@@ -327,14 +325,14 @@ class VirtualGoodsService extends BaseAdminService
                     'sku_spec_format' => '', // sku规格格式
                     'market_price' => $data[ 'market_price' ],
                     'cost_price' => $data[ 'cost_price' ],
-                    'stock' => $data[ 'stock' ],
                     'is_default' => 1
                 ];
 
-                // 未参与营销活动，则允许修改 原价、销售价
+                // 未参与营销活动，则允许修改 原价、销售价、库存
                 if ($active_goods_count == 0) {
                     $sku_data[ 'price' ] = $data[ 'price' ];
                     $sku_data[ 'sale_price' ] = $data[ 'price' ];
+                    $sku_data[ 'stock' ] = $data[ 'stock' ];
                 }
 
                 $sku_count = $goods_sku_model->where([ [ 'goods_id', '=', $goods_id ] ])->count();
@@ -384,7 +382,6 @@ class VirtualGoodsService extends BaseAdminService
                             'sku_spec_format' => implode(',', $sku_spec_format), // sku规格格式
                             'market_price' => $v[ 'market_price' ],
                             'cost_price' => $v[ 'cost_price' ],
-                            'stock' => $v[ 'stock' ],
                             'is_default' => $v[ 'is_default' ]
                         ];
 
@@ -392,6 +389,7 @@ class VirtualGoodsService extends BaseAdminService
                         if ($active_goods_count == 0) {
                             $sku_data[ 'price' ] = $v[ 'price' ];
                             $sku_data[ 'sale_price' ] = $v[ 'price' ];
+                            $sku_data[ 'stock' ] = $v[ 'stock' ];
                         }
 
                         if (!empty($v[ 'sku_id' ])) {

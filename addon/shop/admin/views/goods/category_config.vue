@@ -1,5 +1,5 @@
 <template>
-    <div class="main-container pt-[20px]" v-loading="loading">
+    <div class="main-container pt-[20px] bg-[#fff]" v-loading="loading">
         <div class="flex ml-[18px] justify-between items-center mb-[5px]">
             <span class="text-page-title">{{ pageName }}</span>
         </div>

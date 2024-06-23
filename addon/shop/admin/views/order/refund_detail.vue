@@ -15,7 +15,7 @@
 				<el-row class="row-bg px-[30px] mb-[20px]" :gutter="20">
 					<el-col :span="8">
 						<el-form-item :label="t('orderNo')">
-							<div class="input-width">{{ formData.order_main.order_no }}</div>
+							<div class="input-width text-primary cursor-pointer" @click="toOrderDetail(formData.order_id)">{{ formData.order_main.order_no }}</div>
 						</el-form-item>
 						<el-form-item :label="t('orderForm')">
 							<div class="input-width">{{ formData.order_main.order_from_name }}</div>
@@ -156,7 +156,7 @@
 				<div class="mb-[100px]" style="min-height: 100px">
 					<template v-if="formData.refund_log.length > 0">
 						<div class="flex" v-for="(items, index) in formData.refund_log" :key="index">
-							<div class="mr-[20px]">
+							<div class="mr-[20px] min-w-[71px]">
 								<div class="leading-[1] w-full text-[14px] w-[100px] flex justify-end">
 									{{ items.create_time.split(' ')[0] }}
 								</div>
@@ -243,7 +243,7 @@
 <script lang="ts" setup>
 import { ref, reactive, computed } from 'vue'
 import { t } from '@/lang'
-import { orderRefuundDetail, auditRefund, refundDelivery } from '@/addon/shop/api/order'
+import { orderRefundDetail, auditRefund, refundDelivery } from '@/addon/shop/api/order'
 import { getOrderRefundAddress } from '@/addon/shop/api/shop_address'
 import { useRoute, useRouter } from 'vue-router'
 import { img } from '@/utils/common'
@@ -261,7 +261,7 @@ const formData: Record<string, any> | null = ref(null)
 const setFormData = async (refundId: number = 0) => {
     loading.value = true
     formData.value = null
-    await orderRefuundDetail(refundId).then(({data}) => {
+    await orderRefundDetail(refundId).then(({data}) => {
         formData.value = data
         formData.value.order_goods = [data.order_goods]
     }).catch(() => {
@@ -449,6 +449,14 @@ const transferEvent = () => {
     window.open(routeUrl.href, '_blank')
 }
 
+// 订单详情
+const toOrderDetail = (id:number) => {
+    const routeUrl = router.resolve({
+        path: '/shop/order/detail',
+        query: { order_id: id }
+    })
+    window.open(routeUrl.href, '_blank')
+}
 </script>
 
 <style lang="scss" scoped>

@@ -11,6 +11,14 @@
     "selectMemberName":"选择会员",
     "refreshSuccess":"刷新成功",
     "selectMemberNamePlaceholder":"请选择会员",
-    "memberSelectPricePopupTitle":"选择会员"
+    "memberSelectPricePopupTitle":"选择会员",
+    "fenxiaoName":"分销商信息",
+    "fenxiaoNamePlaceholder":"请输入分销商信息",
+    "fenxiaoLevel":"分销等级",
+    "currentState":"当前状态",
+    "select":"选择",
+    "memberInfo":"会员信息",
+    "memberNamePlaceholder":"请输入会员信息",
+    "mobile":"手机号"
     
 }

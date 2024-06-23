@@ -1,501 +1,452 @@
 <template>
     <div class="main-container" v-loading="loading">
-		<div class="detail-head">
-			<div class="left" @click="router.push(`/shop/marketing/exchange/goods_list`)">
-				<span class="iconfont iconxiangzuojiantou !text-xs"></span>
-				<span class="ml-[1px]">{{ t('returnToPreviousPage') }}</span>
-			</div>
-			<span class="adorn">|</span>
-			<span class="right"> {{ t('addGoods') }}</span>
-		</div>
-        <!-- 表单 -->
-		<el-card class="box-card !border-none" shadow="never">
-			<el-form :model="formData" label-width="120px" ref="formRef" :rules="formRules" class="page-form">
-                <el-card class="box-card !border-none" shadow="never">
-                    <h3 class="panel-title">{{ t('baseInfo') }}</h3>
-                    <!-- 商品类型： -->
-                    <!-- <el-form-item :label="t('goodsType')" prop="active_name">
-                        <div class="goods-type-wrap  flex flex-col items-center justify-center" :class="{ 'selected': formData.type == item.type }" v-for="(item) in goodsType" :key="item.type" @click="changeGoodsType(item)">
-                            <div class="goods-type-name">{{ item.name }}</div>
-                            <template v-if="formData.type == item.type">
-                                <div class="triangle"></div>
-                                <div class="selected">✓</div>
-                            </template>
-                        </div>
-                    </el-form-item> -->
-                    <!-- 选择商品： -->
-                    <el-form-item :label="t('goodsSelect')" class="!m-0" v-if="formData.type=='goods'">
-                        <div>
-                            <goods-select-popup ref="goodsSelectPopupRef" v-model="formData.goods_ids" @goodsSelect="goodsSelect" :min="1" :max="1" />
-                            <div class="flex min-w-[512px] relative border-[1px] border-[#e7e7e7] border-solid mt-[16px]" v-if="formData.goods_ids.length">
-                                <div class="min-w-[78px] h-[78px] flex items-center justify-center">
-                                    <el-image v-if="formData.goods_info.goods_cover" class="w-[78px] h-[78px]" :src="img(formData.goods_info.goods_cover)" fit="contain">
-                                        <template #error>
-                                            <div class="image-slot">
-                                                <img class="w-[78px] h-[78px]" src="@/addon/shop/assets/goods_default.png" />
-                                            </div>
-                                        </template>
-                                    </el-image>
-                                    <img v-else class="w-[78px] h-[78px]" src="@/addon/shop/assets/goods_default.png" fit="contain" />
-                                </div>
-                                <div class="flex-1 py-[5px] pl-[10px] pr-[30px]">
-                                    <div class="text-[14px]">{{ formData.goods_info.goods_name }}</div>
-                                    <div class="text-[14px] !text-[var(--el-color-primary)]">{{ formData.goods_info.goods_price }}</div>
-                                </div>
-                                <el-icon class="absolute right-[10px] top-[10px] cursor-pointer" @click="deleteGoods"><Close size="24px" color="#999" /></el-icon>
-                            </div>
-                        </div>
-                    </el-form-item>
-                    <el-form-item prop="product_list" v-if="formData.type=='goods'"></el-form-item>
-                    <!-- 选择优惠券： -->
-                    <template v-if="formData.type=='coupon'">
-                        <el-form-item :label="t('couponSelect')" prop="coupon_ids">
-                            <div class="w-full">
-                                <coupon-select-popup ref="couponSelectPopupRef" v-model="formData.coupon_ids" :min="1" :max="1"  @couponSelect="couponSelect"/>
-                                <el-table v-if="formData.product_list.length" class="!max-w-[100%] mt-[16px]" :data="formData.product_list" size="large">
-                                    <template #empty>
-                                        <span>{{ t('emptyData')}}</span>
-                                    </template>
-                                    <el-table-column prop="title" :label="t('couponName')" min-width="130" />
-                                    <el-table-column prop="type_name" :label="t('couponType')" min-width="130" />
-                                    <el-table-column :label="t('couponPrice')" min-width="130" >
-                                        <template #default="{ row }">
-                                            <span >¥{{row.price}}</span>
-                                        </template>
-                                    </el-table-column>
-                                    <el-table-column  :label="t('threshold')" min-width="130" >
-                                        <template #default="{ row }">
-                                            <span v-if="row.min_condition_money == '0.00'">无门槛</span>
-                                            <span v-else >满{{ row.min_condition_money }}元可用</span>
-                                        </template>
-                                    </el-table-column>
-                                    <el-table-column  :label="t('sumCount')" min-width="140">
-                                        <template #default="{ row }">
-                                            <span v-if="row.sum_count != '-1'">{{ row.sum_count || '' }}</span>
-                                            <span v-else>不限量</span>
-                                        </template>
-                                    </el-table-column>
-                                    <el-table-column  :label="t('validType')" min-width="210">
-                                        <template #default="{ row }">
-                                            <span v-if="row.valid_type == 1">  领取之日起{{ row.length || '' }} 天内有效</span>
-                                            <span v-else> 使用截止时间至{{ row.valid_end_time || ''}} </span>
-                                        </template>
-                                    </el-table-column>
-                                    <el-table-column  :label="t('receiveTypeTime')" min-width="210">
-                                        <template #default="{ row }">
-                                            <div v-if="row.receive_type == 1">
-                                                <div v-if="parseInt(row.start_time) != 0 && parseInt(row.end_time) !=0" class="flex flex-col">
-                                                    <span>开始时间：{{row.start_time}}</span>
-                                                    <span>结束时间：{{row.end_time}}</span>
-                                                </div>
-                                                <div v-else>不限时</div>
-                                            </div>
-                                            <span v-else>--</span>
-                                        </template>
-                                    </el-table-column>
-                                </el-table>
-                            </div>
-                        </el-form-item>
-                    </template>
-                    <!-- 商品名称： -->
-                    <el-form-item :label="t('goodsName')" prop="names">
-                        <el-input v-model="formData.names" type="textarea" clearable :placeholder="t('goodsNamePlaceholder')" class="!w-[512px]" show-word-limit :maxlength="60" />
-                    </el-form-item>
-                    <!-- 商品标题： -->
-                    <el-form-item :label="t('goodsTitle')">
-                        <el-input v-model="formData.title" type="textarea" clearable :placeholder="t('goodsTitlePlaceholder')" class="!w-[512px]" show-word-limit :maxlength="60" />
-                    </el-form-item>
-                    <!-- 商品图片 -->
-                    <el-form-item :label="t('image')" prop="image">
-                        <upload-image v-model="formData.image"  :limit="6"/>
-                    </el-form-item>
-                </el-card>
-                <el-card class="box-card !border-none" shadow="never" v-if="formData.type=='goods'&&formData.goods_info&&formData.product_list.length">
-                    <h3 class="panel-title">{{ t('redemptionSettings') }}</h3>
-                    <el-form-item>
-                        <div class="w-full sku_list">
-                            <div class="flex items-center mb-[15px]">
-                                <el-checkbox v-model="toggleCheckbox" size="large" class="!mr-[15px]" @change="toggleChange" :indeterminate="isIndeterminate">
-                                    <span>已选{{ multipleSelection.length }}项</span>
-                                </el-checkbox>
 
-                                <label>{{ t('batchOperation') }}</label>
-                                <el-input v-model.trim="batchOperation.stock" clearable :placeholder="t('stock')" class="!w-[130px] ml-[10px]" maxlength="8" />
-                                <el-input v-model.trim="batchOperation.limit_num" clearable :placeholder="t('limit')" class="!w-[130px] ml-[10px]" maxlength="8" />
-                                <el-input v-model.trim="batchOperation.point" clearable :placeholder="t('integralUnit')" class="!w-[130px] ml-[10px]" maxlength="8" />
-                                <el-input v-model.trim="batchOperation.price" clearable :placeholder="t('newPrice')" class="!w-[130px] ml-[10px]" maxlength="8" />
-                                <el-button class="ml-[10px]" type="primary" @click="saveBatch">{{ t('confirm') }}</el-button>
-                            </div>
-                            <el-table class="!max-w-[100%]" :data="formData.product_list" size="large" ref="productListTableRef" @selection-change="handleSelectionChange">
-                                <template #empty>
-                                    <span>{{ t('emptyData')}}</span>
-                                </template>
-                                <el-table-column type="selection" width="55" />
-                                <el-table-column :label="t('goodsSelectPopupGoodsInfo')" min-width="300">
-                                    <template #default="{ row }">
-                                        <div class="flex items-center cursor-pointer">
-                                            <div class="min-w-[60px] h-[60px] flex items-center justify-center">
-                                                <el-image v-if="row.sku_image" class="w-[60px] h-[60px]" :src="img(row.sku_image)" fit="contain">
-                                                    <template #error>
-                                                        <div class="image-slot">
-                                                            <img class="w-[60px] h-[60px]" src="@/addon/shop/assets/goods_default.png" />
-                                                        </div>
-                                                    </template>
-                                                </el-image>
-                                                <img v-else class="w-[70px] h-[60px]" src="@/addon/shop/assets/goods_default.png" fit="contain" />
-                                            </div>
-                                            <div class="ml-2">
-                                                <span :title="row.sku_name" class="multi-hidden">{{ row.sku_name||row.goods?.goods_name }}</span>
-                                            </div>
+        <el-card class="card !border-none" shadow="never">
+            <el-page-header :content="pageName" :icon="ArrowLeft" @back="$router.back()" />
+        </el-card>
+
+        <!-- 表单 -->
+        <el-form class="page-form mt-[15px]" :model="formData" label-width="120px" ref="formRef" :rules="formRules">
+            <!-- 基础设置 -->
+            <el-card class="box-card !border-none" shadow="never">
+                <h3 class="panel-title !text-sm">{{ t('baseInfo') }}</h3>
+
+                <!-- 选择商品： -->
+                <el-form-item :label="t('goodsSelect')" class="!m-0" v-if="formData.type=='goods'">
+                    <div>
+                        <goods-select-popup ref="goodsSelectPopupRef" v-model="formData.goods_ids" @goodsSelect="goodsSelect" :min="1" :max="1" />
+
+                        <div class="flex min-w-[512px] relative border-[1px] border-[#e7e7e7] border-solid mt-[16px]" v-if="formData.goods_ids.length">
+                            <div class="min-w-[78px] h-[78px] flex items-center justify-center">
+                                <el-image v-if="formData.goods_info.goods_cover" class="w-[78px] h-[78px]" :src="img(formData.goods_info.goods_cover)" fit="contain">
+                                    <template #error>
+                                        <div class="image-slot">
+                                            <img class="w-[78px] h-[78px]" src="@/addon/shop/assets/goods_default.png" />
                                         </div>
                                     </template>
-                                </el-table-column>
-                                <el-table-column prop="goods_price" :label="t('price')" min-width="170" />
-                                <el-table-column prop="goods_stock" :label="t('goodsStock')" min-width="170" />
-                                <el-table-column :label="t('stock')" min-width="200">
-                                    <template #default="{ row,$index }">
-                                        <el-form-item v-if="row.is_enabled" :prop="'product_list.'+ $index + '.stock'" :rules="[{
+                                </el-image>
+                                <img v-else class="w-[78px] h-[78px]" src="@/addon/shop/assets/goods_default.png" fit="contain" />
+                            </div>
+                            <div class="flex-1 py-[5px] pl-[10px] pr-[30px]">
+                                <div class="text-[14px]">{{ formData.goods_info.goods_name }}</div>
+                                <div class="text-[14px] !text-[var(--el-color-primary)]">{{ formData.goods_info.goods_price }}</div>
+                            </div>
+                            <el-icon class="absolute right-[10px] top-[10px] cursor-pointer" @click="deleteGoods">
+                                <Close size="24px" color="#999" />
+                            </el-icon>
+                        </div>
+                    </div>
+                </el-form-item>
+                <el-form-item prop="product_list" v-if="formData.type=='goods'"></el-form-item>
+
+                <!-- 商品名称： -->
+                <el-form-item :label="t('goodsName')" prop="names">
+                    <el-input v-model="formData.names" type="textarea" clearable :placeholder="t('goodsNamePlaceholder')" class="!w-[512px]" show-word-limit :maxlength="60" />
+                </el-form-item>
+                <!-- 商品标题： -->
+                <el-form-item :label="t('goodsTitle')">
+                    <el-input v-model="formData.title" type="textarea" clearable :placeholder="t('goodsTitlePlaceholder')" class="!w-[512px]" show-word-limit :maxlength="60" />
+                </el-form-item>
+                <!-- 商品图片 -->
+                <el-form-item :label="t('image')" prop="image">
+                    <upload-image v-model="formData.image" :limit="6"/>
+                </el-form-item>
+            </el-card>
+
+            <el-card class="box-card !border-none" shadow="never" v-if="formData.type=='goods'&&formData.goods_info&&formData.product_list.length">
+                <h3 class="panel-title !text-sm">{{ t('redemptionSettings') }}</h3>
+
+                <el-form-item>
+                    <div class="w-full sku_list">
+                        <div class="flex items-center mb-[15px]">
+                            <el-checkbox v-model="toggleCheckbox" size="large" class="!mr-[15px]" @change="toggleChange" :indeterminate="isIndeterminate">
+                                <span>已选{{ multipleSelection.length }}项</span>
+                            </el-checkbox>
+
+                            <label>{{ t('batchOperation') }}</label>
+                            <el-input v-model.trim="batchOperation.stock" clearable :placeholder="t('stock')" class="!w-[130px] ml-[10px]" maxlength="8" />
+                            <el-input v-model.trim="batchOperation.limit_num" clearable :placeholder="t('limit')" class="!w-[130px] ml-[10px]" maxlength="8" />
+                            <el-input v-model.trim="batchOperation.point" clearable :placeholder="t('integralUnit')" class="!w-[130px] ml-[10px]" maxlength="8" />
+                            <el-input v-model.trim="batchOperation.price" clearable :placeholder="t('newPrice')" class="!w-[130px] ml-[10px]" maxlength="8" />
+                            <el-button class="ml-[10px]" type="primary" @click="saveBatch">{{ t('confirm') }}</el-button>
+                        </div>
+                        <el-table class="!max-w-[100%]" :data="formData.product_list" size="large" ref="productListTableRef" @selection-change="handleSelectionChange">
+                            <template #empty>
+                                <span>{{ t('emptyData')}}</span>
+                            </template>
+                            <el-table-column type="selection" width="55" />
+                            <el-table-column :label="t('goodsSelectPopupGoodsInfo')" min-width="300">
+                                <template #default="{ row }">
+                                    <div class="flex items-center cursor-pointer">
+                                        <div class="min-w-[60px] h-[60px] flex items-center justify-center">
+                                            <el-image v-if="row.sku_image" class="w-[60px] h-[60px]" :src="img(row.sku_image)" fit="contain">
+                                                <template #error>
+                                                    <div class="image-slot">
+                                                        <img class="w-[60px] h-[60px]" src="@/addon/shop/assets/goods_default.png" />
+                                                    </div>
+                                                </template>
+                                            </el-image>
+                                            <img v-else class="w-[70px] h-[60px]" src="@/addon/shop/assets/goods_default.png" fit="contain" />
+                                        </div>
+                                        <div class="ml-2">
+                                            <span :title="row.sku_name" class="multi-hidden">{{ row.sku_name||row.goods?.goods_name }}</span>
+                                        </div>
+                                    </div>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="goods_price" :label="t('price')" min-width="170" />
+                            <el-table-column prop="goods_stock" :label="t('goodsStock')" min-width="170" />
+                            <el-table-column :label="t('stock')" min-width="200">
+                                <template #default="{ row,$index }">
+                                    <el-form-item v-if="row.is_enabled" :prop="'product_list.'+ $index + '.stock'" :rules="[{
+                                        trigger: 'blur',
+                                        validator: (rule: any, value: any, callback: any) => {
+                                                if (value.length == 0) {
+                                                    callback(t('stockPlaceholder'))
+                                                } else if (isNaN(value) || !regExp.number.test(value)) {
+                                                    callback(t('stockTips'))
+                                                } else if (value <=0) {
+                                                    callback(t('stockTipsTwo'))
+                                                }else if(parseInt(value)>parseInt(row.goods_stock)){
+                                                    callback(t('stockTipsThree'))
+                                                }else {
+                                                    callback();
+                                                }
+                                        }
+                                        }]" class="sku-form-item-wrap">
+                                        <!-- @blur="inputBlur(row,'reduce',$index)" -->
+                                        <el-input v-model.trim="row.stock"  class="!w-[200px]" clearable placeholder="0" maxlength="8" />
+                                    </el-form-item>
+                                    <span v-else>--</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column :label="t('limit')" min-width="200">
+                                <template #default="{ row,$index }">
+                                    <el-form-item v-if="row.is_enabled" :prop="'product_list.'+ $index + '.limit_num'" :rules="[{
+                                        trigger: 'blur',
+                                        validator: (rule: any, value: any, callback: any) => {
+                                                if (value.length == 0) {
+                                                    callback(t('limitPlaceholder'))
+                                                } else if (isNaN(value) || !regExp.number.test(value)) {
+                                                    callback(t('limitTips'))
+                                                } else if (value <=0) {
+                                                    callback(t('limitTipsTwo'))
+                                                } else {
+                                                    callback();
+                                                }
+                                        }
+                                        }]" class="sku-form-item-wrap">
+                                        <!-- @blur="inputBlur(row,'reduce',$index)" -->
+                                            <el-input v-model.trim="row.limit_num" class="!w-[200px]" clearable placeholder="0" maxlength="8" >
+                                                <template #append>
+                                                    <span>{{t('limitUnit')}}</span>
+                                                </template>
+                                            </el-input>
+                                        </el-form-item>
+                                        <span v-else>--</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column :label="t('money')" min-width="550" align="center">
+                                <template #default="{ row,$index }">
+                                    <div class="flex justify-center">
+                                        <el-form-item v-if="row.is_enabled" :prop="'product_list.'+ $index + '.point'" :rules="[{
                                             trigger: 'blur',
                                             validator: (rule: any, value: any, callback: any) => {
                                                     if (value.length == 0) {
-                                                        callback(t('stockPlaceholder'))
+                                                        callback(t('pointPlaceholder'))
                                                     } else if (isNaN(value) || !regExp.number.test(value)) {
-                                                        callback(t('stockTips'))
-                                                    } else if (value <=0) {
-                                                        callback(t('stockTipsTwo'))
-                                                    }else if(parseInt(value)>parseInt(row.goods_stock)){
-                                                        callback(t('stockTipsThree'))
+                                                            callback(t('pointTips'))
+                                                        } else if (value <=0) {
+                                                            callback(t('pointTipsTwo'))
+                                                        } else{
+                                                            callback();
+                                                        }
+                                            }
+                                            }]" class="sku-form-item-wrap">
+                                            <!-- @blur="inputBlur(row,'reduce',$index)" -->
+                                            <el-input v-model.trim="row.point" class="!w-[200px]"  clearable placeholder="0" maxlength="8" >
+                                                <template #append>
+                                                    <span>{{t('integralUnit')}}</span>
+                                                </template>
+                                            </el-input>
+                                        </el-form-item>
+                                        <span v-else>--</span>
+                                        <span v-if="row.is_enabled" class="mx-[20px]">+</span>
+                                        <el-form-item v-if="row.is_enabled" :prop="'product_list.'+ $index + '.price'" :rules="[{
+                                            trigger: 'blur',
+                                            validator: (rule: any, value: any, callback: any) => {
+                                                    if(value.length){
+                                                        if (isNaN(value) || !regExp.digit.test(value)) {
+                                                            callback(t('moneyTips'))
+                                                        } else if (value <0) {
+                                                            callback(t('moneyTipsTwo'))
+                                                        }else{
+                                                            callback();
+                                                        }
                                                     }else {
                                                         callback();
                                                     }
                                             }
                                             }]" class="sku-form-item-wrap">
                                             <!-- @blur="inputBlur(row,'reduce',$index)" -->
-                                            <el-input v-model.trim="row.stock"  class="!w-[200px]" clearable placeholder="0" maxlength="8" />
+                                            <el-input v-model.trim="row.price" class="!w-[200px]"  clearable placeholder="0.00" maxlength="8" >
+                                                <template #append>
+                                                    <span>{{t('prickUnit')}}</span>
+                                                </template>
+                                            </el-input>
                                         </el-form-item>
-                                        <span v-else>--</span>
-                                    </template>
-                                </el-table-column>
-                                <el-table-column :label="t('limit')" min-width="200">
-                                    <template #default="{ row,$index }">
-                                        <el-form-item v-if="row.is_enabled" :prop="'product_list.'+ $index + '.limit_num'" :rules="[{
+                                    </div>
+                                </template>
+                            </el-table-column>
+                            <el-table-column :label="t('operation')" fixed="right" align="right" min-width="160">
+                                <template #default="{row}">
+                                    <el-button type="primary" link @click="enabledEvent(row)">{{ row.is_enabled?t('noEnabled'):t('enabled') }}</el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </div>
+                </el-form-item>
+            </el-card>
+
+            <el-card class="box-card !border-none" shadow="never" v-if="formData.type=='coupon'&&formData.product_list.length">
+                <h3 class="panel-title !text-sm">{{ t('redemptionSettings') }}</h3>
+
+                <!-- 兑换库存 -->
+                <el-form-item :label="t('stock')" prop="stock"  :rules="[{
+                    required: true,
+                    trigger: 'blur',
+                    validator: (rule: any, value: any, callback: any) => {
+                        if (value.length == 0) {
+                            callback(t('stockPlaceholder'))
+                        } else if (isNaN(value) || !regExp.number.test(value)) {
+                            callback(t('stockTips'))
+                        } else if (value <=0) {
+                            callback(t('stockTipsTwo'))
+                        }else if(formData.product_list[0].sum_count != '-1'&&parseInt(value)>parseInt(formData.product_list[0].sum_count.sum_count)){
+                            callback(t('stockTipsThree'))
+                        }else {
+                            callback();
+                        }
+                    }
+                }]">
+                    <el-input v-model="formData.stock" clearable :placeholder="t('stockPlaceholder')" class="input-width" />
+                </el-form-item>
+                <!-- 兑换限制 -->
+                <el-form-item :label="t('limit')" prop="limit_num"  :rules="[{
+                    trigger: 'blur',
+                    validator: (rule: any, value: any, callback: any) => {
+                        if(value){
+                            if (isNaN(value) || !regExp.number.test(value)) {
+                                callback(t('limitTips'))
+                            } else if (value <=0) {
+                                callback(t('limitTipsTwo'))
+                            } else {
+                                callback();
+                            }
+                        }else{
+                            callback();
+                        }
+                    }
+                }]">
+                    <el-input v-model="formData.limit_num" clearable :placeholder="t('limitPlaceholder')" class="input-width" />
+                </el-form-item>
+                <!-- 兑换价 -->
+                <el-form-item :label="t('money')" required>
+                    <div class="flex justify-center">
+                                        <el-form-item prop="point" :rules="[{
                                             trigger: 'blur',
                                             validator: (rule: any, value: any, callback: any) => {
                                                     if (value.length == 0) {
-                                                        callback(t('limitPlaceholder'))
-                                                    } else if (isNaN(value) || !regExp.number.test(value)) {
-                                                        callback(t('limitTips'))
-                                                    } else if (value <=0) {
-                                                        callback(t('limitTipsTwo'))
+                                                        callback(t('pointPlaceholder'))
+                                                    } if (isNaN(value) || !regExp.number.test(value)) {
+                                                            callback(t('pointTips'))
+                                                        } else if (value <=0) {
+                                                            callback(t('pointTipsTwo'))
+                                                        } else{
+                                                            callback();
+                                                        }
+                                            }
+                                            }]" class="sku-form-item-wrap">
+                                            <!-- @blur="inputBlur(row,'reduce',$index)" -->
+                                            <el-input v-model.trim="formData.point" class="!w-[200px]"  clearable placeholder="0" maxlength="8" >
+                                                <template #append>
+                                                    <span>{{t('integralUnit')}}</span>
+                                                </template>
+                                            </el-input>
+                                        </el-form-item>
+                                        <span class="mx-[20px]">+</span>
+                                        <el-form-item prop="price" :rules="[{
+                                            trigger: 'blur',
+                                            validator: (rule: any, value: any, callback: any) => {
+                                                     if(value.length){
+                                                        if (isNaN(value) || !regExp.digit.test(value)) {
+                                                            callback(t('moneyTips'))
+                                                        } else if (value <0) {
+                                                            callback(t('moneyTipsTwo'))
+                                                        }else{
+                                                            callback();
+                                                        }
+                                                    }else {
+                                                        callback();
+                                                    }
+                                            }
+                                            }]" class="sku-form-item-wrap">
+                                            <!-- @blur="inputBlur(row,'reduce',$index)" -->
+                                            <el-input v-model.trim="formData.price" class="!w-[200px]"  clearable placeholder="0.00" maxlength="8" >
+                                                <template #append>
+                                                    <span>{{t('prickUnit')}}</span>
+                                                </template>
+                                            </el-input>
+                                        </el-form-item>
+                                    </div>
+                </el-form-item>
+            </el-card>
+
+            <el-card class="box-card !border-none" shadow="never" v-if="formData.type=='balance'">
+                <h3 class="panel-title !text-sm">{{ t('redemptionSettings') }}</h3>
+                <!-- 兑换余额 -->
+                <el-form-item :label="t('balance')" prop="balance"  :rules="[{
+                    required: true,
+                    trigger: 'blur',
+                    validator: (rule: any, value: any, callback: any) => {
+                        if (value.length == 0) {
+                            callback(t('balancePlaceholder'))
+                        } else if (isNaN(value) || !regExp.digit.test(value)) {
+                            callback(t('balanceTips'))
+                        } else if (value <=0) {
+                            callback(t('balanceTipsTwo'))
+                        }else {
+                            callback();
+                        }
+                    }
+                }]">
+                    <el-input v-model="formData.balance" clearable :placeholder="t('balancePlaceholder')" class="input-width" />
+                </el-form-item>
+                <!-- 余额类型 -->
+                <el-form-item :label="t('balance')">
+                    <el-radio-group v-model="formData.isBalance" class="ml-4">
+                        <el-radio :label="0" size="large">可提现余额</el-radio>
+                        <el-radio :label="1" size="large">不可提现余额</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <!-- 兑换库存 -->
+                <el-form-item :label="t('stock')" prop="stock"  :rules="[{
+                    required: true,
+                    trigger: 'blur',
+                    validator: (rule: any, value: any, callback: any) => {
+                        if (value.length == 0) {
+                            callback(t('stockPlaceholder'))
+                        } else if (isNaN(value) || !regExp.number.test(value)) {
+                            callback(t('stockTips'))
+                        } else if (value <=0) {
+                            callback(t('stockTipsTwo'))
+                        }else {
+                            callback();
+                        }
+                    }
+                }]">
+                    <el-input v-model="formData.stock" clearable :placeholder="t('stockPlaceholder')" class="input-width" />
+                </el-form-item>
+                <!-- 兑换限制 -->
+                <el-form-item :label="t('limit')" prop="limit_num"  :rules="[{
+                    trigger: 'blur',
+                    validator: (rule: any, value: any, callback: any) => {
+                        if(value){
+                            if (isNaN(value) || !regExp.number.test(value)) {
+                                callback(t('limitTips'))
+                            } else if (value <=0) {
+                                callback(t('limitTipsTwo'))
+                            } else {
+                                callback();
+                            }
+                        }else{
+                            callback();
+                        }
+                    }
+                }]">
+                    <el-input v-model="formData.limit_num" clearable :placeholder="t('limitPlaceholder')" class="input-width" />
+                </el-form-item>
+                <!-- 兑换价 -->
+                <el-form-item :label="t('money')" required>
+                    <div class="flex justify-center">
+                        <el-form-item prop="point" :rules="[{
+                            trigger: 'blur',
+                            validator: (rule: any, value: any, callback: any) => {
+                                if (value.length == 0) {
+                                    callback(t('pointPlaceholder'))
+                                                    } else if(value.length){
+                                                        if (isNaN(value) || !regExp.number.test(value)) {
+                                                            callback(t('pointTips'))
+                                                        } else if (value <=0) {
+                                                            callback(t('pointTipsTwo'))
+                                                        } else{
+                                                            callback();
+                                                        }
                                                     } else {
                                                         callback();
                                                     }
                                             }
                                             }]" class="sku-form-item-wrap">
                                             <!-- @blur="inputBlur(row,'reduce',$index)" -->
-                                                <el-input v-model.trim="row.limit_num" class="!w-[200px]" clearable placeholder="0" maxlength="8" >
-                                                    <template #append>
-                                                        <span>{{t('limitUnit')}}</span>
-                                                    </template>
-                                                </el-input>
-                                            </el-form-item>
-                                            <span v-else>--</span>
-                                    </template>
-                                </el-table-column>
-                                <el-table-column :label="t('money')" min-width="550" align="center">
-                                    <template #default="{ row,$index }">
-                                        <div class="flex justify-center">
-                                            <el-form-item v-if="row.is_enabled" :prop="'product_list.'+ $index + '.point'" :rules="[{
-                                                trigger: 'blur',
-                                                validator: (rule: any, value: any, callback: any) => {
-                                                        if (value.length == 0) {
-                                                            callback(t('pointPlaceholder'))
-                                                        } else if (isNaN(value) || !regExp.number.test(value)) {
-                                                                callback(t('pointTips'))
-                                                            } else if (value <=0) {
-                                                                callback(t('pointTipsTwo'))
-                                                            } else{
-                                                                callback();
-                                                            }
-                                                }
-                                                }]" class="sku-form-item-wrap">
-                                                <!-- @blur="inputBlur(row,'reduce',$index)" -->
-                                                <el-input v-model.trim="row.point" class="!w-[200px]"  clearable placeholder="0" maxlength="8" >
-                                                    <template #append>
-                                                        <span>{{t('integralUnit')}}</span>
-                                                    </template>
-                                                </el-input>
-                                            </el-form-item>
-                                            <span v-else>--</span>
-                                            <span v-if="row.is_enabled" class="mx-[20px]">+</span>
-                                            <el-form-item v-if="row.is_enabled" :prop="'product_list.'+ $index + '.price'" :rules="[{
-                                                trigger: 'blur',
-                                                validator: (rule: any, value: any, callback: any) => {
-                                                        if(value.length){
-                                                            if (isNaN(value) || !regExp.digit.test(value)) {
-                                                                callback(t('moneyTips'))
-                                                            } else if (value <0) {
-                                                                callback(t('moneyTipsTwo'))
-                                                            }else{
-                                                                callback();
-                                                            }
-                                                        }else {
+                                            <el-input v-model.trim="formData.point" class="!w-[200px]"  clearable placeholder="0" maxlength="8" >
+                                                <template #append>
+                                                    <span>{{t('integralUnit')}}</span>
+                                                </template>
+                                            </el-input>
+                                        </el-form-item>
+                                        <span class="mx-[20px]">+</span>
+                                        <el-form-item prop="price" :rules="[{
+                                            trigger: 'blur',
+                                            validator: (rule: any, value: any, callback: any) => {
+                                                    if(value.length){
+                                                        if (isNaN(value) || !regExp.digit.test(value)) {
+                                                            callback(t('moneyTips'))
+                                                        } else if (value <0) {
+                                                            callback(t('moneyTipsTwo'))
+                                                        }else{
                                                             callback();
                                                         }
-                                                }
-                                                }]" class="sku-form-item-wrap">
-                                                <!-- @blur="inputBlur(row,'reduce',$index)" -->
-                                                <el-input v-model.trim="row.price" class="!w-[200px]"  clearable placeholder="0.00" maxlength="8" >
-                                                    <template #append>
-                                                        <span>{{t('prickUnit')}}</span>
-                                                    </template>
-                                                </el-input>
-                                            </el-form-item>
-                                        </div>
-                                    </template>
-                                </el-table-column>
-                                <el-table-column :label="t('operation')" fixed="right" align="right" min-width="160">
-                                    <template #default="{row}">
-                                        <el-button type="primary" link @click="enabledEvent(row)">{{ row.is_enabled?t('noEnabled'):t('enabled') }}</el-button>
-                                    </template>
-                                </el-table-column>
-                            </el-table>
-                        </div>
-                    </el-form-item>
-                </el-card>
-                <el-card class="box-card !border-none" shadow="never" v-if="formData.type=='coupon'&&formData.product_list.length">
-                    <h3 class="panel-title">{{ t('redemptionSettings') }}</h3>
-                    <!-- 兑换库存 -->
-                    <el-form-item :label="t('stock')" prop="stock"  :rules="[{
-                        required: true,
-                        trigger: 'blur',
-                        validator: (rule: any, value: any, callback: any) => {
-                            if (value.length == 0) {
-                                callback(t('stockPlaceholder'))
-                            } else if (isNaN(value) || !regExp.number.test(value)) {
-                                callback(t('stockTips'))
-                            } else if (value <=0) {
-                                callback(t('stockTipsTwo'))
-                            }else if(formData.product_list[0].sum_count != '-1'&&parseInt(value)>parseInt(formData.product_list[0].sum_count.sum_count)){
-                                callback(t('stockTipsThree'))
-                            }else {
-                                callback();
-                            }
-                        }
-                    }]">
-                        <el-input v-model="formData.stock" clearable :placeholder="t('stockPlaceholder')" class="input-width" />
-                    </el-form-item>
-                    <!-- 兑换限制 -->
-                    <el-form-item :label="t('limit')" prop="limit_num"  :rules="[{
-                        trigger: 'blur',
-                        validator: (rule: any, value: any, callback: any) => {
-                            if(value){
-                                if (isNaN(value) || !regExp.number.test(value)) {
-                                    callback(t('limitTips'))
-                                } else if (value <=0) {
-                                    callback(t('limitTipsTwo'))
-                                } else {
-                                    callback();
-                                }
-                            }else{
-                                callback();
-                            }
-                        }
-                    }]">
-                        <el-input v-model="formData.limit_num" clearable :placeholder="t('limitPlaceholder')" class="input-width" />
-                    </el-form-item>
-                    <!-- 兑换价 -->
-                    <el-form-item :label="t('money')" required>
-                        <div class="flex justify-center">
-                                            <el-form-item prop="point" :rules="[{
-                                                trigger: 'blur',
-                                                validator: (rule: any, value: any, callback: any) => {
-                                                        if (value.length == 0) {
-                                                            callback(t('pointPlaceholder'))
-                                                        } if (isNaN(value) || !regExp.number.test(value)) {
-                                                                callback(t('pointTips'))
-                                                            } else if (value <=0) {
-                                                                callback(t('pointTipsTwo'))
-                                                            } else{
-                                                                callback();
-                                                            }
-                                                }
-                                                }]" class="sku-form-item-wrap">
-                                                <!-- @blur="inputBlur(row,'reduce',$index)" -->
-                                                <el-input v-model.trim="formData.point" class="!w-[200px]"  clearable placeholder="0" maxlength="8" >
-                                                    <template #append>
-                                                        <span>{{t('integralUnit')}}</span>
-                                                    </template>
-                                                </el-input>
-                                            </el-form-item>
-                                            <span class="mx-[20px]">+</span>
-                                            <el-form-item prop="price" :rules="[{
-                                                trigger: 'blur',
-                                                validator: (rule: any, value: any, callback: any) => {
-                                                         if(value.length){
-                                                            if (isNaN(value) || !regExp.digit.test(value)) {
-                                                                callback(t('moneyTips'))
-                                                            } else if (value <0) {
-                                                                callback(t('moneyTipsTwo'))
-                                                            }else{
-                                                                callback();
-                                                            }
-                                                        }else {
-                                                            callback();
-                                                        }
-                                                }
-                                                }]" class="sku-form-item-wrap">
-                                                <!-- @blur="inputBlur(row,'reduce',$index)" -->
-                                                <el-input v-model.trim="formData.price" class="!w-[200px]"  clearable placeholder="0.00" maxlength="8" >
-                                                    <template #append>
-                                                        <span>{{t('prickUnit')}}</span>
-                                                    </template>
-                                                </el-input>
-                                            </el-form-item>
-                                        </div>
-                    </el-form-item>
-                </el-card>
-                <el-card class="box-card !border-none" shadow="never" v-if="formData.type=='balance'">
-                    <h3 class="panel-title">{{ t('redemptionSettings') }}</h3>
-                    <!-- 兑换余额 -->
-                    <el-form-item :label="t('balance')" prop="balance"  :rules="[{
-                        required: true,
-                        trigger: 'blur',
-                        validator: (rule: any, value: any, callback: any) => {
-                            if (value.length == 0) {
-                                callback(t('balancePlaceholder'))
-                            } else if (isNaN(value) || !regExp.digit.test(value)) {
-                                callback(t('balanceTips'))
-                            } else if (value <=0) {
-                                callback(t('balanceTipsTwo'))
-                            }else {
-                                callback();
-                            }
-                        }
-                    }]">
-                        <el-input v-model="formData.balance" clearable :placeholder="t('balancePlaceholder')" class="input-width" />
-                    </el-form-item>
-                    <!-- 余额类型 -->
-                    <el-form-item :label="t('balance')">
-                        <el-radio-group v-model="formData.isBalance" class="ml-4">
-                            <el-radio :label="0" size="large">可提现余额</el-radio>
-                            <el-radio :label="1" size="large">不可提现余额</el-radio>
-                        </el-radio-group>
-                    </el-form-item>
-                    <!-- 兑换库存 -->
-                    <el-form-item :label="t('stock')" prop="stock"  :rules="[{
-                        required: true,
-                        trigger: 'blur',
-                        validator: (rule: any, value: any, callback: any) => {
-                            if (value.length == 0) {
-                                callback(t('stockPlaceholder'))
-                            } else if (isNaN(value) || !regExp.number.test(value)) {
-                                callback(t('stockTips'))
-                            } else if (value <=0) {
-                                callback(t('stockTipsTwo'))
-                            }else {
-                                callback();
-                            }
-                        }
-                    }]">
-                        <el-input v-model="formData.stock" clearable :placeholder="t('stockPlaceholder')" class="input-width" />
-                    </el-form-item>
-                    <!-- 兑换限制 -->
-                    <el-form-item :label="t('limit')" prop="limit_num"  :rules="[{
-                        trigger: 'blur',
-                        validator: (rule: any, value: any, callback: any) => {
-                            if(value){
-                                if (isNaN(value) || !regExp.number.test(value)) {
-                                    callback(t('limitTips'))
-                                } else if (value <=0) {
-                                    callback(t('limitTipsTwo'))
-                                } else {
-                                    callback();
-                                }
-                            }else{
-                                callback();
-                            }
-                        }
-                    }]">
-                        <el-input v-model="formData.limit_num" clearable :placeholder="t('limitPlaceholder')" class="input-width" />
-                    </el-form-item>
-                    <!-- 兑换价 -->
-                    <el-form-item :label="t('money')" required>
-                        <div class="flex justify-center">
-                            <el-form-item prop="point" :rules="[{
-                                trigger: 'blur',
-                                validator: (rule: any, value: any, callback: any) => {
-                                    if (value.length == 0) {
-                                        callback(t('pointPlaceholder'))
-                                                        } else if(value.length){
-                                                            if (isNaN(value) || !regExp.number.test(value)) {
-                                                                callback(t('pointTips'))
-                                                            } else if (value <=0) {
-                                                                callback(t('pointTipsTwo'))
-                                                            } else{
-                                                                callback();
-                                                            }
-                                                        } else {
-                                                            callback();
-                                                        }
-                                                }
-                                                }]" class="sku-form-item-wrap">
-                                                <!-- @blur="inputBlur(row,'reduce',$index)" -->
-                                                <el-input v-model.trim="formData.point" class="!w-[200px]"  clearable placeholder="0" maxlength="8" >
-                                                    <template #append>
-                                                        <span>{{t('integralUnit')}}</span>
-                                                    </template>
-                                                </el-input>
-                                            </el-form-item>
-                                            <span class="mx-[20px]">+</span>
-                                            <el-form-item prop="price" :rules="[{
-                                                trigger: 'blur',
-                                                validator: (rule: any, value: any, callback: any) => {
-                                                        if(value.length){
-                                                            if (isNaN(value) || !regExp.digit.test(value)) {
-                                                                callback(t('moneyTips'))
-                                                            } else if (value <0) {
-                                                                callback(t('moneyTipsTwo'))
-                                                            }else{
-                                                                callback();
-                                                            }
-                                                        }else {
-                                                            callback();
-                                                        }
-                                                }
-                                                }]" class="sku-form-item-wrap">
-                                                <!-- @blur="inputBlur(row,'reduce',$index)" -->
-                                                <el-input v-model.trim="formData.price" class="!w-[200px]"  clearable placeholder="0.00" maxlength="8" >
-                                                    <template #append>
-                                                        <span>{{t('prickUnit')}}</span>
-                                                    </template>
-                                                </el-input>
-                                            </el-form-item>
-                                        </div>
-                    </el-form-item>
-                </el-card>
-                <el-card class="box-card !border-none" shadow="never">
-                    <h3 class="panel-title">{{ t('goodsDetail') }}</h3>
-                    <el-form-item>
-                        <editor v-model="formData.content" :height="600"  class="!w-[512px]" />
-                    </el-form-item>
-                </el-card>
-            </el-form>
-        </el-card>
+                                                    }else {
+                                                        callback();
+                                                    }
+                                            }
+                                            }]" class="sku-form-item-wrap">
+                                            <!-- @blur="inputBlur(row,'reduce',$index)" -->
+                                            <el-input v-model.trim="formData.price" class="!w-[200px]"  clearable placeholder="0.00" maxlength="8" >
+                                                <template #append>
+                                                    <span>{{t('prickUnit')}}</span>
+                                                </template>
+                                            </el-input>
+                                        </el-form-item>
+                                    </div>
+                </el-form-item>
+            </el-card>
+
+            <el-card class="box-card !border-none" shadow="never">
+                <h3 class="panel-title !text-sm">{{ t('goodsDetail') }}</h3>
+                <el-form-item>
+                    <editor v-model="formData.content" :height="600"  class="!w-[512px]" />
+                </el-form-item>
+            </el-card>
+        </el-form>
+
+
         <!-- 提交按钮 -->
-		<div class="fixed-footer-wrap">
-			<div class="fixed-footer">
-				<el-button type="primary" @click="onSave(formRef)">{{ t('save') }}</el-button>
-				<el-button @click="back()">{{ t('cancel') }}</el-button>
-			</div>
-		</div>
+        <div class="fixed-footer-wrap">
+            <div class="fixed-footer">
+                <el-button type="primary" @click="onSave(formRef)">{{ t('save') }}</el-button>
+                <el-button @click="back()">{{ t('cancel') }}</el-button>
+            </div>
+        </div>
     </div>
 </template>
+
 <script lang="ts" setup>
 import { ref, computed, reactive } from 'vue'
 import { t } from '@/lang'
 import { img,deepClone } from '@/utils/common'
 import { FormInstance,ElMessage } from 'element-plus'
+import { ArrowLeft } from '@element-plus/icons-vue'
 import { addActiveExchange } from "@/addon/shop/api/marketing";
 import goodsSelectPopup from '@/addon/shop/views/goods/components/goods-select-popup.vue'
 import couponSelectPopup from '@/addon/shop/views/goods/components/coupon-select-popup.vue'
@@ -503,6 +454,8 @@ import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
 const router = useRouter()
+const pageName = route.meta.title
+
 const loading = ref(false)
 // 商品类型
 const goodsType = reactive([
@@ -804,6 +757,7 @@ const back = () => {
     history.back()
 }
 </script>
+
 <style lang="scss" scoped>
 .goods-type-wrap {
     width: 120px;

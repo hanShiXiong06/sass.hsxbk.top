@@ -42,7 +42,7 @@ class EvaluateService extends BaseApiService
     {
         $field = 'evaluate_id,site_id,order_id,order_goods_id,goods_id,member_id,member_name,member_head,content,images,is_anonymous,scores,is_audit,explain_first,create_time,topping,update_time';
         $order = 'topping desc,update_time desc,create_time desc';
-        $search_model = $this->model->where([ [ 'goods_id', '=', $where[ 'goods_id' ] ], [ 'site_id', '=', $this->site_id ], [ 'is_audit', 'in', [ EvaluateDict::AUDIT_NO, EvaluateDict::AUDIT_ADOPT ] ] ])->withSearch([ "goods_id", "scores" ], $where)->field($field)->order($order)->append([ 'image_mid' ]);
+        $search_model = $this->model->where([ [ 'site_id', '=', $this->site_id ], [ 'is_audit', 'in', [ EvaluateDict::AUDIT_NO, EvaluateDict::AUDIT_ADOPT ] ] ])->withSearch([ "goods_id", "scores" ], $where)->field($field)->order($order)->append([ 'image_mid' ]);
         $list = $this->pageQuery($search_model);
         return $list;
     }

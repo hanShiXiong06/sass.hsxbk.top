@@ -181,6 +181,7 @@ return [
 				{
 					"path": "shop/pages/point/detail",
 					"style": {
+						"navigationStyle": "custom",
 						"navigationBarTitleText": "%shop.pages.point.detail%"
 					}
 				},

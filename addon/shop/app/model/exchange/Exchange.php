@@ -223,4 +223,66 @@ class Exchange extends BaseModel
     }
 
 
+  /**
+     * 获取商品图片缩略图（小）
+     */
+    public function getGoodsImageThumbSmallAttr($value, $data)
+    {
+        if (isset($data[ 'image' ]) && $data[ 'image' ] != '') {
+            $goods_image = explode(',', $data[ 'image' ]);
+            $img_arr = [];
+            foreach ($goods_image as $k => $v) {
+                $img = get_thumb_images($data[ 'site_id' ], $v, FileDict::SMALL);
+                if (!empty($img)) {
+                    $img_arr[] = $img;
+                }
+            }
+            return $img_arr;
+        }
+        return [];
+    }
+
+    /**
+     * 获取商品图片缩略图（中）
+     */
+    public function getGoodsImageThumbMidAttr($value, $data)
+    {
+        if (isset($data[ 'image' ]) && $data[ 'image' ] != '') {
+            $goods_image = explode(',', $data[ 'image' ]);
+            $img_arr = [];
+            foreach ($goods_image as $k => $v) {
+                $img = get_thumb_images($data[ 'site_id' ], $v, FileDict::MID);
+                if (!empty($img)) {
+                    $img_arr[] = $img;
+                }
+            }
+            return $img_arr;
+        }
+        return [];
+    }
+
+    /**
+     * 获取商品图片缩略图（大）
+     */
+    public function getGoodsImageThumbBigAttr($value, $data)
+    {
+        if (isset($data[ 'image' ]) && $data[ 'image' ] != '') {
+            $goods_image = explode(',', $data[ 'image' ]);
+            $img_arr = [];
+            foreach ($goods_image as $k => $v) {
+                $img = get_thumb_images($data[ 'site_id' ], $v, FileDict::BIG);
+                if (!empty($img)) {
+                    $img_arr[] = $img;
+                }
+            }
+            return $img_arr;
+        }
+        return [];
+    }
+
+
+
+
+
+
 }

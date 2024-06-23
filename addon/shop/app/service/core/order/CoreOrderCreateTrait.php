@@ -84,10 +84,6 @@ trait CoreOrderCreateTrait
                 return $value;
             }, $order_goods_data);
             $order_goods_model->insertAll($order_goods_data);
-            // 检查每个商品的库存并尝试下架 第一个参数是 sku_id , 第二个参数是 购买的数量
-            foreach ($order_goods_data as $goods) {
-                $this->checkAndUnlistGoods($goods['sku_id'], $goods['num'] );
-            }
             //优惠项
             $this->useDiscount();
 
@@ -132,24 +128,6 @@ trait CoreOrderCreateTrait
         $sku_list = (new GoodsSku())->where([['site_id', '=', $this->site_id], ['sku_id', 'in', array_column($order_goods_data, 'sku_id')]])->select();
         foreach ($sku_list as $v) {
             if ($v['stock'] < $order_goods_data_column[$v['sku_id']]) throw new CommonException('商品库存不足');
-        }
-    }
-    /**
-     * 检查指定 SKU 的库存并更新商品状态
-     * hsx
-     */
-    protected function checkAndUnlistGoods($skuId , $num)
-    {
-
-        $sku = GoodsSku::find($skuId);
-
-        if ($sku && $sku->stock <= 0 || $sku->stock <= $num  ) {
-            // 这里假设 GoodsSku 模型有一个关联到 Goods 模型的关联方法 `goods()`
-            $goods = $sku->goods;
-            if ($goods && $goods->status != '0') {
-                $goods->status = '0'; // 假设状态字段为 'status'，下架状态为 'unlisted'
-                $goods->save();
-            }
         }
     }
 
@@ -654,8 +632,15 @@ trait CoreOrderCreateTrait
                 if (!empty($this->param['delivery']['take_address_id'])) {
                     $this->delivery['take_address'] = (new CoreMemberAddressService())->getMemberAddressById($this->param['delivery']['take_address_id'], $this->member_id);
                 } else {
-                    $type = $this->delivery['delivery_type'] != OrderDeliveryDict::LOCAL_DELIVERY ? 'address' : 'location_address';
-                    $this->delivery['take_address'] = (new CoreMemberAddressService())->getDefaultAddressByMemberId($this->member_id, $type);
+                    $take_address = (new CoreMemberAddressService())->getDefaultAddressByMemberId($this->member_id);
+                    if($this->delivery['delivery_type'] == OrderDeliveryDict::LOCAL_DELIVERY && empty($take_address['lng'])) {
+                        $take_address = (new CoreMemberAddressService())->getLngLatAddressByMemberId($this->member_id);
+                    }
+                    $this->delivery['take_address'] = $take_address;
+                }
+
+                if($this->delivery['delivery_type'] == OrderDeliveryDict::LOCAL_DELIVERY && !empty($this->delivery['take_address']) && empty($this->delivery['take_address']['lng'])){
+                    $this->setError('SHOP_ORDER_PLEASE_SELECT_DELIVERY_EMPTY_LNG_LAT');//选中的配送方式没有设置经纬度....
                 }
             }
 

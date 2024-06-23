@@ -13,7 +13,8 @@
                 <el-form :inline="true" :model="evaluateTable.searchParam" ref="searchFormRef">
                     <el-form-item :label="t('goodsName')" prop="goods_name">
                         <el-input v-model.trim="evaluateTable.searchParam.goods_name" :placeholder="t('goodsNamePlaceholder')" class="input-width" maxlength="60" />
-                    </el-form-item> <el-form-item>
+                    </el-form-item>
+                    <el-form-item>
                         <el-button type="primary" @click="loadEvaluateList()">{{ t('search') }}</el-button>
                         <el-button @click="resetForm(searchFormRef)">{{ t('reset') }}</el-button>
                     </el-form-item>

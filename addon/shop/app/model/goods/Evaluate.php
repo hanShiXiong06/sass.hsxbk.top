@@ -137,6 +137,13 @@ class Evaluate extends BaseModel
         }
     }
 
+    public function searchGoodsIdAttr($query, $value, $data)
+    {
+        if ($value) {
+            $query->where("goods_id", "=", $value);
+        }
+    }
+
     public function getMemberNameAttr($value, $data)
     {
         if (isset($data[ 'is_anonymous' ]) && $data[ 'is_anonymous' ] == 1) {

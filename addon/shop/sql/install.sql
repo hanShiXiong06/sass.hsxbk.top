@@ -594,6 +594,7 @@ CREATE TABLE `{{prefix}}shop_order_refund` (
   `delivery` varchar(500) NOT NULL DEFAULT '' COMMENT '退货配送信息',
   `shop_reason` varchar(255) NOT NULL DEFAULT '' COMMENT '上架拒绝原因',
   `refund_address` varchar(1000) NOT NULL DEFAULT '' COMMENT '商家退货地址',
+  `is_refund_delivery` INT(11) NOT NULL DEFAULT 0 COMMENT '是否退运费',
   PRIMARY KEY (`refund_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci COMMENT='订单退款表';
 

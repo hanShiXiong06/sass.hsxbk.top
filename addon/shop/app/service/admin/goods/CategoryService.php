@@ -132,7 +132,7 @@ class CategoryService extends BaseAdminService
     {
         $category_info = $this->getInfo($id);
         if ($category_info && $category_info[ 'category_id' ] != $id) {
-            throw new AdminException('品牌已存在，请检查');
+            throw new AdminException('分类已存在，请检查');
         }
         if ($category_info[ 'level' ] == 1 && $category_info[ 'pid' ] != $data[ 'pid' ] && $category_info[ 'child_count' ] > 0) {
             throw new CommonException('SHOP_GOODS_CATEGORY_EXIST_CHILD');

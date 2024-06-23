@@ -1,10 +1,10 @@
-import {reactive, ref, computed, nextTick} from 'vue'
-import {t} from '@/lang'
-import {TabsPaneContext, ElMessage} from 'element-plus'
+import { reactive, ref, computed, nextTick } from 'vue'
+import { t } from '@/lang'
+import { TabsPaneContext, ElMessage } from 'element-plus'
 import Sortable from 'sortablejs'
-import {range, cloneDeep} from 'lodash-es'
-import {debounce, deepClone} from '@/utils/common'
-import {useRoute, useRouter} from 'vue-router'
+import { range, cloneDeep } from 'lodash-es'
+import { debounce, deepClone } from '@/utils/common'
+import { useRoute, useRouter } from 'vue-router'
 import Test from '@/utils/test'
 import {
     getGoodsType,
@@ -16,7 +16,7 @@ import {
     getAttrList,
     getAttrInfo
 } from '@/addon/shop/api/goods'
-import {getPosterList} from '@/app/api/poster'
+import { getPosterList } from '@/app/api/poster'
 
 // 商品添加/编辑
 export function useGoodsEdit(params: any = {}) {
@@ -346,7 +346,7 @@ export function useGoodsEdit(params: any = {}) {
             /*************** 商品参数-start ****************/
             formData.attr_format = data.goods_info.attr_format ? JSON.parse(data.goods_info.attr_format) : []
             formData.attr_id = data.goods_info.attr_id
-            
+
             editCallFn.value = true;
             attrChange(formData.attr_id || -1) //formData.attr_id为空，需要传入-1，便于attrChange方法调用
             /*************** 商品参数-end ****************/
@@ -431,7 +431,7 @@ export function useGoodsEdit(params: any = {}) {
     // 绑定拖拽规格值事件
     const bindSpecValue = () => {
         // 商品正在参与营销活动，禁止操作
-        if (isDisabledPrice.value) {
+        if (isDisabledPrice()) {
             return
         }
         if (!getFormRef().specValueRef) return
@@ -471,17 +471,17 @@ export function useGoodsEdit(params: any = {}) {
     // 添加规格项
     const addSpec = () => {
         // 商品正在参与营销活动，禁止操作
-        if (isDisabledPrice.value) {
+        if (isDisabledPrice()) {
             ElMessage({
                 type: 'warning',
-                message: `${t('participateInActiveDisableTips')}`
+                message: `${ t('participateInActiveDisableTips') }`
             })
             return
         }
         if (goodsSpecFormat.length > 4) {
             ElMessage({
                 type: 'warning',
-                message: `${t('maxAddSpecTips')}`
+                message: `${ t('maxAddSpecTips') }`
             })
             return
         }
@@ -500,10 +500,10 @@ export function useGoodsEdit(params: any = {}) {
     // 删除规格项
     const deleteSpec = (index: number) => {
         // 商品正在参与营销活动，禁止操作
-        if (isDisabledPrice.value) {
+        if (isDisabledPrice()) {
             ElMessage({
                 type: 'warning',
-                message: `${t('participateInActiveDisableTips')}`
+                message: `${ t('participateInActiveDisableTips') }`
             })
             return
         }
@@ -517,10 +517,10 @@ export function useGoodsEdit(params: any = {}) {
     // 添加规格值
     const addSpecValue = (index: number) => {
         // 商品正在参与营销活动，禁止操作
-        if (isDisabledPrice.value) {
+        if (isDisabledPrice()) {
             ElMessage({
                 type: 'warning',
-                message: `${t('participateInActiveDisableTips')}`
+                message: `${ t('participateInActiveDisableTips') }`
             })
             return
         }
@@ -541,10 +541,10 @@ export function useGoodsEdit(params: any = {}) {
     // 删除规格值
     const deleteSpecValue = (index: number, specIndex: number) => {
         // 商品正在参与营销活动，禁止操作
-        if (isDisabledPrice.value) {
+        if (isDisabledPrice()) {
             ElMessage({
                 type: 'warning',
-                message: `${t('participateInActiveDisableTips')}`
+                message: `${ t('participateInActiveDisableTips') }`
             })
             return
         }
@@ -589,7 +589,7 @@ export function useGoodsEdit(params: any = {}) {
                         let sku_spec = cloneDeep(skuData[ele_2].sku_spec)// 防止对象引用
                         sku_spec.push(ele_3)
                         item_prop_arr['sku_' + tempIndex] = {
-                            spec_name: `${skuData[ele_2].spec_name} ${ele_3.spec_value_name}`,
+                            spec_name: `${ skuData[ele_2].spec_name } ${ ele_3.spec_value_name }`,
                             sku_spec,
                             sku_image: '',
                             price: '',
@@ -736,28 +736,28 @@ export function useGoodsEdit(params: any = {}) {
         if (batchOperation.price && (isNaN(batchOperation.price) || !regExp.digit.test(batchOperation.price))) {
             ElMessage({
                 type: 'warning',
-                message: `${t('priceTips')}`
+                message: `${ t('priceTips') }`
             })
             return
         }
         if (batchOperation.market_price && (isNaN(batchOperation.market_price) || !regExp.digit.test(batchOperation.market_price))) {
             ElMessage({
                 type: 'warning',
-                message: `${t('marketPriceTips')}`
+                message: `${ t('marketPriceTips') }`
             })
             return
         }
         if (batchOperation.cost_price && (isNaN(batchOperation.cost_price) || !regExp.digit.test(batchOperation.cost_price))) {
             ElMessage({
                 type: 'warning',
-                message: `${t('costPriceTips')}`
+                message: `${ t('costPriceTips') }`
             })
             return
         }
         if (batchOperation.stock && (isNaN(batchOperation.stock) || !regExp.number.test(batchOperation.stock))) {
             ElMessage({
                 type: 'warning',
-                message: `${t('stockTips')}`
+                message: `${ t('stockTips') }`
             })
             return
         }
@@ -856,10 +856,10 @@ export function useGoodsEdit(params: any = {}) {
                 }
             ],
             goods_image: [
-                {required: true, message: t('goodsImagePlaceholder'), trigger: 'blur'}
+                { required: true, message: t('goodsImagePlaceholder'), trigger: 'blur' }
             ],
             goods_category: [
-                {required: true, message: t('goodsCategoryPlaceholder'), trigger: 'blur'}
+                { required: true, message: t('goodsCategoryPlaceholder'), trigger: 'blur' }
             ],
             sort: [
                 {
@@ -1113,15 +1113,17 @@ export function useGoodsEdit(params: any = {}) {
                 key: 'price_stock',
                 verify: false,
                 ref: formRefArr.skuFormRef
-            },
-            {
-                key: 'detail',
-                verify: false,
-                ref: formRefArr.detailFormRef
-            },
+            }
         ];
-
         formRef = formRef.concat(verifyArr);
+
+        // 调整验证顺序 -- 详情验证
+        let obj = {
+            key: 'detail',
+            verify: false,
+            ref: formRefArr.detailFormRef
+        };
+        formRef.push(obj)
 
         formRef.forEach((el: any, index) => {
             el.ref.validate((valid: any) => {
@@ -1137,12 +1139,12 @@ export function useGoodsEdit(params: any = {}) {
                 const spec = goodsSpecFormat[i]
                 if (Test.require(spec.spec_name)) {
                     specVerify = false
-                    ElMessage({type: 'warning', message: `${t('specNameRequire')}`})
+                    ElMessage({ type: 'warning', message: `${ t('specNameRequire') }` })
                     break
                 }
                 if (repeatSpecNameArr.indexOf(spec.spec_name) > -1) {
                     specVerify = false
-                    ElMessage({type: 'warning', message: `${t('specNameRepeat')}`})
+                    ElMessage({ type: 'warning', message: `${ t('specNameRepeat') }` })
                     break
                 } else {
                     repeatSpecNameArr.push(spec.spec_name);
@@ -1152,13 +1154,13 @@ export function useGoodsEdit(params: any = {}) {
                     const value = spec.values[v]
                     if (Test.require(value.spec_value_name)) {
                         specVerify = false
-                        ElMessage({type: 'warning', message: `${t('specValueRequire')}`})
+                        ElMessage({ type: 'warning', message: `${ t('specValueRequire') }` })
                         break
                     }
 
                     if (repeatSpecValueNameArr.indexOf(value.spec_value_name) > -1) {
                         specVerify = false
-                        ElMessage({type: 'warning', message: `${t('specValueNameRepeat')}`})
+                        ElMessage({ type: 'warning', message: `${ t('specValueNameRepeat') }` })
                         break
                     } else {
                         repeatSpecValueNameArr.push(value.spec_value_name);
@@ -1181,7 +1183,7 @@ export function useGoodsEdit(params: any = {}) {
 
             if (!isHasDefaultSpec) {
                 activeName.value = 'price_stock'
-                ElMessage({type: 'warning', message: `${t('lackDefaultSpec')}`})
+                ElMessage({ type: 'warning', message: `${ t('lackDefaultSpec') }` })
                 return
             }
         }
@@ -1313,16 +1315,15 @@ export function useGoodsEdit(params: any = {}) {
                 item.select_child_name = item.type == "checkbox" ? [] : '';
                 item.select_child_val = item.type == "checkbox" ? [] : '';
             });
-            
+
             temporaryData = temporaryData.concat(data)
-            attrTableData.splice(0,attrTableData.length,...temporaryData);
+            attrTableData.splice(0, attrTableData.length, ...temporaryData);
             attrLoad = false;
 
             if (editCallFn.value) {
                 let formAttrIdArray = formData.attr_format.map((obj: any) => obj.attr_value_id);
                 let temporaryAttrData: any = deepClone(attrTableData);
-                
-                
+
                 temporaryAttrData = temporaryAttrData.filter((item: any) => formAttrIdArray.indexOf(item.attr_value_id) > -1);
 
                 formData.attr_format.forEach((item: any, index: any) => {
@@ -1347,13 +1348,13 @@ export function useGoodsEdit(params: any = {}) {
                         temporaryAttrData.push(obj);
                     }
                 });
-                
+
                 temporaryAttrData.sort((a: any, b: any) => {
                     return b.sort - a.sort
                 });
 
-                attrTableData.splice(0,attrTableData.length,...temporaryAttrData);
-                
+                attrTableData.splice(0, attrTableData.length, ...temporaryAttrData);
+
                 editCallFn.value = false
             }
         })

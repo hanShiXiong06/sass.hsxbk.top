@@ -1,14 +1,11 @@
 <template>
     <div class="main-container">
-        <div class="detail-head">
-            <div class="left" @click="router.push(`/shop/goods/list`)">
-                <span class="iconfont iconxiangzuojiantou !text-xs"></span>
-                <span class="ml-[1px]">{{ t('returnToPreviousPage') }}</span>
-            </div>
-            <span class="adorn">|</span>
-            <span class="right">{{ goodsEdit.formData.goods_id ? t('updateGoods') : t('addGoods') }}</span>
-        </div>
+
         <el-card class="box-card !border-none" shadow="never">
+            <el-page-header :content="goodsEdit.formData.goods_id ? t('updateGoods') : t('addGoods')" :icon="ArrowLeft" @back="$router.back()" />
+        </el-card>
+
+        <el-card class="box-card mt-[15px] !border-none" shadow="never">
 
             <el-tabs v-model="goodsEdit.activeName" @tab-click="goodsEdit.tabHandleClick">
                 <el-tab-pane :label="t('basicInfoTab')" name="basic">
@@ -97,7 +94,7 @@
 
                         <el-form-item :label="t('supplier')" v-if="goodsEdit.formData.addon_shop_supplier && goodsEdit.formData.addon_shop_supplier.status == 1">
                             <el-select v-model="goodsEdit.formData.supplier_id" :placeholder="t('supplierPlaceholder')" clearable>
-                                <el-option v-for="item in supplierOptions" :key="item.supplier_id" :label="item.supplier_name" :value="item.supplier_id" />
+                                <el-option v-for="item in goodsEdit.supplierOptions" :key="item.supplier_id" :label="item.supplier_name" :value="item.supplier_id" />
                             </el-select>
                             <div class="ml-[10px]">
                                 <span class="cursor-pointer text-primary mr-[10px]" @click="goodsEdit.refreshSupplier">{{ t('refresh') }}</span>
@@ -115,9 +112,7 @@
                         </el-form-item>
                         <el-form-item :label="t('virtualSaleNum')" prop="virtual_sale_num">
                             <div>
-                                <el-input v-model.trim="goodsEdit.formData.virtual_sale_num" clearable
-                                    :placeholder="t('virtualSaleNumPlaceholder')" class="input-width" show-word-limit
-                                    maxlength="8" @keyup="filterNumber($event)">
+                                <el-input v-model.trim="goodsEdit.formData.virtual_sale_num" clearable :placeholder="t('virtualSaleNumPlaceholder')" class="input-width" show-word-limit maxlength="8" @keyup="filterNumber($event)" @blur="goodsEdit.formData.virtual_sale_num = $event.target.value">
                                     <template #append>{{ goodsEdit.formData.unit ? goodsEdit.formData.unit : '件' }}</template>
                                 </el-input>
                                 <div class="mt-[10px] text-[12px] text-[#999] leading-[20px]">{{ t('virtualSaleNumDesc') }}</div>
@@ -202,7 +197,7 @@
                                 </el-input>
                             </el-form-item>
                             <el-form-item :label="t('goodsStock')" prop="stock">
-                                <el-input v-model.trim="goodsEdit.formData.stock" clearable :placeholder="t('goodsStockPlaceholder')" class="input-width" maxlength="8" @keyup="filterNumber($event)">
+                                <el-input v-model.trim="goodsEdit.formData.stock" clearable :placeholder="t('goodsStockPlaceholder')" class="input-width" maxlength="8" @keyup="filterNumber($event)" :disabled="goodsEdit.isDisabledPrice()">
                                     <template #append>{{ goodsEdit.formData.unit ? goodsEdit.formData.unit : t('defaultUnit') }}</template>
                                 </el-input>
                             </el-form-item>
@@ -263,15 +258,15 @@
 
                                     <el-select v-model="goodsEdit.batchOperation.spec" class="set-spec-select">
                                         <el-option :label="t('all')" value="" />
-                                        <template v-for="(item, key) in goodsSkuData" :key="key">
+                                        <template v-for="(item, key) in goodsEdit.goodsSkuData" :key="key">
                                             <el-option v-if="item.spec_name" :label="item.spec_name" :value="key" />
                                         </template>
                                     </el-select>
 
-                                    <el-input v-if="goodsEdit.isDisabledPrice()" v-model.trim="goodsEdit.batchOperation.price" clearable :placeholder="t('price')" class="set-input" maxlength="8" />
+                                    <el-input v-if="!goodsEdit.isDisabledPrice()" v-model.trim="goodsEdit.batchOperation.price" clearable :placeholder="t('price')" class="set-input" maxlength="8" />
                                     <el-input v-model.trim="goodsEdit.batchOperation.market_price" clearable :placeholder="t('marketPrice')" class="set-input" maxlength="8" />
                                     <el-input v-model.trim="goodsEdit.batchOperation.cost_price" clearable :placeholder="t('costPrice')" class="set-input" maxlength="8" />
-                                    <el-input v-model.trim="goodsEdit.batchOperation.stock" clearable :placeholder="t('stock')" class="set-input" maxlength="8" />
+                                    <el-input v-if="!goodsEdit.isDisabledPrice()" v-model.trim="goodsEdit.batchOperation.stock" clearable :placeholder="t('stock')" class="set-input" maxlength="8" />
                                     <el-input v-model.trim="goodsEdit.batchOperation.sku_no" clearable maxlength="50" :placeholder="t('skuNo')" class="set-input" />
                                     <el-button type="primary" @click="goodsEdit.saveBatch">{{ t('confirm') }}</el-button>
                                 </div>
@@ -361,7 +356,7 @@
                                                                         <td class="el-table__cell">
                                                                             <div class="cell">
                                                                                 <el-form-item :prop="key + '.stock'" :rules="goodsEdit.skuStockRules()" class="sku-form-item-wrap">
-                                                                                    <el-input v-model.trim="item.stock" clearable placeholder="0" @input="goodsEdit.specStockSum" maxlength="8" />
+                                                                                    <el-input v-model.trim="item.stock" clearable placeholder="0" @input="goodsEdit.specStockSum" maxlength="8" :disabled="goodsEdit.isDisabledPrice()" />
                                                                                 </el-form-item>
                                                                             </div>
                                                                         </td>
@@ -493,11 +488,11 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref,computed } from 'vue'
+import { reactive, ref, computed } from 'vue'
 import { t } from '@/lang'
-import {  FormInstance } from 'element-plus'
-import { Rank } from '@element-plus/icons-vue'
-import { filterNumber,timeStampTurnTime } from '@/utils/common'
+import { FormInstance } from 'element-plus'
+import { Rank, ArrowLeft } from '@element-plus/icons-vue'
+import { filterNumber, timeStampTurnTime } from '@/utils/common'
 import { useRoute, useRouter } from 'vue-router'
 import {
     addVirtualGoods,
@@ -508,6 +503,7 @@ import { useGoodsEdit } from './public/js/useGoodsEdit'
 
 const route = useRoute()
 const router = useRouter()
+const pageName = route.meta.title
 
 const basicFormRef = ref<FormInstance>()
 const priceStockFormRef = ref<FormInstance>()
@@ -519,7 +515,7 @@ const skuFormRef = ref<FormInstance>()
 const specValueRef = ref()
 
 const goodsEdit = useGoodsEdit({
-    getFormRef() {
+    getFormRef () {
         return {
             basicFormRef: basicFormRef.value,
             priceStockFormRef: priceStockFormRef.value,
@@ -532,7 +528,7 @@ const goodsEdit = useGoodsEdit({
     addApi: addVirtualGoods,
     editApi: editVirtualGoods,
     formData: {
-        goods_type: 'virtual',
+        goods_type: 'virtual'
     },
     // 追加表单数据
     appendFormData: {
@@ -540,17 +536,17 @@ const goodsEdit = useGoodsEdit({
         virtual_receive_type: 'auto',
         virtual_verify_type: '0',
         virtual_indate: '0',
-        virtual_indate_day: '0', //几日有效的有效期
+        virtual_indate_day: '0' // 几日有效的有效期
     },
     // 表单验证规则
-    getFormRules(formData: any, regExp: any) {
+    getFormRules (formData: any, regExp: any) {
         return {
             virtual_indate_day: [
                 { required: true, message: t('virtualIndatePlaceholder'), trigger: 'blur' },
                 {
                     trigger: 'blur',
                     validator: (rule: any, value: any, callback: any) => {
-                        if(formData.virtual_receive_type == 'verify' && formData.virtual_verify_type == 1 && value < 1 ){
+                        if (formData.virtual_receive_type == 'verify' && formData.virtual_verify_type == 1 && value < 1) {
                             callback(new Error(t('virtualIndateErrorHint')))
                         }
                         callback()
@@ -562,13 +558,12 @@ const goodsEdit = useGoodsEdit({
                 {
                     trigger: 'blur',
                     validator: (rule: any, value: any, callback: any) => {
-                        if(formData.virtual_receive_type == 'verify' && formData.virtual_verify_type == 2) {
-                            let date = new Date(value);
-                            let time  = date.getTime();
-                            let date1 = new Date();
-                            let time1  = date1.getTime();
-                            if(time <= time1)
-                                callback(new Error(t('virtualIndateErrorOneHint')))
+                        if (formData.virtual_receive_type == 'verify' && formData.virtual_verify_type == 2) {
+                            const date = new Date(value)
+                            const time = date.getTime()
+                            const date1 = new Date()
+                            const time1 = date1.getTime()
+                            if (time <= time1) { callback(new Error(t('virtualIndateErrorOneHint'))) }
                         }
                         callback()
                     }
@@ -576,16 +571,16 @@ const goodsEdit = useGoodsEdit({
             ]
         }
     }
-});
+})
 
 const orderGoodsCount = ref(0)
 
-const isDisabledVirtual = computed(()=>{
-    if(goodsEdit.formData.virtual_receive_type == 'verify' && orderGoodsCount.value >0){
+const isDisabledVirtual = computed(() => {
+    if (goodsEdit.formData.virtual_receive_type == 'verify' && orderGoodsCount.value > 0) {
         // 虚拟商品，并且设置为店内核销，若存在订单，则禁用，无法编辑
-        return true;
+        return true
     }
-    return false;
+    return false
 })
 
 // 加载初始化数据
@@ -598,16 +593,15 @@ getVirtualGoodsInit({
 
         // 虚拟商品 收发货设置
         if (goodsEdit.formData.goods_id && data.goods_info) {
+            orderGoodsCount.value = data.goods_info.order_goods_count
 
-            orderGoodsCount.value = data.goods_info.order_goods_count;
-
-            goodsEdit.formData.virtual_auto_delivery = String(data.goods_info.virtual_auto_delivery);
-            goodsEdit.formData.virtual_receive_type = data.goods_info.virtual_receive_type;
-            goodsEdit.formData.virtual_verify_type = String(data.goods_info.virtual_verify_type);
+            goodsEdit.formData.virtual_auto_delivery = String(data.goods_info.virtual_auto_delivery)
+            goodsEdit.formData.virtual_receive_type = data.goods_info.virtual_receive_type
+            goodsEdit.formData.virtual_verify_type = String(data.goods_info.virtual_verify_type)
             if (data.goods_info.virtual_receive_type == 'verify' && data.goods_info.virtual_verify_type == 2) {
-                goodsEdit.formData.virtual_indate = timeStampTurnTime(data.goods_info.virtual_indate);
+                goodsEdit.formData.virtual_indate = timeStampTurnTime(data.goods_info.virtual_indate)
             } else if (data.goods_info.virtual_receive_type == 'verify' && data.goods_info.virtual_verify_type == 1) {
-                goodsEdit.formData.virtual_indate_day = data.goods_info.virtual_indate;
+                goodsEdit.formData.virtual_indate_day = data.goods_info.virtual_indate
             }
         }
     }
@@ -618,17 +612,17 @@ const save = () => {
     goodsEdit.save((data: any) => {
         // 收货设置
         if (data.virtual_receive_type == 'verify' && data.virtual_verify_type == 2) {
-            let date = new Date(data.virtual_indate);
-            data.virtual_indate = Math.floor(date.getTime() / 1000);
+            const date = new Date(data.virtual_indate)
+            data.virtual_indate = Math.floor(date.getTime() / 1000)
         }
         if (data.virtual_receive_type == 'verify' && data.virtual_verify_type == 1) {
-            data.virtual_indate = data.virtual_indate_day;
+            data.virtual_indate = data.virtual_indate_day
         }
     })
 }
 
-const disabledPastDates = (date:any)=> {
-    return date.valueOf() < Date.now();
+const disabledPastDates = (date:any) => {
+    return date.valueOf() < Date.now()
 }
 </script>
 

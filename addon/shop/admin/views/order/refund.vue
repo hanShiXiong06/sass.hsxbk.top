@@ -49,27 +49,24 @@
 					<div v-if="!orderTable.loading">
 						<template v-if="orderTable.data.length">
 							<div v-for="(item, index) in orderTable.data" :key="index">
-								<div
-									class="flex items-center justify-between bg-[#f7f8fa] mt-[10px] border-[#e4e7ed] border-solid border-b-[1px] px-3 h-[35px] text-[12px] text-[#666]">
+								<div class="flex items-center justify-between bg-[#f7f8fa] mt-[10px] border-[#e4e7ed] border-solid border-b-[1px] px-3 h-[35px] text-[12px] text-[#666]">
 									<div>
-										<span class="ml-5">{{ t('orderRefundNo') }}：{{ (item as any).order_refund_no
-										}}</span>
+										<span class="ml-5">{{ t('orderRefundNo') }}：{{ (item as any).order_refund_no }}</span>
 									</div>
 								</div>
 
-								<el-table :data="(item as any).order_goods" size="large" :show-header="false"
-									ref="multipleTable">
+								<el-table :data="(item as any).order_goods" size="large" :show-header="false" ref="multipleTable">
 									<el-table-column type="selection" width="40" />
 									<el-table-column align="left" min-width="240">
 										<template #default="{ row }">
 											<div class="flex cursor-pointer">
 												<div class="flex items-center min-w-[50px] mr-[10px]">
-													<img class="w-[50px] h-[50px]" v-if="row.goods_image_thumb_small"
-														:src="img(row.goods_image_thumb_small)" alt="">
+													<img class="w-[50px] h-[50px]" v-if="row.goods_image_thumb_small" :src="img(row.goods_image_thumb_small)" alt="">
 													<img class="w-[50px] h-[50px]" v-else src="" alt="">
 												</div>
 												<div class="flex">
 													<p class="multi-hidden">{{ row.goods_name }}</p>
+													<span class="text-[12px] text-[#999]">{{ row.sku_name }}</span>
 												</div>
 											</div>
 										</template>
@@ -84,15 +81,13 @@
 									<el-table-column min-width="120">
 										<template #default="{ row }">
 											<div class="flex flex-col">
-												<span class="text-[14px]">￥{{ parseFloat(row.goods_money -
-													row.discount_money).toFixed(2) }}</span>
+												<span class="text-[14px]">￥{{ parseFloat(row.goods_money - row.discount_money).toFixed(2) }}</span>
 											</div>
 										</template>
 									</el-table-column>
 									<el-table-column min-width="120">
 										<template #default>
-											<el-button link type="primary" @click="memberEvent(item.member.member_id)"
-												v-if="item.member">{{ item.member.nickname }}</el-button>
+											<el-button link type="primary" @click="memberEvent(item.member.member_id)" v-if="item.member">{{ item.member.nickname }}</el-button>
 										</template>
 									</el-table-column>
 									<el-table-column min-width="120">
@@ -117,13 +112,11 @@
 									</el-table-column>
 									<el-table-column align="right" min-width="120">
 										<template #default>
-											<el-button type="primary" link @click="detailEvent(item)">{{ t('info')
-											}}</el-button>
+											<el-button type="primary" link @click="detailEvent(item)">{{ t('info') }}</el-button>
 										</template>
 									</el-table-column>
 								</el-table>
-								<div v-if="item.shop_remark"
-									class="text-[14px] h-[30px] leading-[30px] px-3 bg-[#fff0e5] text-[#ff7f5b]">
+								<div v-if="item.shop_remark" class="text-[14px] h-[30px] leading-[30px] px-3 bg-[#fff0e5] text-[#ff7f5b]">
 									<span class="mr-[5px]">{{ t('notes') }}：</span>
 									<span>{{ item.shop_remark }}</span>
 								</div>
@@ -141,15 +134,14 @@
 		</el-card>
 		<delivery-action ref="deliveryActionDialog" @complete="loadOrderList"></delivery-action>
 		<order-notes ref="orderNotesDialog" @complete="loadOrderList"></order-notes>
-		<export-sure ref="exportSureDialog" :show="flag" type="shop_order_refund" :searchParam="orderTable.searchParam"
-			@close="handleClose" />
+		<export-sure ref="exportSureDialog" :show="flag" type="shop_order_refund" :searchParam="orderTable.searchParam" @close="handleClose" />
 	</div>
 </template>
 
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import { t } from '@/lang'
-import { orderRefuund } from '@/addon/shop/api/order'
+import { orderRefund } from '@/addon/shop/api/order'
 import { img, filterNumber } from '@/utils/common'
 import type { FormInstance } from 'element-plus'
 import { useRouter, useRoute } from 'vue-router'
@@ -158,11 +150,6 @@ const route = useRoute()
 const router = useRouter()
 const pageName = route.meta.title
 const activeName = ref('')
-
-const setFormData = async () => {
-	// statusData.value = await (await getOrderStatus()).data
-}
-setFormData()
 
 const multipleTable: Record<string, any> | null = ref(null)
 const isSelectAll = ref(false)
@@ -210,9 +197,6 @@ const orderTable = reactive<orderTableType>({
 
 const searchFormRef = ref<FormInstance>()
 
-// 选中数据
-// const selectData = ref<any[]>([])
-
 /**
  * 获取订单列表
  */
@@ -220,7 +204,7 @@ const loadOrderList = (page: number = 1) => {
 	orderTable.loading = true
 	orderTable.page = page
 
-	orderRefuund({
+	orderRefund({
 		page: orderTable.page,
 		limit: orderTable.limit,
 		...orderTable.searchParam
@@ -264,7 +248,7 @@ const memberEvent = (id: number) => {
 		path: '/member/detail',
 		query: { id }
 	})
-	window.open(routeUrl.href, '_blank')
+    window.open(routeUrl.href, '_blank')
 }
 
 const resetForm = (formEl: FormInstance | undefined) => {

@@ -6,27 +6,23 @@
                     <!-- #ifdef MP-WEIXIN -->
                     <top-tabbar :data="topTabbarData" title-color="#fff" />
                     <!-- #endif -->
-                    <view class="flex justify-between items-center pt-[30rpx]">
-                        <view class="text-[#fff]">
-                            <view class="text-[36rpx] font-500 leading-[42rpx]">{{ detail.status_name.name }}</view>
-                        </view>
-                        <view>
-                            <image v-if="detail.status == 1" class="w-[110rpx] h-[110rpx]" :src="img('addon/shop/detail/payment.png')" />
-                            <image v-if="detail.status == 2" class="w-[110rpx] h-[110rpx]" :src="img('addon/shop/detail/payment.png')" />
-                            <image v-if="detail.status == 3" class="w-[110rpx] h-[110rpx]" :src="img('addon/shop/detail/receive.png')" />
-                            <image v-if="detail.status == 5" class="w-[110rpx] h-[110rpx]" :src="img('addon/shop/detail/complete.png')" />
-                            <image v-if="detail.status == -1" class="w-[110rpx] h-[110rpx]" :src="img('addon/shop/detail/close.png')" />
-                        </view>
+                    <view class="flex justify-between items-center pt-[40rpx]">
+						<view class="text-[#fff] text-[36rpx] font-500 leading-[42rpx]">{{ detail.status_name.name }}</view>
+						<image v-if="detail.status == 1" class="w-[150rpx] h-[120rpx]" :src="img('addon/shop/detail/payment.png')" mode="aspectFit" />
+						<image v-if="detail.status == 2" class="w-[160rpx] h-[140rpx]" :src="img('addon/shop/detail/deliver_goods.png')" mode="aspectFit" />
+						<image v-if="detail.status == 3" class="w-[160rpx] h-[120rpx]" :src="img('addon/shop/detail/receive.png')" mode="aspectFit" />
+						<image v-if="detail.status == 5" class="w-[150rpx] h-[120rpx]" :src="img('addon/shop/detail/complete.png')" mode="aspectFit" />
+						<image v-if="detail.status == -1" class="w-[160rpx] h-[120rpx]" :src="img('addon/shop/detail/close.png')" mode="aspectFit" />
                     </view>
                 </view>
                 <view class="bg-[#fff] mx-[30rpx] p-[20rpx] mt-[-86rpx] rounded-[16rpx]" v-if="detail.delivery_type != 'virtual'">
                     <view v-if="detail.delivery_type == 'express'">
                         <view class="text-[#303133]">
-                            <view class="flex items-center">
-                                <image class="w-[28rpx] h-[32rpx] mr-[10rpx] flex-shrink-0" :src="img('addon/shop/detail/address.png')" />
-                                <text class="text-[32rpx] font-500 leading-[38rpx]">{{detail.taker_address}}</text>
-                                <text class="text-[22rpx] ml-[10rpx] leading-[26rpx]">{{detail.taker_full_address.split(detail.taker_address)[0]}}</text>
-                            </view>
+								<view class="flex">
+									<text class="nc-iconfont nc-icon-dizhiguanliV6xx text-[32rpx] mb-[2rpx] mr-[4rpx]"></text>
+									<view class="text-[32rpx] font-500 leading-[38rpx] overflow-hidden">{{detail.taker_address}}</view>
+								</view>
+                                <view class="text-[22rpx] leading-[26rpx]">{{detail.taker_full_address.split(detail.taker_address)[0]}}</view>
                             <view class="mt-[6rpx] text-[24rpx] leading-[28rpx] ">
                                 <text>{{ detail.taker_name }}</text>
                                 <text class="ml-[15rpx]">{{ detail.taker_mobile }}</text>
@@ -37,7 +33,7 @@
                     <view v-if="detail.delivery_type == 'store'">
                         <view class="flex">
                             <view>
-                                <u--image class="rounded-[10rpx] overflow-hidden" width="100rpx" height="100rpx" :src="img(detail.store.store_logo ? detail.store.store_logo : '')" model="aspectFill">
+                                <u--image class="overflow-hidden" radius="10rpx" width="100rpx" height="100rpx" :src="img(detail.store.store_logo ? detail.store.store_logo : '')" model="aspectFill">
                                     <template #error>
                                         <u-icon name="photo" color="#999" size="50"></u-icon>
                                     </template>
@@ -65,9 +61,7 @@
                     <view class="order-goods-item flex justify-between flex-wrap mt-[30rpx]"
                         v-for="(goodsItem, goodsIndex) in detail.order_goods" :key="goodsIndex">
                         <view class="w-[150rpx] h-[150rpx] flex-2" @click="goodsEvent(goodsItem.goods_id)">
-                            <u--image class="rounded-[10rpx] overflow-hidden" width="150rpx" height="150rpx"
-                                :src="img(goodsItem.goods_image_thumb_small ? goodsItem.goods_image_thumb_small : '')"
-                                model="aspectFill">
+                            <u--image class="overflow-hidden" radius="10rpx" width="150rpx" height="150rpx" :src="img(goodsItem.goods_image_thumb_small ? goodsItem.goods_image_thumb_small : '')" model="aspectFill">
                                 <template #error>
                                     <u-icon name="photo" color="#999" size="50"></u-icon>
                                 </template>
@@ -84,7 +78,7 @@
                                 <view class="price-font">
 									<text v-if="goodsItem.extend && parseFloat(goodsItem.extend.point) > 0" class="text-[32rpx]">{{goodsItem.extend.point}}积分</text>
 									<text v-if="parseFloat(goodsItem.price) && goodsItem.extend && parseFloat(goodsItem.extend.point) > 0" class="mx-[4rpx] text-[32rpx]">+</text>
-									<block v-if="parseFloat(goodsItem.price)">
+									<block v-if="goodsItem.price">
 										<text class="text-[24rpx]">￥</text>
 										<text class="text-[32rpx] font-500">{{ parseFloat(goodsItem.price).toFixed(2).split('.')[0] }}</text>
 										<text class="text-[22rpx] font-500">.{{ parseFloat(goodsItem.price).toFixed(2).split('.')[1] }}</text>
@@ -205,7 +199,7 @@
                             <text class="text-[22rpx]">.{{ parseFloat(detail.delivery_money).toFixed(2).split('.')[1] }}</text>
                         </view>
                     </view>
-                    <view class="flex justify-end text-[28rpx] leading-[32rpx] mt-[30rpx]">
+                    <view class="flex justify-end text-[28rpx] leading-[32rpx] mt-[30rpx] items-baseline">
                         <view class="text-[28rpx]">{{ t('orderMoney') }}：</view>
                         <view class="text-[var(--price-text-color)] price-font font-500">
 							<text v-if="parseFloat(detail.point) > 0" class="text-[28rpx]">{{detail.point}}积分</text>
@@ -220,20 +214,17 @@
                 </view>
 
                 <view class="flex z-2 justify-end items-center bg-[#fff] fixed left-0 right-0 bottom-0 min-h-[100rpx] px-1 flex-wrap  pb-ios">
-                    <view class="flex w-[70rpx] flex-col justify-center items-center" @click="orderBtnFn('index')">
-                        <text class="iconfont iconshouye text-[32rpx]"></text>
-                        <!-- <text class="text-xs mt-1">{{ t('index') }}</text> -->
-                    </view>
+					<view class="text-[26rpx] leading-[52rpx] px-[23rpx] border-[2rpx] border-solid border-[#999] rounded-full ml-[20rpx] !text-[#666]" @click="orderBtnFn('index')">{{ t('index') }}</view>
                     <view class="flex justify-end mr-[30rpx]">
-                        <view class="text-[26rpx] leading-[52rpx] px-[23rpx] border-[2rpx] border-solid border-[#999] rounded-full ml-[20rpx] text-[#303133]" v-if="showLogistics(detail)" @click="orderBtnFn('logistics')">
+                        <view class="text-[26rpx] leading-[52rpx] px-[23rpx] border-[2rpx] border-solid border-[#999] rounded-full ml-[20rpx] text-[#666]" v-if="showLogistics(detail)" @click="orderBtnFn('logistics')">
                             {{ t('logisticsTracking') }}
                         </view>
-                        <view class="text-[26rpx] leading-[52rpx] px-[23rpx] border-[2rpx] border-solid border-[#999] rounded-full ml-[20rpx] text-[#303133]" v-if="detail.status == 1" @click="orderBtnFn('close')">{{ t('orderClose') }}</view>
+                        <view class="text-[26rpx] leading-[52rpx] px-[23rpx] border-[2rpx] border-solid border-[#999] rounded-full ml-[20rpx] text-[#666]" v-if="detail.status == 1" @click="orderBtnFn('close')">{{ t('orderClose') }}</view>
                         <view class=" text-[26rpx] leading-[52rpx] px-[23rpx] border-[2rpx] border-solid text-[#fff] bg-primary border-primary rounded-full ml-[20rpx]" @click="orderBtnFn('pay')" v-if="detail.status == 1">{{ t('topay') }}</view>
                         <view class="text-[26rpx] leading-[52rpx] px-[23rpx] border-[2rpx] border-solid text-[#fff] bg-primary border-primary rounded-full ml-[20rpx]" v-if="detail.status == 3" @click="orderBtnFn('finish')" >{{ t('orderFinish') }}</view>
                         <block v-if="detail.status == 5">
                             <view v-if="detail.is_evaluate == 1 || (detail.is_evaluate != 1 && evaluateConfig.is_evaluate == 1)"
-                                class="text-[26rpx] leading-[52rpx] px-[23rpx] border-[2rpx] border-solid border-[#999] rounded-full ml-[20rpx] !text-[#303133]"
+                                class="text-[26rpx] leading-[52rpx] px-[23rpx] border-[2rpx] border-solid border-[#999] rounded-full ml-[20rpx] !text-[#666]"
                                 @click="orderBtnFn('evaluate')">{{ t('evaluate') }}</view>
                         </block>
                     </view>
@@ -257,11 +248,10 @@
 import { ref, reactive, computed } from 'vue';
 import { onLoad } from '@dcloudio/uni-app'
 import { t } from '@/locale'
-import { img, redirect, copy, deepClone } from '@/utils/common';
+import { img, redirect, copy } from '@/utils/common';
 import { getShopOrderDetail, orderClose, orderFinish } from '@/addon/shop/api/order';
 import { getEvaluateConfig } from '@/addon/shop/api/shop';
 import { getVerifyCode } from '@/app/api/verify';
-import { useSubscribeMessage } from '@/hooks/useSubscribeMessage';
 import logisticsTracking from '@/addon/shop/pages/order/components/logistics-tracking/logistics-tracking.vue'
 
 // 自定义头部导航 =》 没有标题且背景是透明色
@@ -373,12 +363,22 @@ const finish = (item: any) => {
 }
 
 const goodsEvent = (id: number) => {
-	redirect({
-		url: '/addon/shop/pages/goods/detail',
-		param: {
-			goods_id: id
-		}
-	})
+	if(detail.value.activity_type=='exchange') {
+		redirect({
+			url: '/addon/shop/pages/point/detail',
+			param: {
+				id: detail.value.relate_id
+			}
+		})
+	}else{
+		redirect({
+			url: '/addon/shop/pages/goods/detail',
+			param: {
+				goods_id: id
+			}
+		})
+	}
+
 }
 
 const payRef = ref(null)
@@ -429,14 +429,15 @@ const dateFormat = (res, type) => {
 	let time;
 	const index = new Date(res).getDay();
 	const week = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
-	if (type == "yearMonthDay")
-		time = data[0] + '年' + data[1] + '月' + data[2] + '日';
-	else if (type == "yearMonthDayWeek")
-		time = data[0] + '年' + data[1] + '月' + data[2] + '日 ' + week[index];
-	else if (type == "monthDayWeek")
-		time = data[1] + '月' + data[2] + '日 ' + week[index];
-	else
-		time = data[1] + '月' + data[2] + '日';
+    if (type == "yearMonthDay") {
+        time = data[0] + '年' + data[1] + '月' + data[2] + '日';
+    } else if (type == "yearMonthDayWeek") {
+        time = data[0] + '年' + data[1] + '月' + data[2] + '日 ' + week[index];
+    } else if (type == "monthDayWeek") {
+        time = data[1] + '月' + data[2] + '日 ' + week[index];
+    } else {
+        time = data[1] + '月' + data[2] + '日';
+    }
 
 	return time;
 }

@@ -100,7 +100,7 @@ class ShopPoster
                 $member_info = ( new Member() )->where([ [ 'member_id', '=', $member_id ], [ 'site_id', '=', $site_id ] ])->findOrEmpty();
 
                 if (!empty($member_info)) {
-                    if (empty($member_info[ 'headimg' ]) || !is_file($member_info[ 'headimg' ])) {
+                    if (empty($member_info[ 'headimg' ])) {
                         $member_info[ 'headimg' ] = 'static/resource/images/default_headimg.jpg';
                     }
                 }
@@ -178,7 +178,7 @@ class ShopPoster
                 $member_info = ( new Member() )->where([ [ 'member_id', '=', $member_id ], [ 'site_id', '=', $site_id ] ])->findOrEmpty();
 
                 if (!empty($member_info)) {
-                    if (empty($member_info[ 'headimg' ]) || !is_file($member_info[ 'headimg' ])) {
+                    if (empty($member_info[ 'headimg' ])) {
                         $member_info[ 'headimg' ] = 'static/resource/images/default_headimg.jpg';
                     }
                 }

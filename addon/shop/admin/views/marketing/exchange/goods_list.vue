@@ -1,12 +1,14 @@
 <template>
     <div class="main-container">
         <el-card class="box-card !border-none" shadow="never">
-            <div class="flex justify-between items-center mb-[5px]">
-                <span class="text-page-title">{{pageName}}</span>
+
+            <div class="flex justify-between items-center">
+                <span class="text-page-title">{{ pageName }}</span>
                 <el-button type="primary" @click="handleChange">
                     {{ t('addGoods') }}
                 </el-button>
             </div>
+
             <!-- 搜索 -->
             <el-card class="box-card !border-none my-[10px] table-search-wrap" shadow="never">
                 <el-form :inline="true" :model="tableData.searchParam" ref="searchFormRef">
@@ -19,9 +21,7 @@
 						</el-select>
 					</el-form-item>
                     <el-form-item :label="t('createTime')" prop="create_time">
-						<el-date-picker v-model="tableData.searchParam.create_time" type="datetimerange"
-							value-format="YYYY-MM-DD HH:mm:ss" :start-placeholder="t('startDate')"
-							:end-placeholder="t('endDate')" />
+						<el-date-picker v-model="tableData.searchParam.create_time" type="datetimerange" value-format="YYYY-MM-DD HH:mm:ss" :start-placeholder="t('startDate')" :end-placeholder="t('endDate')" />
 					</el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="loadExchangeGoodsList()">{{ t('search') }}</el-button>
@@ -29,12 +29,14 @@
                     </el-form-item>
                 </el-form>
             </el-card>
+
             <!-- 列表 -->
             <div class="mt-[10px]">
                 <el-table :data="tableData.data" size="large" v-loading="tableData.loading">
                     <template #empty>
                         <span>{{ !tableData.loading ? t('emptyData') : '' }}</span>
                     </template>
+
                     <el-table-column :label="t('goods')" min-width="130" >
                         <template #default="{ row }">
                             <div class="flex items-center cursor-pointer">
@@ -54,7 +56,6 @@
                             </div>
                         </template>
                     </el-table-column>
-                    <!-- <el-table-column prop="type_name" :label="t('goodsType')" min-width="130" /> -->
                     <el-table-column :label="t('exchangePrice')" min-width="130">
                         <template #default="{ row }">
                             <p v-if="row.point">{{ row.point }}{{ t('pointUnit') }}</p>
@@ -78,12 +79,11 @@
                             <el-button type="primary" link @click="spreadEvent(row)">{{ t('spreadGoods') }}</el-button>
                             <el-button v-if="row.status" type="primary" link @click="statusEvent(row.id,0)">{{ t('down') }}</el-button>
                             <el-button v-else type="primary" link @click="statusEvent(row.id,1)">{{ t('up') }}</el-button>
-                            <!-- <el-button v-if="row.active_status=='active'" type="primary" link @click="closeEvent(row.active_id)">{{ t('close') }}</el-button> -->
-                            <el-button type="primary" link @click="deleteEvent(row.id)">{{ t('delete') }}</el-button>
-							
+                            <el-button v-if="!row.status" type="primary" link @click="deleteEvent(row.id)">{{ t('delete') }}</el-button>
 						</template>
                     </el-table-column>
                 </el-table>
+
                 <div class="mt-[16px] flex justify-end">
                     <el-pagination v-model:current-page="tableData.page" v-model:page-size="tableData.limit"
                         layout="total, sizes, prev, pager, next, jumper" :total="tableData.total"
@@ -91,10 +91,12 @@
                 </div>
             </div>
         </el-card>
+
         <!-- 商品推广弹出框 -->
         <goods-spread-popup ref="goodsSpreadPopupRef" />
     </div>
 </template>
+
 <script lang="ts" setup>
 import { t } from '@/lang'
 import { reactive, ref } from 'vue'
@@ -102,11 +104,12 @@ import { img } from '@/utils/common'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessageBox, FormInstance } from 'element-plus'
 import goodsSpreadPopup from '@/addon/shop/views/goods/components/goods-spread-popup.vue'
-import { getActiveExchangePageList,deleteActiveExchange,editActiveExchangeStutas,getActiveExchangeStutas } from "@/addon/shop/api/marketing";
+import { getActiveExchangePageList, deleteActiveExchange, editActiveExchangeStatus, getActiveExchangeStatus } from '@/addon/shop/api/marketing'
 
-const router = useRouter()
 const route = useRoute()
+const router = useRouter()
 const pageName = route.meta.title
+
 // 表单内容
 const tableData = reactive({
     page: 1,
@@ -116,8 +119,8 @@ const tableData = reactive({
     data: [],
     searchParam: {
         names: '',
-        status:'',
-        create_time:[]
+        status: '',
+        create_time: []
     }
 })
 const searchFormRef = ref<FormInstance>()
@@ -138,10 +141,10 @@ const loadExchangeGoodsList = (page: number = 1) => {
     })
 }
 loadExchangeGoodsList()
-//获取状态列表
+// 获取状态列表
 const statusOption = ref([])
-const getActiveExchangeStatusFn=()=>{
-    getActiveExchangeStutas().then(res=>{
+const getActiveExchangeStatusFn = () => {
+    getActiveExchangeStatus().then(res => {
         statusOption.value = res.data
     })
 }
@@ -151,52 +154,51 @@ const handleChange = () => {
     router.push('/shop/marketing/exchange/goods_add')
 }
 
-//编辑商品
-const editEvent = (id:number)=>{
-    router.push({path:'/shop/marketing/exchange/goods_edit',query:{id}})
+// 编辑商品
+const editEvent = (id:number) => {
+    router.push({ path: '/shop/marketing/exchange/goods_edit', query: { id } })
 }
 // 商品推广
 const goodsSpreadPopupRef: any = ref(null)
 
 const spreadEvent = (data: any) => {
-    goodsSpreadPopupRef.value.show(data,'point')
+    goodsSpreadPopupRef.value.show(data, 'point')
 }
-//上下架
-const statusEvent = (id:number,status:number)=>{
-    
-    ElMessageBox.confirm(status?t('upTips'):t('downTips'), t('warning'),
-            {
-                confirmButtonText: t('confirm'),
-                cancelButtonText: t('cancel'),
-                type: 'warning'
-            }
-        ).then(() => {
-            editActiveExchangeStutas({id,status}).then(() => {
-                loadExchangeGoodsList()
-            }).catch(() => {
-            })
+// 上下架
+const statusEvent = (id:number, status:number) => {
+    ElMessageBox.confirm(status ? t('upTips') : t('downTips'), t('warning'),
+        {
+            confirmButtonText: t('confirm'),
+            cancelButtonText: t('cancel'),
+            type: 'warning'
+        }
+    ).then(() => {
+        editActiveExchangeStatus({ id, status }).then(() => {
+            loadExchangeGoodsList()
+        }).catch(() => {
         })
+    })
 }
-//删除
-const deleteEvent = (id:number)=>{
+// 删除
+const deleteEvent = (id:number) => {
     ElMessageBox.confirm(t('deleteTips'), t('warning'),
-            {
-                confirmButtonText: t('confirm'),
-                cancelButtonText: t('cancel'),
-                type: 'warning'
-            }
-        ).then(() => {
-            deleteActiveExchange(id).then(() => {
-                loadExchangeGoodsList()
-            }).catch(() => {
-            })
+        {
+            confirmButtonText: t('confirm'),
+            cancelButtonText: t('cancel'),
+            type: 'warning'
+        }
+    ).then(() => {
+        deleteActiveExchange(id).then(() => {
+            loadExchangeGoodsList()
+        }).catch(() => {
         })
-    }
+    })
+}
 const resetForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
     formEl.resetFields()
     loadExchangeGoodsList()
 }
 </script>
-<style lang="scss" scoped>
-</style>
+
+<style lang="scss" scoped></style>

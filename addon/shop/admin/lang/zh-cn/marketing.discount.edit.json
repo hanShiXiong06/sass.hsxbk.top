@@ -8,6 +8,7 @@
     "titleTip":"活动标题用于在手机或者电脑前端，建议输入长度不要大于5",
     "activityTime": "活动时间",
     "discountTimePlaceholder":"请选择活动时间",
+    "noSpaceAllowed":"内容不能为空",
     "selectProduct": "选择商品",
     "selectProductPlaceholder": "请选择商品",
     "batchOperation": "批量设置",

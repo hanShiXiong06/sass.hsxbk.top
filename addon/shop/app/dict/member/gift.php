@@ -41,6 +41,36 @@ return [
                     }
                 }
                 return $content;
+            },
+            // 会员签到（日签）
+            'member_sign' => function($site_id, $config) {
+                $content = [];
+                $model = (new addon\shop\app\model\coupon\Coupon());
+                $coupon_list = $model->where([ ['site_id', '=', $site_id], ['id', 'in', $config['coupon_id'] ] ])->field('id,price')->select()->toArray();
+                if (!empty($coupon_list)) {
+                    foreach ($coupon_list as $item) {
+                        $content[] = [
+                            'text' => round($item['price']) . "元优惠券",
+                            'icon' => '/addon/shop/sign/coupon.png'
+                        ];
+                    }
+                }
+                return $content;
+            },
+            // 会员签到（连签）
+            'member_sign_continue' => function($site_id, $config) {
+                $content = [];
+                $model = (new addon\shop\app\model\coupon\Coupon());
+                $coupon_list = $model->where([ ['site_id', '=', $site_id], ['id', 'in', $config['coupon_id'] ] ])->field('id,price')->select()->toArray();
+                if (!empty($coupon_list)) {
+                    foreach ($coupon_list as $item) {
+                        $content[] = [
+                            'text' => round($item['price']) . "元优惠券",
+                            'icon' => '/addon/shop/sign/coupon01.png'
+                        ];
+                    }
+                }
+                return $content;
             }
         ]
     ]

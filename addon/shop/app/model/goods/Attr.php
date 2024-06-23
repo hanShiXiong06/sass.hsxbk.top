@@ -57,7 +57,7 @@ class Attr extends BaseModel
     public function searchAttrNameAttr($query, $value, $data)
     {
         if ($value) {
-            $query->where("attr_name", $value);
+            $query->where("attr_name", 'like', '%' . $value . '%');
         }
     }
 

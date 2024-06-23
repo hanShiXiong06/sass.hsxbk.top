@@ -67,5 +67,18 @@
   "package": "包裹",
   "notLogistics": "暂无物流信息",
   "refundStatusName": "退款状态",
-  "orderInfoEmpty": "暂无数据"
+  "orderInfoEmpty": "暂无数据",
+  "editPrice": "修改价格",
+  "adjustMoneyDialogTitle": "调整价格",
+  "adjustMoneyUnit": "元",
+  "adjustMoneyTips": "注意 : 只有订单未付款时才支持改价,改价后请联系买家刷新订单核实订单金额后再支付。当订单总额为0元时，订单将自动支付",
+  "adjustMoneyDeliveryMoney": "运费",
+  "adjustMoneyGoodsInfo": "商品信息",
+  "adjustMoneyPrice": "单价",
+  "adjustMoneyNum": "数量",
+  "adjustMoneySubTotal": "小计",
+  "adjustMoneyDiscountMoney": "优惠金额",
+  "adjustMoneyLabel": "调整金额",
+  "adjustMoneyTotal": "总计",
+  "point":"积分"
 }

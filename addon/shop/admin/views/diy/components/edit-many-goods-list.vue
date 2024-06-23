@@ -94,7 +94,7 @@
 							</el-form-item>
 
 							<div class="del absolute cursor-pointer z-[2] top-[-8px] right-[-8px]" v-show="diyStore.editComponent.list.length > 1" @click="diyStore.editComponent.list.splice(index,1)">
-								<icon name="element-CircleCloseFilled" color="#bbb" size="20px"/>
+								<icon name="element CircleCloseFilled" color="#bbb" size="20px"/>
 							</div>
 
 						</div>
@@ -321,10 +321,7 @@ const goodsBoxRef = ref()
 
 const categoryTable = reactive({
     loading: true,
-    data: [],
-    searchParam: {
-        category_name: ''
-    }
+    data: []
 })
 
 onMounted(() => {
@@ -355,20 +352,17 @@ const categoryTableRef = ref<InstanceType<typeof ElTable>>()
 /**
  * 获取商品分类列表
  */
-let currCategoryData: string | null = null
+let currCategoryData: any = null
 const loadCategoryTree = () => {
     categoryTable.loading = true
 
-    getCategoryTree({
-        ...categoryTable.searchParam
-    }).then(res => {
+    getCategoryTree().then(res => {
         categoryTable.loading = false
         categoryTable.data = res.data
     }).catch(() => {
         categoryTable.loading = false
     })
 }
-
 
 // 选择商品分类
 let selectIndex = 0; // 当前选择的下标
@@ -389,13 +383,14 @@ const saveCategoryId = () => {
 const categoryShowDialogOpen = (index: any) => {
     selectIndex = index;
     categoryShowDialog.value = true
-    
+
 	nextTick(()=>{
 		setRowSelection()
 	})
 }
+
 //分类数据选中回填,设置展开行
-const expand_category_ids = ref<Array<any>>([76])
+const expand_category_ids = ref<Array<any>>([])
 const setRowSelection = ()=>{
 	expand_category_ids.value = []
 	categoryTable.data.forEach((el:any)=>{

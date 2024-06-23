@@ -289,7 +289,10 @@ class CoreOrderCreateService extends BaseCoreService
             $exchange_goods_info = (new  Exchange())->where(array_merge($sku_where, [['product_detail', 'like', '%' . '"sku_id":' . $v['sku_id'] . ',' . '%']]))->append(['type_name', 'status_name'])->field($field)->findOrEmpty()->toArray();
             if (empty($exchange_goods_info)) throw new CommonException('EXCHANGE_DETA_NOT_FOUND');//无效的商品
             if ($exchange_goods_info['status'] != 1) throw new CommonException('EXCHANGE_ACTIVITY_REMOVE');//下架判断
-            if ($exchange_goods_info['limit_num'] < $order_goods_data_column[$v['sku_id']]) throw new CommonException('SHOP_ORDER_EXCHANGE_EXCEEDING_LIMIT');//限够判断
+            $sku_key = array_search($v['sku_id'], array_column($exchange_goods_info['product_detail'], 'sku_id'));
+            //todo 限制兑换 业务
+            $sku_info = $exchange_goods_info['product_detail'][$sku_key];
+            if ($sku_info['limit_num'] < $order_goods_data_column[$v['sku_id']]) throw new CommonException('SHOP_ORDER_EXCHANGE_EXCEEDING_LIMIT');//限够判断
             if ($v['stock'] < $order_goods_data_column[$v['sku_id']]) throw new CommonException('SHOP_ORDER_GOODS_INSUFFICIENT');
         }
     }

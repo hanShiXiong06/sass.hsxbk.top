@@ -8,12 +8,12 @@
                 </div>
                 <div class="flex mt-[10px]" v-show="formData.is_use">
                     <span class="el-form-item__label">每消费</span>
-                    <div class="w-[70px]">
-                        <el-input v-model.trim="formData.money" clearable />
+                    <div class="w-[100px]">
+                        <el-input v-model.trim="formData.money" clearable maxlength="8" />
                     </div>
                     <span class="ml-[10px] el-form-item__label">元，获得</span>
-                    <div class="w-[70px]">
-                        <el-input v-model.number.trim="formData.point" clearable />
+                    <div class="w-[100px]">
+                        <el-input v-model.number.trim="formData.point" clearable maxlength="8" />
                     </div>
                     <span class="ml-[10px] el-form-item__label">积分</span>
                 </div>

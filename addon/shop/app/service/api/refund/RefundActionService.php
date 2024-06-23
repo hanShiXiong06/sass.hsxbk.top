@@ -15,6 +15,7 @@ use addon\shop\app\dict\order\OrderDeliveryDict;
 use addon\shop\app\dict\order\OrderGoodsDict;
 use addon\shop\app\dict\order\OrderRefundDict;
 use addon\shop\app\dict\order\OrderRefundLogDict;
+use addon\shop\app\model\order\Order;
 use addon\shop\app\model\order\OrderGoods;
 use addon\shop\app\model\order\OrderRefund;
 use addon\shop\app\service\core\refund\CoreRefundActionService;
@@ -41,7 +42,8 @@ class RefundActionService extends BaseApiService
     {
         $order_goods_id = $data['order_goods_id'];
         //查询订单项信息
-        $order_goods_info = (new OrderGoods())->where([
+        $order_goods_model = new OrderGoods();
+        $order_goods_info = $order_goods_model->where([
             ['order_goods_id', '=', $order_goods_id],
             ['member_id', '=', $this->member_id]
         ])->findOrEmpty();
@@ -49,15 +51,36 @@ class RefundActionService extends BaseApiService
         if(!$order_goods_info['is_enable_refund']) throw new ApiException('SHOP_ORDER_IS_NOT_ENABLE_REFUND');//订单不允许退款
         //查询有没有正没有关闭的退款
         if ($order_goods_info['status'] != OrderGoodsDict::NORMAL) throw new ApiException('SHOP_ORDER_REFUND_IS_REFUND_FINISH');//订单已退款或存在未完成的退款
+        $order_id = $order_goods_info['order_id'];//订单id
+        $order = (new Order())->where([['order_id', '=', $order_id]])->findOrEmpty();
+        if ($order->isEmpty()) throw new ApiException('SHOP_ORDER_IS_INVALID');//订单已失效
         $order_refund_no = create_no();
         $refund_type = $data['refund_type'];
         //只有已发货,才能退货退款
         if($refund_type == OrderRefundDict::RETURN_AND_REFUND_GOODS && $order_goods_info['delivery_status'] == OrderDeliveryDict::WAIT_DELIVERY)  throw new ApiException('SHOP_ORDER_REFUND_DELIVERY_NOT_ALLOW_REFUND_GOODS');
         $apply_money = $data['apply_money'];
+
+        //查询是否是最后一笔退款且还没有退运费
+        $order_goods_count = $order_goods_model->where([['order_id', '=', $order_id], ])->count();
+        $refund_count = $this->model->where([['order_id', '=', $order_id], ['status', '<>', OrderRefundDict::CLOSE]])->count();
+        //是否包含运费
+        $is_refund_delivery = 0;
+        if(($refund_count + 1) >= $order_goods_count){//最后一笔退款
+            //判断是否已经退过运费
+            $refund_delivery_count = $this->model->where([['order_id', '=', $order_id], ['status', '<>', OrderRefundDict::CLOSE], ['is_refund_delivery', '=', 1]])->count();
+            if($refund_delivery_count == 0){//已经退过运费的,就不需要重复再退了
+                $is_refund_delivery = 1;
+            }
+        }
+        //当前订单项最大可退金额
+        $max_refund_money = $order_goods_info['goods_money'] - $order_goods_info['discount_money'];//可退金额
+        if($is_refund_delivery == 1){
+            $max_refund_money += $order['delivery_money'];
+        }
         //退款金额不能大于可退款总额
-        if ($apply_money > ($order_goods_info['goods_money'] - $order_goods_info['discount_money'])) throw new ApiException('SHOP_ORDER_REFUND_MONEY_GT_ORDER_MONEY');//退款金额不能大于可退款总额
+        if ($apply_money > $max_refund_money) throw new ApiException('SHOP_ORDER_REFUND_MONEY_GT_ORDER_MONEY');//退款金额不能大于可退款总额
         $reason = $data['reason'];
-        $insert_data = array(
+        $insert_data = [
             'order_id' => $order_goods_info['order_id'],
             'site_id' => $this->site_id,
             'order_goods_id' => $order_goods_id,
@@ -69,8 +92,9 @@ class RefundActionService extends BaseApiService
             'status' => OrderRefundDict::BUYER_APPLY_WAIT_STORE,
             'remark' => $data['remark'],
             'voucher' => $data['voucher'],
-            'source' => OrderRefundDict::APPLY
-        );
+            'source' => OrderRefundDict::APPLY,
+            'is_refund_delivery' => $is_refund_delivery ?? 0,
+        ];
         $this->model->create($insert_data);
 
         //将订单项的退款单号覆盖
@@ -110,8 +134,21 @@ class RefundActionService extends BaseApiService
             ['member_id', '=', $this->member_id]
         ])->findOrEmpty();
         if ($order_goods_info->isEmpty()) throw new ApiException('SHOP_ORDER_REFUND_IS_INVALID');//订单已失效
+
+        $order_id = $order_goods_info['order_id'];//订单id
+        $order = (new Order())->where([['order_id', '=', $order_id]])->findOrEmpty();
+        if ($order->isEmpty()) throw new ApiException('SHOP_ORDER_IS_INVALID');//订单已失效
+
+        //是否包含运费
+        $is_refund_delivery = $order_refund_info['is_refund_delivery'];
+        //当前订单项最大可退金额
+        $max_refund_money = $order_goods_info['goods_money'] - $order_goods_info['discount_money'];//可退金额
+        if($is_refund_delivery == 1){
+            $max_refund_money += $order['delivery_money'];
+        }
+
         //退款金额不能大于可退款总额
-        if ($apply_money > ($order_goods_info['goods_money'] - $order_goods_info['discount_money'])) throw new ApiException('SHOP_ORDER_REFUND_MONEY_GT_ORDER_MONEY');//退款金额不能大于可退款总额
+        if ($apply_money > $max_refund_money) throw new ApiException('SHOP_ORDER_REFUND_MONEY_GT_ORDER_MONEY');//退款金额不能大于可退款总额
         $reason = $data['reason'];
         $update_data = [
             'refund_type' => $refund_type,
@@ -229,6 +266,96 @@ class RefundActionService extends BaseApiService
     public function getRefundReason()
     {
         return OrderRefundDict::getRefundReason();
+    }
+
+    /**
+     * 获取订单项可退款属性
+     * @param $data
+     * @return void
+     */
+    public function getRefundData($data){
+        $order_goods_id = $data['order_goods_id'];
+        //查询订单项信息
+        $order_goods_model = new OrderGoods();
+        $order_goods_info = $order_goods_model->where([
+            ['order_goods_id', '=', $order_goods_id],
+            ['member_id', '=', $this->member_id]
+        ])->findOrEmpty();
+        if ($order_goods_info->isEmpty()) throw new ApiException('SHOP_ORDER_IS_INVALID');//订单已失效
+//        if(!$order_goods_info['is_enable_refund']) throw new ApiException('SHOP_ORDER_IS_NOT_ENABLE_REFUND');//订单不允许退款
+        //查询有没有正没有关闭的退款
+//        if ($order_goods_info['status'] != OrderGoodsDict::NORMAL) throw new ApiException('SHOP_ORDER_REFUND_IS_REFUND_FINISH');//订单已退款或存在未完成的退款
+        $order_id = $order_goods_info['order_id'];//订单id
+        $order = (new Order())->where([['order_id', '=', $order_id]])->findOrEmpty();
+        if ($order->isEmpty()) throw new ApiException('SHOP_ORDER_IS_INVALID');//订单已失效
+
+        //查询是否是最后一笔退款且还没有退运费
+        $order_goods_count = $order_goods_model->where([['order_id', '=', $order_id], ])->count();
+        $refund_count = $this->model->where([['order_id', '=', $order_id], ['status', '<>', OrderRefundDict::CLOSE]])->count();
+        $is_refund_delivery = 0;
+        if(($refund_count + 1) >= $order_goods_count){//最后一笔退款
+            //判断是否已经退过运费
+            $refund_delivery_count = $this->model->where([['order_id', '=', $order_id], ['status', '<>', OrderRefundDict::CLOSE], ['is_refund_delivery', '=', 1]])->count();
+            if($refund_delivery_count == 0){//已经退过运费的,就不需要重复再退了
+//                $refund_delivery_money = $order['delivery_money'];
+                $is_refund_delivery = 1;
+            }
+        }
+        $refund_data = [
+            'refund_money' => $order_goods_info['order_goods_money'],
+            'is_refund_delivery' => $is_refund_delivery,
+            'refund_order_goods_money' => $order_goods_info['order_goods_money']
+        ];
+        if($is_refund_delivery){
+            $refund_data['refund_money'] += $order['delivery_money'];
+            $refund_data['refund_delivery_money'] = $order['delivery_money'];
+        }
+        return $refund_data;
+
+    }
+
+    /**
+     * 通过退款单号获取退款信息
+     * @param array $data
+     * @return void
+     */
+    public function getRefundDataByOrderRefundNo($data)
+    {
+        $order_refund_no = $data['order_refund_no'];
+
+        $order_refund_info = $this->model->where([
+            ['order_refund_no', '=', $order_refund_no],
+            ['member_id', '=', $this->member_id],
+            ['site_id', '=', $this->site_id]
+        ])->findOrEmpty();
+        if ($order_refund_info->isEmpty()) throw new ApiException('SHOP_ORDER_IS_INVALID');//退款已失效
+        $order_goods_id = $order_refund_info['order_goods_id'];//订单id
+        $order_id = $order_refund_info['order_id'];//订单id
+        //查询订单项信息
+        $order_goods_model = new OrderGoods();
+        $order_goods_info = $order_goods_model->where([
+            ['order_goods_id', '=', $order_goods_id],
+            ['member_id', '=', $this->member_id]
+        ])->findOrEmpty();
+        if ($order_goods_info->isEmpty()) throw new ApiException('SHOP_ORDER_IS_INVALID');//订单已失效
+
+        $order = (new Order())->where([['order_id', '=', $order_id]])->findOrEmpty();
+        if ($order->isEmpty()) throw new ApiException('SHOP_ORDER_IS_INVALID');//订单已失效
+
+        //判断是否已经退过运费
+        $is_refund_delivery = $order_refund_info['is_refund_delivery'];
+        $refund_data = [
+            'refund_money' => $order_goods_info['order_goods_money'],
+            'is_refund_delivery' => $is_refund_delivery,
+            'refund_order_goods_money' => $order_goods_info['order_goods_money']
+        ];
+        if($is_refund_delivery){
+            $refund_data['refund_money'] += $order['delivery_money'];
+            $refund_data['refund_delivery_money'] = $order['delivery_money'];
+        }
+        return $refund_data;
+
+
     }
 
 }

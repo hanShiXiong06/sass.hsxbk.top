@@ -14,10 +14,12 @@ namespace addon\shop\app\service\core\refund;
 use addon\shop\app\dict\order\OrderGoodsDict;
 use addon\shop\app\dict\order\OrderRefundDict;
 use addon\shop\app\dict\order\OrderRefundLogDict;
+use addon\shop\app\model\order\Order;
 use addon\shop\app\model\order\OrderGoods;
 use addon\shop\app\model\order\OrderRefund;
 use addon\shop\app\model\shop_address\ShopAddress;
 use core\base\BaseCoreService;
+use core\exception\ApiException;
 use core\exception\CommonException;
 
 /**
@@ -57,12 +59,25 @@ class CoreRefundActionService extends BaseCoreService
             [ 'order_goods_id', '=', $order_goods_id ],
         ])->findOrEmpty();
         if ($order_goods_info->isEmpty()) throw new CommonException('SHOP_ORDER_IS_INVALID');//订单已失效
+
+        $order_id = $order_goods_info['order_id'];//订单id
+        $order = (new Order())->where([['order_id', '=', $order_id]])->findOrEmpty();
+        if ($order->isEmpty()) throw new CommonException('SHOP_ORDER_IS_INVALID');//订单已失效
+
         //根据退款方式来判断下一步的状态
-        $update_data = array ();
+        $update_data = [];
+
+        $is_refund_delivery = $order_refund_info['is_refund_delivery'];
+        //当前订单项最大可退金额
+        $max_refund_money = $order_goods_info['goods_money'] - $order_goods_info['discount_money'];//可退金额
+        if($is_refund_delivery == 1){
+            $max_refund_money += $order['delivery_money'];
+        }
+
         if ($is_agree) {
             $money = $data[ 'money' ];
             //退款金额不能大于可退款总额
-            if ($money > ( $order_goods_info[ 'goods_money' ] - $order_goods_info[ 'discount_money' ] )) throw new CommonException('SHOP_ORDER_REFUND_MONEY_GT_ORDER_MONEY');//退款金额不能大于可退款总额
+            if ($money > $max_refund_money) throw new CommonException('SHOP_ORDER_REFUND_MONEY_GT_ORDER_MONEY');//退款金额不能大于可退款总额
             $update_data[ 'money' ] = $money;
             //只退款
             if ($order_refund_info[ 'refund_type' ] == OrderRefundDict::ONLY_REFUND) {

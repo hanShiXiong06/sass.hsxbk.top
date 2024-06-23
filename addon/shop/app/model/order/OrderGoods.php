@@ -14,6 +14,7 @@ namespace addon\shop\app\model\order;
 use addon\shop\app\dict\goods\GoodsDict;
 use addon\shop\app\dict\order\OrderDeliveryDict;
 use addon\shop\app\dict\order\OrderGoodsDict;
+use addon\shop\app\model\goods\Goods;
 use app\dict\sys\FileDict;
 use core\base\BaseModel;
 use Exception;
@@ -56,6 +57,15 @@ class OrderGoods extends BaseModel
     public function orderDelivery()
     {
         return $this->hasOne(OrderDelivery::class, 'id', 'delivery_id');
+    }
+
+    /**
+     * 商品
+     * @return HasOne
+     */
+    public function goods()
+    {
+        return $this->hasOne(Goods::class, 'goods_id', 'goods_id');
     }
 
     /**

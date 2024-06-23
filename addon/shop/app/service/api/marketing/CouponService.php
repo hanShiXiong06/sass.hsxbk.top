@@ -68,6 +68,7 @@ class CouponService extends BaseApiService
         $where[] = [ 'site_id', '=', $this->site_id ];
 //        $where[] = [ 'status', '=', CouponDict::NORMAL ];
         $where[] = [ 'receive_type', '=', CouponDict::USER ];
+        $where[] = [ 'status', '=', 1 ];
 
         $time_where = function($query) {
             $nowtime = time();
@@ -243,12 +244,17 @@ class CouponService extends BaseApiService
                 throw new CommonException('COUPON_RECEIVE_TYPE_NOT_EXIST');
             }
             //判断是否已经领取过
-            $member_coupon_count = $coupon_member_model->where([ [ 'coupon_id', '=', $coupon_id ], [ 'site_id', '=', $this->site_id ], [ 'member_id', '=', $member_id ], ['receive_type', '=', 'receive'] ])->count();
+            $member_coupon_count = $coupon_member_model->where([ [ 'coupon_id', '=', $coupon_id ], [ 'site_id', '=', $this->site_id ], [ 'member_id', '=', $member_id ], [ 'receive_type', '=', 'receive' ] ])->count();
             //判断优惠券数量是否充足
             $info = $this->model->where([ [ 'id', '=', $coupon_id ], [ 'site_id', '=', $this->site_id ] ])->findOrEmpty()->toArray();
             if (empty($info)) {
                 throw new CommonException('COUPON_NOT_EXIST');
             }
+
+            if($info['status'] != 1){
+                throw new CommonException('COUPON_INVALID');//优惠券已失效
+            }
+
             if ($member_coupon_count == $info[ 'limit_count' ]) {
                 throw new CommonException('COUPON_RECEIVE_EXCESS');//领取超过可领取数量
             }

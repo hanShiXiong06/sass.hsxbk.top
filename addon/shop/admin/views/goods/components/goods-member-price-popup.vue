@@ -121,22 +121,21 @@ const loadGoodsList = () => {
         tableData.data.forEach((item: any, index, Array: any) => {
             // 针对于单规格是，sku_name为空就展示商品名称
             if (!item.sku_name) {
-                Array[index].sku_name = goods.goods_name;
+                Array[index].sku_name = goods.goods_name
             }
             // 处理商品的会员价
             tableData.member_level.forEach((levelItem: any, levelIndex) => {
                 if (!item.member_price) {
-                    Array[index][`level_${levelItem.level_id}`] = parseFloat(item.price).toFixed(2);
+                    Array[index][`level_${levelItem.level_id}`] = parseFloat(item.price).toFixed(2)
                 } else if (item.member_price) {
-                    let memberPrice = JSON.parse(item.member_price);
+                    const memberPrice = JSON.parse(item.member_price)
                     if (memberPrice[`level_${levelItem.level_id}`]) {
-                        Array[index][`level_${levelItem.level_id}`] = parseFloat(memberPrice[`level_${levelItem.level_id}`]).toFixed(2);
+                        Array[index][`level_${levelItem.level_id}`] = parseFloat(memberPrice[`level_${levelItem.level_id}`]).toFixed(2)
                     } else {
-                        Array[index][`level_${levelItem.level_id}`] = parseFloat(item.price).toFixed(2);
+                        Array[index][`level_${levelItem.level_id}`] = parseFloat(item.price).toFixed(2)
                     }
                 }
             })
-
         })
     }).catch(() => {
         tableData.loading = false
@@ -144,10 +143,10 @@ const loadGoodsList = () => {
 }
 
 // 用于会员折扣展示
-let memberDiscountLevel:any = ref([])
+const memberDiscountLevel:any = ref([])
 const show = (data: any, levelData: any) => {
     Object.assign(goods, data)
-    tableData.member_level = [];
+    tableData.member_level = []
     Object.assign(tableData.member_level, levelData)
     formData.member_discount = data.member_discount
 
@@ -168,12 +167,12 @@ const show = (data: any, levelData: any) => {
         } else {
             Array[index].level_benefits.discount.discount += '折'
         }
-    });
+    })
     loadGoodsList()
     showDialog.value = true
 }
 
-/********* 批量复选框-start *************/ 
+/** ******* 批量复选框-start *************/
 const toggleCheckbox = ref()
 // 复选框中间状态
 const isIndeterminate = ref(false)
@@ -203,75 +202,74 @@ const handleSelectionChange = (val: []) => {
 }
 
 // 按钮
-let currLevelId = ref('');
-const batchGoodsBtn = (level_id:any)=> {
+const currLevelId = ref('')
+const batchGoodsBtn = (level_id:any) => {
     if (!multipleSelection.value.length) {
         ElMessage({
             message: '请选择要操作的商品',
-            type: 'warning',
+            type: 'warning'
         })
-        return false;
+        return false
     }
     currLevelId.value = level_id
-    memberPriceDialog.value = true;
+    memberPriceDialog.value = true
 }
 
-/********* 批量复选框-end *************/ 
-let memberPriceDialog = ref(false)
-const memberPriceSave = ()=> {
+/** ******* 批量复选框-end *************/
+const memberPriceDialog = ref(false)
+const memberPriceSave = () => {
     if (!memberPrice.value) {
         ElMessage.error('请输入会员价')
-        return false;
+        return false
     }
 
-    let idArr = multipleSelection.value.map((obj: any) => obj.sku_id);
+    const idArr = multipleSelection.value.map((obj: any) => obj.sku_id)
     tableData.data.forEach((item: any, index, Array: any) => {
-        if (idArr.indexOf(item.sku_id) > -1)
-            Array[index][`level_${currLevelId.value}`] = parseFloat(memberPrice.value).toFixed(2);
+        if (idArr.indexOf(item.sku_id) > -1) { Array[index][`level_${currLevelId.value}`] = parseFloat(memberPrice.value).toFixed(2) }
     })
 
-    memberPrice.value = '';
-    memberPriceDialog.value = false;
+    memberPrice.value = ''
+    memberPriceDialog.value = false
 }
 
-let saveLoad = false;
+let saveLoad = false
 const save = () => {
-    let sku_list: any = []
-    let verify = true; //用于校验价格是否小于等于零或大于商品原价
+    const sku_list: any = []
+    let verify = true // 用于校验价格是否小于等于零或大于商品原价
     if (formData.member_discount == 'fixed_price') {
         tableData.data.forEach((item: any, index, Array) => {
-            let obj: any = {};
-            obj.sku_id = item.sku_id;
+            const obj: any = {}
+            obj.sku_id = item.sku_id
             obj.member_price = {}
             tableData.member_level.forEach((levelItem: any, levelIndex) => {
                 if (verify) {
-                    obj.member_price[`level_${levelItem.level_id}`] = item[`level_${levelItem.level_id}`];
+                    obj.member_price[`level_${levelItem.level_id}`] = item[`level_${levelItem.level_id}`]
                     if (parseFloat(item[`level_${levelItem.level_id}`]) <= 0) {
-                        verify = false;
+                        verify = false
                         ElMessage.error(`[${item.sku_name}][${levelItem.level_name}]的指定价格不能小于等于零`)
                     }
                     if (parseFloat(item[`level_${levelItem.level_id}`]) > parseFloat(item.price)) {
-                        verify = false;
+                        verify = false
                         ElMessage.error(`[${item.sku_name}][${levelItem.level_name}]的指定价格不能大于商品原价`)
                     }
                 }
             })
-            sku_list.push(obj);
+            sku_list.push(obj)
         })
 
-        if (!verify) return false;
+        if (!verify) return false
     }
 
-    if (saveLoad) return false;
-    saveLoad = true;
+    if (saveLoad) return false
+    saveLoad = true
 
     editGoodsListMemberPrice({
         goods_id: goods.goods_id,
         member_discount: formData.member_discount,
-        sku_list: sku_list
+        sku_list
     }).then(res => {
-        saveLoad = false;
-        emit('load');
+        saveLoad = false
+        emit('load')
         showDialog.value = false
     })
 }

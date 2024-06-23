@@ -15,9 +15,11 @@ use addon\shop\app\dict\delivery\DeliveryDict;
 use addon\shop\app\dict\order\OrderDeliveryDict;
 use addon\shop\app\dict\order\OrderDict;
 use addon\shop\app\dict\order\OrderLogDict;
+use addon\shop\app\dict\order\OrderRefundDict;
 use addon\shop\app\model\delivery\Store;
 use addon\shop\app\model\order\Order;
 use addon\shop\app\model\order\OrderDelivery;
+use addon\shop\app\model\order\OrderRefund;
 use addon\shop\app\service\core\order\CoreOrderCloseService;
 use addon\shop\app\service\core\order\CoreOrderFinishService;
 use addon\shop\app\service\core\order\CoreOrderService;
@@ -56,7 +58,7 @@ class OrderService extends BaseApiService
             ->with(
                 [
                     'order_goods' => function($query) {
-                        $query->field('extend,order_goods_id, site_id, order_id, member_id, goods_id, sku_id, sku_no,goods_name, sku_name, goods_image, sku_image, price, num, goods_money, is_enable_refund')->append([ 'goods_image_thumb_small' ]);
+                        $query->field('extend,order_goods_id, site_id, order_id, member_id, goods_id, sku_id, goods_name, sku_name, goods_image, sku_image, price, num, goods_money, is_enable_refund')->append([ 'goods_image_thumb_small' ]);
                     }
                 ]
             )->order($order)->append([ 'order_from_name', 'order_type_name', 'status_name', 'delivery_type_name' ]);
@@ -107,12 +109,12 @@ class OrderService extends BaseApiService
      */
     public function getDetail(int $order_id)
     {
-        $field = 'activity_type,point,order_id,site_id,order_no,order_type,order_from,out_trade_no,status,member_id,ip,goods_money,delivery_money,order_money,invoice_id,create_time,pay_time,delivery_time,take_time,finish_time,close_time,delivery_type,taker_name,taker_mobile,taker_province,taker_city,taker_district,taker_address,taker_full_address,taker_longitude,taker_latitude,take_store_id,is_enable_refund,member_remark,shop_remark,close_remark,discount_money,is_evaluate';
+        $field = 'relate_id,activity_type,point,order_id,site_id,order_no,order_type,order_from,out_trade_no,status,member_id,ip,goods_money,delivery_money,order_money,invoice_id,create_time,pay_time,delivery_time,take_time,finish_time,close_time,delivery_type,taker_name,taker_mobile,taker_province,taker_city,taker_district,taker_address,taker_full_address,taker_longitude,taker_latitude,take_store_id,is_enable_refund,member_remark,shop_remark,close_remark,discount_money,is_evaluate';
         $info = $this->model->where([ [ 'site_id', '=', $this->site_id ], [ 'order_id', '=', $order_id ], [ 'member_id', '=', $this->member_id ] ])->field($field)
             ->with(
                 [
                     'order_goods' => function($query) {
-                        $query->field('extend,order_goods_id, site_id, order_id, member_id, goods_id, sku_id, sku_no,goods_name, sku_name, goods_image, sku_image, price, num, goods_money, discount_money, is_enable_refund, status, order_refund_no, delivery_status, verify_count, verify_expire_time, is_verify, goods_type')->append([ 'goods_image_thumb_small' ]);
+                        $query->field('extend,order_goods_id, site_id, order_id, member_id, goods_id, sku_id, goods_name, sku_name, goods_image, sku_image, price, num, goods_money, discount_money, is_enable_refund, status, order_refund_no, delivery_status, verify_count, verify_expire_time, is_verify, goods_type')->append([ 'goods_image_thumb_small' ]);
                     }
                 ]
             )->append([ 'order_from_name', 'order_type_name', 'status_name', 'delivery_type_name' ])->findOrEmpty()->toArray();
@@ -233,5 +235,51 @@ class OrderService extends BaseApiService
             return $info;
         }
         return $info;
+    }
+
+    public function num()
+    {
+
+        $data['wait_pay'] = $this->model->where([
+            [ 'site_id', '=', $this->site_id ],
+            [ 'member_id', '=', $this->member_id ],
+            [ 'status', '=', OrderDict::WAIT_PAY ],
+        ])->count() ?? 0;
+
+        $data['wait_shipping'] = $this->model->where([
+            [ 'site_id', '=', $this->site_id ],
+            [ 'member_id', '=', $this->member_id ],
+            [ 'status', '=', OrderDict::WAIT_DELIVERY ],
+        ])->count() ?? 0;
+
+        $data['wait_take'] = $this->model->where([
+            [ 'site_id', '=', $this->site_id ],
+            [ 'member_id', '=', $this->member_id ],
+            [ 'status', '=', OrderDict::WAIT_TAKE ],
+        ])->count() ?? 0;
+
+        $data['evaluate'] = $this->model->where([
+            [ 'site_id', '=', $this->site_id ],
+            [ 'member_id', '=', $this->member_id ],
+            [ 'status', '=', OrderDict::FINISH ],
+            [ 'is_evaluate', '=', 0 ],
+        ])->count() ?? 0;
+
+        $data['refund'] = (new OrderRefund())->where([
+            [ 'site_id', '=', $this->site_id ],
+            [ 'member_id', '=', $this->member_id ],
+            [ 'status', 'in', [
+                    OrderRefundDict::BUYER_APPLY_WAIT_STORE,
+                    OrderRefundDict::STORE_AGREE_REFUND_GOODS_APPLY_WAIT_BUYER,
+                    OrderRefundDict::STORE_REFUSE_REFUND_GOODS_APPLY_WAIT_BUYER,
+                    OrderRefundDict::BUYER_REFUND_GOODS_WAIT_STORE,
+                    OrderRefundDict::STORE_REFUSE_TAKE_REFUND_GOODS_WAIT_BUYER,
+                    OrderRefundDict::STORE_AGREE_REFUND_WAIT_TRANSFER,
+                    OrderRefundDict::STORE_REFUND_TRANSFERING,
+                ]
+            ],
+        ])->count() ?? 0;
+
+        return $data;
     }
 }

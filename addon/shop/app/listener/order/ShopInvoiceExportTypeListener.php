@@ -25,7 +25,9 @@ class ShopInvoiceExportTypeListener
             'shop_invoice' => [
                 'name' => '发票列表',
                 'column' => [
-                    'member_id' => [ 'name' => '会员id'],
+                    'order_no' => [ 'name' => '订单号'],
+                    'nickname' => [ 'name' => '会员昵称'],
+                    'order_money' => [ 'name' => '订单金额'],
                     'header_name' => [ 'name' => '发票抬头'],
                     'header_type_name' => [ 'name' => '抬头类型'],
                     'type_name' => [ 'name' => '发票类型'],
@@ -37,7 +39,7 @@ class ShopInvoiceExportTypeListener
                     'money' => [ 'name' => '开票金额'],
                     'create_time' => [ 'name' => '申请时间'],
                     'invoice_time' => [ 'name' => '开票时间'],
-                    'is_invoice_name' => [ 'name' => '是否开票'],
+                    'is_invoice_name' => [ 'name' => '开票状态'],
                 ],
             ]
         ];

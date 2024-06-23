@@ -10,6 +10,7 @@
     "discountTimePlaceholder":"请选择活动时间",
     "selectProduct": "选择商品",
     "selectProductPlaceholder": "请选择商品",
+    "noSpaceAllowed": "内容不能为空",
     "batchOperation": "批量设置",
     "batchEmptySelectedGoodsTips": "请选择要操作的商品",
     "discountType":"折扣类型",

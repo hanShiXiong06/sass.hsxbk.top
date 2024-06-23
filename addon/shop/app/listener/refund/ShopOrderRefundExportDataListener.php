@@ -50,6 +50,19 @@ class ShopOrderRefundExportDataListener
             foreach ($data as $key => $val) {
                 $data[$key]['nickname'] = $val['member']['nickname'];
             }
+            foreach ($data as $key => $val) {
+                $data[$key]['order_refund_no'] = $val['order_refund_no']."\t";
+                $data[$key]['nickname'] = !empty($val['member']) ? $val['member']['nickname'] : '';
+                $data[$key]['goods_info'] = $val['order_goods']['goods_name'].' '.$val['order_goods']['sku_name'];
+                $data[$key]['refund_num'] = $val['order_goods']['num'];
+                $data[$key]['create_time'] = !empty($val['create_time']) ? $val['create_time'] : '0000-00-00 00:00:00';
+                $data[$key]['transfer_time'] = !empty($val['transfer_time']) ? $val['transfer_time'] : '0000-00-00 00:00:00';
+                $data[$key]['refund_no'] = $val['refund_no']."\t";
+                $data[$key]['contact_name'] = !empty($val['refund_address']) ? $val['refund_address']['contact_name'] : '';
+                $data[$key]['refund_address'] = !empty($val['refund_address']) ? $val['refund_address']['full_address'] : '';
+                $data[$key]['express_number'] = !empty($val['delivery']) ? $val['delivery']['express_number'] : '';
+                $data[$key]['express_company'] = !empty($val['delivery']) ? $val['delivery']['express_company'] : '';
+            }
         }
         return $data;
     }

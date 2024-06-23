@@ -3,7 +3,7 @@
         <el-dialog v-model="showDialog" :title="prop.title" width="800px" :close-on-press-escape="false"
             :destroy-on-close="true" :close-on-click-modal="false">
             <el-form :inline="true" :model="goodsTable.searchParam" ref="searchFormRef">
-                <el-form-item :label="t('memberInfo')">
+                <el-form-item :label="t('fenxiaoName')">
                     <el-input v-model="goodsTable.searchParam.search" :placeholder="t('fenxiaoNamePlaceholder')" maxlength="60" />
                 </el-form-item>
                 <el-form-item>
@@ -17,7 +17,7 @@
                     <span>{{ !goodsTable.loading ? t('emptyData') : '' }}</span>
                 </template>
                 <el-table-column v-if="prop.max>1" type="selection" width="55" />
-                <el-table-column prop="goods_id" :label="t('memberInfo')" min-width="200">
+                <el-table-column prop="goods_id" :label="t('fenxiaoName')" min-width="200">
                     <template #default="{ row }">
                         <div class="flex items-center cursor-pointer">
                             <div class="min-w-[50px] h-[50px] flex items-center justify-center">

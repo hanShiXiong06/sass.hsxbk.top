@@ -8,7 +8,7 @@ return [
             'GoodsImage' => [
                 'title' => "商品图片",
                 'type' => 'image',
-                'icon' => "iconfont-iconshangpintupian",
+                'icon' => "iconfont iconshangpintupian",
                 'path' => "goods-image", // 属性编辑
                 'uses' => 1,
                 'sort' => 10006,
@@ -24,7 +24,7 @@ return [
             'GoodsName' => [
                 'title' => "商品名称",
                 'type' => 'text',
-                'icon' => "iconfont-icona-Group13",
+                'icon' => "iconfont icona-Group13",
                 'path' => "goods-name",
                 'uses' => 1,
                 'sort' => 10007,
@@ -34,7 +34,7 @@ return [
             'GoodsPrice' => [
                 'title' => "销售价",
                 'type' => 'text',
-                'icon' => "iconfont-iconshoujia",
+                'icon' => "iconfont iconshoujia",
                 'path' => "goods-price",
                 'uses' => 1,
                 'sort' => 10008,
@@ -47,7 +47,7 @@ return [
             'GoodsMarketPrice' => [
                 'title' => "划线价",
                 'type' => 'text',
-                'icon' => "iconfont-iconhuajiaqian",
+                'icon' => "iconfont iconhuajiaqian",
                 'path' => "goods-market-price",
                 'uses' => 1,
                 'sort' => 10009,

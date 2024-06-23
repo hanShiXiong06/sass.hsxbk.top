@@ -382,14 +382,14 @@
                 //减价
                 row.reduce_money = (row.price - row.specify_price).toFixed(2)
             }
-        } else if (discount_type == 'reduce') {//减价
+        } else if (discount_type == 'reduce') { // 减价
             if (row.reduce_money.length) {
                 row.specify_price = (row.price - row.reduce_money).toFixed(2)
                 row.discount_price = (row.price - row.reduce_money).toFixed(2)
                 row.discount_rate = (row.specify_price / row.price * 10).toFixed(1)
             }
 
-        } else {//实际
+        } else { // 实际
             if (row.specify_price.length) {
                 row.discount_price = row.specify_price + ''
                 row.reduce_money = (row.price - row.specify_price).toFixed(2)

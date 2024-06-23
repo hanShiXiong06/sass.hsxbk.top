@@ -29,6 +29,8 @@ return [
         'AfterShopOrderDelivery' => [ 'addon\shop\app\listener\order\AfterShopOrderDelivery' ],
         //订单收货后
         'AfterShopOrderFinish' => [ 'addon\shop\app\listener\order\AfterShopOrderFinish' ],
+        //订单编辑价格后
+        'AfterShopOrderEditPrice' => [ 'addon\shop\app\listener\order\AfterShopOrderEditPrice' ],
         //订单关闭后
         'AfterShopOrderClose' => [
             'addon\shop\app\listener\order\AfterShopOrderClose',
@@ -103,6 +105,7 @@ return [
         'VerifyType' => [ 'addon\shop\app\listener\verify\VerifyTypeListener' ],
         'VerifyCreate' => [ 'addon\shop\app\listener\verify\VerifyCreateListener' ],
         'Verify' => [ 'addon\shop\app\listener\verify\VerifyListener' ],
+        'VerifyInfo' => [ 'addon\shop\app\listener\verify\VerifyInfoListener' ],
 
         'ActiveStartAfter' => [
             'addon\shop\app\listener\marketing\DiscountActiveStartAfter'

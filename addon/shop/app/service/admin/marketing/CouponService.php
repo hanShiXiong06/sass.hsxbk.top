@@ -11,6 +11,7 @@
 
 namespace addon\shop\app\service\admin\marketing;
 
+use addon\shop\app\dict\coupon\CouponDict;
 use addon\shop\app\model\coupon\Coupon;
 use addon\shop\app\model\coupon\CouponGoods;
 use addon\shop\app\model\coupon\CouponMember;
@@ -91,11 +92,12 @@ class CouponService extends BaseAdminService
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function getSelectedList(string $coupon_ids = '') {
+    public function getSelectedList(string $coupon_ids = '')
+    {
         if (empty($coupon_ids)) return [];
         $field = 'id,title,price,type,receive_type,start_time,end_time,remain_count,receive_count,status,limit_count,min_condition_money,receive_status,valid_type,length,valid_end_time';
         $order = 'id desc';
-        return $this->model->where([ [ 'site_id', '=', $this->site_id ], ['id', 'in', $coupon_ids] ])->append([ 'type_name', 'receive_type_name', 'status_name' ])->field($field)->order($order)->select()->toArray();
+        return $this->model->where([ [ 'site_id', '=', $this->site_id ], [ 'id', 'in', $coupon_ids ] ])->append([ 'type_name', 'receive_type_name', 'status_name' ])->field($field)->order($order)->select()->toArray();
     }
 
     /**
@@ -247,11 +249,7 @@ class CouponService extends BaseAdminService
      */
     public function edit(int $id, array $data)
     {
-        $coupon_member_model = new CouponMember();
-        $coupon_member = $coupon_member_model->where([ [ 'coupon_id', '=', $id ], [ 'site_id', '=', $this->site_id ] ])->findOrEmpty();
-        if (!$coupon_member->isEmpty()) {
-            throw new AdminException('该优惠券已被用户领取无法修改');
-        }
+
         if ($data[ 'threshold' ] == 2) {
             $data[ 'min_condition_money' ] = 0;
         }
@@ -295,6 +293,7 @@ class CouponService extends BaseAdminService
         unset($data[ 'receive_time' ]);
         unset($data[ 'valid_time' ]);
         unset($data[ 'receive_type_time' ]);
+        unset($data[ 'type' ]);
 
         $coupon_goods_model = new CouponGoods();
         if (!empty($data[ 'goods_ids' ])) {
@@ -402,10 +401,25 @@ class CouponService extends BaseAdminService
      */
     public function setStatus($id, $status)
     {
-        $data = array (
+        $data = array(
             'receive_status' => $status
         );
-        $this->model->where([ [ 'id', '=', $id ] ])->update($data);
+        $this->model->where([ [ 'id', '=', $id ], ['site_id', '=', $this->site_id] ])->update($data);
+        return true;
+    }
+
+    /**
+     * 优惠券失效
+     * @param $id
+     * @param $status
+     * @return true
+     */
+    public function couponInvalid($id)
+    {
+        $data = array(
+            'status' => CouponDict::INVALID
+        );
+        $this->model->where([ [ 'id', '=', $id ], ['site_id', '=', $this->site_id] ])->update($data);
         return true;
     }
 

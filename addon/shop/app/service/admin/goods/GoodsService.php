@@ -141,7 +141,7 @@ class GoodsService extends BaseAdminService
      */
     public function getPage(array $where = [])
     {
-        $field = 'goods_id,sub_title,site_id,goods_name,goods_type,brand_id,goods_cover,stock,sale_num,status,sort,create_time,member_discount';
+        $field = 'goods_id,site_id,goods_name,goods_type,goods_cover,stock,sale_num,status,sort,create_time,member_discount';
         $order = 'sort asc, create_time desc';
         $sku_where = [
             [ 'goodsSku.is_default', '=', 1 ],
@@ -160,11 +160,11 @@ class GoodsService extends BaseAdminService
             $order = $where[ 'order' ] . ' ' . $where[ 'sort' ];
         }
 
-        $search_model = $this->model->where([ [ 'goods.site_id', '=', $this->site_id ] ])->withSearch([ "goods_name", "goods_type", "brand_id", "goods_category", "label_ids", 'service_ids', "sale_num", "status" ,"sku_no" ], $where)
+        $search_model = $this->model->where([ [ 'goods.site_id', '=', $this->site_id ] ])->withSearch([ "goods_name", "goods_type", "brand_id", "goods_category", "label_ids", 'service_ids', "sale_num", "status" ], $where)
             ->field($field)
             ->withJoin([
-                'goodsSku' => [ 'sku_id', 'goods_id', 'price', 'member_price' ,'sku_no']
-            ])->where($sku_where)->order($order)->append([ 'goods_type_name', 'brand_name', 'goods_edit_path', 'goods_cover_thumb_small' ]);
+                'goodsSku' => [ 'sku_id', 'goods_id', 'price', 'member_price' ]
+            ])->where($sku_where)->order($order)->append([ 'goods_type_name', 'goods_edit_path', 'goods_cover_thumb_small' ]);
         $list = $this->pageQuery($search_model);
         return $list;
     }
@@ -375,16 +375,16 @@ class GoodsService extends BaseAdminService
                     'sku_spec_format' => '', // sku规格格式
                     'market_price' => $data[ 'market_price' ],
                     'cost_price' => $data[ 'cost_price' ],
-                    'stock' => $data[ 'stock' ],
                     'weight' => $data[ 'weight' ],
                     'volume' => $data[ 'volume' ],
                     'is_default' => 1
                 ];
 
-                // 未参与营销活动，则允许修改 原价、销售价
+                // 未参与营销活动，则允许修改 原价、销售价、库存
                 if ($active_goods_count == 0) {
                     $sku_data[ 'price' ] = $data[ 'price' ];
                     $sku_data[ 'sale_price' ] = $data[ 'price' ];
+                    $sku_data[ 'stock' ] = $data[ 'stock' ];
                 }
 
                 $sku_count = $goods_sku_model->where([ [ 'goods_id', '=', $goods_id ] ])->count();
@@ -434,7 +434,6 @@ class GoodsService extends BaseAdminService
                             'sku_spec_format' => implode(',', $sku_spec_format), // sku规格格式
                             'market_price' => $v[ 'market_price' ],
                             'cost_price' => $v[ 'cost_price' ],
-                            'stock' => $v[ 'stock' ],
                             'weight' => $v[ 'weight' ],
                             'volume' => $v[ 'volume' ],
                             'is_default' => $v[ 'is_default' ]
@@ -444,6 +443,7 @@ class GoodsService extends BaseAdminService
                         if ($active_goods_count == 0) {
                             $sku_data[ 'price' ] = $v[ 'price' ];
                             $sku_data[ 'sale_price' ] = $v[ 'price' ];
+                            $sku_data[ 'stock' ] = $v[ 'stock' ];
                         }
 
                         if (!empty($v[ 'sku_id' ])) {

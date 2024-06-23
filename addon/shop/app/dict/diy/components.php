@@ -6,7 +6,7 @@ return [
         'list' => [
             'GoodsList' => [
                 'title' => '商品列表',
-                'icon' => 'iconfont-iconshangpinliebiao',
+                'icon' => 'iconfont iconshangpinliebiao',
                 'path' => 'edit-goods-list',
                 'support_page' => [],
                 'uses' => 0,
@@ -38,7 +38,7 @@ return [
             ],
             'ShopSearch' => [
                 'title' => '搜索',
-                'icon' => 'iconfont-iconsousuo',
+                'icon' => 'iconfont iconsousuo',
                 'path' => 'edit-shop-search',
                 'support_page' => [],
                 'uses' => 1,
@@ -56,7 +56,7 @@ return [
             ],
             'ManyGoodsList' => [
                 'title' => '多商品组',
-                'icon' => 'iconfont-iconduoshangpinzu',
+                'icon' => 'iconfont iconduoshangpinzu',
                 'path' => 'edit-many-goods-list',
                 'support_page' => [],
                 'uses' => 0,
@@ -100,7 +100,7 @@ return [
             ],
             'GoodsCoupon' => [
                 'title' => '优惠券',
-                'icon' => 'iconfont-iconyouhuiquan1',
+                'icon' => 'iconfont iconyouhuiquan1',
                 'path' => 'edit-goods-coupon',
                 'support_page' => [],
                 'uses' => 0,
@@ -118,7 +118,7 @@ return [
             ],
             'ShopMemberInfo' => [
                 'title' => '会员信息',
-                'icon' => 'iconfont-iconhuiyuanzhongxin',
+                'icon' => 'iconfont iconhuiyuanzhongxin',
                 'path' => 'edit-shop-member-info',
                 'support_page' => [ 'DIY_SHOP_MEMBER_INDEX' ],
                 'uses' => 1,
@@ -129,24 +129,47 @@ return [
                     'bgUrl' => ''
                 ],
             ],
+            'ShopOrderInfo' => [
+                'title' => '订单中心',
+                'icon' => 'iconfont icondingdanzhongxinPC-1',
+                'path' => 'edit-shop-order-info',
+                'support_page' => [ 'DIY_SHOP_MEMBER_INDEX' ],
+                'uses' => 1,
+                'sort' => 10016,
+                'value' => [
+                    "textColor" => "#303133",
+                    "fontSize" => 16,
+                    "fontWeight" => "normal",
+                    "text" => "订单中心",
+                    "more" => [
+                        "text" => "全部订单",
+                        "color" => "#999999",
+                    ],
+                    "item" => [
+                        "fontSize" => 12,
+                        "fontWeight" => "normal",
+                        "color" => "#303133"
+                    ],
+                ]
+            ],
             'ShopExchangeInfo' => [
                 'title' => '积分兑换',
-                'icon' => 'iconfont-iconjinbi',
+                'icon' => 'iconfont iconjinbi',
                 'path' => 'edit-shop-exchange-info',
                 'support_page' => [],
                 'uses' => 0,
-                'sort' => 10016,
+                'sort' => 10017,
                 'value' => [
                     'bgUrl' => 'addon/shop/diy/point/point_index_bg.jpg',
                 ],
             ],
             'ShopExchangeGoods' => [
                 'title' => '积分商品',
-                'icon' => 'iconfont-iconjifenshangpin',
+                'icon' => 'iconfont iconjifenshangpin',
                 'path' => 'edit-shop-exchange-goods',
                 'support_page' => [],
                 'uses' => 0,
-                'sort' => 10017,
+                'sort' => 10018,
                 'value' => [
                     'style' => 'style-2',
                     'source' => 'all',

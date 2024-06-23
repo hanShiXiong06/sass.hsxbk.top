@@ -18,14 +18,12 @@
 					</el-form-item>
 					<el-form-item :label="t('payType')" prop='pay_type'>
 						<el-select v-model="orderTable.searchParam.pay_type" clearable class="input-item">
-							<el-option v-for="(item, index) in payTypeData" :key="index" :label="item.name"
-								:value="item.key"></el-option>
+							<el-option v-for="(item, index) in payTypeData" :key="index" :label="item.name" :value="item.key"></el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item :label="t('fromType')" prop='from_type'>
 						<el-select v-model="orderTable.searchParam.order_from" clearable class="input-item">
-							<el-option v-for="(item, index) in orderFromData" :key="index" :label="item"
-								:value="index"></el-option>
+							<el-option v-for="(item, index) in orderFromData" :key="index" :label="item" :value="index"></el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item :label="t('createTime')" prop="create_time">
@@ -69,32 +67,27 @@
 					<div v-if="!orderTable.loading">
 						<template v-if="orderTable.data.length">
 							<div v-for="(item, index) in orderTable.data" :key="index">
-								<div
-									class="flex items-center justify-between bg-[#f7f8fa] mt-[10px] border-[#e4e7ed] border-solid border-b-[1px] px-3 h-[35px] text-[12px] text-[#666]">
+								<div class="flex items-center justify-between bg-[#f7f8fa] mt-[10px] border-[#e4e7ed] border-solid border-b-[1px] px-3 h-[35px] text-[12px] text-[#666]">
 									<div>
 										<span>{{ t('orderNo') }}：{{ (item as any).order_no }}</span>
 										<span class="ml-5">{{ t('createTime') }}：{{ (item as any).create_time }}</span>
 										<!-- <span class="ml-5">{{ t('orderFrom') }}：{{ (item as any).order_form_name }}</span> -->
-										<span class="ml-5" v-if="item.pay">{{ t('payType') }}：{{ (item as any).pay.type_name
-										}}</span>
+										<span class="ml-5" v-if="item.pay">{{ t('payType') }}：{{ (item as any).pay.type_name }}</span>
 									</div>
 									<div>
 										<!-- <el-button type="primary" link>{{ t('offlinePayment') }}</el-button> -->
-										<el-button type="primary" link @click="detailEvent(item)">{{ t('info')
-										}}</el-button>
+										<el-button type="primary" link @click="detailEvent(item)">{{ t('info') }}</el-button>
 										<el-button type="primary" link @click="setNotes(item)">{{ t('notes') }}</el-button>
 									</div>
 								</div>
 
-								<el-table :data="(item as any).order_goods" size="large" :show-header="false"
-									:span-method="arraySpanMethod" ref="multipleTable">
+								<el-table :data="(item as any).order_goods" size="large" :show-header="false" :span-method="arraySpanMethod" ref="multipleTable">
 									<el-table-column type="selection" width="40" />
 									<el-table-column align="left" min-width="200">
 										<template #default="{ row }">
 											<div class="flex cursor-pointer">
 												<div class="flex items-center min-w-[50px] mr-[10px]">
-													<img class="w-[50px] h-[50px]" v-if="row.goods_image"
-														:src="img(row.goods_image)" alt="">
+													<img class="w-[50px] h-[50px]" v-if="row.goods_image" :src="img(row.goods_image)" alt="">
 													<img class="w-[50px] h-[50px]" v-else src="" alt="">
 												</div>
 												<div class="flex flex-col">
@@ -122,8 +115,7 @@
 											</div>
 										</template>
 									</el-table-column>
-									<el-table-column min-width="120"
-										class-name="border-0 border-l-[1px] border-solid border-[var(--el-table-border-color)]">
+									<el-table-column min-width="120" class-name="border-0 border-l-[1px] border-solid border-[var(--el-table-border-color)]">
 										<template #default>
 											<span v-if="item.activity_type == 'exchange'" class="text-[14px]">{{ item.point }}{{ t('point') }}
 												<span v-if="parseFloat(item.order_money)">+￥{{ item.order_money }}</span>
@@ -134,11 +126,8 @@
 									<el-table-column min-width="120">
 										<template #default>
 											<div class="flex flex-col">
-												<span class="text-[12px] text-primary cursor-pointer"
-													@click="memberEvent(item.member.member_id)">{{ item.member.nickname
-													}}</span>
-												<span class="text-[12px] mt-[5px]">{{ item.taker_name }} {{
-													item.taker_mobile }}</span>
+												<span class="text-[12px] text-primary cursor-pointer" @click="memberEvent(item.member.member_id)">{{ item.member.nickname }}</span>
+												<span class="text-[12px] mt-[5px]">{{ item.taker_name }} {{ item.taker_mobile }}</span>
 												<span class="text-[12px] mt-[5px]">{{ item.taker_full_address }}</span>
 											</div>
 										</template>
@@ -155,19 +144,17 @@
 									</el-table-column>
 									<el-table-column align="right" min-width="120">
 										<template #default>
-											<el-button type="primary" link @click="close(item)" v-if="item.status == 1">{{
-												t('orderClose') }}</el-button>
-											<!-- <el-button type="primary" link>{{ t('editPrice') }}</el-button> -->
-											<!-- <el-button type="primary" link>{{ t('editAddress') }}</el-button> -->
-											<el-button type="primary" link @click="delivery(item)"
-												v-if="item.status == 2">{{ t('sendOutGoods') }}</el-button>
-											<el-button type="primary" link @click="finish(item)" v-if="item.status == 3">{{
-												t('confirmTakeDelivery') }}</el-button>
+											<template v-if="item.status == 1">
+												<el-button type="primary" link @click="close(item)">{{ t('orderClose') }}</el-button>
+												<el-button type="primary" link @click="orderAdjustMoney(item)">{{ t('editPrice') }}</el-button>
+												<el-button type="primary" v-if="item.delivery_type != 'virtual'" link @click="orderEditAddressFn(item)">{{ t('editAddress') }}</el-button>
+											</template>
+											<el-button type="primary" link @click="delivery(item)" v-if="item.status == 2">{{ t('sendOutGoods') }}</el-button>
+											<el-button type="primary" link @click="finish(item)" v-if="item.status == 3">{{ t('confirmTakeDelivery') }}</el-button>
 										</template>
 									</el-table-column>
 								</el-table>
-								<div v-if="item.shop_remark"
-									class="text-[14px] min-h-[30px] leading-[30px] px-3 bg-[#fff0e5] text-[#ff7f5b]">
+								<div v-if="item.shop_remark" class="text-[14px] min-h-[30px] leading-[30px] px-3 bg-[#fff0e5] text-[#ff7f5b]">
 									<span class="mr-[5px]">{{ t('notes') }}：</span>
 									<span>{{ item.shop_remark }}</span>
 								</div>
@@ -183,21 +170,24 @@
 				</div>
 			</div>
 		</el-card>
+		<adjust-money ref="orderAdjustMoneyActionDialog" @complete="loadOrderList"/>
 		<delivery-action ref="deliveryActionDialog" @complete="loadOrderList"></delivery-action>
 		<order-notes ref="orderNotesDialog" @complete="loadOrderList"></order-notes>
 		<order-export-select ref="selectExportDialog" @complete="exportEvent" />
-		<export-sure ref="exportSureDialog" :show="flag" :type="export_type" :searchParam="orderTable.searchParam"
-			@close="handleClose" />
+		<export-sure ref="exportSureDialog" :show="flag" :type="export_type" :searchParam="orderTable.searchParam" @close="handleClose" />
+        <order-edit-address ref="orderEditAddressDialog" @complete="loadOrderList"/>
 	</div>
 </template>
 
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import { t } from '@/lang'
-import { getOrderList, getOrderStatus, orderClose, orderFinish, getOrderPayType, getOrderFrom, orderExport } from '@/addon/shop/api/order'
+import { getOrderList, getOrderStatus, orderClose, orderFinish, getOrderPayType, getOrderFrom, getOrderEditAddress } from '@/addon/shop/api/order'
 import DeliveryAction from '@/addon/shop/views/order/components/delivery-action.vue'
 import OrderNotes from '@/addon/shop/views/order/components/order-notes.vue'
 import OrderExportSelect from '@/addon/shop/views/order/components/order-export-select.vue'
+import orderEditAddress from '@/addon/shop/views/order/components/order-edit-address.vue'
+import AdjustMoney from '@/addon/shop/views/order/components/adjust-money.vue'
 import { img } from '@/utils/common'
 import { ElMessageBox, FormInstance } from 'element-plus'
 import { useRouter, useRoute } from 'vue-router'
@@ -370,6 +360,13 @@ const close = (data: any) => {
 	})
 }
 
+// 订单调整价格
+const orderAdjustMoneyActionDialog: Record<string, any> | null = ref(null)
+const orderAdjustMoney = (data: any) => {
+    orderAdjustMoneyActionDialog.value.setFormData(data)
+    orderAdjustMoneyActionDialog.value.showDialog = true
+}
+
 const deliveryActionDialog: Record<string, any> | null = ref(null)
 /**
  * 发货
@@ -406,6 +403,15 @@ const resetForm = (formEl: FormInstance | undefined) => {
 	if (!formEl) return
 	formEl.resetFields()
 	loadOrderList()
+}
+
+/**
+ * 修改地址
+ */
+const orderEditAddressDialog :Record<string, any> | null = ref(null)
+const orderEditAddressFn = async (data:any) =>{
+	orderEditAddressDialog.value.showDialog = true
+	orderEditAddressDialog.value.setFormData(data)
 }
 </script>
 

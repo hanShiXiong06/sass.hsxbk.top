@@ -19,7 +19,7 @@
 							</view>
 							<view class="flex box-border mt-[30rpx]" v-for="(subitem, index) in item.order_goods" :key="index">
 								<view class="w-[150rpx] h-[150rpx]">
-									<u--image class="rounded-[10rpx] overflow-hidden" width="150rpx" height="150rpx" :src="img(subitem.goods_image_thumb_small ? subitem.goods_image_thumb_small : '')" model="aspectFill">
+									<u--image class="rounded-[10rpx] overflow-hidden" radius="10rpx" width="150rpx" height="150rpx" :src="img(subitem.goods_image_thumb_small ? subitem.goods_image_thumb_small : '')" model="aspectFill">
 										<template #error>
 											<u-icon name="photo" color="#999" size="50"></u-icon>
 										</template>

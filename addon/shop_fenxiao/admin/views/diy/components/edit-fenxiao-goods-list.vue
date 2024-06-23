@@ -214,7 +214,7 @@ const categoryShowDialogOpen = () => {
 	})
 }
 //分类数据选中回填,设置展开行
-const expand_category_ids = ref<Array<any>>([76])
+const expand_category_ids = ref<Array<any>>([])
 const setRowSelection = ()=>{
 	expand_category_ids.value = []
 	categoryTable.data.forEach((el:any)=>{

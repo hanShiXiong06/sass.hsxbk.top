@@ -17,6 +17,7 @@ return [
     'EXIST_ORDER_NOT_EDIT_GOODS' => '存在未完成的订单，无法编辑商品',
     'COUPON_STOCK_INSUFFICIENT' => '优惠券已领完',
     'COUPON_NOT_EXIST' => '优惠券不存在',
+    'COUPON_INVALID' => '优惠券已失效',
     'COUPON_RECEIVE_NOT_TIME' => '优惠券不在领取时间范围内',
     'COUPON_RECEIVE_EXCESS' => '已领取数量超过限制领取数量，不可领取',
     'COUPON_RECEIVE_TYPE_NOT_EXIST' => '优惠券领取方式有误',
@@ -27,7 +28,22 @@ return [
     'SHOP_COUPON_VALID_END_TIME_NOT_ALLOW_LT_START_TIME' => '优惠券的有效期结束时间不能小于当前时间',
     'SHOP_GOODS_NOT_HAS_DEFAULT_SPEC' => '商品缺少默认规格',
     'SHOP_GOODS_DELISTED' => '此商品已下架',
+    'SHOP_GOODS_EVALUATE_SUCCESS' => '评价成功',
     'SHOP_GOODS_PARTICIPATE_IN_ACTIVE_DISABLED_EDIT' => '商品正在参与营销活动，禁止修改',
+
+
+    'SHOP_THE_LINE_ITEM_SUBTOTAL_CAN_T_BE_LESS_THAN_0' => '订单项小计总额不能小于0',
+    'SHOP_THE_SHIPPING_FEE_CANNOT_BE_LESS_THAN_0' => '运费不能小于0',
+    'SHOP_ONLY_PENDING_ORDERS_CAN_BE_REPRICED' => '只有待支付的订单可以改价',
+
+    'SHOP_ONLY_PENDING_ORDERS_EDIT_TAKER' => '只有待支付的订单可以修改配送地址',
+    'SHOP_VIRTUAL_ORDERS_EDIT_TAKER' => '虚拟商品订单不可以修改配送地址',
+    'EXPRESS_FIELD_EMPTY' => '地址信息有误',
+    'GOODS_NOT_DELIVERY_TYPE' => '当前商品不支持该配送方式',
+    'DELIVERY_TYPE_NOT_OPEN' => '商家未开启该配送方式',
+
+    'SHOP_THE_ITEM_IS_BEING_REFUNDED_OR_HAS_BEEN_REFUNDED' => '当前商品项存在退款',
+
     /********************************************* 订单相关 start ****************************************************/
     'SHOP_ORDER_HAS_REFUNDING_NOT_ALLOW_FINISH' => '订单中存在退款,无法收货',
     'SHOP_ORDER_IS_PAY_FINISH' => '订单已支付',
@@ -38,6 +54,7 @@ return [
     'SHOP_ORDER_COUPON_NOT_SUPPORT_GOODS' => '当前优惠券在本单不可用',
     'SHOP_ORDER_COUPON_NOT_SUPPORT_MIN_MONEY' => '未达到当前优惠券的最低使用条件',
     'SHOP_ORDER_PLEASE_SELECT_DELIVERY_TYPE' => '请选择正确的配送方式',
+    'SHOP_ORDER_PLEASE_SELECT_DELIVERY_EMPTY_LNG_LAT' => '所选同城配送没有设置地图定位',
     'SHOP_ORDER_CARTS_EXPIRE' => '购物车数据已过期',
     'SHOP_ORDER_BUYER_NOT_FOUND' => '找不到买家',
     'SHOP_ORDER_DELIVERY_NOT_ALLOW_REFUND_OR_DELIVERY_FINISH' => '存在退款或已发货的商品不能发货',

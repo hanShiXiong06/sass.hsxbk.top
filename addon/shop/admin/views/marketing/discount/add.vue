@@ -1,78 +1,75 @@
 <template>
-	<div class="main-container" v-loading="loading">
-		<div class="detail-head">
-			<div class="left" @click="router.push(`/shop/marketing/discount/list`)">
-				<span class="iconfont iconxiangzuojiantou !text-xs"></span>
-				<span class="ml-[1px]">{{ t('returnToPreviousPage') }}</span>
-			</div>
-			<span class="adorn">|</span>
-			<span class="right"> {{ t('editDiscount') }}</span>
-		</div>
-		<!-- 表单 -->
-		<el-card class="box-card !border-none" shadow="never">
-			<el-form :model="formData" label-width="120px" ref="formRef" :rules="formRules" class="page-form">
-				<!-- 活动名称： -->
-				<el-form-item :label="t('name')" prop="active_name">
+    <div class="main-container">
+
+        <el-card class="card !border-none" shadow="never">
+            <el-page-header :content="pageName" :icon="ArrowLeft" @back="$router.back()" />
+        </el-card>
+
+        <!-- 表单 -->
+        <el-card class="box-card mt-[15px] !border-none" shadow="never" v-loading="loading">
+            <el-form :model="formData" label-width="120px" ref="formRef" :rules="formRules" class="page-form">
+                <!-- 活动名称： -->
+                <el-form-item :label="t('name')" prop="active_name">
                     <div>
                         <el-input v-model="formData.active_name" clearable :placeholder="t('namePlaceholder')" class="input-width" :maxlength="20" />
                         <p class=" text-[14px] text-[#999]">{{ t('nameTip') }}</p>
                     </div>
-				</el-form-item>
-				<!-- 活动标题： -->
-				<el-form-item :label="t('title')" prop="active_desc">
+                </el-form-item>
+                <!-- 活动标题： -->
+                <el-form-item :label="t('title')" prop="active_desc">
                     <div>
                         <el-input v-model="formData.active_desc" clearable :placeholder="t('titlePlaceholder')" class="input-width" :maxlength="20" />
                         <p class=" text-[14px] text-[#999]">{{ t('titleTip') }}</p>
                     </div>
-				</el-form-item>
-				<!-- 活动时间 -->
-				<el-form-item :label="t('activityTime')" prop="discount_time">
-					<el-date-picker class="!w-[300px]" v-model="formData.discount_time[0]" type="datetime" range-separator="至" placeholder="开始日期时间" format="YYYY-MM-DD HH:mm:ss"/>
-					<span class="mx-[10px]">至</span>
-					<el-date-picker class="!w-[300px]" v-model="formData.discount_time[1]" type="datetime" range-separator="至" placeholder="结束日期时间" format="YYYY-MM-DD HH:mm:ss"/>
-				</el-form-item>
-				<!-- 选择商品 -->
-				<el-form-item :label="t('selectProduct')" class="!m-0">
-					<goods-select-popup ref="goodsSelectPopupRef" v-model="formData.goods_ids" @goodsSelect="goodsSelect" :min="1" :max="99" />
-				</el-form-item>
-				<el-form-item prop="goods_list"></el-form-item>
-				<el-form-item v-if="formData.goods_list.length&& goodsTable.data">
-					<div class="w-full sku_list">
+                </el-form-item>
+                <!-- 活动时间 -->
+                <el-form-item :label="t('activityTime')" prop="discount_time">
+                    <div class="w-[180px]">
+                        <el-date-picker v-model="formData.discount_time" type="datetimerange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"/>
+                    </div>
+                </el-form-item>
+                <!-- 选择商品 -->
+                <el-form-item :label="t('selectProduct')" class="!m-0">
+                    <goods-select-popup ref="goodsSelectPopupRef" v-model="formData.goods_ids" @goodsSelect="goodsSelect" :min="1" :max="99" />
+                </el-form-item>
+                <el-form-item prop="goods_list"></el-form-item>
+                <el-form-item v-if="formData.goods_list.length&& goodsTable.data">
+                    <div class="w-full sku_list">
+                        <el-table class="!w-[1400px] !max-w-[100%]" :data="goodsTable.list" size="large" ref="goods_listTableRef" @selection-change="handleSelectionChange">
+                            <template #empty>
+                                <span>{{ t('emptyData')}}</span>
+                            </template>
 
-						<el-table class="!w-[1400px] !max-w-[100%]" :data="goodsTable.list" size="large" ref="goods_listTableRef" @selection-change="handleSelectionChange">
-							<template #empty>
-								<span>{{ t('emptyData')}}</span>
-							</template>
-							<el-table-column type="selection" width="55" />
-							<el-table-column :label="t('goodsSelectPopupGoodsInfo')" min-width="300">
-								<template #default="{ row }">
-									<div class="flex items-center cursor-pointer">
-										<div class="min-w-[60px] h-[60px] flex items-center justify-center">
-											<el-image v-if="row.goods_cover_thumb_small" class="w-[60px] h-[60px]" :src="img(row.goods_cover_thumb_small)" fit="contain">
-												<template #error>
-													<div class="image-slot">
-														<img class="w-[60px] h-[60px]" src="@/addon/shop/assets/goods_default.png" />
-													</div>
-												</template>
-											</el-image>
-											<img v-else class="w-[70px] h-[60px]" src="@/addon/shop/assets/goods_default.png" fit="contain" />
-										</div>
-										<div class="ml-2">
-											<span :title="row.goods_name" class="multi-hidden">{{ row.goods_name }}</span>
-											<span class="text-primary text-[12px]">{{ row.goods_type_name }}</span>
-										</div>
-									</div>
-								</template>
-							</el-table-column>
-							<el-table-column prop="price" :label="t('price')" min-width="130">
-								<template #default="{ row }">
-									<div>￥{{ row.goodsSku.price }}</div>
-								</template>
-							</el-table-column>
+                            <el-table-column type="selection" width="55" />
+                            <el-table-column :label="t('goodsSelectPopupGoodsInfo')" min-width="300">
+                                <template #default="{ row }">
+                                    <div class="flex items-center cursor-pointer">
+                                        <div class="min-w-[60px] h-[60px] flex items-center justify-center">
+                                            <el-image v-if="row.goods_cover_thumb_small" class="w-[60px] h-[60px]" :src="img(row.goods_cover_thumb_small)" fit="contain">
+                                                <template #error>
+                                                    <div class="image-slot">
+                                                        <img class="w-[60px] h-[60px]" src="@/addon/shop/assets/goods_default.png" />
+                                                    </div>
+                                                </template>
+                                            </el-image>
+                                            <img v-else class="w-[70px] h-[60px]" src="@/addon/shop/assets/goods_default.png" fit="contain" />
+                                        </div>
+                                        <div class="ml-2">
+                                            <span :title="row.goods_name" class="multi-hidden">{{ row.goods_name }}</span>
+                                            <span class="text-primary text-[12px]">{{ row.goods_type_name }}</span>
+                                        </div>
+                                    </div>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="price" :label="t('price')" min-width="130">
+                                <template #default="{ row }">
+                                    <div>￥{{ row.goodsSku.price }}</div>
+                                </template>
+                            </el-table-column>
 
-							<el-table-column :label="t('discounts')" width="170">
-								<template #default="{ row,$index }">
-									<el-form-item v-if="!row.goodsSku.sku_spec_format" :key="row.goods_id" :prop="'goods_list.'+row.index + '.discount_rate'" :rules="[{
+                            <el-table-column :label="t('discounts')" width="170">
+                                <template #default="{ row,$index }">
+                                    <el-form-item v-if="!row.goodsSku.sku_spec_format" :key="row.goods_id" :prop="'goods_list.'+row.index + '.discount_rate'" :rules="[{
                                         trigger: 'blur',
                                         validator: (rule: any, value: any, callback: any) => {
                                             if (value.length == 0) {
@@ -88,9 +85,9 @@
                                             }
                                         }
                                     }]" class="sku-form-item-wrap">
-										<el-input v-model.trim="row.discount_rate" @blur="inputBlur(row,'discount',row.index)" clearable placeholder="0.00" maxlength="8" />
-									</el-form-item>
-									<el-form-item :prop="'goods_list.'+row.index + '.valid'" :rules="[{
+                                        <el-input v-model.trim="row.discount_rate" @blur="inputBlur(row,'discount',row.index)" clearable placeholder="0.00" maxlength="8" />
+                                    </el-form-item>
+                                    <el-form-item :prop="'goods_list.'+row.index + '.valid'" :rules="[{
                                         trigger: 'blur',
                                         validator: (rule: any, value: any, callback: any) => {
                                             if (!value) {
@@ -103,11 +100,11 @@
                                     <span v-if="row.valid">{{ row.min_discount_rate==row.max_discount_rate?row.min_discount_rate:row.min_discount_rate+'-'+row.max_discount_rate }}</span>
                                     <span v-else>--</span>
                                     </el-form-item>
-								</template>
-							</el-table-column>
-							<el-table-column :label="t('reduceMoney')" width="170">
-								<template #default="{ row,$index }">
-									<el-form-item v-if="!row.goodsSku.sku_spec_format" :key="row.goods_id" :prop="'goods_list.'+row.index + '.reduce_money'" :rules="[{
+                                </template>
+                            </el-table-column>
+                            <el-table-column :label="t('reduceMoney')" width="170">
+                                <template #default="{ row,$index }">
+                                    <el-form-item v-if="!row.goodsSku.sku_spec_format" :key="row.goods_id" :prop="'goods_list.'+row.index + '.reduce_money'" :rules="[{
                                         trigger: 'blur',
                                         validator: (rule: any, value: any, callback: any) => {
                                                 if (value.length == 0) {
@@ -123,17 +120,17 @@
                                                 }
                                         }
                                         }]" class="sku-form-item-wrap">
-										<el-input v-model.trim="row.reduce_money" @blur="inputBlur(row,'reduce',row.index)" clearable placeholder="0.00" maxlength="8" />
-									</el-form-item>
-									<el-form-item v-else>
+                                        <el-input v-model.trim="row.reduce_money" @blur="inputBlur(row,'reduce',row.index)" clearable placeholder="0.00" maxlength="8" />
+                                    </el-form-item>
+                                    <el-form-item v-else>
                                         <span v-if="row.valid">{{ row.min_reduce_money==row.max_reduce_money?row.min_reduce_money:row.min_reduce_money+'-'+row.max_reduce_money }}</span>
                                         <span v-else>--</span>
                                     </el-form-item>
-								</template>
-							</el-table-column>
-							<el-table-column :label="t('promotional')" width="170">
-								<template #default="{ row,$index }">
-									<el-form-item v-if="!row.goodsSku.sku_spec_format" :key="row.goods_id" :prop="'goods_list.'+row.index + '.specify_price'" :rules="[{
+                                </template>
+                            </el-table-column>
+                            <el-table-column :label="t('promotional')" width="170">
+                                <template #default="{ row,$index }">
+                                    <el-form-item v-if="!row.goodsSku.sku_spec_format" :key="row.goods_id" :prop="'goods_list.'+row.index + '.specify_price'" :rules="[{
                                         trigger: 'blur',
                                         validator: (rule: any, value: any, callback: any) => {
                                                 if (value.length == 0) {
@@ -149,66 +146,68 @@
                                                 }
                                         }
                                     }]" class="sku-form-item-wrap">
-										<el-input v-model.trim="row.specify_price" clearable @blur="inputBlur(row,'specify',row.index)" placeholder="0.00" maxlength="8" />
-									</el-form-item>
-									<el-form-item v-else>
+                                        <el-input v-model.trim="row.specify_price" clearable @blur="inputBlur(row,'specify',row.index)" placeholder="0.00" maxlength="8" />
+                                    </el-form-item>
+                                    <el-form-item v-else>
                                         <span v-if="row.valid">{{ row.min_specify_price==row.max_specify_price?row.min_specify_price:row.min_specify_price+'-'+row.max_specify_price }}</span>
                                         <span v-else>--</span>
                                     </el-form-item>
-								</template>
-							</el-table-column>
-							<el-table-column :label="t('discountType')" width="130">
-								<template #default="{ row }">
-									<span v-if="!row.goodsSku.sku_spec_format">{{row.discount_type=='discount'?t('discounts'):row.discount_type=='reduce'?t('reduceMoney'):t('promotional')}}</span>
-									<el-form-item v-else>--</el-form-item>
-								</template>
-							</el-table-column>
-							<el-table-column :label="t('operation')"  align="right" min-width="160">
-								<template #default="{row}">
-									<!-- <el-button type="primary" link @click="enabledEvent(row)">{{ row.is_enabled?t('noEnabled'):t('enabled') }}</el-button> -->
-									<el-button v-if="row.goodsSku.sku_spec_format" type="primary" link @click="skuDiscountSettingsEvent(formData.goods_list[row.index])">
-										{{t('skuDiscountSettings') }}
-									</el-button>
-									<el-button type="primary" link @click="deleteEvent(row.index)">{{t('delete') }}
-									</el-button>
-								</template>
-							</el-table-column>
-						</el-table>
-						<div class="flex items-center justify-between mt-[15px] !w-[1400px] !max-w-[100%]">
-							<div class="flex items-center mb-[15px]">
-								<el-checkbox v-model="toggleCheckbox" size="large" class="!mr-[15px]" @change="toggleChange" :indeterminate="isIndeterminate">
-									<span>已选{{ multipleSelection.length }}项</span>
-								</el-checkbox>
+                                </template>
+                            </el-table-column>
+                            <el-table-column :label="t('discountType')" width="130">
+                                <template #default="{ row }">
+                                    <span v-if="!row.goodsSku.sku_spec_format">{{row.discount_type=='discount'?t('discounts'):row.discount_type=='reduce'?t('reduceMoney'):t('promotional')}}</span>
+                                    <el-form-item v-else>请在设置中查看</el-form-item>
+                                </template>
+                            </el-table-column>
+                            <el-table-column :label="t('operation')"  align="right" min-width="160">
+                                <template #default="{row}">
+                                    <!-- <el-button type="primary" link @click="enabledEvent(row)">{{ row.is_enabled?t('noEnabled'):t('enabled') }}</el-button> -->
+                                    <el-button v-if="row.goodsSku.sku_spec_format" type="primary" link @click="skuDiscountSettingsEvent(formData.goods_list[row.index])">
+                                        {{t('skuDiscountSettings') }}
+                                    </el-button>
+                                    <el-button type="primary" link @click="deleteEvent(row.index)">{{t('delete') }}
+                                    </el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                        <div class="flex items-center justify-between mt-[15px] !w-[1400px] !max-w-[100%]">
+                            <div class="flex items-center mb-[15px]">
+                                <el-checkbox v-model="toggleCheckbox" size="large" class="!mr-[15px]" @change="toggleChange" :indeterminate="isIndeterminate">
+                                    <span>已选 {{ multipleSelection.length }} 项</span>
+                                </el-checkbox>
 
-								<label>{{ t('batchOperation') }}</label>
-								<!-- <el-select v-model="batchOperation.discount_type" class="!w-[130px] ml-[10px]" @change="batchOperation.discountNumber=''">
-									<el-option :label="t('discounts')" value="discount" />
-									<el-option :label="t('reduceMoney')" value="reduce" />
-									<el-option :label="t('promotional')" value="specify" />
-								</el-select> -->
-								<el-input v-model.trim="batchOperation.discountNumber" clearable
-								          :placeholder="batchOperation.discount_type=='discount'?t('discounts'):batchOperation.discount_type=='reduce'?t('reduceMoney'):t('promotional')"
-								          class="!w-[130px] ml-[10px]" maxlength="8" />
-								<el-button class="ml-[10px]" type="primary" @click="saveBatch">{{ t('confirm') }}
-								</el-button>
-							</div>
-							<el-pagination v-model:current-page="goodsTable.page" v-model:page-size="goodsTable.limit"
-							               layout="total, prev, pager, next, jumper" :total="goodsTable.total"
-							               @current-change="setGoodsList" />
-						</div>
-					</div>
-				</el-form-item>
-			</el-form>
-		</el-card>
-		<goods-sku-popup ref="goodsSkuPopupRef" @skuSave="skuSave" />
-		<!-- 提交按钮 -->
-		<div class="fixed-footer-wrap">
-			<div class="fixed-footer">
-				<el-button type="primary" @click="onSave(formRef)">{{ t('save') }}</el-button>
-				<el-button @click="back()">{{ t('cancel') }}</el-button>
-			</div>
-		</div>
-	</div>
+                                <label>{{ t('batchOperation') }}</label>
+                                <!-- <el-select v-model="batchOperation.discount_type" class="!w-[130px] ml-[10px]" @change="batchOperation.discountNumber=''">
+                                    <el-option :label="t('discounts')" value="discount" />
+                                    <el-option :label="t('reduceMoney')" value="reduce" />
+                                    <el-option :label="t('promotional')" value="specify" />
+                                </el-select> -->
+                                <el-input v-model.trim="batchOperation.discountNumber" clearable
+                                          :placeholder="batchOperation.discount_type=='discount'?t('discounts'):batchOperation.discount_type=='reduce'?t('reduceMoney'):t('promotional')"
+                                          class="!w-[130px] ml-[10px]" maxlength="8" />
+                                <el-button class="ml-[10px]" type="primary" @click="saveBatch">{{ t('confirm') }}
+                                </el-button>
+                            </div>
+                            <el-pagination v-model:current-page="goodsTable.page" v-model:page-size="goodsTable.limit"
+                                           layout="total, prev, pager, next, jumper" :total="goodsTable.total"
+                                           @current-change="setGoodsList" />
+                        </div>
+                    </div>
+                </el-form-item>
+            </el-form>
+        </el-card>
+
+        <goods-sku-popup ref="goodsSkuPopupRef" @skuSave="skuSave" />
+
+        <!-- 提交按钮 -->
+        <div class="fixed-footer-wrap">
+            <div class="fixed-footer">
+                <el-button type="primary" @click="onSave(formRef)">{{ t('save') }}</el-button>
+                <el-button @click="back()">{{ t('cancel') }}</el-button>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script lang="ts" setup>
@@ -217,12 +216,15 @@
     import {useRoute, useRouter} from 'vue-router'
     import {addActiveDiscount} from "@/addon/shop/api/marketing";
     import {FormInstance, ElMessage} from 'element-plus'
+    import { ArrowLeft } from '@element-plus/icons-vue'
     import {deepClone, img} from '@/utils/common'
     import goodsSelectPopup from '@/addon/shop/views/goods/components/goods-select-popup.vue'
     import goodsSkuPopup from '@/addon/shop/views/marketing/discount/components/goods-sku-popup.vue'
 
-    const route = useRoute()
     const router = useRouter()
+    const route = useRoute()
+    const pageName = route.meta.title
+
     const loading = ref(false)
     const start_time = new Date()
     const end_time = new Date()
@@ -253,10 +255,12 @@
     const formRules = computed(() => {
         return {
             active_name: [
-                {required: true, message: t('namePlaceholder'), trigger: 'blur'}
+                {required: true, message: t('namePlaceholder'), trigger: 'blur'},
+                { validator: noSpaceValidator, trigger: 'blur' }
             ],
             active_desc: [
-                {required: true, message: t('titlePlaceholder'), trigger: 'blur'}
+                {required: true, message: t('titlePlaceholder'), trigger: 'blur'},
+                { validator: noSpaceValidator, trigger: 'blur' }
             ],
             goods_list: [
                 {required: true, message: t('selectProductPlaceholder'), trigger: 'change'}
@@ -267,8 +271,15 @@
         }
     })
 
+    const noSpaceValidator = (rule: any, value: any, callback: any)=>{
+        if (value.trim() === '') {
+            return callback(new Error(t('noSpaceAllowed')));
+        }
+        callback(); // 通过验证
+    }
+
     const receiveTime = (rule: any, value: any, callback: any) => {
-        if (!formData.value.discount_time[0] && !formData.value.discount_time[1]) {
+        if (!formData.value.discount_time || (formData.value.discount_time && !formData.value.discount_time[0] && !formData.value.discount_time[1])) {
             callback(new Error(t('请选择活动时间')))
         } else if (!formData.value.discount_time[0]) {
             callback(new Error(t('请选择活动开始时间')))
@@ -277,7 +288,6 @@
         } else  if (formData.value.discount_time[1] <= formData.value.discount_time[0]) {
             callback(new Error(t('活动结束时间不能小于等于活动开始时间')))
         }
-
         callback()
     }
 
@@ -735,34 +745,30 @@
 </script>
 
 <style lang="scss" scoped>
-	input::-webkit-outer-spin-button,
-	input::-webkit-inner-spin-button {
-		-webkit-appearance: none !important;
-		-moz-appearance: none !important;
-		-o-appearance: none !important;
-		-ms-appearance: none !important;
-		appearance: none !important;
-		margin: 0;
-	}
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        -o-appearance: none !important;
+        -ms-appearance: none !important;
+        appearance: none !important;
+        margin: 0;
+    }
 
-	input[type="number"] {
-		-webkit-appearance: textfield;
-		-moz-appearance: textfield;
-		-o-appearance: textfield;
-		-ms-appearance: textfield;
-		appearance: textfield;
-	}
+    input[type="number"] {
+        -webkit-appearance: textfield;
+        -moz-appearance: textfield;
+        -o-appearance: textfield;
+        -ms-appearance: textfield;
+        appearance: textfield;
+    }
 
-	.page-height {
-		min-height: calc(100vh - 180px);
-	}
+    .sku-form-item-wrap :deep(.el-form-item__content) {
+        margin-left: 0 !important;
+    }
 
-	.sku-form-item-wrap :deep(.el-form-item__content) {
-		margin-left: 0 !important;
-	}
-
-	.sku_list :deep(.cell) {
-		// min-height: 60px !important;
-		overflow: initial !important;
-	}
+    .sku_list :deep(.cell) {
+        // min-height: 60px !important;
+        overflow: initial !important;
+    }
 </style>

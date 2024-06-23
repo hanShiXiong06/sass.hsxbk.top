@@ -6,7 +6,7 @@ return [
         'list' => [
             'FenxiaoGoodsList' => [
                 'title' => '分销商品',
-                'icon' => 'iconfont-iconshangpinliebiao',
+                'icon' => 'iconfont iconshangpinliebiao',
                 'path' => 'edit-fenxiao-goods-list',
                 'support_page' => [],
                 'uses' => 0,

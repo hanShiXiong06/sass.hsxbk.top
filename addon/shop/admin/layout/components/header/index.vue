@@ -5,12 +5,12 @@
                 <div class="left-panel h-full flex items-center">
                     <!-- 左侧菜单折叠 -->
                     <!-- <div class="navbar-item flex items-center h-full cursor-pointer" @click="toggleMenuCollapse">
-                        <icon name="element-Expand" v-if="systemStore.menuIsCollapse" />
-                        <icon name="element-Fold" v-else />
+                        <icon name="element Expand" v-if="systemStore.menuIsCollapse" />
+                        <icon name="element Fold" v-else />
                     </div> -->
                     <!-- 刷新当前页 -->
                     <div class="navbar-item flex items-center h-full cursor-pointer" @click="refreshRouter">
-                        <icon name="element-Refresh" />
+                        <icon name="element Refresh" />
                     </div>
                     <!-- 面包屑导航 -->
                     <div class="flex items-center h-full pl-[10px] hidden-xs-only">
@@ -31,8 +31,8 @@
                     </div> -->
                     <!-- 切换全屏 -->
                     <!-- <div class="navbar-item flex items-center h-full cursor-pointer" @click="toggleFullscreen">
-                        <icon name="iconfont-icontuichuquanping" v-if="isFullscreen" />
-                        <icon name="iconfont-iconquanping" v-else />
+                        <icon name="iconfont icontuichuquanping" v-if="isFullscreen" />
+                        <icon name="iconfont iconquanping" v-else />
                     </div> -->
                     <!-- 布局设置 -->
                     <div class="navbar-item flex items-center h-full cursor-pointer">
@@ -160,10 +160,6 @@ const toPreview = () => {
     window.open(url.href)
 }
 
-// 返回上一页
-// const backFn = () => {
-//     router.go(-1)
-// }
 </script>
 
 <style lang="scss" scoped>

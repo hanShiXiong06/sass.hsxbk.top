@@ -29,30 +29,36 @@ class ShopOrderGoodsExportDataListener
         if ($param['type'] == 'shop_order_goods') {
             $model = new Order();
             $orderGoodsModel = new OrderGoods();
-            $field = 'order_id,order_no,order.member_id,nickname,order_type,order_from,pay.out_trade_no,order.status,order.goods_money,delivery_money,order_money,invoice_id,order.create_time,order.pay_time,delivery_time,take_time,finish_time,close_time,delivery_type,taker_name,taker_mobile,taker_province,taker_city,taker_district,taker_address,taker_full_address,taker_longitude,taker_latitude,take_store_id,order.is_enable_refund,member_remark,shop_remark,close_remark,discount_money,pay_money';
             $order = 'order.create_time desc';
             $pay_where = [];
             if($param['where'][ 'pay_type' ]){
                 $pay_where[] = ['pay.type', '=',  $param['where'][ 'pay_type' ] ];
             }
             //查询导出订单项数据
-            $order_data = $model->where([['order.site_id', '=', $param['site_id']]])->withSearch([ 'search_type', 'order_from', 'join_status', 'create_time', 'join_pay_time' ], $param['where'])
+            $order_ids = $model->where([['order.site_id', '=', $param['site_id']]])->withSearch([ 'search_type', 'order_from', 'join_status', 'create_time', 'join_pay_time' ], $param['where'])
                 ->withJoin([
                     'pay' => function(Query $query) use($pay_where){
                         $query->where($pay_where);
                     }], 'left')
-                ->field($field)->order($order)->column('order_id');
+                ->field('order_id')->order($order)->column('order_id');
             
-            $order_goods_field = 'extend,order_goods_id,order_goods.order_id,member_id,goods_id,sku_id,delivery_id,goods_name,sku_name,goods_image,sku_image,price num,goods_money,is_enable_refund,goods_type,delivery_status,order_goods.status,id,express_number';
-            $search_model = $orderGoodsModel->where([['order_goods.site_id', '=', $param['site_id']], ['order_goods.order_id', 'in', $order_data]])
-                ->withJoin([
-                    'orderDelivery' => ['id', 'express_number']
-                ], 'left')
+            $order_goods_field = 'delivery_id,goods_name,sku_name,price,num,goods_money,discount_money,order_goods_money,order_refund_no,goods_type,delivery_status,status';
+            $search_model = $orderGoodsModel->where([['site_id', '=', $param['site_id']], ['order_id', 'in', $order_ids]])
+                ->with([
+                    'order_delivery' => function($query) {
+                        $query->field('id, express_company_id, express_number')->with('company');
+                    }
+                ])
                 ->field($order_goods_field)->append(['status_name', 'delivery_status_name', 'goods_type_name']);
             if ($param['page']['page'] > 0 && $param['page']['limit'] > 0) {
                 $data = $search_model->page($param['page']['page'], $param['page']['limit'])->select()->toArray();
             } else {
                 $data = $search_model->select()->toArray();
+            }
+            foreach ($data as $key => $val) {
+                $data[$key]['order_refund_no'] = $val['order_refund_no']."\t";
+                $data[$key]['express_number'] = !empty($val['order_delivery']) ? $val['order_delivery']['express_number']."\t" : '';
+                $data[$key]['company_name'] = !empty($val['order_delivery']) ? (!empty($val['order_delivery']['company']) ? $val['order_delivery']['company']['company_name'] : '') : '';
             }
         }
         return $data;

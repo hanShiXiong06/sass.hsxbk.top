@@ -1,12 +1,14 @@
 <template>
     <div class="main-container">
         <el-card class="box-card !border-none" shadow="never">
-            <div class="flex justify-between items-center mb-[5px]">
-                <span class="text-page-title">{{pageName}}</span>
+
+            <div class="flex justify-between items-center">
+                <span class="text-page-title">{{ pageName }}</span>
                 <el-button type="primary" @click="handleChange">
                     {{ t('addDiscount') }}
                 </el-button>
             </div>
+
             <!-- 搜索 -->
             <el-card class="box-card !border-none my-[10px] table-search-wrap" shadow="never">
                 <el-form :inline="true" :model="tableData.searchParam" ref="searchFormRef">
@@ -14,31 +16,36 @@
                         <el-input v-model.trim="tableData.searchParam.active_name" :placeholder="t('namePlaceholder')" />
                     </el-form-item>
                     <el-form-item :label="t('status')" prop='active_status'>
-						<el-select v-model="tableData.searchParam.active_status" clearable :placeholder="t('statusPlaceholder')" class="input-item">
-							<el-option v-for="(item, key) in activeStatusOption" :key="key" :label="item" :value="key"></el-option>
-						</el-select>
-					</el-form-item>
+                        <el-select v-model="tableData.searchParam.active_status" clearable :placeholder="t('statusPlaceholder')" class="input-item">
+                            <el-option v-for="(item, key) in activeStatusOption" :key="key" :label="item" :value="key"></el-option>
+                        </el-select>
+                    </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="loadDiscountList()">{{ t('search') }}</el-button>
                         <el-button @click="resetForm(searchFormRef)">{{ t('reset') }}</el-button>
                     </el-form-item>
                 </el-form>
             </el-card>
+
             <!-- 列表 -->
-            <div class="mt-[10px]">
+            <div>
                 <el-table :data="tableData.data" size="large" v-loading="tableData.loading">
                     <template #empty>
                         <span>{{ !tableData.loading ? t('emptyData') : '' }}</span>
                     </template>
+
                     <el-table-column prop="active_name" :label="t('name')" min-width="130" />
                     <el-table-column prop="active_desc" :label="t('title')" min-width="130" />
                     <el-table-column prop="active_status_name" :label="t('status')" min-width="130" />
-                    <el-table-column prop="active_order_money" :label="t('paymentAmount')" min-width="130"  align="right"/>
+                    <el-table-column prop="active_order_money" :label="t('paymentAmount')" min-width="130" />
                     <el-table-column prop="active_order_num" :label="t('orderCount')" min-width="130" />
                     <el-table-column prop="active_member_num" :label="t('memberCount')" min-width="130" />
                     <el-table-column :label="t('discountTime')"  min-width="150">
                         <template #default="{ row }">
-                            <div>{{ row.start_time }}<br/>至{{ row.end_time }}</div>
+                            <div>
+                                <p>开始：{{ row.start_time }}</p>
+                                <p>结束：{{ row.end_time }}</p>
+                            </div>
                         </template>
                     </el-table-column>
                     <el-table-column :label="t('operation')" fixed="right" align="right" min-width="160">
@@ -47,9 +54,10 @@
                             <el-button type="primary" link @click="detailEvent(row.active_id)">{{ t('detail') }}</el-button>
                             <el-button v-if="row.active_status=='active'" type="primary" link @click="closeEvent(row.active_id)">{{ t('close') }}</el-button>
                             <el-button v-if="row.active_status!='active'" type="primary" link @click="deleteEvent(row.active_id)">{{ t('delete') }}</el-button>
-						</template>
+                        </template>
                     </el-table-column>
                 </el-table>
+
                 <div class="mt-[16px] flex justify-end">
                     <el-pagination v-model:current-page="tableData.page" v-model:page-size="tableData.limit"
                         layout="total, sizes, prev, pager, next, jumper" :total="tableData.total"
@@ -59,6 +67,7 @@
         </el-card>
     </div>
 </template>
+
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -69,6 +78,7 @@ import { t } from '@/lang'
 const router = useRouter()
 const route = useRoute()
 const pageName = route.meta.title
+
 // 表单内容
 const tableData = reactive({
     page: 1,
@@ -155,5 +165,5 @@ const deleteEvent = (id:number)=>{
     })
 }
 </script>
-<style lang="scss" scoped>
-</style>
+
+<style lang="scss" scoped></style>

@@ -40,7 +40,7 @@ class GoodsService extends BaseApiService
      */
     public function getPage(array $where = [])
     {
-        $field = 'site_id,goods_id,goods_name,sub_title,goods_category,goods_type,goods_cover,unit,status,sale_num + goods.virtual_sale_num as sale_num,member_discount,is_discount,virtual_receive_type , create_time';
+        $field = 'site_id,goods_id,goods_name,sub_title,goods_category,goods_type,goods_cover,unit,status,sale_num + goods.virtual_sale_num as sale_num,member_discount,is_discount,virtual_receive_type';
 
         $sku_where = [
             [ 'goodsSku.is_default', '=', 1 ],
@@ -188,7 +188,7 @@ class GoodsService extends BaseApiService
 
             if (!empty($this->member_id)) {
                 $goods_collect_model = new GoodsCollect();
-                $collect_info = $goods_collect_model->where([ [ 'site_id', '=', $this->site_id ], [ 'member_id', '=', $this->member_id ], [ 'goods_id', '=', $goods_id ] ])->findOrEmpty()->toArray();
+                $collect_info = $goods_collect_model->where([ [ 'site_id', '=', $this->site_id ], [ 'member_id', '=', $this->member_id ], [ 'goods_id', '=', $info['goods_id'] ] ])->findOrEmpty()->toArray();
                 if (!empty($collect_info)) {
                     $info[ 'goods' ][ 'is_collect' ] = 1;
                 } else {

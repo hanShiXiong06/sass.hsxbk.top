@@ -153,7 +153,7 @@ class CoreOrderFinishService extends BaseCoreService
             $weapp_delivery_service->notifyConfirmReceive($site_id, $data);
 
         } catch (\Exception $e) {
-            return $this->error([], $e->getMessage());
+//            throw new  CommonException($e->getMessage());
         }
     }
 

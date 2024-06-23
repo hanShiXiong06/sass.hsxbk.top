@@ -12,7 +12,7 @@ return [
             "data" => [
                 "global" => [
                     "title" => "分销专区",
-                    'pageStartBgColor' => '',
+                    'pageStartBgColor' => 'rgba(246, 246, 246, 1)',
                     'pageEndBgColor' => '',
                     'pageGradientAngle' => 'to bottom',
                     "bgUrl" => "addon/shop_fenxiao/banner_zone.jpg",
@@ -75,15 +75,15 @@ return [
                         "uses" => 0,
                         "ignore" => [],
                         "textColor" => "#303133",
-                        "topRounded" => 0,
-                        "bottomRounded" => 0,
+                        "topRounded" => 8,
+                        "bottomRounded" => 8,
                         "elementBgColor" => "",
                         "topElementRounded" => 0,
                         "bottomElementRounded" => 0,
                         "margin" => [
-                            "top" => 0,
+                            "top" => -30,
                             "bottom" => 0,
-                            "both" => 0
+                            "both" => 15
                         ],
                         "pageStartBgColor" => "",
                         "pageEndBgColor" => "",
@@ -115,58 +115,7 @@ return [
                             "color" => "#FF4142",
                             "control" => true
                         ],
-                        "componentStartBgColor" => "",
-                    ],
-
-                    [
-                        "path" => "edit-fenxiao-goods-list",
-                        "uses" => 0,
-                        "id" => "1dgqkxty3gyo",
-                        "componentName" => "FenxiaoGoodsList",
-                        "componentTitle" => "分销商品",
-                        "ignore" => [],
-                        "textColor" => "#303133",
-                        "topRounded" => 0,
-                        "bottomRounded" => 0,
-                        "elementBgColor" => "",
-                        "topElementRounded" => 0,
-                        "bottomElementRounded" => 0,
-                        "margin" => [
-                            "top" => 0,
-                            "bottom" => 0,
-                            "both" => 0
-                        ],
-                        "pageStartBgColor" => "",
-                        "pageEndBgColor" => "",
-                        "pageGradientAngle" => "to bottom",
-                        "componentEndBgColor" => "",
-                        "componentGradientAngle" => "to bottom",
-                        "componentBgUrl" => "",
-                        "componentBgAlpha" => 2,
-                        "style" => "style-1",
-                        "source" => "all",
-                        "num" => 20,
-                        'is_become_fenxiao' => '1',
-                        "goods_category" => "",
-                        "goods_category_name" => "请选择",
-                        "goods_ids" => [],
-                        "sortWay" => "default",
-                        "goodsNameStyle" => [
-                            "color" => "#303133",
-                            "control" => true,
-                            "fontWeight" => "normal"
-                        ],
-                        "priceStyle" => [
-                            "mainColor" => "#FF4142",
-                            "mainControl" => true,
-                            "lineColor" => "#999CA7",
-                            "lineControl" => true
-                        ],
-                        "commissionStyle" => [
-                            "color" => "#FF4142",
-                            "control" => true
-                        ],
-                        "componentStartBgColor" => ""
+                        "componentStartBgColor" => "rgba(255, 255, 255, 1)",
                     ]
                 ]
             ]

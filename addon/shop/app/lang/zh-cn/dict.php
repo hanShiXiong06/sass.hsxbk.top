@@ -72,12 +72,17 @@ return [
         'order_finish_action' => '订单完成',
         'order_remark_action' => '订单商家备注',
         'order_close_allow_refund' => '订单自动关闭售后',
+        'order_edit_price_action' => '订单改价',
     ],
     'dict_shop_invoice' => [
         'header_type_company' => '企业',
         'header_type_person' => '个人',
         'common' => '普票',
-        'sprcial' => '专票'
+        'sprcial' => '专票',
+        'wait_open' => '未生效',
+        'open' => '已生效',
+        'wait_invoice' => '待开票',
+        'invoiced' => '已开票',
     ],
     'dict_shop_order_refund_status' => [
         'buyer_apply_wait_store' => '买家申请售后',
@@ -189,8 +194,4 @@ return [
         'account_point_consume_reward' => '下单奖励'
     ],
 
-    'dict_shop_invoice_status' => [
-        'wait_open' => '待开票',
-        'open' => '已开票',
-    ],
 ];

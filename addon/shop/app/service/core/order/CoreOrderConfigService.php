@@ -38,41 +38,41 @@ class CoreOrderConfigService extends BaseCoreService
      */
     public function setConfig($params)
     {
-        $site_id = $params['site_id'];
+        $site_id = $params[ 'site_id' ];
 
-        $value['order_close'] = [
-            'is_close' => $params['is_close'],
-            'close_length' => $params['close_length']
+        $value[ 'order_close' ] = [
+            'is_close' => $params[ 'is_close' ],
+            'close_length' => $params[ 'close_length' ]
         ];
-        $value['order_finish'] = [
-            'is_finish' => $params['is_finish'],
-            'finish_length' => $params['finish_length']
+        $value[ 'order_finish' ] = [
+            'is_finish' => $params[ 'is_finish' ],
+            'finish_length' => $params[ 'finish_length' ]
         ];
-        $value['order_refund'] = [
-            'no_allow_refund' => $params['no_allow_refund'],
-            'refund_length' => $params['refund_length']
+        $value[ 'order_refund' ] = [
+            'no_allow_refund' => $params[ 'no_allow_refund' ],
+            'refund_length' => $params[ 'refund_length' ]
         ];
-        $value['evaluate'] = [
-            'is_evaluate' => $params['is_evaluate'],
-            'evaluate_is_to_examine' => $params['evaluate_is_to_examine'],
-            'evaluate_is_show' => $params['evaluate_is_show']
+        $value[ 'evaluate' ] = [
+            'is_evaluate' => $params[ 'is_evaluate' ],
+            'evaluate_is_to_examine' => $params[ 'evaluate_is_to_examine' ],
+            'evaluate_is_show' => $params[ 'evaluate_is_show' ]
         ];
 
         $this->core_config_service->setConfig($site_id, 'SHOP_ORDER_CONFIG', $value);
 
         $invoice = 'SHOP_INVOICE';
         $invoiceInfo = [
-            'is_invoice' => $params['is_invoice'],
-            'invoice_type' => $params['invoice_type'],
-            'invoice_content' => $params['invoice_content']
+            'is_invoice' => $params[ 'is_invoice' ],
+            'invoice_type' => $params[ 'invoice_type' ],
+            'invoice_content' => $params[ 'invoice_content' ]
         ];
         $this->core_config_service->setConfig($site_id, $invoice, $invoiceInfo);
 
         $evaluate = 'SHOP_GOODS_EVALUATE';
         $evaluateInfo = [
-            'is_evaluate' => $params['is_evaluate'],
-            'evaluate_is_to_examine' => $params['evaluate_is_to_examine'],
-            'evaluate_is_show' => $params['evaluate_is_show']
+            'is_evaluate' => $params[ 'is_evaluate' ],
+            'evaluate_is_to_examine' => $params[ 'evaluate_is_to_examine' ],
+            'evaluate_is_show' => $params[ 'evaluate_is_show' ]
         ];
         $this->core_config_service->setConfig($site_id, $evaluate, $evaluateInfo);
 
@@ -84,7 +84,7 @@ class CoreOrderConfigService extends BaseCoreService
      */
     public function orderClose(int $site_id)
     {
-        $data = (new CoreConfigService())->getConfigValue($site_id, 'SHOP_ORDER_CONFIG');
+        $data = ( new CoreConfigService() )->getConfigValue($site_id, 'SHOP_ORDER_CONFIG');
         if (empty($data)) {
             $closeOrderInfo = [
                 'is_close' => true,
@@ -92,8 +92,8 @@ class CoreOrderConfigService extends BaseCoreService
             ];
         } else {
             $closeOrderInfo = [
-                'is_close' => $data['order_close']['is_close'],
-                'close_length' => $data['order_close']['close_length']
+                'is_close' => $data[ 'order_close' ][ 'is_close' ],
+                'close_length' => $data[ 'order_close' ][ 'close_length' ]
             ];
         }
         return $closeOrderInfo;
@@ -106,48 +106,48 @@ class CoreOrderConfigService extends BaseCoreService
      */
     public function getConfig(int $site_id)
     {
-        $data = (new CoreConfigService())->getConfigValue($site_id, 'SHOP_ORDER_CONFIG');
+        $data = ( new CoreConfigService() )->getConfigValue($site_id, 'SHOP_ORDER_CONFIG');
         if (empty($data)) {
-            $data['close_order_info'] = [
+            $data[ 'close_order_info' ] = [
                 'is_close' => true,
                 'close_length' => 120
             ];
-            $data['confirm'] = [
+            $data[ 'confirm' ] = [
                 'is_finish' => true,
                 'finish_length' => 14
             ];
-            $data['refund'] = [
+            $data[ 'refund' ] = [
                 'no_allow_refund' => true,
                 'refund_length' => 7
             ];
         } else {
-            $data['close_order_info'] = [
-                'is_close' => $data['order_close']['is_close'],
-                'close_length' => $data['order_close']['close_length']
+            $data[ 'close_order_info' ] = [
+                'is_close' => $data[ 'order_close' ][ 'is_close' ],
+                'close_length' => $data[ 'order_close' ][ 'close_length' ]
             ];
-            $data['confirm'] = [
-                'is_finish' => $data['order_finish']['is_finish'],
-                'finish_length' => $data['order_finish']['finish_length'],
+            $data[ 'confirm' ] = [
+                'is_finish' => $data[ 'order_finish' ][ 'is_finish' ],
+                'finish_length' => $data[ 'order_finish' ][ 'finish_length' ],
             ];
-            $data['refund'] = [
-                'no_allow_refund' => $data['order_refund']['no_allow_refund'],
-                'refund_length' => $data['order_refund']['refund_length'],
+            $data[ 'refund' ] = [
+                'no_allow_refund' => $data[ 'order_refund' ][ 'no_allow_refund' ],
+                'refund_length' => $data[ 'order_refund' ][ 'refund_length' ],
             ];
         }
 
         //发票
-        $data['invoice'] = (new CoreConfigService())->getConfigValue($site_id, 'SHOP_INVOICE');
-        if (empty($data['invoice'])) {
-            $data['invoice'] = [
+        $data[ 'invoice' ] = ( new CoreConfigService() )->getConfigValue($site_id, 'SHOP_INVOICE');
+        if (empty($data[ 'invoice' ])) {
+            $data[ 'invoice' ] = [
                 'is_invoice' => '2',
                 'invoice_type' => [],
                 'invoice_content' => []
             ];
         }
         //评价
-        $data['evaluate'] = (new CoreConfigService())->getConfigValue($site_id, 'SHOP_GOODS_EVALUATE');
-        if (empty($data['evaluate'])) {
-            $data['evaluate'] = [
+        $data[ 'evaluate' ] = ( new CoreConfigService() )->getConfigValue($site_id, 'SHOP_GOODS_EVALUATE');
+        if (empty($data[ 'evaluate' ])) {
+            $data[ 'evaluate' ] = [
                 'is_evaluate' => 1,
                 'evaluate_is_to_examine' => 1,
                 'evaluate_is_show' => 1
@@ -161,7 +161,7 @@ class CoreOrderConfigService extends BaseCoreService
      */
     public function orderConfirm(int $site_id)
     {
-        $data = (new CoreConfigService())->getConfigValue($site_id, 'SHOP_ORDER_CONFIG');
+        $data = ( new CoreConfigService() )->getConfigValue($site_id, 'SHOP_ORDER_CONFIG');
         if (empty($data)) {
             $confirmOrderInfo = [
                 'is_finish' => true,
@@ -169,8 +169,8 @@ class CoreOrderConfigService extends BaseCoreService
             ];
         } else {
             $confirmOrderInfo = [
-                'is_finish' => $data['order_finish']['is_finish'],
-                'finish_length' => $data['order_finish']['finish_length']
+                'is_finish' => $data[ 'order_finish' ][ 'is_finish' ],
+                'finish_length' => $data[ 'order_finish' ][ 'finish_length' ]
             ];
         }
         return $confirmOrderInfo;
@@ -181,7 +181,7 @@ class CoreOrderConfigService extends BaseCoreService
      */
     public function orderRefund(int $site_id)
     {
-        $data = (new CoreConfigService())->getConfigValue($site_id, 'SHOP_ORDER_CONFIG');
+        $data = ( new CoreConfigService() )->getConfigValue($site_id, 'SHOP_ORDER_CONFIG');
         if (empty($data)) {
             $refundOrderInfo = [
                 'no_allow_refund' => true,
@@ -189,8 +189,8 @@ class CoreOrderConfigService extends BaseCoreService
             ];
         } else {
             $refundOrderInfo = [
-                'no_allow_refund' => $data['order_refund']['no_allow_refund'],
-                'refund_length' => $data['order_refund']['refund_length']
+                'no_allow_refund' => $data[ 'order_refund' ][ 'no_allow_refund' ],
+                'refund_length' => $data[ 'order_refund' ][ 'refund_length' ]
             ];
         }
         return $refundOrderInfo;
@@ -201,7 +201,7 @@ class CoreOrderConfigService extends BaseCoreService
      */
     public function invoice(int $site_id)
     {
-        $data = (new CoreConfigService())->getConfigValue($site_id, 'SHOP_INVOICE');
+        $data = ( new CoreConfigService() )->getConfigValue($site_id, 'SHOP_INVOICE');
         if (empty($data)) {
             $invoiceInfo = [
                 'is_invoice' => '',
@@ -210,9 +210,9 @@ class CoreOrderConfigService extends BaseCoreService
             ];
         } else {
             $invoiceInfo = [
-                'is_invoice' => $data['is_invoice'],
-                'invoice_type' => $data['invoice_type'],
-                'invoice_content' => $data['invoice_content']
+                'is_invoice' => $data[ 'is_invoice' ],
+                'invoice_type' => $data[ 'invoice_type' ],
+                'invoice_content' => $data[ 'invoice_content' ]
             ];
         }
         return $invoiceInfo;
@@ -224,7 +224,7 @@ class CoreOrderConfigService extends BaseCoreService
      */
     public function getEvaluateConfig(int $site_id)
     {
-        $config = (new CoreConfigService())->getConfigValue($site_id, 'SHOP_GOODS_EVALUATE');
+        $config = ( new CoreConfigService() )->getConfigValue($site_id, 'SHOP_GOODS_EVALUATE');
         if (empty($config)) {
             $config = [
                 'is_evaluate' => 1,

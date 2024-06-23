@@ -151,4 +151,14 @@ class Coupon extends BaseAdminController
         ]);
         return success(( new CouponService() )->getSelectedList($data[ 'coupon_id' ]));
     }
+
+    /**
+     * 优惠券关闭
+     */
+    public function couponInvalid($id)
+    {
+        ( new CouponService() )->couponInvalid($id);
+        return success('SUCCESS');
+    }
+
 }

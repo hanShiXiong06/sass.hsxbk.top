@@ -2,15 +2,16 @@
     <div class="main-container">
         <!-- 添加优惠券按钮 -->
         <el-card class="box-card !border-none" shadow="never">
-            <div class="flex justify-between items-center mb-[5px]">
-                <span class="text-page-title">{{pageName}}</span>
+
+            <div class="flex justify-between items-center">
+                <span class="text-page-title">{{ pageName }}</span>
                 <el-button type="primary" @click="handleChange">
                     {{ t('addCoupon') }}
                 </el-button>
             </div>
 
              <!-- 搜索 -->
-            <el-card class="box-card !border-none my-[10px] table-search-wrap" shadow="never">
+            <el-card class="box-card !border-none my-[20px] table-search-wrap" shadow="never">
                 <el-form :inline="true" :model="tableData.searchParam" ref="searchFormRef">
                     <el-form-item :label="t('title')" prop="title">
                         <el-input v-model.trim="tableData.searchParam.title" :placeholder="t('titlePlaceholder')" />
@@ -29,6 +30,7 @@
                     <template #empty>
                         <span>{{ !tableData.loading ? t('emptyData') : '' }}</span>
                     </template>
+
                     <el-table-column prop="title" :label="t('title')" min-width="130" />
                     <el-table-column prop="type_name" :label="t('type')" min-width="130" />
                     <el-table-column prop="price" :label="t('price')" min-width="130" >
@@ -79,13 +81,15 @@
                             <span v-else>--</span>
                         </template>
                     </el-table-column>
+                    <el-table-column prop="status_name" :label="t('statusName')" min-width="130" />
                     <el-table-column :label="t('operation')" fixed="right" align="right" min-width="160">
                        <template #default="{ row }">
                         <el-button type="primary" link @click="spreadEvent(row)">{{ t('spreadGoods') }}</el-button>
-                            <el-button type="primary" link @click="editEvent(row)">{{ t('edit') }}</el-button>
-                            <el-button type="primary" link @click="deleteEvent(row)">{{ t('delete') }}</el-button>
-							<el-button type="primary" link @click="collectionEvent(row)">{{ t('receive') }}</el-button>
-						</template>
+                            <el-button type="primary" link @click="editEvent(row)" v-if="row.status == 1">{{ t('edit') }}</el-button>
+                            <el-button type="primary" link @click="deleteEvent(row)" v-if="row.status != 1">{{ t('delete') }}</el-button>
+                            <el-button type="primary" link @click="closeEvent(row)" v-if="row.status == 1">{{ t('close') }}</el-button>
+                            <el-button type="primary" link @click="collectionEvent(row)">{{ t('receive') }}</el-button>
+                        </template>
                     </el-table-column>
                 </el-table>
                 <div class="mt-[16px] flex justify-end">
@@ -96,14 +100,14 @@
             </div>
         </el-card>
         <!-- 商品推广弹出框 -->
-		<coupon-spread-popup ref="couponSpreadPopupRef"/>
+        <coupon-spread-popup ref="couponSpreadPopupRef"/>
     </div>
 </template>
 
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { getCouponList, deleteCoupon } from '@/addon/shop/api/marketing'
+import { getCouponList, deleteCoupon, colseCoupon } from '@/addon/shop/api/marketing'
 import { ElMessageBox, FormInstance } from 'element-plus'
 import { t } from '@/lang'
 import couponSpreadPopup from '@/addon/shop/views/marketing/coupon/components/coupon-spread-popup.vue'
@@ -125,9 +129,6 @@ const tableData = reactive({
 })
 
 const searchFormRef = ref<FormInstance>()
-
-// 选中数据
-// const selectData = ref<any[]>([])
 
 const loadCouponList = (page: number = 1) => {
     tableData.loading = true
@@ -185,6 +186,22 @@ const deleteEvent = (data: any) => {
     })
 }
 
+// 关闭
+const closeEvent = (data: any) => {
+    ElMessageBox.confirm(t('couponColseTips'), t('warning'),
+        {
+            confirmButtonText: t('confirm'),
+            cancelButtonText: t('cancel'),
+            type: 'warning'
+        }
+    ).then(() => {
+        colseCoupon(data.id).then(() => {
+            loadCouponList()
+        }).catch(() => {
+        })
+    })
+}
+
 const resetForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
     formEl.resetFields()
@@ -192,11 +209,5 @@ const resetForm = (formEl: FormInstance | undefined) => {
 }
 
 </script>
-<style lang="scss" scoped>
-.main-container {
 
-    .shop-marketing-list-particulars {
-        margin-top: 20px;
-    }
-}
-</style>
+<style lang="scss" scoped></style>

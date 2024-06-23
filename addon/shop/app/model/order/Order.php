@@ -119,6 +119,15 @@ class Order extends BaseModel
     }
 
     /**
+     * 发票
+     * @return HasOne
+     */
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class, 'id', 'invoice_id');
+    }
+
+    /**
      * 来源渠道
      * @param $value
      * @param $data

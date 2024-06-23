@@ -10,6 +10,7 @@ use addon\shop\app\model\order\OrderGoods;
 use app\service\core\member\CoreMemberAccountService;
 use addon\shop\app\model\order\OrderRefund;
 use core\exception\CommonException;
+use Exception;
 use think\facade\Log;
 
 /**
@@ -52,9 +53,9 @@ class AfterShopOrderClose
                     ]);
                 }
                 $point = 0;
-                foreach ($order_goods_data as &$v) {
+                foreach ($order_goods_data as $v) {
                     if (empty($v['order_refund_no'])) {
-                        $point = $v['extend']['point']??0  * $v['num'];
+                        $point = ($v['extend']['point'] ?? 0) * $v['num'];
                         $from_type = 'account_point_exchange_close';
                         $memo = '积分商城订单关闭积分返还';
                     } else {
@@ -63,18 +64,18 @@ class AfterShopOrderClose
                             ['site_id', '=', $v['site_id']],
                         ])->findOrEmpty();
                         if ($order_refund_info->isEmpty()) throw new CommonException('SHOP_ORDER_REFUND_IS_INVALID');//退款已失效
-                        if ($order_refund_info['money'] == $v['goods_money'] - $v['discount_money']) {
-                            $point = $v['extend']['point']??0 * $v['num'];
+//                        if ($order_refund_info['money'] == $v['order_goods_money']) {
+                            $point = ($v['extend']['point'] ?? 0) * $v['num'];
                             $from_type = 'account_point_exchange_refund';
                             $memo = '积分商城订单维权成功积分返还';
-                        }
+//                        }
                     }
                     if ($point > 0) {
                         (new CoreMemberAccountService())->addLog($order_data['site_id'], $order_data['member_id'], 'point', $order_data['point'], $from_type, $memo ?? '');
                     }
                 }
             }
-        } catch (\Exception $e) {
+        } catch ( Exception $e ) {
             Log::write('订单AfterShopOrderClose失败' . $e->getMessage() . $e->getFile() . $e->getLine());
         }
     }

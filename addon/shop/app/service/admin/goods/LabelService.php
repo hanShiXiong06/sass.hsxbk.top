@@ -37,7 +37,10 @@ class LabelService extends BaseAdminService
     public function getPage(array $where = [])
     {
         $field = 'label_id,label_name,memo,sort,create_time,update_time';
-        $order = 'sort asc';
+        $order = 'label_id desc';
+        if (!empty($where[ 'order' ])) {
+            $order = $where[ 'order' ] . ' ' . $where[ 'sort' ];
+        }
 
         $search_model = $this->model->where([ ['site_id', '=', $this->site_id] ])->withSearch([ "label_name" ], $where)->field($field)->order($order);
         $list = $this->pageQuery($search_model);
@@ -99,7 +102,7 @@ class LabelService extends BaseAdminService
         $labelInfo = $this->model->where([ [ 'site_id', '=', $this->site_id], [ 'label_name', '=', $data['label_name']] ])->findOrEmpty()->toArray();
         if($labelInfo && $labelInfo['label_id'] != $id )
         {
-            throw new AdminException('品牌已存在，请检查');
+            throw new AdminException('标签已存在，请检查');
         }
 
         $this->model->where([ [ 'label_id', '=', $id ],['site_id', '=', $this->site_id] ])->update($data);
@@ -116,6 +119,19 @@ class LabelService extends BaseAdminService
         $model = $this->model->where([ [ 'label_id', '=', $id ],['site_id', '=', $this->site_id] ])->find();
         $res = $model->delete();
         return $res;
+    }
+
+    /**
+     * 修改排序
+     * @param $data
+     * @return Label
+     */
+    public function modifySort($data)
+    {
+        return $this->model->where([
+            [ 'label_id', '=', $data[ 'label_id' ] ],
+            [ 'site_id', '=', $this->site_id ]
+        ])->update([ 'sort' => $data[ 'sort' ] ]);
     }
 
 }

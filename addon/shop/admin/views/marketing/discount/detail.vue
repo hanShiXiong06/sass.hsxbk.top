@@ -1,16 +1,13 @@
 <template>
     <div class="main-container" v-loading="loading">
-        <div class="detail-head">
-			<div class="left" @click="router.push({ path: '/shop/marketing/discount/list' })">
-				<span class="iconfont iconxiangzuojiantou !text-xs"></span>
-				<span class="ml-[1px]">{{ t('returnToPreviousPage') }}</span>
-			</div>
-			<span class="adorn">|</span>
-			<span class="right">{{ pageName }}</span>
-		</div>
-        <el-form :model="formData" label-width="100px" ref="formRef" class="page-form" label-position="left" v-if="Object.keys(formData).length">
-			<el-card class="box-card !border-none relative" shadow="never" v-if="formData">
-				<h3 class="panel-title">{{ t('baseInfo') }}</h3>
+
+        <el-card class="card !border-none" shadow="never">
+            <el-page-header :content="pageName" :icon="ArrowLeft" @back="$router.back()" />
+        </el-card>
+
+        <el-form class="page-form mt-[15px]" :model="formData" label-width="100px" ref="formRef" label-position="left" v-if="Object.keys(formData).length">
+            <el-card class="box-card !border-none relative" shadow="never" v-if="formData">
+                <h3 class="panel-title">{{ t('baseInfo') }}</h3>
                 <div class="px-[30px] mb-[20px]">
                     <el-row>
                         <el-col :span="8">
@@ -81,7 +78,7 @@
             </el-card>
         </el-form>
         <el-card class="box-card !border-none relative" shadow="never" v-if="Object.keys(formData).length">
-            <el-tabs v-model="activeName" class="demo-tabs" @tab-change="handleClick">
+            <el-tabs v-model="activeName" class="py-[10px]" @tab-change="handleClick">
                 <el-tab-pane label="活动商品" name="goodsList" />
                 <el-tab-pane label="活动订单" name="orderList" />
                 <el-tab-pane label="活动会员" name="memberList" />
@@ -118,12 +115,12 @@
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column :label="t('price')" min-width="120" align="right">
+                    <el-table-column :label="t('price')" min-width="120">
                         <template #default="{ row }">
                             <span v-if="row.goodsSku">￥{{ row.goodsSku.price }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="active_goods_order_money" :label="t('paymentAmount')" min-width="100"  align="right"/>
+                    <el-table-column prop="active_goods_order_money" :label="t('paymentAmount')" min-width="100" />
                     
                     <el-table-column prop="active_goods_order_num" :label="t('orderCount')" min-width="100" />
                     <el-table-column prop="active_goods_member_num" :label="t('activeMemberNum')" min-width="100" />
@@ -172,26 +169,25 @@
                     <el-table-column prop="order_no" :label="t('orderNo')" min-width="100" />
                     <el-table-column prop="order_money" :label="t('orderMoney')" min-width="100" />
                     <el-table-column :label="t('buyInfo')" min-width="120">
-						<template #default="{row}">
-							<div class="flex flex-col">
-								<span class="text-[12px] text-primary cursor-pointer" @click="detailEvent(row.member.member_id)">{{ row.member.nickname }}</span>
-								<span class="text-[12px] mt-[5px]">{{ row.taker_name }} {{row.taker_mobile }}</span>
-								<span class="text-[12px] mt-[5px]">{{ row.taker_full_address }}</span>
-							</div>
-						</template>
-					</el-table-column>
+                        <template #default="{row}">
+                            <div class="flex flex-col">
+                                <span class="text-[12px] text-primary cursor-pointer" @click="detailEvent(row.member.member_id)">{{ row.member.nickname }}</span>
+                                <span class="text-[12px] mt-[5px]">{{ row.taker_name }} {{row.taker_mobile }}</span>
+                                <span class="text-[12px] mt-[5px]">{{ row.taker_full_address }}</span>
+                            </div>
+                        </template>
+                    </el-table-column>
                     <el-table-column :label="t('payType')" min-width="120">
                         <template #default="{row}">
-                            <span>{{ row.pay.type_name}}</span>
+                            <span>{{ row.pay && row.pay.type_name ? row.pay.type_name : ''}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column :label="t('orderStatus')" min-width="100">
-						<template #default="{row}">
-							<span class="text-[14px]">{{ row.order_status_data.name }}</span>
-						</template>
-					</el-table-column>
+                        <template #default="{row}">
+                            <span class="text-[14px]">{{ row.order_status_data.name }}</span>
+                        </template>
+                    </el-table-column>
                     <el-table-column prop="create_time" :label="t('createTime')" min-width="100" />
-                    
                 </el-table>
                 <div class="mt-[16px] flex justify-end">
                     <el-pagination v-model:current-page="orderParams.page" v-model:page-size="orderParams.limit"
@@ -219,7 +215,7 @@
                                 </div>
                                 <div class="ml-2">
                                     <span :title="(row.member.nickname || row.member.username)" class="multi-hidden">{{row.member.nickname || row.member.username}}</span>
-                                    <span class="text-primary text-[12px]">{{row.mobile || '--'}}</span>
+                                    <span class="text-primary text-[12px]">{{row.mobile || ''}}</span>
                                 </div>
                             </div>
                         </template>
@@ -237,17 +233,20 @@
         </el-card>
     </div>
 </template>
+
 <script lang="ts" setup>
-import { ref, onMounted,reactive } from 'vue'
+import { ref, onMounted, reactive } from 'vue'
 import { t } from '@/lang'
 import { img } from '@/utils/common'
 import {FormInstance } from 'element-plus'
-import {getActiveDiscountInfo,getActiveDiscountGoodsPageList,getActiveDiscountOrderPageList,getActiveDiscountMemberPageList} from "@/addon/shop/api/marketing";
+import { ArrowLeft } from '@element-plus/icons-vue'
+import {getActiveDiscountInfo, getActiveDiscountGoodsPageList, getActiveDiscountOrderPageList, getActiveDiscountMemberPageList} from "@/addon/shop/api/marketing";
 import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
 const router = useRouter()
 const pageName = route.meta.title
+
 const formData:Record<string, any> = ref({})
 const loading = ref(false)
 const activeName = ref('goodsList')
@@ -266,8 +265,8 @@ const getActiveDiscountInfoFn = (id:number)=>{
         loading.value = false
     })
 }
-//活动商品
-const goodsParams =  reactive({
+// 活动商品
+const goodsParams = reactive({
     page: 1,
     limit: 10,
     total: 0,
@@ -275,7 +274,7 @@ const goodsParams =  reactive({
     data: [],
     searchParam: {
         keyword: '',
-        active_id:route.query.id
+        active_id: route.query.id
     }
 })
 const getActiveDiscountGoodsPageListFn= (page: number = 1)=>{
@@ -304,30 +303,30 @@ const previewEvent = (data: any) => {
     })
     window.open(url.href)
 }
-//活动订单
+// 活动订单
 const orderSearchFormRef = ref()
-const orderParams =  reactive({
+const orderParams = reactive({
     page: 1,
     limit: 10,
     total: 0,
     loading: false,
     data: [],
     searchParam: {
-		search_name: '',
-		status: '',
-		create_time: [],
-		pay_time: [],
-        active_id:route.query.id
+        search_name: '',
+        status: '',
+        create_time: [],
+        pay_time: [],
+        active_id: route.query.id
     }
 })
-const getActiveDiscountOrderPageListFn= (page: number = 1)=>{
+const getActiveDiscountOrderPageListFn = (page: number = 1)=>{
     orderParams.loading = true
     orderParams.page = page
     getActiveDiscountOrderPageList({
         page: orderParams.page,
         limit: orderParams.limit,
         ...orderParams.searchParam
-    }).then(res=>{
+    }).then(res => {
         orderParams.loading = false
         orderParams.data = res.data.data
         orderParams.total = res.data.total
@@ -375,5 +374,5 @@ const detailEvent = (member_id:number)=> {
     window.open(routeData.href, ' blank');
 }
 </script>
-<style lang="scss" scoped>
-</style>
+
+<style lang="scss" scoped></style>

@@ -109,4 +109,18 @@ class StoreService extends BaseAdminService
         return $res;
     }
 
+    /**
+     * 获取自提门店列表
+     * @param array $where
+     * @return array
+     */
+    public function getList(array $where = [])
+    {
+        $field = 'store_id,store_name,store_desc,store_logo,store_mobile,province_id,city_id,district_id,address,full_address,longitude,latitude,trade_time,create_time,update_time';
+        $order = 'create_time desc';
+
+        $list = $this->model->where([ ['site_id', '=', $this->site_id] ])->withSearch([ "store_name", "create_time" ], $where)->field($field)->order($order)->select()->toArray();
+        return $list;
+    }
+
 }

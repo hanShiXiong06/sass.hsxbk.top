@@ -37,7 +37,7 @@
 
 <script lang="ts" setup>
     import {t} from "@/lang";
-    import {img, deepClone} from "@/utils/common";
+    import {img} from "@/utils/common";
     import {getGoodsSkuList} from '@/addon/shop/api/goods'
     import {ref, nextTick} from "vue";
 
@@ -56,7 +56,6 @@
         showDialog.value = true;
         loading.value = true
         let sku_ids = data.map((el: any) => el.sku_id);
-        console.log(prop.id)
         getGoodsSkuList({
             goods_id: prop.id
         }).then(res => {
