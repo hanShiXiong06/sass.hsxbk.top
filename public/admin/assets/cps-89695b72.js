@@ -1,0 +1,1 @@
+import{O as e}from"./index-f7a01263.js";function r(){return e.get("cps/config")}function n(t){return e.put("cps/config",t,{showSuccessMessage:!0})}function c(t){return e.get("cps/jtk/order",{params:t})}function g(){return e.get("cps/jtk/type")}function o(t){return e.get("cps/myxq/order",{params:t})}export{c as a,g as b,o as c,r as g,n as s};
