@@ -296,6 +296,8 @@ Route::group('shop', function() {
     Route::get('order/type', 'addon\shop\app\adminapi\controller\order\Order@getOrderType');
     //获取 订单状态
     Route::get('order/status', 'addon\shop\app\adminapi\controller\order\Order@getOrderStatus');
+    // 订单代支付 - hsx
+    Route::put('order/order_pay' , "addon\shop\app\adminapi\controller\order\Order@orderPay"  );
     //订单关闭
     Route::put('order/close/:id', 'addon\shop\app\adminapi\controller\order\Order@orderClose');
     //订单改价

@@ -55,37 +55,37 @@ class OrderService extends BaseAdminService
         $order = 'create_time desc';
 
         $pay_where = [];
-        if ($where['pay_type']) {
-            $pay_where[] = ['pay.type', '=', $where['pay_type']];
+        if($where[ 'pay_type' ]){
+            $pay_where[] = ['pay.type', '=',  $where[ 'pay_type' ] ];
         }
         $search_model = $this->model
-            ->where([['order.site_id', '=', $this->site_id]])
-            ->withSearch(['search_type', 'order_from', 'join_status', 'create_time', 'join_pay_time', 'activity_type'], $where)
+            ->where([ ['order.site_id', '=', $this->site_id ] ])
+            ->withSearch([ 'search_type', 'order_from', 'join_status', 'create_time', 'join_pay_time', 'activity_type' ], $where)
             ->field($field)
             ->withJoin([
-                'pay' => function (Query $query) use ($pay_where) {
+                'pay' => function(Query $query) use($pay_where){
                     $query->where($pay_where);
                 },
             ], 'left')
             ->with([
                 'order_goods' => function ($query) {
-                    $query->field('extend,order_goods_id, order_id, member_id, goods_id, sku_id, goods_name, sku_name, goods_image, sku_image, price, num, goods_money, is_enable_refund, goods_type, delivery_status, status,discount_money,site_id')->append(['delivery_status_name', 'status_name', 'goods_image_thumb_small']);
+                    $query->field('extend,order_goods_id, order_id, member_id, goods_id, sku_id, sku_no, goods_name, sku_name, goods_image, sku_image, price, num, goods_money, is_enable_refund, goods_type, delivery_status, status')->append(['delivery_status_name', 'status_name']);
                 },
-                'member' => function ($query) {
+                'member' => function($query) {
                     $query->field('member_id, nickname, mobile, headimg');
                 }
-            ])->order($order)->append(['order_from_name', 'order_type_name', 'status_name', 'delivery_type_name']);
+
+            ])->order($order)->append([ 'order_from_name', 'order_type_name', 'status_name', 'delivery_type_name' ]);
         $order_status_list = OrderDict::getStatus();
-        $list = $this->pageQuery($search_model, function ($item, $key) use ($order_status_list) {
-            $item['order_status_data'] = $order_status_list[$item['status']] ?? [];
+        $list = $this->pageQuery($search_model, function($item, $key) use ($order_status_list) {
+            $item[ 'order_status_data' ] = $order_status_list[ $item[ 'status' ] ] ?? [];
             $item_pay = $item['pay'];
-            if (!empty($item_pay)) {
+            if(!empty($item_pay)){
                 $item_pay->append(['type_name']);
             }
         });
         return $list;
     }
-
     /**
      * 详情
      * @param int $order_id

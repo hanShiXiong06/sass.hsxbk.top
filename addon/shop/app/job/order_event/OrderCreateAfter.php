@@ -20,7 +20,6 @@ class OrderCreateAfter extends BaseJob
 
     public function doJob($data)
     {
-
         try {
             event('AfterShopOrderCreate', $data);
             return true;

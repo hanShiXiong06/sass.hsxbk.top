@@ -93,7 +93,7 @@ class GoodsSku extends BaseModel
     }
 
     /**
-     * 搜索器:商品规格商品sku编码 sku_no
+     * 搜索器:商品规格商品sku编码
      * @param $value
      * @param $data
      */

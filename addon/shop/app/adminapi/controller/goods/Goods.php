@@ -42,7 +42,7 @@ class Goods extends BaseAdminController
             [ "status", "" ],
             [ 'order', '' ],
             [ 'sort', '' ],
-            ['sku_no','']
+            ['sku_no',''] // hsx
         ]);
         return success(( new GoodsService() )->getPage($data));
     }
@@ -120,7 +120,6 @@ class Goods extends BaseAdminController
             [ "goods_desc", "", false ],
             [ "goods_url", "", false ],
 
-
             [ 'member_discount', '' ], // 会员等级折扣，不参与：空，会员折扣：discount，指定会员价：fixed_price
             [ 'poster_id', 0 ] // 海报id
         ]);
@@ -181,7 +180,6 @@ class Goods extends BaseAdminController
             // 商品详情
             [ "goods_desc", "", false ],
             [ "goods_url", "", false ],
-
 
             [ 'member_discount', '' ], // 会员等级折扣，不参与：空，会员折扣：discount，指定会员价：fixed_price
 

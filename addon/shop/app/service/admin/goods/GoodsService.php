@@ -141,7 +141,7 @@ class GoodsService extends BaseAdminService
      */
     public function getPage(array $where = [])
     {
-        $field = 'goods_id,site_id,goods_name,goods_type,goods_cover,stock,sale_num,status,sort,create_time,member_discount';
+        $field = 'goods_id,site_id,goods_name,goods_type,brand_id,goods_cover,stock,sale_num,status,sort,create_time,member_discount'; // hsx - add - brand_id
         $order = 'sort asc, create_time desc';
         $sku_where = [
             [ 'goodsSku.is_default', '=', 1 ],
@@ -163,8 +163,8 @@ class GoodsService extends BaseAdminService
         $search_model = $this->model->where([ [ 'goods.site_id', '=', $this->site_id ] ])->withSearch([ "goods_name", "goods_type", "brand_id", "goods_category", "label_ids", 'service_ids', "sale_num", "status" ], $where)
             ->field($field)
             ->withJoin([
-                'goodsSku' => [ 'sku_id', 'goods_id', 'price', 'member_price' ]
-            ])->where($sku_where)->order($order)->append([ 'goods_type_name', 'goods_edit_path', 'goods_cover_thumb_small' ]);
+                'goodsSku' => [ 'sku_id', 'goods_id', 'price', 'member_price','sku_no' ] // hsx edit 'sku_no'
+            ])->where($sku_where)->order($order)->append([ 'goods_type_name','brand_name', 'goods_edit_path', 'goods_cover_thumb_small' ]); // hsx
         $list = $this->pageQuery($search_model);
         return $list;
     }

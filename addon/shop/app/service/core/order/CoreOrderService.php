@@ -50,19 +50,9 @@ class CoreOrderService extends BaseCoreService
     public function deliverySearch($params)
     {
         $config = (new CoreConfigService())->getDeliverySearchConfig($params['site_id']);
-        if($config['interface_type']==1){
-            $class = new DeliverySearchLoader("KdniaoDeliverySearch", $config);
-        }
-        if($config['interface_type']==2){
-            $class = new DeliverySearchLoader("Kd100DeliverySearch", $config);
-        }
-        if($config['interface_type']==1001){
-            $class = new DeliverySearchLoader("YhtDeliverySearch", $config);
-        }else{
-            $class = new DeliverySearchLoader("KdniaoDeliverySearch", $config);
-        }
+        $class = new DeliverySearchLoader("KdniaoDeliverySearch", $config);
         $data = [
-            'express_no' => $params['company']['express_no']??'',
+            'express_no' => $params['company']['express_no'],
             'logistic_no' => $params['express_number'],
             'mobile' => $params['mobile'],
         ];

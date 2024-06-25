@@ -379,5 +379,4 @@ CREATE TABLE {{prefix}}tourism_goods (
 ENGINE = INNODB,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
-COMMENT = '商品表',
-ROW_FORMAT = COMPACT;
+COMMENT = '商品表';

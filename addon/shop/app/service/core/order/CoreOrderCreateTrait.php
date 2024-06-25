@@ -84,6 +84,10 @@ trait CoreOrderCreateTrait
                 return $value;
             }, $order_goods_data);
             $order_goods_model->insertAll($order_goods_data);
+            // 检查每个商品的库存并尝试下架 第一个参数是 sku_id , 第二个参数是 购买的数量
+            foreach ($order_goods_data as $goods) {
+                $this->checkAndUnlistGoods($goods['sku_id'], $goods['num'] ); // hsx
+            }
             //优惠项
             $this->useDiscount();
 
@@ -130,6 +134,25 @@ trait CoreOrderCreateTrait
             if ($v['stock'] < $order_goods_data_column[$v['sku_id']]) throw new CommonException('商品库存不足');
         }
     }
+    /**
+     * 检查指定 SKU 的库存并更新商品状态
+     * hsx
+     */
+    protected function checkAndUnlistGoods($skuId , $num)
+    {
+
+        $sku = GoodsSku::find($skuId);
+
+        if ($sku && $sku->stock <= 0 || $sku->stock <= $num  ) {
+            // 这里假设 GoodsSku 模型有一个关联到 Goods 模型的关联方法 `goods()`
+            $goods = $sku->goods;
+            if ($goods && $goods->status != '0') {
+                $goods->status = '0'; // 假设状态字段为 'status'，下架状态为 'unlisted'
+                $goods->save();
+            }
+        }
+    }
+
 
     /**
      * 发票整理

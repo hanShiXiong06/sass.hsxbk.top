@@ -15,6 +15,7 @@ use addon\shop\app\dict\order\OrderDeliveryDict;
 use addon\shop\app\dict\order\OrderDict;
 use addon\shop\app\service\admin\order\OrderFinishService;
 use addon\shop\app\service\admin\order\OrderService;
+use addon\shop\app\service\admin\order\OrderPayService; // hsx
 use addon\shop\app\service\admin\order\OrderCloseService;
 use addon\shop\app\service\admin\order\OrderDeliveryService;
 use app\dict\common\ChannelDict;
@@ -70,6 +71,19 @@ class Order extends BaseAdminController
     {
         return success(OrderDict::getOrderType());
     }
+
+    /**
+     *
+     * 订单项支付 orderPay
+     * @return Response
+     * */
+    public function orderPay(){
+        $data = $this->request->params([
+            ['order_id', 0],
+        ]);
+        return success((new OrderPayService())->orderPay($data['order_id']));
+    }
+
 
     /**
      * 订单关闭

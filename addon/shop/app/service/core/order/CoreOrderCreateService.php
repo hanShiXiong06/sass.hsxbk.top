@@ -93,7 +93,7 @@ class CoreOrderCreateService extends BaseCoreService
                 'member_id' => $data[ 'member_id' ],
                 'goods_id' => $v[ 'goods_id' ],
                 'sku_id' => $v[ 'sku_id' ],
-                'sku_no' => $v[ 'sku_no' ],
+                'sku_no' => $v[ 'sku_no' ], // hsx --
                 'goods_name' => $v[ 'goods' ][ 'goods_name' ],
                 'sku_name' => $v[ 'sku_name' ],
                 'goods_image' => $v[ 'goods' ][ 'goods_cover' ],
@@ -209,7 +209,7 @@ class CoreOrderCreateService extends BaseCoreService
         if (!empty($cart_ids)) {
             $this->cart_ids = $cart_ids;
             //查询购物车
-            $cart = ( new Cart() )->where([ [ 'id', 'in', $cart_ids ], [ 'site_id', '=', $this->site_id ] ])->field('goods_id, site_id, sku_id,  num, market_type, market_type_id')->select();
+            $cart = ( new Cart() )->where([ [ 'id', 'in', $cart_ids ], [ 'site_id', '=', $this->site_id ] ])->field('goods_id, site_id, sku_id, num, market_type, market_type_id')->select();
             if ($cart->isEmpty()) throw new CommonException('SHOP_ORDER_CARTS_EXPIRE');//无效的数据
             if ($cart->count() != count($cart_ids)) throw new CommonException('SHOP_ORDER_CARTS_EXPIRE');//无效的商品
             $sku_data = $cart->toArray();
@@ -222,8 +222,7 @@ class CoreOrderCreateService extends BaseCoreService
             [ 'sku_id', 'in', $sku_ids ],
             [ 'site_id', '=', $this->site_id ]
         );
-        $sku_list = ( new  GoodsSku() )->where($sku_condition)->with([ 'goods' ])->field('sku_id,sku_no, site_id, sku_name, sku_image, goods_id, price, stock, weight, volume,sku_id, sku_spec_format,member_price, sale_price')->select()->toArray();
-//        var_dump($sku_list);
+        $sku_list = ( new  GoodsSku() )->where($sku_condition)->with([ 'goods' ])->field('sku_id, site_id, sku_name, sku_image, sku_no, goods_id, price, stock, weight, volume,sku_id, sku_spec_format,member_price, sale_price')->select()->toArray(); // hsx --
         $sku_list = array_column($sku_list, null, 'sku_id');
         //商品数据  查询商品列表
 
@@ -236,13 +235,11 @@ class CoreOrderCreateService extends BaseCoreService
         $has_goods_types = [];
         foreach ($sku_data as $v) {
             $sku_id = $v[ 'sku_id' ];
-//            $sku_no = $v[ 'sku_no' ];
             $num = $v[ 'num' ];
             $total_num += $num;
             $market_type = $v[ 'market_type' ] ?? '';
             $market_type_id = $v[ 'market_type_id' ] ?? 0;
             $sku_info = $sku_list[ $sku_id ] ?? [];
-
             if (empty($sku_info)) throw new CommonException('SHOP_ORDER_CARTS_EXPIRE');//无效的商品
 
             //商品原价
@@ -259,8 +256,6 @@ class CoreOrderCreateService extends BaseCoreService
             $sku_info[ 'num' ] = $num;
             $sku_info[ 'market_type' ] = $market_type;//活动类型
             $sku_info[ 'market_type_id' ] = $market_type_id;//活动id
-//            $sku_info['sku_no'] = $sku_no;
-
             //活动操纵数据  market_data 活动信息
             $temp = array_filter(event('ShopGoodsMarketCalculate', [ 'sku_info' => $sku_info, 'order_obj' => $this ]))[ 0 ] ?? [];
             if (!empty($temp)) {
@@ -272,7 +267,6 @@ class CoreOrderCreateService extends BaseCoreService
             $goods_money += $sku_info[ 'goods_money' ];
 
             $goods_list[ $sku_id ] = $sku_info;
-
             $body = $body ? $body . ( $sku_info[ 'sku_name' ] . $sku_info[ 'goods' ][ 'goods_name' ] ) : ( $sku_info[ 'sku_name' ] . $sku_info[ 'goods' ][ 'goods_name' ] );
         }
         $this->basic[ 'has_goods_types' ] = $has_goods_types;

@@ -447,7 +447,7 @@ class Goods extends BaseModel
             ->joinType('left')
             ->withField('brand_id, brand_name, logo, desc');
     }
-//    hsx start
+    //    hsx start
     public function skuNo(){
         return $this->hasOne(GoodsSku::class,'sku_no','sku_no');
     }
@@ -475,6 +475,7 @@ class Goods extends BaseModel
 
     protected $append = ['brand_name'];  // 确保在模型数组/JSON表示中包含 brand_name
 //    end
+
     /**
      * 关联商品参数
      * @return \think\model\relation\HasOne
@@ -485,6 +486,5 @@ class Goods extends BaseModel
             ->joinType('left')
             ->withField('attr_id, attr_name, attr_value_format, sort');
     }
-
 
 }
