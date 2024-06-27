@@ -48,6 +48,7 @@ class Ott extends BaseUpload
         //进行文件创建
         $createData = $this->createFile($filePath, $this->getFullPath(), $dirId);
         if ($createData['reuse'] == true) {
+            usleep(500000);
             //秒传
             return $this->setDirectLink($createData['fileID']);
         } else {
@@ -61,6 +62,7 @@ class Ott extends BaseUpload
                     [
                         'preuploadID' => $createData['preuploadID']
                     ]);
+                usleep(500000);
                 return $this->setDirectLink($fileId);
             } else {
                 //进行分片上传
@@ -96,13 +98,14 @@ class Ott extends BaseUpload
         }
     }
 
-    public function commonUpload($filePath,$fullPath)
+    public function commonUpload($filePath, $fullPath)
     {
         $dirId = $this->checkId();
         //进行文件创建
-        $createData = $this->createFile($filePath,$fullPath, $dirId);
+        $createData = $this->createFile($filePath, $fullPath, $dirId);
         if ($createData['reuse'] == true) {
             //秒传
+            usleep(500000);
             return $this->setDirectLink($createData['fileID']);
         } else {
             $res = $this->http_post('upload/v1/file/list_upload_parts',
@@ -115,6 +118,7 @@ class Ott extends BaseUpload
                     [
                         'preuploadID' => $createData['preuploadID']
                     ]);
+                usleep(500000);
                 return $this->setDirectLink($fileId);
             } else {
                 //进行分片上传
@@ -180,7 +184,7 @@ class Ott extends BaseUpload
             $content = @file_get_contents($url);
             if (!empty($content)) {
                 file_put_contents($key, $content);
-                $this->commonUpload($key,basename($key));
+                $this->commonUpload($key, basename($key));
                 unlink($key);
                 return true;
             } else {
