@@ -58,14 +58,14 @@ export const redirect = (redirect : redirectOptions) => {
  * 自定义跳转链接
  * @param {Object} link
  */
-export const diyRedirect = (link: any) => {
+export const diyRedirect = (link : any) => {
 	const diyStore = useDiyStore();
 	// 装修模式禁止跳转
 	if (diyStore.mode == 'decorate') return;
 
 	if (link == null || Object.keys(link).length == 1) return;
 	//适配小程序插件情况进行拦截跳转
-	if (link.url.indexOf('type=11') !== -1) {
+	if (link.url && link.url.indexOf('type=11') !== -1) {
 		function parseQueryString(queryString) {
 			const params = {};
 			const keyValuePairs = queryString.split('&');
@@ -103,7 +103,7 @@ export const diyRedirect = (link: any) => {
 		return
 	}
 	//适配半屏小程序
-	if (link.url.indexOf('style=embedded') !== -1) {
+	if (link.url && link.url.indexOf('style=embedded') !== -1) {
 		function parseQueryString(queryString) {
 			const params = {};
 			const keyValuePairs = queryString.split('&');
@@ -181,8 +181,8 @@ export const diyRedirect = (link: any) => {
 
 		uni.makePhoneCall({
 			phoneNumber: link.mobile,
-			success: (res) => {},
-			fail: (res) => {}
+			success: (res) => { },
+			fail: (res) => { }
 		});
 
 	} else {
@@ -298,7 +298,7 @@ export function img(path : string) : string {
 /**
  * 手机号隐藏
  */
-export function mobileHide(mobile: string) {
+export function mobileHide(mobile : string) {
 	return mobile.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')
 }
 
@@ -424,17 +424,17 @@ export function copy(value, callback) {
 		success: () => {
 			typeof callback == 'function' && callback();
 		},
-		fail: (res)=>{
+		fail: (res) => {
 			// 在隐私协议中没有声明chooseLocation:fail api作用域
-			if(res.errMsg && res.errno) {
-				if(res.errno == 104){
+			if (res.errMsg && res.errno) {
+				if (res.errno == 104) {
 					let msg = '用户未授权隐私权限，设置剪贴板数据失败';
-					uni.showToast({title: msg, icon: 'none'})
-				}else if(res.errno == 112){
+					uni.showToast({ title: msg, icon: 'none' })
+				} else if (res.errno == 112) {
 					let msg = '隐私协议中未声明，设置剪贴板数据失败';
-					uni.showToast({title: msg, icon: 'none'})
-				}else {
-					uni.showToast({title: res.errMsg, icon: 'none'})
+					uni.showToast({ title: msg, icon: 'none' })
+				} else {
+					uni.showToast({ title: res.errMsg, icon: 'none' })
 				}
 			}
 		}
@@ -446,8 +446,8 @@ export function copy(value, callback) {
  * 处理onLoad传递的参数
  * @param option
  */
-export function handleOnloadParams(option:any) {
-	let params: any = {};
+export function handleOnloadParams(option : any) {
+	let params : any = {};
 
 	// 处理小程序扫码进入的场景值参数
 	if (option.scene) {
@@ -456,7 +456,7 @@ export function handleOnloadParams(option:any) {
 			sceneParams.forEach(item => {
 				let arr = item.split('-');
 				params[arr[0]] = arr[1];
-				if(arr[0] == 'mid'){
+				if (arr[0] == 'mid') {
 					uni.setStorageSync('pid', arr[1])
 				}
 			});
@@ -490,7 +490,7 @@ export function getLocation(param = {}) {
 /**
  * 定位信息（缓存）
  */
-export function locationStorage () {
+export function locationStorage() {
 	let data = uni.getStorageSync('location');
 	let mapConfig = uni.getStorageSync('mapConfig');
 	if (data) {
@@ -509,7 +509,7 @@ export function locationStorage () {
  * @param {object} obj 需要深度克隆的对象
  * @returns {*} 克隆后的对象或者原值（不是对象）
  */
-export function deepClone(obj: object) {
+export function deepClone(obj : object) {
 	// 对常见的“非”值，直接返回原来值
 	if ([null, undefined, NaN, false].includes(obj)) return obj
 	if (typeof obj !== 'object' && typeof obj !== 'function') {
@@ -531,8 +531,8 @@ export function deepClone(obj: object) {
  * @param delay
  * @returns
  */
-export function debounce(fn: (args?: any) => any, delay: number = 300) {
-	let timer: null | number = null
+export function debounce(fn : (args ?: any) => any, delay : number = 300) {
+	let timer : null | number = null
 	return function (...args) {
 		if (timer != null) {
 			clearTimeout(timer)
@@ -544,10 +544,9 @@ export function debounce(fn: (args?: any) => any, delay: number = 300) {
 	}
 }
 
-const isArray = (value: any) => {
+const isArray = (value : any) => {
 	if (typeof Array.isArray === 'function') {
 		return Array.isArray(value)
 	}
 	return Object.prototype.toString.call(value) === '[object Array]'
 }
-
