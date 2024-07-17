@@ -1,0 +1,9 @@
+{
+    "pages": {
+        "data_scope": {
+            "hello_world": {
+                "index": "hello_world"
+            }
+        }
+    }
+}

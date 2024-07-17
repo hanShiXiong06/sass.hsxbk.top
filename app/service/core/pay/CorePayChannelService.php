@@ -68,6 +68,16 @@ class CorePayChannelService extends BaseCoreService
             unset($pay_type_list[PayDict::BALANCEPAY]);
         }
         // 线下支付做处理
+        if (!empty($pay_type_list) && isset($pay_type_list[PayDict:: WECHATPAY])) {
+            $temp_channel_pay_list = array_column($channel_pay_list, null, 'type');
+            // 将敏感数据  $temp_channel_pay_list这个 数组中的 mch_id , mch_public_cert_path  , mch_secret_cert , mch_secret_key 删除
+             unset($temp_channel_pay_list[PayDict::WECHATPAY]['config']['mch_id']);
+             unset($temp_channel_pay_list[PayDict::WECHATPAY]['config']['mch_public_cert_path']);
+             unset($temp_channel_pay_list[PayDict::WECHATPAY]['config']['mch_secret_cert']);
+             unset($temp_channel_pay_list[PayDict::WECHATPAY]['config']['mch_secret_key']);
+            $pay_type_list[PayDict::WECHATPAY]['config'] = $temp_channel_pay_list[PayDict::WECHATPAY]['config'];
+        }
+        // 线下支付做处理
         if (!empty($pay_type_list) && isset($pay_type_list[PayDict::OFFLINEPAY])) {
             $temp_channel_pay_list = array_column($channel_pay_list, null, 'type');
             $pay_type_list[PayDict::OFFLINEPAY]['config'] = $temp_channel_pay_list[PayDict::OFFLINEPAY]['config'];

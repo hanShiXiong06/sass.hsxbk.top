@@ -38,7 +38,7 @@ class CoreOfflineService extends BaseCoreService
         $site_id = $params['site_id'];
         $voucher = $params['voucher'] ?? '';
 
-        if (empty($voucher)) throw new CommonException('VOUCHER_NOT_EMPTY');
+//        if (empty($voucher)) throw new CommonException('VOUCHER_NOT_EMPTY');
 
         $pay = (new CorePayService())->findPayInfoByOutTradeNo($site_id, $out_trade_no);
         if ($pay->isEmpty()) throw new CommonException('ALIPAY_TRANSACTION_NO_NOT_EXIST');

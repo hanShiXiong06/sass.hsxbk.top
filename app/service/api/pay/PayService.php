@@ -45,7 +45,7 @@ class PayService extends BaseApiService
      * @throws DbException
      * @throws ModelNotFoundException
      */
-    public function pay(string $type, string $trade_type, int $trade_id, string $return_url = '', string $quit_url = '', string $buyer_id = '', string $voucher = '', string $openid = ''){
+    public function pay(string $type, string $trade_type, int $trade_id, string $return_url = '', string $quit_url = '', string $buyer_id = '', string $voucher = '', string $openid = '' , string $money='' , string $handling_fee=''){
 
         $member = (new CoreMemberService())->getInfoByMemberId($this->site_id, $this->member_id);
         switch ($this->channel) {
@@ -57,7 +57,7 @@ class PayService extends BaseApiService
                 break;
         }
 
-        return $this->core_pay_service->pay($this->site_id, $trade_type, $trade_id, $type, $this->channel, $openid, $return_url, $quit_url, $buyer_id, $voucher);
+        return $this->core_pay_service->pay($this->site_id, $trade_type, $trade_id, $type, $this->channel, $openid, $return_url, $quit_url, $buyer_id, $voucher,$money ,$handling_fee );
     }
 
     /**

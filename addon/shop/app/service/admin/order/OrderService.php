@@ -98,7 +98,7 @@ class OrderService extends BaseAdminService
             ->with(
                 [
                     'order_goods' => function ($query) {
-                        $query->field('extend,order_goods_id, order_id, member_id, goods_id, sku_id, goods_name, sku_name, goods_image, sku_image, price, num, goods_money, is_enable_refund, goods_type, delivery_status, status,discount_money')->append(['delivery_status_name']);
+                        $query->field('extend,order_goods_id, order_id, member_id, goods_id, sku_id, goods_name, sku_name,sku_no, goods_image, sku_image, price, num, goods_money, is_enable_refund, goods_type, delivery_status, status,discount_money')->append(['delivery_status_name']);
                     },
                     'member' => function ($query) {
                         $query->field('member_id, nickname, mobile, headimg');

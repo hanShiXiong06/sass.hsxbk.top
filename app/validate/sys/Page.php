@@ -23,7 +23,7 @@ class Page extends Validate
 
     protected $rule = [
         'page' => 'number|min:1',
-        'limit' => 'number|between:1,120',
+        'limit' => 'number|between:1,1000',
     ];
 
     protected $message = [

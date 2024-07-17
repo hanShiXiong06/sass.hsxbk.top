@@ -1,0 +1,23 @@
+{
+      "bind": "关联",
+      "userName":"用户名",
+      "bindUserDept":"关联用户",
+      "deptId":"ID",
+      "deptIdPlaceholder":"请输入部门ID",
+      "pDeptId":"上级部门",
+      "pDeptIdPlaceholder":"请选择上级部门",
+      "deptName":"部门名称",
+      "deptNamePlaceholder":"请输入部门名称",
+      "sort":"显示顺序",
+      "sortPlaceholder":"请输入显示顺序",
+      "status":"状态",
+      "statusPlaceholder":"请选择状态",
+      "addSysDept":"添加部门",
+      "updateSysDept":"编辑部门",
+      "sysDeptDeleteTips":"确定要删除该数据吗？",
+      "statusNormal": "正常",
+      "statusStop": "停用",
+      "startDate":"请选择开始时间",
+      "endDate":"请选择结束时间",
+      "accountNumberPlaceholder":"请选择用户"
+}

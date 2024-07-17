@@ -53,11 +53,18 @@ class PayDict
     public static function getPayType(array $types = [])
     {
         $list = [
+            self::OFFLINEPAY => [
+                'name' => get_lang('线下支付'),
+                'key' => self::OFFLINEPAY,
+                'icon' => self::OFFLINEPAY_ICON,
+                'setting_component' => ''
+            ],//线下支付
+            // OFFLINEPAY
             self::WECHATPAY => [
                 'name' => get_lang('dict_pay.type_wechatpay'),
                 'key' => self::WECHATPAY,
                 'icon' => self::WECHATPAY_ICON,
-                'setting_component' => '/src/app/views/setting/components/pay-wechatpay.vue'
+                'setting_component' => '/src/app/views/setting/components/pay-wechatpay.vue',
             ],//微信支付
             self::ALIPAY => [
                 'name' => get_lang('dict_pay.type_alipay'),
@@ -70,7 +77,8 @@ class PayDict
                 'key' => self::BALANCEPAY,
                 'icon' => self::BALANCEPAY_ICON,
                 'setting_component' => ''
-            ],//微信支付
+            ],//余额支付
+
         ];
 
         $list = array_merge($list, ...event('PayType'));

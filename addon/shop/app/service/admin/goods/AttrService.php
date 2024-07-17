@@ -38,7 +38,7 @@ class AttrService extends BaseAdminService
      */
     public function getPage(array $where = [], $field = 'attr_id,site_id,attr_name,sort')
     {
-        $order = 'attr_id desc';
+        $order = 'sort desc';
         if (!empty($where[ 'order' ])) {
             $order = $where[ 'order' ] . ' ' . $where[ 'sort' ];
         }
@@ -55,7 +55,7 @@ class AttrService extends BaseAdminService
      */
     public function getList(array $where = [], $field = 'attr_id,site_id,attr_name,sort')
     {
-        $order = 'attr_id desc';
+        $order = 'sort desc';
         if (!empty($where[ 'order' ])) {
             $order = $where[ 'order' ] . ' ' . $where[ 'sort' ];
         }

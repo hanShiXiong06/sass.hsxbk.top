@@ -48,10 +48,12 @@ class Pay extends BaseApiController
             ['buyer_id', ''],
             ['return_url', ''],
             ['voucher', ''],
-            ['openid', '']
+            ['openid', ''],
+            ['money',''],
+            ['handling_fee','']
         ]);
 
-        return success('SUCCESS',(new PayService())->pay($data['type'], $data['trade_type'], $data['trade_id'], $data['return_url'], $data['quit_url'], $data['buyer_id'], $data['voucher'], $data['openid']));
+        return success('SUCCESS',(new PayService())->pay($data['type'], $data['trade_type'], $data['trade_id'], $data['return_url'], $data['quit_url'], $data['buyer_id'], $data['voucher'], $data['openid'] , $data['money'] , $data['handling_fee'] ));
     }
 
     public function info($trade_type, $trade_id)

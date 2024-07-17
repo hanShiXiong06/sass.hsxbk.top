@@ -1,0 +1,21 @@
+{
+      "roleId":"角色ID",
+      "roleIdPlaceholder":"请输入角色ID",
+      "roleName":"角色名称",
+      "roleNamePlaceholder":"请输入角色名称",
+      "deptId":"部门ID",
+      "asyncRole": "同步角色",
+      "deptList":"部门列表",
+      "deptIdPlaceholder":"请输入部门ID",
+      "addScope":"添加角色和部门关联",
+      "updateScope":"编辑角色和部门关联",
+      "scopeDeleteTips":"确定要删除该数据吗？",
+      "startDate":"请选择开始时间",
+      "endDate":"请选择结束时间",
+      "auth": "权限",
+      "setDataScope": "设置数据权限",
+      "ruleType": "规则类型",
+      "ruleTypePlaceholder": "规则类型必须选择",
+      "checkStrictly": "父子级不关联",
+      "foldText": "展开/折叠"
+}
