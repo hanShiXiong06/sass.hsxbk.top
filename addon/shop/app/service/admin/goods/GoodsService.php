@@ -139,13 +139,54 @@ class GoodsService extends BaseAdminService
      * @param array $where
      * @return array
      */
+    /**
+     * 获取商品列表
+     * @param array $where
+     * @return array
+     */
+    // public function getPage(array $where = [])
+    // {
+    //     $field = 'goods_id,sub_title,site_id,goods_name,goods_type,brand_id,goods_cover,stock,sale_num,status,sort,create_time,member_discount';
+    //     $order = 'sort asc, create_time desc';
+    //     $sku_where = [
+    //         [ 'goodsSku.is_default', '=', 1 ],
+    //     ];
+
+    //     if (!empty($where[ 'start_price' ]) && !empty($where[ 'end_price' ])) {
+    //         $money = [ $where[ 'start_price' ], $where[ 'end_price' ] ];
+    //         sort($money);
+    //         $sku_where[] = [ 'goodsSku.price', 'between', $money ];
+    //     } else if (!empty($where[ 'start_price' ])) {
+    //         $sku_where[] = [ 'goodsSku.price', '>=', $where[ 'start_price' ] ];
+    //     } else if (!empty($where[ 'end_price' ])) {
+    //         $sku_where[] = [ 'goodsSku.price', '<=', $where[ 'end_price' ] ];
+    //     }
+    //     if (!empty($where[ 'order' ])) {
+    //         $order = $where[ 'order' ] . ' ' . $where[ 'sort' ];
+    //     }
+
+    //     $search_model = $this->model->where([ [ 'goods.site_id', '=', $this->site_id ] ])->withSearch([ "goods_name", "goods_type", "brand_id", "goods_category", "label_ids", 'service_ids', "sale_num", "status" ,"sku_no" ], $where)
+    //         ->field($field)
+    //         ->withJoin([
+    //             'goodsSku' => [ 'sku_id', 'goods_id', 'price', 'member_price' ,'sku_no']
+    //         ])->where($sku_where)->order($order)->append([ 'goods_type_name', 'brand_name', 'goods_edit_path', 'goods_cover_thumb_small' ]);
+    //     $list = $this->pageQuery($search_model);
+    //     return $list;
+    // }
     public function getPage(array $where = [])
     {
-        $field = 'goods_id,site_id,goods_name,goods_type,brand_id,goods_cover,stock,sale_num,status,sort,create_time,member_discount'; // hsx - add - brand_id
-        $order = 'sort asc, create_time desc';
-        $sku_where = [
-            [ 'goodsSku.is_default', '=', 1 ],
-        ];
+
+        $field = 'goods_id,sub_title,site_id,goods_name,goods_type,brand_id,goods_cover,stock,sale_num,status,sort,create_time,update_time,member_discount';
+        $order = 'sort asc, create_time desc , update_time desc';
+        if($where['status']=='' ){
+            $sku_where = [
+                [ 'goodsSku.is_default', '=', 1 ]
+            ];
+        }else{
+            $sku_where = [
+                [ 'goodsSku.is_default', '=', 1 ],[ 'status','=' ,$where['status']]
+            ];
+        }
 
         if (!empty($where[ 'start_price' ]) && !empty($where[ 'end_price' ])) {
             $money = [ $where[ 'start_price' ], $where[ 'end_price' ] ];
@@ -157,17 +198,51 @@ class GoodsService extends BaseAdminService
             $sku_where[] = [ 'goodsSku.price', '<=', $where[ 'end_price' ] ];
         }
         if (!empty($where[ 'order' ])) {
-            $order = $where[ 'order' ] . ' ' . $where[ 'sort' ];
+            if($where[ 'order' ] == '_time'){
+                $order = 'update_time ' . $where[ 'sort' ];;
+            }else{
+                $order = $where[ 'order' ] . ' ' . $where[ 'sort' ];
+            }
+        }
+        // SKU编号查询
+        if (!empty($where['sku_no'])) {
+            $skuNoTrimmed = trim($where['sku_no']);
+            if (strpos($skuNoTrimmed, ' ') !== false) {
+                $skuNoArray = explode(' ', $skuNoTrimmed);
+                $sku_where[] = function ($query) use ($skuNoArray) {
+                    $query->whereIn('goodsSku.sku_no', $skuNoArray);
+                };
+            } else {
+                $sku_where[] = ['goodsSku.sku_no', '=', $skuNoTrimmed];
+            }
         }
 
-        $search_model = $this->model->where([ [ 'goods.site_id', '=', $this->site_id ] ])->withSearch([ "goods_name", "goods_type", "brand_id", "goods_category", "label_ids", 'service_ids', "sale_num", "status" ], $where)
+        // 构建查询模型
+        $search_model = $this->model->where('goods.site_id', $this->site_id)
+            ->when(!empty($where['sku_no']), function ($query) use ($where) {
+                // 这里假设 $where['sku_no'] 包含的值是精确匹配，不是模糊匹配
+                $skuNoTrimmed = trim($where['sku_no']);
+                if (strpos($skuNoTrimmed, ' ') !== false) {
+                    $skuNoArray = explode(' ', $skuNoTrimmed);
+                    $query->whereIn('goodsSku.sku_no', $skuNoArray);
+                } else {
+                    $query->where('goodsSku.sku_no', $skuNoTrimmed);
+                }
+            })->withSearch([ "goods_name", "goods_type", "brand_id", "goods_category", "label_ids", 'service_ids', "sale_num", "status"  ], $where)
             ->field($field)
             ->withJoin([
-                'goodsSku' => [ 'sku_id', 'goods_id', 'price', 'member_price','sku_no' ] // hsx edit 'sku_no'
-            ])->where($sku_where)->order($order)->append([ 'goods_type_name','brand_name', 'goods_edit_path', 'goods_cover_thumb_small' ]); // hsx
+                'goodsSku' => ['sku_id', 'goods_id', 'price', 'member_price', 'sku_no']
+            ])
+            ->where($sku_where)
+            ->order($order)
+            ->append(['goods_type_name', 'brand_name', 'goods_edit_path', 'goods_cover_thumb_small']);
+
+        // 执行查询
         $list = $this->pageQuery($search_model);
+
         return $list;
     }
+
 
     /**
      * 获取商品信息
@@ -676,7 +751,7 @@ class GoodsService extends BaseAdminService
                 throw new AdminException('SHOP_GOODS_PARTICIPATE_IN_ACTIVE_DISABLED_EDIT');
             }
         }
-        return $this->model->where([ [ 'goods_id', 'in', $data[ 'goods_ids' ] ], [ 'site_id', '=', $this->site_id ] ])->update([ 'status' => $data[ 'status' ] ]);
+        return $this->model->where([ [ 'goods_id', 'in', $data[ 'goods_ids' ] ], [ 'site_id', '=', $this->site_id ] ])->update([ 'status' => $data[ 'status' ] , 'update_time' => time() ]);
     }
 
     /**

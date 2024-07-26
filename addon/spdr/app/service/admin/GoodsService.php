@@ -262,8 +262,19 @@ class GoodsService extends BaseAdminService
 
         foreach ($list['data'] as $k => $v) {
 
+            // 售价(此价格为C端价格,3000以下-100,3000至5000 -150, 5000至9000 -200 , 9000以上-300)
+            $price = $v['goodsSku']['price'];
+            if ($price <= 3000) {
+                $price = $v['goodsSku']['price']-100;
+            } else if ($price > 3000 && $price <= 5000) {
+                $price =$v['goodsSku']['price']- 150;
+            } else if ($price > 5000 && $price <= 9000) {
+                $price = $v['goodsSku']['price']-200;
+            } else if ($price > 9000) {
+                $price = $v['goodsSku']['price']-300;
+            }
 
-            $list['data'][$k]['price'] = $v['goodsSku']['price'];
+            $list['data'][$k]['price'] = $price;
             $list['data'][$k]['sku_no'] = $v['goodsSku']['sku_no'];
 //            if (is_array( $list['data'][$k]['goods_category'] )) {
 //                $goods_category =  implode(",", $list['data'][$k]['goods_category']);
@@ -387,7 +398,7 @@ class GoodsService extends BaseAdminService
                 'name' => '串号'
             ],
             'price' => [
-                'name' => '售价(此价格为C端价格,3000以下-100,3000至5000 -150, 5000至9000 -200 , 9000以上-300)\n 请自行计算'
+                'name' => '售价'
             ],
             'goods_category1' => [
                 'name' => '商品一级分类'

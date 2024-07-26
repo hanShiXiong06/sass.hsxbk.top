@@ -1,0 +1,1 @@
+import{_ as o}from"./label-edit.vue_vue_type_style_index_0_lang-4952707a.js";import"./index-5d328fcb.js";/* empty css                   *//* empty css                  *//* empty css                   *//* empty css                  *//* empty css                     *//* empty css                 */import"./goods-2b26f323.js";export{o as default};

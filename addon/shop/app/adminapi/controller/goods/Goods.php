@@ -42,8 +42,9 @@ class Goods extends BaseAdminController
             [ "status", "" ],
             [ 'order', '' ],
             [ 'sort', '' ],
-            ['sku_no',''] // hsx
+            [ 'sku_no',''] // hsx
         ]);
+
         return success(( new GoodsService() )->getPage($data));
     }
 
