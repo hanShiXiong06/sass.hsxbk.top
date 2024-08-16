@@ -9,6 +9,17 @@ use addon\tk_cps\app\service\core\ConfigService;
 use addon\tk_cps\app\service\admin\VersionService;
 class Config extends BaseAdminController
 {
+    public function addPlugin()
+    {
+       return success('操作成功',(new VersionService())->addPlugin());
+    }
+    /**
+     * @Notes:上传小程序
+     * @Interface version
+     * @return \think\Response
+     * @author: TK
+     * @Time: 2024/8/1   上午7:56
+     */
     public function version()
     {
         $data = $this->request->params([

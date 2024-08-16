@@ -89,10 +89,9 @@ export function deleteCoupon(id: number) {
  * @param id
  * @returns
  */
-export function colseCoupon(id: number) {
+export function closeCoupon(id: number) {
     return request.put(`shop/goods/coupon/invalid/${ id }`, { showSuccessMessage: true })
 }
-
 
 /**
  * 获取商品分类列表
@@ -123,7 +122,7 @@ export function getActiveDiscountStatusList() {
 
 /**
  * 获取限时折扣详情
- * @param active_id active_id
+ * @param active_id
  * @returns
  */
 export function getActiveDiscountInfo(active_id: number) {

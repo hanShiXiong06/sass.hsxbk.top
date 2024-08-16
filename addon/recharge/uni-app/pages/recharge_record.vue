@@ -1,13 +1,14 @@
 <template>
-	<view class="member-record-list" :style="themeColor()">
-		<mescroll-body ref="mescrollRef" @init="mescrollInit" @down="downCallback" @up="getListFn" top="">
-			<view v-for="(order,index) in list" :key="order.order_id" class="member-record-item" @click="toDetailFn(order)">
-				<view class="name">{{order.item[0].item_name}}</view>
-				<view class="desc">{{order.create_time}}</view>
-				<view class="money text-active">+{{ order.order_money }}</view>
-				<view class="status" v-if="order.order_status_info">{{order.order_status_info.name}}</view>
+	<view class="min-h-[100vh] bg-[var(--page-bg-color)] overflow-hidden" :style="themeColor()">
+		<mescroll-body ref="mescrollRef" @init="mescrollInit" :down="{ use: false }" @up="getListFn" top="">
+			<view v-for="(order,index) in list" :key="order.order_id" class="sidebar-marign card-template mt-[var(--top-m)]" @click="toDetailFn(order)">
+				<view class="flex items-center justify-between  mb-[20rpx]">
+					<view class="text-[36rpx] font-500 price-font text-active">{{ order.order_money }}</view>
+					<view class="leading-[38rpx] text-[26rpx]" v-if="order.order_status_info">{{ order.order_status_info.name }}</view>
+				</view>
+				<view class="text-[24rpx] text-[var(--text-color-light6)] mb-[10rpx] leading-[34rpx]">充值方式: {{order.item[0].item_name}}</view>
+				<view class="text-[24rpx] text-[var(--text-color-light6)] mb-[10rpx] leading-[34rpx]">支付时间: {{order.create_time}}</view>
 			</view>
-
 			<mescroll-empty v-if="!list.length && loading" :option="{tip : t('emptyTip') }"></mescroll-empty>
 		</mescroll-body>
 	</view>
@@ -75,37 +76,7 @@
 </script>
 
 <style lang="scss" scoped>
-.member-record-list{
-    @apply min-h-[100vh];
-    .member-record-item{
-        @apply relative mx-4 border-solid border-t-0 border-l-0 border-r-0 border-b-1 border-[#ECEBEC] py-3;
-        .name{
-            @apply text-sm;
-        }
-        .desc{
-            @apply text-xs text-[#8D8C8D] mt-1;
-        }
-        .text-active{
-            color: #FF0D3E;
-        }
-        .money{
-            @apply absolute right-3 top-4 text-base font-bold;
-        }
-        .state{
-            @apply absolute right-3 top-11 text-[#8D8C8D] text-xs;
-        }
-    }
+.text-active{
+    color: #FF0D3E;
 }
-
-	.member-record-list {
-		.member-record-item {
-			.desc {
-				@apply leading-8 h-8;
-			}
-
-			.status {
-				@apply absolute right-3 top-11 text-sm;
-			}
-		}
-	}
 </style>

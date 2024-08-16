@@ -1,7 +1,6 @@
 <template>
     <div>
-        <el-dialog v-model="showDialog" :title="prop.title" width="800px" :close-on-press-escape="false"
-            :destroy-on-close="true" :close-on-click-modal="false">
+        <el-dialog v-model="showDialog" :title="prop.title" width="800px" :close-on-press-escape="false" :destroy-on-close="true" :close-on-click-modal="false">
             <el-form :inline="true" :model="goodsTable.searchParam" ref="searchFormRef">
                 <el-form-item :label="t('memberInfo')">
                     <el-input v-model="goodsTable.searchParam.search" :placeholder="t('memberNamePlaceholder')" maxlength="60" />
@@ -21,7 +20,7 @@
                         <template #default="{ row }">
                             <div class="flex items-center">
                                 <img class="w-[50px] h-[50px] mr-[10px]" v-if="row.member.headimg" :src="img(row.member.headimg)" alt="">
-                                <img class="w-[50px] h-[50px] mr-[10px]" v-else src="@/app/assets/images/default_headimg.png" alt="">
+                                <img class="w-[50px] h-[50px] mr-[10px] rounded-full" v-else src="@/app/assets/images/member_head.png" alt="">
                                 <div class="flex flex flex-col">
                                     <span>{{ row.member.nickname || row.member.username || '' }}</span>
                                 </div>
@@ -62,6 +61,7 @@ import { img } from '@/utils/common'
 import { cloneDeep } from 'lodash-es'
 import { ElMessage, FormInstance } from 'element-plus'
 import {fenxiaoSelectMemberPage} from '@/addon/shop_fenxiao/api/fenxiao'
+
 const prop = defineProps({
     title:{
         type:String,

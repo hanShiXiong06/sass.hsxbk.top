@@ -19,15 +19,13 @@
                             :end-placeholder="t('endDate')" />
                     </el-form-item>
                     <el-form-item :label="t('settlementStatus')" prop="is_settlement">
-                        <el-select v-model="salePeriodTable.searchParam.is_settlement" :placeholder="t('settlementStatusPlaceholder')"
-                            clearable>
+                        <el-select v-model="salePeriodTable.searchParam.is_settlement" :placeholder="t('settlementStatusPlaceholder')" clearable>
                             <el-option label="已结算" :value="1" />
                             <el-option label="待结算" :value="0" />
                         </el-select>
                     </el-form-item>
                     <el-form-item :label="t('sendStatus')" prop="is_send">
-                        <el-select v-model="salePeriodTable.searchParam.is_send" :placeholder="t('sendStatusPlaceholder')"
-                            clearable>
+                        <el-select v-model="salePeriodTable.searchParam.is_send" :placeholder="t('sendStatusPlaceholder')" clearable>
                             <el-option label="已发放" :value="1" />
                             <el-option label="待发放" :value="0" />
                         </el-select>
@@ -157,7 +155,6 @@ const detailEvent = (id:number) => {
 }
 
 const grantEvent = (id:number) =>{
-
         ElMessageBox.confirm(t('grantTip'), t('warning'),
         {
             confirmButtonText: t('confirm'),

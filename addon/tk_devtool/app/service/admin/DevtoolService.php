@@ -35,6 +35,7 @@ class DevtoolService extends BaseAdminService
     public function __construct()
     {
         parent::__construct();
+        if ($this->site_id != 0) throw new \Exception('非法访问');
         $this->config = $this->getConfig();
         $this->config = $this->config['value'];
         //增加环境检测npm检查

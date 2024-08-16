@@ -14,6 +14,7 @@ use think\facade\Db;
 use app\model\pay\Refund;
 use app\service\core\pay\CoreRefundService;
 use addon\tk_jhkd\app\dict\order\OrderRefundLogDict;
+use think\facade\Log;
 
 /**
  * 订单列服务层
@@ -70,7 +71,9 @@ class OrderService extends BaseApiService
                         $query->field('start_address,end_address,order_id,goods,long,width,height,delivery_id,weight');
                     },
                     'payInfo' => function ($query) {
-                        $query->field('trade_id,status,pay_time,cancel_time,fail_reason,type,trade_type')->append(['status_name', 'type_name']);
+                        $query->field('trade_id,status,pay_time,cancel_time,fail_reason,type,trade_type')
+                            ->where(['trade_type'=>JhkdOrderDict::getOrderType()['type']])
+                            ->append(['status_name', 'type_name']);
                     },
                 ]
             )->order($order)->append(['is_send_name', 'order_status_arr']);
@@ -119,22 +122,27 @@ class OrderService extends BaseApiService
                             $query->field('start_address,end_address,order_id,goods,long,width,height,delivery_id,delivery_type,weight')->append(['delivery_arry']);
                         },
                         'payInfo' => function ($query) {
-                            $query->field('trade_id,status,pay_time,cancel_time,fail_reason,type,trade_type,out_trade_no,money')->where('status', '=', 2)->append(['status_name', 'type_name']);
+                            $query->field('trade_id,status,pay_time,cancel_time,fail_reason,type,trade_type,out_trade_no,money')
+                                ->where(['trade_type'=>JhkdOrderDict::getOrderType()['type'],'status'=>2])
+                                ->append(['status_name', 'type_name']);
                         },
                     ]
                 )->findOrEmpty();
+
             if ($orderInfo->isEmpty()) throw new CommonException('订单信息获取失败');
             if ($orderInfo['order_status'] == JhkdOrderDict::FINISH) throw new CommonException('已完成订单不支持退款');
             if ($orderInfo['payInfo']['status'] !== 2 && $orderInfo['is_enable_refund'] !== 1) throw new CommonException('当前状态不支持退款');
             $orderInfo->refund_status = JhkdOrderDict::REFUNDING;
             $orderInfo->close_reason = $data['close_reason'];
             $orderInfo->save();
-            $refund_no = (new CoreRefundService())->create($this->site_id, $orderInfo['payInfo']['out_trade_no'], $orderInfo['payInfo']['money'], $data['close_reason'], $orderInfo['payInfo']['trade_type'], $orderInfo['payInfo']['trade_id']);
-            (new CoreRefundService())->refund($this->site_id, $refund_no, $orderInfo['payInfo']['money'], RefundDict::BACK, OrderRefundLogDict::MEMBER, $this->member_id);
+            $refund_no = (new CoreRefundService())->create($orderInfo['site_id'], $orderInfo['payInfo']['out_trade_no'], $orderInfo['payInfo']['money'], $data['close_reason'], $orderInfo['payInfo']['trade_type'], $orderInfo['payInfo']['trade_id']);
+            (new CoreRefundService())->refund($orderInfo['site_id'], $refund_no, $orderInfo['payInfo']['money'], RefundDict::BACK, OrderRefundLogDict::MEMBER, $this->member_id);
             Db::commit();
             return true;
         } catch (Exception $e) {
             Db::rollback();
+            Log::write('退款操作失败'.date('Y-m-d H:i:s'));
+            Log::write($e->getMessage());
             throw new CommonException($e->getMessage());
         }
     }

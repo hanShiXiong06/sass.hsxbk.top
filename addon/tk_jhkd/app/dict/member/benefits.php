@@ -12,7 +12,7 @@ return [
             },
             'member_level' => function($site_id, $config) {
                 return [
-                    'title' => "分销权益",
+                    'title' => "快递分销",
                     'desc' => '分销特权',
                     'icon' => '/addon/tk_jhkd/rule/fenxiao.png'
                 ];

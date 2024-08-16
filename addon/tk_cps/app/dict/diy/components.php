@@ -22,6 +22,13 @@ return [
                     "yqbgcolor"=>'rgba(233, 234, 255, 1)',
                     "yqbordercolor"=>'rgba(101, 139, 254, 1)',
                     "yqfontcolor"=>'rgba(48, 101, 215, 1)',
+                    //分类设置
+                    //分类设置
+                    "cateshow" => '1',
+                    "catesize" => '12',
+                    "catebackground" => '#42a5f6',
+                    "catefontcolor"=>'#42a5f6',
+                    "cateselectfontcolor"=>'#ffffff',
                 ]
             ],
         ],

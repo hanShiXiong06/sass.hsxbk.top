@@ -11,7 +11,6 @@
 
 namespace app\adminapi\controller\pay;
 
-use app\dict\pay\PayDict;
 use app\service\admin\pay\PayService;
 use core\base\BaseAdminController;
 

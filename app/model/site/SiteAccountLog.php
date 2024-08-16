@@ -97,7 +97,7 @@ class SiteAccountLog extends BaseModel
 
     public function searchTradeNoAttr($query, $value, $data)
     {
-        if ($value) {
+        if ($value != '') {
             $query->where('trade_no', 'like', "%$value%");
         }
     }

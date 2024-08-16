@@ -223,7 +223,7 @@
                                 <div class="batch-operation-sku" v-show="Object.keys(goodsEdit.goodsSkuData).length">
                                     <label>{{ t('batchOperationSku') }}</label>
 
-                                    <el-select v-model="goodsEdit.batchOperation.spec" class="set-spec-select">
+                                    <el-select v-model="goodsEdit.batchOperation.spec" class="set-spec-select" :placeholder="t('all')">
                                         <el-option :label="t('all')" value="" />
                                         <template v-for="(item, key) in goodsEdit.goodsSkuData" :key="key">
                                             <el-option v-if="item.spec_name" :label="item.spec_name" :value="key" />
@@ -796,4 +796,9 @@ const save = () => {
 
 <style lang="scss" scoped>
 	@import 'public/css/goods_edit.scss';
+</style>
+<style lang="scss">
+    .edui-default .edui-editor{
+        z-index: 1 !important;
+    }
 </style>

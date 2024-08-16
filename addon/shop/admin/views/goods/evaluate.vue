@@ -153,13 +153,13 @@ const loadEvaluateList = (page: number = 1) => {
     }).then(res => {
         evaluateTable.loading = false
         evaluateTable.data = res.data.data
+        evaluateTable.total = res.data.total
         evaluateTable.data.map((item: any)=> {
             item.previewList = item.images.map((el:any)=> {
                 return img(el)
             })
             return item
         })
-        evaluateTable.total = res.data.total
     }).catch(() => {
         evaluateTable.loading = false
     })

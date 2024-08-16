@@ -55,8 +55,8 @@ class FenxiaoService extends BaseAdminService
         $condition = [
             ['fenxiao.site_id', '=', $this->site_id]
         ];
-        if (!empty($where['search'])) {
-            $condition[] = ['member.username|member.nickname|member.mobile', 'like', '%' . $where['search'] . '%'];
+        if (isset($where['search']) && $where['search'] != '') {
+            $condition[] = ['member.username|member.nickname|member.mobile', 'like', '%' . $this->model->handelSpecialCharacter($where['search']) . '%'];
         }
         $search_model = $this->model->where($condition)->withSearch(['level_id', 'join_create_time' => 'create_time', 'join_status' => 'status'], $where)
             ->field($field)

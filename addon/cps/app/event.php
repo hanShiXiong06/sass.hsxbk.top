@@ -9,8 +9,8 @@ return [
 
         //应用管理
         'AppManage' => ['addon\cps\app\listener\AppManageListener'],
+        'BottomNavigation' => ['addon\cps\app\listener\BottomNavigationListener'],
     ],
-
     'subscribe' => [
     ],
 ];

@@ -13,7 +13,6 @@ use think\facade\Log;
  */
 class SendOrder extends BaseJob
 {
-
     public function doJob($order_id)
     {
         try {

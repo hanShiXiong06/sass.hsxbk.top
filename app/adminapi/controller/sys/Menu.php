@@ -28,8 +28,7 @@ class Menu extends BaseAdminController
      */
     public function lists($app_type)
     {
-
-        return success((new MenuService())->getAllMenuList($app_type, 'all', 1));
+        return success(( new MenuService() )->getAllMenuList($app_type, 'all', 1));
     }
 
     /**
@@ -39,7 +38,7 @@ class Menu extends BaseAdminController
      */
     public function info($app_type, $menu_key)
     {
-        return success((new MenuService())->get($app_type, $menu_key));
+        return success(( new MenuService() )->get($app_type, $menu_key));
     }
 
     /**
@@ -49,24 +48,24 @@ class Menu extends BaseAdminController
     public function add()
     {
         $data = $this->request->params([
-            ['app_type', ''],
-            ['menu_name', ''],
-            ['menu_type', 0],
-            ['menu_key', ''],
-            ['parent_key', ''],
-            ['icon', ''],
-            ['api_url', ''],
-            ['view_path', ''],
-            ['router_path', ''],
-            ['methods', ''],
-            ['sort', 0],
-            ['status', MenuDict::ON],
-            ['is_show', 0],
-            ['addon', ''],
-            ['menu_short_name','']
+            [ 'app_type', '' ],
+            [ 'menu_name', '' ],
+            [ 'menu_type', 0 ],
+            [ 'menu_key', '' ],
+            [ 'parent_key', '' ],
+            [ 'icon', '' ],
+            [ 'api_url', '' ],
+            [ 'view_path', '' ],
+            [ 'router_path', '' ],
+            [ 'methods', '' ],
+            [ 'sort', 0 ],
+            [ 'status', MenuDict::ON ],
+            [ 'is_show', 0 ],
+            [ 'addon', '' ],
+            [ 'menu_short_name', '' ]
         ]);
         $this->validate($data, 'app\validate\sys\Menu.add');
-        (new MenuService())->add($data);
+        ( new MenuService() )->add($data);
         return success('ADD_SUCCESS');
     }
 
@@ -76,22 +75,22 @@ class Menu extends BaseAdminController
     public function edit($app_type, $menu_key)
     {
         $data = $this->request->params([
-            ['menu_name', ''],
-            ['parent_key', ''],
-            ['menu_type', 0],
-            ['icon', ''],
-            ['api_url', ''],
-            ['router_path', ''],
-            ['view_path', ''],
-            ['methods', ''],
-            ['sort', 0],
-            ['status', MenuDict::ON],
-            ['is_show', 0],
-            ['addon', ''],
-            ['menu_short_name','']
+            [ 'menu_name', '' ],
+            [ 'parent_key', '' ],
+            [ 'menu_type', 0 ],
+            [ 'icon', '' ],
+            [ 'api_url', '' ],
+            [ 'router_path', '' ],
+            [ 'view_path', '' ],
+            [ 'methods', '' ],
+            [ 'sort', 0 ],
+            [ 'status', MenuDict::ON ],
+            [ 'is_show', 0 ],
+            [ 'addon', '' ],
+            [ 'menu_short_name', '' ]
         ]);
         $this->validate($data, 'app\validate\sys\Menu.edit');
-        (new MenuService())->edit($app_type, $menu_key, $data);
+        ( new MenuService() )->edit($app_type, $menu_key, $data);
         return success('EDIT_SUCCESS');
     }
 
@@ -121,13 +120,13 @@ class Menu extends BaseAdminController
      */
     public function del($app_type, $menu_key)
     {
-        (new MenuService())->del($app_type, $menu_key);
+        ( new MenuService() )->del($app_type, $menu_key);
         return success('DELETE_SUCCESS');
     }
 
     public function refreshMenu()
     {
-        (new InstallSystemService())->install();
+        ( new InstallSystemService() )->install();
         return success('SUCCESS');
     }
 
@@ -136,7 +135,7 @@ class Menu extends BaseAdminController
      */
     public function getSystem()
     {
-        return success( (new MenuService())->getSystemMenu('all', 1));
+        return success(( new MenuService() )->getSystemMenu('all', 1));
     }
 
     /**
@@ -144,7 +143,7 @@ class Menu extends BaseAdminController
      */
     public function getAddonMenu($app_key)
     {
-        return success( (new MenuService())->getAddonMenu($app_key,'all', 1));
+        return success(( new MenuService() )->getAddonMenu($app_key, 'all', 1));
     }
 
     /**
@@ -152,7 +151,8 @@ class Menu extends BaseAdminController
      * @param $addon
      * @return Response
      */
-    public function getMenuByTypeDir($addon = 'system') {
-        return success( (new MenuService())->getMenuByTypeDir($addon));
+    public function getMenuByTypeDir($addon = 'system')
+    {
+        return success(( new MenuService() )->getMenuByTypeDir($addon));
     }
 }

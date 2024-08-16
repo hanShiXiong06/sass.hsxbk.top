@@ -1,6 +1,12 @@
 
 import request from '@/utils/request'
 /**
+ * 添加插件
+ */
+export function addPlugin() {
+    return request.get('tk_cps/addplugin', { showErrorMessage: true, showSuccessMessage: true })
+}
+/**
  * 加载代码
  * @returns
  */

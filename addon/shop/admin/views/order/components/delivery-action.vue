@@ -27,9 +27,15 @@
                 <el-table-column type="selection" width="55" :selectable="selectable" />
                 <el-table-column prop="goods_name" :label="t('goodsName')" min-width="200" >
                     <template #default="{ row }">
-                        <div class="flex items-center">
-                            <span>{{row.goods_name}}</span>
-                            <span class="text-[#999] px-[3px] text-[12px] ml-[4px]" v-if="row.sku_name">{{row.sku_name}}</span>
+                        <div class="flex cursor-pointer">
+                            <div class="flex items-center min-w-[50px] mr-[10px]">
+                                <img class="w-[50px] h-[50px]" v-if="row.goods_image" :src="img(row.goods_image)" alt="">
+                                <img class="w-[50px] h-[50px]" v-else src="" alt="">
+                            </div>
+                            <div class="flex  flex-col">
+                                <span class="multi-hidden text-[14px]">{{row.goods_name}}</span>
+                                <span class="text-[#999] text-[12px]" v-if="row.sku_name">{{row.sku_name}}</span>
+                            </div>
                         </div>
                     </template>
                 </el-table-column>
@@ -50,6 +56,7 @@
 <script lang="ts" setup>
 import { ref, reactive, computed } from 'vue'
 import { t } from '@/lang'
+import { img } from '@/utils/common'
 import { FormInstance, ElMessage } from 'element-plus'
 import { getCompanyList } from '@/addon/shop/api/delivery'
 import { getOrderDeliveryType, orderDelivery } from '@/addon/shop/api/order'
@@ -69,7 +76,7 @@ const deliveryType = ref([])
 const isTradeManaged = ref(false)
 
 getCompanyList({}).then((data) => {
-    companyData.value = data.data.data
+    companyData.value = data.data
 })
 
 getIsTradeManaged().then(res=>{
@@ -123,7 +130,7 @@ const expressNumberPass = (rule: any, value: any, callback: any) => {
 }
 
 const selectable = (row:any, index:number) => {
-    if (row.status == 2 || row.delivery_status == 'delivery_finish') {
+    if (row.status == 2 || row.delivery_status == 'delivery_finish' || row.status == 3) {
         return false
     }
     return true
@@ -216,7 +223,7 @@ const setFormData = async (row: any = null) => {
                 break
             }
         }
-        if (isHasVirtual.value == true) {
+        if (isHasVirtual.value) {
             Object.assign(deliveryType.value, { virtual: t('virtualDelivery') })
         }
     }

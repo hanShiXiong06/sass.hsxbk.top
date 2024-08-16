@@ -25,12 +25,12 @@
                             <div>
                                 <span>{{ t('adjustMoneyLabel') }}</span>
                                 <el-tooltip effect="dark" content="负数表示下调金额，正数表示上调金额" placement="top">
-                                    <text class="nc-iconfont nc-icon-bangzhuV6xx ml-[5px]" id="iconfont"></text>
+                                    <text class="nc-iconfont nc-icon-bangzhuV6xx ml-[5px] text-[12px]"></text>
                                 </el-tooltip>
                             </div>
                         </template>
 						<template #default="{ row, $index }">
-							<el-input v-model.trim="row.adjust_money" clearable placeholder="0.00" maxlength="10" @change="adjustChange($event,$index,row)">
+							<el-input v-model.trim="row.adjust_money" clearable placeholder="0.00" maxlength="6" @change="adjustChange($event,$index,row)">
 								<template #append>{{ t('adjustMoneyUnit') }}</template>
 							</el-input>
 						</template>
@@ -162,9 +162,5 @@ defineExpose({
 	display: -webkit-box;
 	-webkit-line-clamp: 2;
 	-webkit-box-orient: vertical;
-}
-#iconfont {
-    font-size: 12px;
-    margin-left: 5px;
 }
 </style>

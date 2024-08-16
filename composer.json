@@ -14,11 +14,22 @@
         "ORM",
         "framework",
         "thinkphp",
+        "ORM",
+        "framework",
+        "thinkphp",
         "ORM"
     ],
     "homepage": "https://www.thinkphp.cn/",
     "license": "Apache-2.0",
     "authors": [
+        {
+            "name": "liu21st",
+            "email": "liu21st@gmail.com"
+        },
+        {
+            "name": "yunwuxin",
+            "email": "448901948@qq.com"
+        },
         {
             "name": "liu21st",
             "email": "liu21st@gmail.com"
@@ -93,7 +104,8 @@
         "workerman/redis-queue": "v1.2.0",
         "workerman/crontab": "v1.0.6",
         "hyperf/pimple": "~2.2.0",
-        "365taofang/huaweicloud-sdk-php-obs": "^3.23"
+        "365taofang/huaweicloud-sdk-php-obs": "^3.23",
+        "kkokk/poster": "^2.3"
     },
     "require-dev": {
         "symfony/var-dumper": "v6.0.19",

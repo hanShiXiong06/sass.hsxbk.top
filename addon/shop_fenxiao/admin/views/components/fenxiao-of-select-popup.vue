@@ -1,7 +1,6 @@
 <template>
     <div>
-        <el-dialog v-model="showDialog" :title="prop.title" width="800px" :close-on-press-escape="false"
-            :destroy-on-close="true" :close-on-click-modal="false">
+        <el-dialog v-model="showDialog" :title="prop.title" width="800px" :close-on-press-escape="false" :destroy-on-close="true" :close-on-click-modal="false">
             <el-form :inline="true" :model="goodsTable.searchParam" ref="searchFormRef">
                 <el-form-item :label="t('fenxiaoName')">
                     <el-input v-model="goodsTable.searchParam.search" :placeholder="t('fenxiaoNamePlaceholder')" maxlength="60" />
@@ -24,11 +23,11 @@
                                 <el-image v-if="row.member && row.member.headimg" class="w-[50px] h-[50px]" :src="img(row.member.headimg)" fit="contain">
                                     <template #error>
                                         <div class="image-slot">
-                                            <img class="w-[50px] h-[50px]" src="@/app/assets/images/default_headimg.png" />
+                                            <img class="w-[50px] h-[50px] rounded-full" src="@/app/assets/images/member_head.png" alt="">
                                         </div>
                                     </template>
                                 </el-image>
-                                <img v-else class="w-[50px] h-[50px]" src="@/app/assets/images/default_headimg.png" fit="contain" />
+                                <img class="w-[50px] h-[50px] rounded-full" v-else src="@/app/assets/images/member_head.png" alt="">
                             </div>
                             <div class="ml-2">
                                 <span :title="(row.member && row.member.nickname || row.member && row.member.username)" class="multi-hidden">{{row.member && row.member.nickname || row.member && row.member.username}}</span>
@@ -73,7 +72,7 @@
 
 <script lang="ts" setup>
 import { t } from '@/lang'
-import { ref, reactive,watch, nextTick } from 'vue'
+import { ref, reactive,nextTick } from 'vue'
 import { img } from '@/utils/common'
 import { cloneDeep } from 'lodash-es'
 import { ElMessage, FormInstance } from 'element-plus'

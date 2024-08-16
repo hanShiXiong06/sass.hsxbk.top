@@ -29,19 +29,20 @@ class  CoreWeappConfigService extends BaseCoreService
      * @param int $site_id
      * @return array
      */
-    public function getWeappConfig(int $site_id){
-        $info = (new CoreConfigService())->getConfig($site_id, ConfigKeyDict::WEAPP)['value'] ?? [];
+    public function getWeappConfig(int $site_id)
+    {
+        $info = ( new CoreConfigService() )->getConfig($site_id, ConfigKeyDict::WEAPP)[ 'value' ] ?? [];
         return [
-            'weapp_name' => $info['weapp_name'] ?? '',//小程序名称
-            'weapp_original' => $info['weapp_original'] ?? '',//原始ID
-            'app_id'            => $info['app_id'] ?? '',//AppID
-            'app_secret'        => $info['app_secret'] ?? '',//AppSecret
-            'qr_code' => $info['qr_code'] ?? '',//小程序二维码
-            'token'             => $info['token'] ?? '',
-            'encoding_aes_key'  => $info['encoding_aes_key'] ?? '',
-            'encryption_type'   => $info['encryption_type'] ?? 'not_encrypt',//加解密模式   not_encrypt 明文   compatible 兼容  safe 安全
-            'upload_private_key'=> $info['upload_private_key'] ?? '',
-            'is_authorization'  => $info['is_authorization'] ?? 0
+            'weapp_name' => $info[ 'weapp_name' ] ?? '',//小程序名称
+            'weapp_original' => $info[ 'weapp_original' ] ?? '',//原始ID
+            'app_id' => $info[ 'app_id' ] ?? '',//AppID
+            'app_secret' => $info[ 'app_secret' ] ?? '',//AppSecret
+            'qr_code' => $info[ 'qr_code' ] ?? '',//小程序二维码
+            'token' => $info[ 'token' ] ?? '',
+            'encoding_aes_key' => $info[ 'encoding_aes_key' ] ?? '',
+            'encryption_type' => $info[ 'encryption_type' ] ?? 'not_encrypt',//加解密模式   not_encrypt 明文   compatible 兼容  safe 安全
+            'upload_private_key' => $info[ 'upload_private_key' ] ?? '',
+            'is_authorization' => $info[ 'is_authorization' ] ?? 0
         ];
     }
 
@@ -51,21 +52,22 @@ class  CoreWeappConfigService extends BaseCoreService
      * @param array $data
      * @return SysConfig|bool|Model
      */
-    public function setWeappConfig(int $site_id, array $data){
+    public function setWeappConfig(int $site_id, array $data)
+    {
         $old = $this->getWeappConfig($site_id);
         $config = [
-            'weapp_name' => $data['weapp_name'] ?? '',//小程序名称
-            'weapp_original' => $data['weapp_original'] ?? '',//原始ID
-            'app_id'            => $data['app_id'] ?? '',//AppID
-            'app_secret'        => $data['app_secret'] ?? '',//AppSecret
-            'qr_code' => $data['qr_code'] ?? '',//小程序二维码
-            'token'             => $data['token'] ?? '',
-            'encoding_aes_key'  => $data['encoding_aes_key'] ?? '',
-            'encryption_type'   => $data['encryption_type'] ?? 'not_encrypt',//加解密模式   not_encrypt 明文   compatible 兼容  safe 安全
-            'upload_private_key'=> $data['upload_private_key'] ?? '',
-            'is_authorization'  => $data['is_authorization'] ?? $old['is_authorization']
+            'weapp_name' => $data[ 'weapp_name' ] ?? '',//小程序名称
+            'weapp_original' => $data[ 'weapp_original' ] ?? '',//原始ID
+            'app_id' => $data[ 'app_id' ] ?? '',//AppID
+            'app_secret' => $data[ 'app_secret' ] ?? '',//AppSecret
+            'qr_code' => $data[ 'qr_code' ] ?? '',//小程序二维码
+            'token' => $data[ 'token' ] ?? '',
+            'encoding_aes_key' => $data[ 'encoding_aes_key' ] ?? '',
+            'encryption_type' => $data[ 'encryption_type' ] ?? 'not_encrypt',//加解密模式   not_encrypt 明文   compatible 兼容  safe 安全
+            'upload_private_key' => $data[ 'upload_private_key' ] ?? '',
+            'is_authorization' => $data[ 'is_authorization' ] ?? $old[ 'is_authorization' ]
         ];
-        return (new CoreConfigService())->setConfig($site_id, ConfigKeyDict::WEAPP, $config);
+        return ( new CoreConfigService() )->setConfig($site_id, ConfigKeyDict::WEAPP, $config);
     }
 
     /**
@@ -73,8 +75,9 @@ class  CoreWeappConfigService extends BaseCoreService
      * @param int $site_id
      * @return mixed
      */
-    public function getWeappAuthorizationInfo(int $site_id) {
-        return (new CoreConfigService())->getConfigValue($site_id, ConfigKeyDict::WEAPP_AUTHORIZATION_INFO);
+    public function getWeappAuthorizationInfo(int $site_id)
+    {
+        return ( new CoreConfigService() )->getConfigValue($site_id, ConfigKeyDict::WEAPP_AUTHORIZATION_INFO);
     }
 
     /**
@@ -83,7 +86,8 @@ class  CoreWeappConfigService extends BaseCoreService
      * @param array $config
      * @return SysConfig|bool|Model
      */
-    public function setWeappAuthorizationInfo(int $site_id, array $config) {
-        return (new CoreConfigService())->setConfig($site_id, ConfigKeyDict::WEAPP_AUTHORIZATION_INFO, $config);
+    public function setWeappAuthorizationInfo(int $site_id, array $config)
+    {
+        return ( new CoreConfigService() )->setConfig($site_id, ConfigKeyDict::WEAPP_AUTHORIZATION_INFO, $config);
     }
 }

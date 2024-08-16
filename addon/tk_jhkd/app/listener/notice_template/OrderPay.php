@@ -25,7 +25,7 @@ class OrderPay extends BaseNoticeTemplate
                         '__wechat_page' => $wap_domain . '/addon/tk_jhkd/pages/orderdetail?id=' . $order['id'],//模板消息链接
                         '__weapp_page' => 'addon/tk_jhkd/pages/orderdetail?id=' . $order['id'],//小程序链接
                         'body' => '快递下单支付',
-                        'order_no' => $order['out_trade_no'],
+                        'order_no' => $order['order_id'],
                         'order_money' => $order['order_money'],
                         'create_time' => $order['create_time'],
                         'pay_time' => $order['pay_time'],

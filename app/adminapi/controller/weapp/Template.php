@@ -31,7 +31,6 @@ class Template extends BaseAdminController
         return success($wechat_template_service->getList());
     }
 
-
     /**
      * 菜单信息
      * @return Response

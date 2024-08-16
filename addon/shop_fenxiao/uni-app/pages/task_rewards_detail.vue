@@ -1,22 +1,27 @@
 <template>
-    <view class="bg-[#fff] min-h-[100vh]" :style="themeColor()">
-        <mescroll-body ref="mescrollRef" top="110rpx" :down="{ use: false }" @init="mescrollInit" @up="getTaskRecordFn">
-            <view class="flex fixed top-0 left-0 right-0 z-10 whitespace-nowrap justify-around mb-[20rpx]" v-if="!lastLoading">
-                <view :class="['text-[28rpx] leading-[90rpx] font-bold', { 'class-select': status === item.value }]" @click="statusSearchFn(item.value)" v-for="(item, index) in statusList">{{ item.label }}</view>
+    <view class="bg-[var(--page-bg-color)] min-h-[100vh]" :style="themeColor()">
+        <mescroll-body ref="mescrollRef" top="88rpx" :down="{ use: false }" @init="mescrollInit" @up="getTaskRecordFn">
+            <view class="fixed top-0 left-0 right-0 z-10" v-if="!lastLoading">
+				<scroll-view :scroll-x="true" class="tab-style-2">
+					<view class="tab-content !justify-around">
+						<view class="tab-items" :class="{ 'class-select': status === item.value }" @click="statusSearchFn(item.value)" v-for="(item, index) in statusList">{{ item.label }}</view>
+					</view>
+				</scroll-view>
             </view>
-            <template v-for="(item, index) in data">
-                <view class="flex py-[30rpx] box-border border-0 border-solid border-[#ddd] mx-[24rpx] border-b-[1rpx]">
-                    <view class="flex-1 flex flex-col justify-between">
-                        <view class="text-[26rpx] font-600">{{ item.is_send ? '已发放' : '待发放' }}</view>
-                        <view v-if="item.is_send" class="text-[24rpx] text-[#999]">已于 {{ item.send_time }} 发放该奖励
-                        </view>
-                        <view v-else class="text-[24rpx] text-[#999]">预计于 {{ timeStampTurnTime(item.send_timer) }} 发放该奖励</view>
-                    </view>
-                    <view class="text-[35rpx] font-600 text-[var(--price-text-color)] h-[100rpx] leading-[100rpx]">
-                        +{{ moneyFormat(item.reward_money) }}
-                    </view>
-                </view>
-            </template>
+			<view class="sidebar-marign pt-[var(--top-m)]" v-if="data.length">
+				<template v-for="(item, index) in data">
+					<view class=" box-border mb-[var(--top-m)] card-template">
+						<view class="w-full flex justify-between items-center">
+							<view class="text-[36rpx] font-500 text-[var(--price-text-color)]">
+								+{{ moneyFormat(item.reward_money) }}
+							</view>
+							<view class="text-[26rpx]" :class="{'text-[#999]': item.is_send, 'text-[#333]': !item.is_send}">{{ item.is_send ? '已发放' : '待发放' }}</view>
+						</view>
+						<view v-if="item.is_send" class="text-[24rpx] text-[var(--text-color-light9)] mt-[20rpx]">已于 {{ item.send_time }} 发放该奖励</view>
+						<view v-else class="text-[24rpx] text-[var(--text-color-light9)] mt-[20rpx]">预计于 {{ timeStampTurnTime(item.send_timer) }} 发放该奖励</view>
+					</view>
+				</template>
+			</view>
             <mescroll-empty :option="{ 'icon': img('static/resource/images/empty.png') }" v-if="!data.length && !loading"></mescroll-empty>
         </mescroll-body>
     </view>
@@ -35,8 +40,8 @@ const id = ref<Number>(0)
 onLoad((option: any) => {
     id.value = Number(option.id)
 })
-let loading = ref<boolean>(true);//页面加载动画
-let lastLoading = ref<boolean>(true);//页面加载动画
+const loading = ref<boolean>(true);//页面加载动画
+const lastLoading = ref<boolean>(true);//页面加载动画
 const data = ref<Array<any>>([])
 const status = ref<number>(2)
 const statusList = ref<Array<any>>([
@@ -62,6 +67,12 @@ const getTaskRecordFn = (mescroll:any) => {
 }
 </script>
 <style lang="scss" scoped>
+.tab-style-2{
+	padding: 0;
+	.tab-content{
+		justify-content: space-around;
+	}
+}
 .class-select {
     position: relative;
     font-weight: bold;

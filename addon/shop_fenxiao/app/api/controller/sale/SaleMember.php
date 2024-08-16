@@ -31,6 +31,7 @@ class SaleMember extends BaseApiController
         $data = $this->request->params([
             ['create_time', []],
             ['is_settlement', 'all'],
+            ['is_send', 'all'],
             ['period_id', 0]
         ]);
         return success((new SaleMemberService())->getPage($data));

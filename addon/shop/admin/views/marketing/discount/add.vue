@@ -285,7 +285,7 @@
             callback(new Error(t('请选择活动开始时间')))
         } else if (!formData.value.discount_time[1]) {
             callback(new Error(t('请选择活动结束时间')))
-        } else  if (formData.value.discount_time[1] <= formData.value.discount_time[0]) {
+        } else if (formData.value.discount_time[1] <= formData.value.discount_time[0]) {
             callback(new Error(t('活动结束时间不能小于等于活动开始时间')))
         }
         callback()

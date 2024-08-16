@@ -29,7 +29,7 @@ class ComponentDict
                 'list' => [
                     'Text' => [
                         'title' => '标题',
-                        'icon' => 'iconfont iconbiaoti',
+                        'icon' => 'iconfont iconbiaotipc',
                         'path' => 'edit-text', // 编辑组件属性名称
                         'support_page' => [], // 支持页面
                         'uses' => 0, // 最大添加数量
@@ -88,7 +88,7 @@ class ComponentDict
                     ],
                     'ImageAds' => [
                         'title' => '图片广告',
-                        'icon' => 'iconfont icontupianguanggao1',
+                        'icon' => 'iconfont icontupiandaohangpc',
                         'path' => 'edit-image-ads',
                         'support_page' => [],
                         'uses' => 0,
@@ -109,7 +109,7 @@ class ComponentDict
                     ],
                     'GraphicNav' => [
                         'title' => '图文导航',
-                        'icon' => 'iconfont icontuwendaohang2',
+                        'icon' => 'iconfont icontuwendaohangpc',
                         'path' => 'edit-graphic-nav',
                         'support_page' => [],
                         'uses' => 0,
@@ -194,7 +194,7 @@ class ComponentDict
                     ],
                     'RubikCube' => [
                         'title' => '魔方',
-                        'icon' => 'iconfont iconmofang1',
+                        'icon' => 'iconfont iconmofangpc',
                         'path' => 'edit-rubik-cube',
                         'support_page' => [],
                         'uses' => 0,
@@ -224,7 +224,7 @@ class ComponentDict
                     ],
                     'HotArea' => [
                         'title' => '热区',
-                        'icon' => 'iconfont iconrequ',
+                        'icon' => 'iconfont iconrequpc',
                         'path' => 'edit-hot-area',
                         'support_page' => [],
                         'uses' => 0,
@@ -238,7 +238,7 @@ class ComponentDict
                     ],
                     'MemberInfo' => [
                         'title' => '会员信息',
-                        'icon' => 'iconfont iconhuiyuanzhongxin',
+                        'icon' => 'iconfont iconhuiyuanqiandaopc',
                         'path' => 'edit-member-info',
                         'support_page' => [ 'DIY_MEMBER_INDEX' ],
                         'uses' => 1,
@@ -253,7 +253,7 @@ class ComponentDict
                     ],
                     'MemberLevel' => [
                         'title' => '会员等级',
-                        'icon' => 'iconfont iconhuangguan',
+                        'icon' => 'iconfont iconhuiyuandengjipc',
                         'path' => 'edit-member-level',
                         'support_page' => [],
                         'uses' => 1,
@@ -265,7 +265,7 @@ class ComponentDict
                     ],
                     'Notice' => [
                         'title' => '公告',
-                        'icon' => 'iconfont icongonggao',
+                        'icon' => 'iconfont icongonggaopc',
                         'path' => 'edit-notice',
                         'support_page' => [],
                         'uses' => 0,
@@ -292,7 +292,7 @@ class ComponentDict
                     ],
                     'RichText' => [
                         'title' => '富文本',
-                        'icon' => 'iconfont iconfuwenben1',
+                        'icon' => 'iconfont iconfuwenbenpc',
                         'path' => 'edit-rich-text',
                         'support_page' => [],
                         'uses' => 0,
@@ -303,7 +303,7 @@ class ComponentDict
                     ],
                     'ActiveCube' => [
                         'title' => '活动魔方',
-                        'icon' => 'iconfont iconmofang1',
+                        'icon' => 'iconfont iconmofangpc',
                         'path' => 'edit-active-cube',
                         'support_page' => [],
                         'uses' => 0,
@@ -460,7 +460,7 @@ class ComponentDict
                     ],
                     'CarouselSearch' => [
                         'title' => '轮播搜索',
-                        'icon' => 'iconfont iconsousuokuang',
+                        'icon' => 'iconfont iconlunbosousuopc',
                         'path' => 'edit-carousel-search',
                         'support_page' => [],
                         'uses' => 1,
@@ -543,7 +543,7 @@ class ComponentDict
                     ],
                     'FloatBtn' => [
                         'title' => '浮动按钮',
-                        'icon' => 'iconfont iconfudonganniu1',
+                        'icon' => 'iconfont iconfudonganniupc',
                         'path' => 'edit-float-btn',
                         'support_page' => [],
                         'uses' => 1,
@@ -552,6 +552,8 @@ class ComponentDict
                         'value' => [
                             "imageSize" => 40,
                             "aroundRadius" => 0,
+                            'style' => 'style-1',
+                            "styleName" => "风格一",
                             "bottomPosition" => "lowerRight", // 左上：upperLeft，右上：upperRight，左下：lowerLeft，右下：lowerRight
                             "list" => [
                                 [
@@ -566,7 +568,7 @@ class ComponentDict
                     ],
                     'HorzBlank' => [
                         'title' => '辅助空白',
-                        'icon' => 'iconfont iconfuzhukongbai1',
+                        'icon' => 'iconfont iconfuzhukongbaipc',
                         'path' => 'edit-horz-blank',
                         'support_page' => [],
                         'uses' => 0,
@@ -577,7 +579,7 @@ class ComponentDict
                     ],
                     'HorzLine' => [
                         'title' => '辅助线',
-                        'icon' => 'iconfont iconfuzhuxian1',
+                        'icon' => 'iconfont iconfuzhuxianpc',
                         'path' => 'edit-horz-line',
                         'support_page' => [],
                         'uses' => 0,

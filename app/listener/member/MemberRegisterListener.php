@@ -15,7 +15,7 @@ use app\service\core\member\CoreMemberService;
 
 /**
  * 会员注册成功事件
- * Class MemberRegister
+ * Class MemberRegisterListener
  * @package app\listener\member
  */
 class MemberRegisterListener

@@ -32,7 +32,7 @@ class BottomNavigationListener
             'value' => [
                 "backgroundColor" => "#ffffff",
                 "textColor" => "#333333",
-                "textHoverColor" => "#0095FF",
+                "textHoverColor" => "#4541c7",
                 "type" => 1,
                 "list" => [
                     [

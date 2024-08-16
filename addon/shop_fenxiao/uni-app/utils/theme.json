@@ -1,8 +1,10 @@
 {
-  "--primary-color": "#ff4500",
+  "--primary-color": "#FF4142",
+  "--primary-help-color": "#FB7939",
   "--primary-color-dark": "#F26F3E",
   "--primary-color-disabled": "#FFB397",
-  "--primary-color-light": "#FFEAE2",
-  "--page-bg-color": "#f7f7f7",
-  "--price-text-color": "#e1251b"
+  "--primary-color-light": "#FFF4F4",
+  "--primary-color-light2": "#FFFbFb",
+  "--page-bg-color": "#f6f6f6",
+  "--price-text-color": "#FF4142"
 }

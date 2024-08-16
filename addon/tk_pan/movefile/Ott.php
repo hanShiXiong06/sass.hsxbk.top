@@ -461,10 +461,10 @@ class Ott extends BaseUpload
 
     public function checkId()
     {
-        $dirId = Cache::get('123pan_dirid_' . $this->clientID, '');
+        $dirId = Cache::get('123pan_dirid_' . $this->clientID.$this->dir, '');
         if ($dirId == '') {
             $dirId = $this->setDirect();
-            Cache::set('123pan_dirid_' . $this->clientID, $dirId);
+            Cache::set('123pan_dirid_' . $this->clientID.$this->dir, $dirId);
         }
         return $dirId;
     }
@@ -476,7 +476,7 @@ class Ott extends BaseUpload
      */
     public function getAccessToken()
     {
-        $access_token = Cache::get('123pan_access_token_' . $this->clientID, '');
+        $access_token = Cache::get('123pan_access_token_' . $this->clientID.$this->dir, '');
         if ($access_token == '') {
             if ($this->clientID == '' || $this->clientSecret == '') throw new \think\Exception('请完成开放平台信息配置');
             $url = 'https://open-api.123pan.com/api/v1/access_token';
@@ -504,7 +504,7 @@ class Ott extends BaseUpload
                 $datetimeObject->setTimezone(new DateTimeZone('Asia/Shanghai'));
                 $timestamp = $datetimeObject->getTimestamp();
                 $expireTime = $timestamp - time();
-                Cache::set('123pan_access_token_' . $this->clientID, $responseData['data']['accessToken'], $expireTime);
+                Cache::set('123pan_access_token_' . $this->clientID.$this->dir, $responseData['data']['accessToken'], $expireTime);
                 return $responseData['data']['accessToken'];
             } else {
                 throw new \Exception("token获取失败. HTTP Code: {$httpCode}. Response: {$response}");

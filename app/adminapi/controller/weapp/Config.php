@@ -48,5 +48,4 @@ class Config extends BaseAdminController
         return success('SET_SUCCESS');
     }
 
-
 }

@@ -83,22 +83,21 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, computed, nextTick } from 'vue'
+import { reactive, ref } from 'vue'
 import { t } from '@/lang'
-import { TabsPaneContext, ElMessage, FormInstance } from 'element-plus'
+import { FormInstance } from 'element-plus'
 import { CollectionTag, Rank, ArrowLeft } from '@element-plus/icons-vue'
-import Sortable from 'sortablejs'
-import { range, cloneDeep } from 'lodash-es'
-import { debounce, img, timeStampTurnTime } from '@/utils/common'
+import { cloneDeep } from 'lodash-es'
+import { img, timeStampTurnTime } from '@/utils/common'
 import { useRoute, useRouter } from 'vue-router'
-import { addTask, editTask, getTaskDetail } from '@/addon/shop_fenxiao/api/task'
+import { getTaskDetail } from '@/addon/shop_fenxiao/api/task'
 import { getFenxiaoLevelListPage } from '@/addon/shop_fenxiao/api/level'
 
 const route = useRoute()
 const router = useRouter()
 const pageName = route.meta.title
 const repeat = ref(false)
-let taskFormRef = ref<FormInstance>()
+const taskFormRef = ref<FormInstance>()
 
 // 表单数据
 const initialFormData = {
@@ -125,7 +124,7 @@ const formData: Record<string, any> = reactive({ ...initialFormData })
 formData.id = ref(route.query.id)
 
 // 获取分销等级不分页
-let fenxiaoLevel = ref([]);
+const fenxiaoLevel = ref([]);
 const getFenxiaoLevelListPageFn = ()=>{
     getFenxiaoLevelListPage().then(res=>{
         fenxiaoLevel.value = res.data;
@@ -134,10 +133,10 @@ const getFenxiaoLevelListPageFn = ()=>{
 getFenxiaoLevelListPageFn();
 
 // 获取任务详情
-let loading = ref(true);
+const loading = ref(true);
 const getTaskDetailFn = ()=>{
     getTaskDetail({id: formData.id}).then(res=>{
-        let data = JSON.parse(JSON.stringify(res.data));
+        let data = cloneDeep(res.data);
         if (data) {
             formData.name = data.name;
             formData.time_type = data.time_type;

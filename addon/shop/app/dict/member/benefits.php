@@ -14,7 +14,7 @@ return [
                 return [
                     'title' => '商品包邮',
                     'desc' => '下单免运费',
-                    'icon' => '/static/resource/images/member/benefits/benefits_discount.png'
+                    'icon' => '/static/resource/images/member/benefits/benefits_pinkage.png'
                 ];
             }
         ]

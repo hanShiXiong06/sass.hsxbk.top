@@ -69,7 +69,7 @@
 						<template #default="{ row }">
 							<div class="flex items-center cursor-pointer " @click="toMember(row.member.member_id)">
 								<img class="w-[50px] h-[50px] mr-[10px]" v-if="row.member.headimg" :src="img(row.member.headimg)" alt="">
-								<img class="w-[50px] h-[50px] mr-[10px]" v-else src="@/app/assets/images/default_headimg.png" alt="">
+								<img class="w-[50px] h-[50px] rounded-full mr-[10px]" v-else src="@/app/assets/images/member_head.png" alt="">
 								<div class="flex flex flex-col">
 									<span>{{ row.member.nickname || '' }}</span>
 									<span>{{ row.member.mobile || '' }}</span>

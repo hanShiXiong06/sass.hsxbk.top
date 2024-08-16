@@ -72,10 +72,15 @@ class Order extends BaseModel
     public function searchOrderIdAttr($query, $value, $data)
     {
         if ($value) {
-            $query->where("order_id", $value);
+            $query->where("order_id", "like", "%".$value."%");
         }
     }
-
+    public function searchOutTradeNoAttr($query, $value, $data)
+    {
+        if ($value) {
+            $query->where("out_trade_no", "like", "%".$value."%");
+        }
+    }
     /**
      * 搜索器:订单列是否发单1已发单0未发单
      * @param $value

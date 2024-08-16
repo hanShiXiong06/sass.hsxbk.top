@@ -11,6 +11,7 @@
 
 namespace addon\tk_jhkd\app\adminapi\controller\order;
 
+use app\service\admin\member\MemberService;
 use core\base\BaseAdminController;
 use addon\tk_jhkd\app\service\admin\order\OrderAddService;
 
@@ -86,9 +87,17 @@ class OrderAdd extends BaseAdminController
         return success('DELETE_SUCCESS');
     }
 
-    
+
     public function getMemberAll(){
-         return success(( new OrderAddService())->getMemberAll());
+        $data = $this->request->params([
+            ['keyword', ''],
+            ['register_type', ''],
+            ['register_channel', ''],
+            ['create_time', []],
+            ['member_label', 0],
+            ['member_level', 0],
+        ]);
+        return success((new MemberService())->getPage($data));
     }
 
 }

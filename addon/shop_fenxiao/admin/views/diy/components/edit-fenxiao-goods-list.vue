@@ -5,15 +5,15 @@
 			<h3 class="mb-[10px]">{{ t('selectStyle') }}</h3>
 			<div class="flex items-center mb-[18px] rounded overflow-hidden">
 				<span
-					class="iconfont icongudingzhanshi border-[1px] border-solid border-[#eee] cursor-pointer flex-1 flex items-center justify-center py-[5px]"
+					class="iconfont iconzuoyoutuwenpc border-[1px] border-solid border-[#eee] cursor-pointer flex-1 flex items-center justify-center py-[5px]"
 					:class="{ 'border-[var(--el-color-primary)] text-[var(--el-color-primary)]': diyStore.editComponent.style == 'style-1' }"
 					@click="diyStore.editComponent.style = 'style-1'"></span>
 				<span
-					class="iconfont icontuwendaohang3 border-[1px] border-solid border-[#eee] cursor-pointer flex-1 flex items-center justify-center py-[5px]"
+					class="iconfont iconshangxiatuwenpc border-[1px] border-solid border-[#eee] cursor-pointer flex-1 flex items-center justify-center py-[5px]"
 					:class="{ 'border-[var(--el-color-primary)] text-[var(--el-color-primary)]': diyStore.editComponent.style == 'style-2' }"
 					@click="diyStore.editComponent.style = 'style-2'"></span>
                 <span
-					class="iconfont iconshangpinliebiaohengxianghuadong border-[1px] border-solid border-[#eee] cursor-pointer flex-1 flex items-center justify-center py-[5px]"
+					class="iconfont iconliebiaopc border-[1px] border-solid border-[#eee] cursor-pointer flex-1 flex items-center justify-center py-[5px]"
 					:class="{ 'border-[var(--el-color-primary)] text-[var(--el-color-primary)]': diyStore.editComponent.style == 'style-3' }"
 					@click="diyStore.editComponent.style = 'style-3'"></span>
 
@@ -139,6 +139,7 @@ import { img } from '@/utils/common'
 import useDiyStore from '@/stores/modules/diy'
 import { ref, reactive, onMounted,nextTick } from 'vue'
 import { ElTable } from 'element-plus'
+
 const diyStore:any = useDiyStore()
 diyStore.editComponent.ignore = [] // 忽略公共属性
 
@@ -166,9 +167,6 @@ const categoryShowDialog = ref(false)
 const categoryTable = reactive({
     loading: true,
     data: [],
-    searchParam: {
-        category_name: ''
-    }
 })
 onMounted(() => {
     loadCategoryList()
@@ -182,9 +180,7 @@ let currCategoryData: string | null = null
 const loadCategoryList = () => {
     categoryTable.loading = true
 
-    getCategoryTree({
-        ...categoryTable.searchParam
-    }).then(res => {
+    getCategoryTree().then(res => {
         categoryTable.loading = false
         categoryTable.data = res.data
     }).catch(() => {

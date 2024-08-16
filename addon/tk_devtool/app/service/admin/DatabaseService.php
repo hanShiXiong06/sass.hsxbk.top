@@ -19,6 +19,7 @@ class DatabaseService extends BaseAdminService
     public function __construct()
     {
         parent::__construct();
+        if ($this->site_id != 0) throw new \Exception('非法访问');
     }
     public function exportTableText($tableName){
         $outputDir = root_path() . 'public/addon/tk_devtool/exportsql';
@@ -159,7 +160,9 @@ class DatabaseService extends BaseAdminService
             foreach ($data as $row) {
                 $sql .= "INSERT INTO `$table` VALUES (";
                 foreach ($row as $value) {
-                    $sql .= "'" . addslashes($value) . "', ";
+                    if ($value !== null) {
+                        $sql .= "'" . addcslashes($value, "'") . "', ";
+                    }
                 }
                 $sql = rtrim($sql, ', ');
                 $sql .= ");\n";

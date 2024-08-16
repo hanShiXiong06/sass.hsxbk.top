@@ -5,12 +5,12 @@ return [
         'shop_buy_goods' => [
             'key' => 'shop_buy_goods',
             'name' => '购买商品',
-            'desc' => '订单交易成功后按订单交易金额发放成长值',
+            'desc' => '订单交易成功后按订单交易金额发放积分',
             'component' => '/src/addon/shop/views/member/components/point-rule-buygoods.vue',
             'calculate' => function(array $config, array $data) {
-                $order_money = $data['order_money'] ?? 0;
+                $order_money = $data[ 'order_money' ] ?? 0;
                 if ($order_money <= 0) return 0;
-                return (int)round($order_money / $config['money'] * $config['point']);
+                return (int) round($order_money / $config[ 'money' ] * $config[ 'point' ]);
             },
             'content' => [
                 'admin' => function($site_id, $config) {

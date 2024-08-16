@@ -6,22 +6,30 @@
 			<!-- #endif -->
 			<view v-if="info" class="flex items-center">
 				<!-- 唤起获取微信 -->
-				<u-avatar :src="img(info.headimg)" :size="'100rpx'" leftIcon="none" @click="clickAvatar"></u-avatar>
+				<u-avatar :src="img(info.headimg)" :size="'110rpx'" leftIcon="none" :default-url="img('static/resource/images/default_headimg.png')" @click="clickAvatar" />
 				<view class="ml-[20rpx] flex-1">
-					<view class="text-[#ffffff] flex items-center flex-wrap" :style="{ color : diyComponent.textColor }">
-						<view class="text-[32rpx] truncate max-w-[320rpx] font-bold leading-[38rpx]">{{ info.nickname }}</view>
-						<view class="text-[24rpx] font-400 leading-[28rpx] ml-[10rpx]" v-if="info.mobile">{{info.mobile.replace(info.mobile.substring(3,7), "****")}}</view>
+					<view class="text-[#ffffff] flex items-baseline flex-wrap" :style="{ color : diyComponent.textColor }">
+						<view class="text-[32rpx] truncate max-w-[320rpx] font-500 leading-[38rpx]">{{ info.nickname }}</view>
+						<view class="text-[26rpx] font-400 leading-[28rpx] ml-[10rpx]" v-if="info.mobile">{{info.mobile.replace(info.mobile.substring(3,7), "****")}}</view>
+
+						<!-- #ifdef H5 -->
+						<view v-else-if="!info.mobile" @click="bindMobileFn" class="text-[22rpx] text-[#666] ml-[10rpx] px-[6rpx] border-[1rpx] border-solid border-[#E3E4E9] rounded-[8rpx] h-[34rpx] flex-center">{{ t('bindMobile') }}</view>
+						<!-- #endif -->
+
+						<!-- #ifdef MP-WEIXIN -->
+						<button v-else-if="!info.mobile" class="text-[22rpx] text-[#666] ml-[10rpx] bg-[#fff] px-[6rpx] border-[1rpx] border-solid border-[#E3E4E9] rounded-[8rpx] h-[37rpx] flex-center mr-0" open-type="getPhoneNumber" @getphonenumber="memberStore.bindMobile">{{t('bindMobile')}}</button>
+						<!-- #endif -->
+
 					</view>
-					<view class="text-[#ffffff] text-[24rpx] font-400 leading-[28rpx] mt-[6rpx]" :style="{ color : diyComponent.textColor }">UID：{{ info.member_no }}</view>
+					<!-- diyComponent.textColor -->
+					<view class="text-[#ffffff] text-[24rpx] font-400 leading-[28rpx] mt-[14rpx]" :style="{ color : '#666' }">UID：{{ info.member_no }}</view>
 				</view>
-				<view @click="redirect({ url: '/app/pages/setting/index' })">
-					<text class="nc-iconfont nc-icon-shezhiV6xx1 text-[38rpx] ml-[10rpx]" :style="{ color : diyComponent.textColor }"></text>
-				</view>
+				<text @click="redirect({ url: '/app/pages/setting/index' })" class="nc-iconfont nc-icon-shezhiV6xx1 text-[38rpx] ml-[10rpx]" :style="{ color : diyComponent.textColor }"></text>
 			</view>
-			<view v-else class="flex ml-[32rpx] mr-[52rpx] items-center" @click="toLogin">
-				<u-avatar src="" :size="'100rpx'"></u-avatar>
-				<view class="ml-[20rpx] flex-1">
-					<view class="text-[32rpx] font-bold leading-[38rpx]" :style="{ color : diyComponent.textColor }">
+			<view v-else class="flex items-center">
+				<u-avatar :src="img('static/resource/images/default_headimg.png')" :size="'100rpx'" @click="toLogin" />
+				<view class="ml-[20rpx] flex-1" @click="toLogin">
+					<view class="text-[32rpx] font-500 leading-[38rpx]" :style="{ color : diyComponent.textColor }">
 						{{ t('login') }}/{{ t('register') }}
 					</view>
 				</view>
@@ -30,37 +38,42 @@
 				</view>
 			</view>
 
-			<view class="flex mt-[30rpx] items-center">
+			<view class="flex mt-[40rpx] items-center">
 				<view class="text-center w-[33.333%] flex-shrink-0">
-					<view class="text-[36rpx] leading-[42rpx] h-[50rpx] font-500">
+					<view class="text-[36rpx] mb-[20rpx] font-500 price-font">
+						<!-- diyComponent.textColor -->
 						<view @click="redirect({url: '/app/pages/member/balance'})" :style="{ color : diyComponent.textColor }">{{ money }}</view>
 					</view>
-					<view class="text-[22rpx] leading-[26rpx] h-[31rpx] font-400">
-						<view @click="redirect({url: '/app/pages/member/balance'})" :style="{ color : diyComponent.textColor }">{{ t('balance') }}</view>
+					<view class="text-[22rpx] font-400">
+						<view @click="redirect({url: '/app/pages/member/balance'})" :style="{ color : '#666' }">{{ t('balance') }}</view>
 					</view>
 				</view>
 				<view class="text-center w-[33.333%] flex-shrink-0">
-					<view class="text-[36rpx] leading-[42rpx] h-[50rpx] font-500">
+					<view class="text-[36rpx] mb-[20rpx] font-500 price-font">
 						<view @click="redirect({url: '/app/pages/member/point'})" :style="{ color : diyComponent.textColor }">{{ parseInt(info?.point) || 0 }}</view>
 					</view>
-					<view class="text-[22rpx] leading-[26rpx] h-[31rpx] font-400">
-						<view @click="redirect({url: '/app/pages/member/point'})" :style="{ color : diyComponent.textColor }">{{ t('point') }}</view>
+					<view class="text-[22rpx] font-400">
+						<view @click="redirect({url: '/app/pages/member/point'})" :style="{ color : '#666' }">{{ t('point') }}</view>
 					</view>
 				</view>
-				<view class="text-center w-[33.333%] flex-shrink-0"  @click="redirect({ url: '/addon/shop/pages/member/my_coupon' })">
-					<view class="text-[36rpx] leading-[42rpx] h-[50rpx] font-500">
+				<view class="text-center w-[33.333%] flex-shrink-0" @click="redirect({ url: '/addon/shop/pages/member/my_coupon' })">
+					<view class="text-[36rpx] mb-[20rpx] font-500 price-font">
 						<view :style="{ color : diyComponent.textColor }">{{ couponCount }}</view>
 					</view>
-					<view class="text-[22rpx] leading-[26rpx] h-[31rpx] font-400">
-						<view  :style="{ color : diyComponent.textColor }">{{ t('coupon') }}</view>
+					<view class="text-[22rpx] font-400">
+						<view :style="{ color : '#666' }">{{ t('coupon') }}</view>
 					</view>
 				</view>
 			</view>
 		</view>
 
 		<!-- #ifdef MP-WEIXIN -->
-		<information-filling ref="infoFill"></information-filling>
+		<information-filling ref="infoFillRef"></information-filling>
 		<!-- #endif -->
+
+		<!-- 强制绑定手机号 -->
+		<bind-mobile ref="bindMobileRef" /> 
+
 	</view>
 </template>
 
@@ -73,9 +86,12 @@
 	import { t } from '@/locale'
 	import { wechatSync } from '@/app/api/system'
 	import useDiyStore from '@/app/stores/diy'
+    import useConfigStore from '@/stores/config'
+	import bindMobile from '@/components/bind-mobile/bind-mobile.vue';
 
 	const props = defineProps(['component', 'index', 'pullDownRefreshCount','global']);
 
+	const configStore = useConfigStore()
 	const diyStore = useDiyStore();
 
 	const diyComponent = computed(() => {
@@ -117,9 +133,11 @@
 	// #ifdef H5
 	const { query } = urlDeconstruction(location.href)
 	if (query.code && isWeixinBrowser()) {
-		wechatSync({ code: query.code }).then(res => {
-			memberStore.getMemberInfo()
-		})
+		setTimeout(() =>{
+			wechatSync({ code: query.code }).then(res => {
+				memberStore.getMemberInfo()
+			})
+		},1500)
 	}
 	// #endif
 
@@ -152,18 +170,52 @@
 	})
 
 	const toLogin = () => {
-		useLogin().setLoginBack({ url: '/app/pages/member/index' })
+		let normalLogin = !configStore.login.is_username && !configStore.login.is_mobile && !configStore.login.is_bind_mobile; // 未开启普通登录
+		let authRegisterLogin = !configStore.login.is_auth_register; // 自动注册登录
+
+		// #ifdef H5
+		if (isWeixinBrowser()) {
+			// 微信浏览器
+			if (normalLogin && authRegisterLogin) {
+				uni.showToast({ title: '商家未开启登录注册', icon: 'none' })
+			} else if (configStore.login.is_username || configStore.login.is_mobile || configStore.login.is_bind_mobile) {
+				useLogin().setLoginBack({ url: '/addon/shop/pages/member/index' })
+			} else if (normalLogin && configStore.login.is_auth_register) {
+				// 判断是否开启第三方自动注册登录
+				useLogin().getAuthCode({ scopes: 'snsapi_userinfo' })
+			}
+		} else {
+			// 普通浏览器
+			if (normalLogin) {
+				uni.showToast({ title: '商家未开启登录注册', icon: 'none' })
+			} else if (configStore.login.is_username || configStore.login.is_mobile || configStore.login.is_bind_mobile) {
+				useLogin().setLoginBack({ url: '/addon/shop/pages/member/index' })
+			}
+		}
+		// #endif
+
+		// #ifdef MP
+		if (normalLogin && authRegisterLogin) {
+			uni.showToast({ title: '商家未开启登录注册', icon: 'none' })
+		} else if (configStore.login.is_username || configStore.login.is_mobile || configStore.login.is_bind_mobile) {
+			useLogin().setLoginBack({ url: '/addon/shop/pages/member/index' })
+		} else if (normalLogin && configStore.login.is_auth_register) {
+			// 判断是否开启第三方自动注册登录
+			useLogin().getAuthCode()
+		}
+		// #endif
+
 	}
 
-	const infoFill = ref(false)
+	const infoFillRef:any = ref(false)
 	const clickAvatar = () => {
 		// #ifdef MP-WEIXIN
-		infoFill.value.show = true
+		infoFillRef.value.show = true
 		// #endif
 
 		// #ifdef H5
 		if (isWeixinBrowser()) {
-			useLogin().getAuthCode('snsapi_userinfo')
+			useLogin().getAuthCode({ scopes: 'snsapi_userinfo' })
 		} else {
 			redirect({ url: '/app/pages/member/personal' })
 		}
@@ -181,7 +233,13 @@
 
 	}
 
-	let menuButtonInfo = {};
+	//强制绑定手机号
+    const bindMobileRef: any = ref(null)
+	const bindMobileFn = () =>{
+		bindMobileRef.value.open()
+	}
+
+	let menuButtonInfo: any = {};
 	// 如果是小程序，获取右上角胶囊的尺寸信息，避免导航栏右侧内容与胶囊重叠(支付宝小程序非本API，尚未兼容)
 	// #ifdef MP-WEIXIN || MP-BAIDU || MP-TOUTIAO || MP-QQ
 	menuButtonInfo = uni.getMenuButtonBoundingClientRect();

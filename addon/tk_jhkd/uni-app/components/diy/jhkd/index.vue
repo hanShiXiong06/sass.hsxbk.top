@@ -31,7 +31,7 @@
 						</view>
 
 					</view>
-					<view class="fb flex item-center mt-[68rpx]">
+					<view class="fb flex item-center mt-[38rpx]">
 						<view class="w-[380rpx]">
 							<view class="font-bold" :style="{ color:diyComponent.qsfontcolor, }">送去哪里？</view>
 							<view class="tk-sltext" :style="{ color:diyComponent.slfontcolor, }">请选择送件地址</view>

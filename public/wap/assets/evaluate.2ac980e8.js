@@ -1,0 +1,1 @@
+import{bu as e}from"./index-d8a8f699.js";function o(o){return e.get("phone_shop/goods/evaluate",o)}function s(o){return e.post("phone_shop/goods/evaluate",o,{showSuccessMessage:!0})}function t(o){return e.get(`phone_shop/order/evaluate/${o}`)}export{t as a,o as g,s};

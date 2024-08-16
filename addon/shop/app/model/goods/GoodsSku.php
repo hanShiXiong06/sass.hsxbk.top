@@ -41,7 +41,7 @@ class GoodsSku extends BaseModel
     public function getSkuImageThumbSmallAttr($value, $data)
     {
         if (isset($data[ 'sku_image' ]) && $data[ 'sku_image' ] != '') {
-            return get_thumb_images($data['site_id'], $data[ 'sku_image' ], FileDict::SMALL);
+            return get_thumb_images($data[ 'site_id' ], $data[ 'sku_image' ], FileDict::SMALL);
         }
         return [];
     }
@@ -52,7 +52,7 @@ class GoodsSku extends BaseModel
     public function getSkuImageThumbMidAttr($value, $data)
     {
         if (isset($data[ 'sku_image' ]) && $data[ 'sku_image' ] != '') {
-            return get_thumb_images($data['site_id'], $data[ 'sku_image' ], FileDict::MID);
+            return get_thumb_images($data[ 'site_id' ], $data[ 'sku_image' ], FileDict::MID);
         }
         return [];
     }
@@ -63,7 +63,7 @@ class GoodsSku extends BaseModel
     public function getSkuImageThumbBigAttr($value, $data)
     {
         if (isset($data[ 'sku_image' ]) && $data[ 'sku_image' ] != '') {
-            return get_thumb_images($data['site_id'], $data[ 'sku_image' ], FileDict::BIG);
+            return get_thumb_images($data[ 'site_id' ], $data[ 'sku_image' ], FileDict::BIG);
         }
         return [];
     }
@@ -87,19 +87,19 @@ class GoodsSku extends BaseModel
      */
     public function searchSkuNameAttr($query, $value, $data)
     {
-        if ($value) {
+        if ($value != '') {
             $query->where("sku_name", "like", "%" . $value . "%");
         }
     }
 
     /**
-     * 搜索器:商品规格商品sku编码 sku_no
+     * 搜索器:商品规格商品sku编码
      * @param $value
      * @param $data
      */
     public function searchSkuNoAttr($query, $value, $data)
     {
-        if ($value) {
+        if ($value != '') {
             $query->where("sku_no", "like", "%" . $value . "%");
         }
     }

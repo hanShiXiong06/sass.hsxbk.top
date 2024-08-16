@@ -46,7 +46,7 @@ return [
     'ZIP_FILE_NOT_FOUND' => '找不到可用的压缩文件',
     'ZIP_ARCHIVE_NOT_INSTALL' => 'ZipArchive扩展未安装',
     'DOWNLOAD_SUCCESS' => '下载成功',
-    'APP_NOT_ALLOW_UNINSTALL' => '该应用下存在站点卸载前请先删除相关站点',
+    'APP_NOT_ALLOW_UNINSTALL' => '该插件有站点正在使用中，卸载前请先删除相关站点',
     'ADDON_INSTALL_FAIL' => '插件安装失败',
     'ADMIN_DIR_NOT_EXIST' => '未找到admin源码所在目录, <a style="text-decoration: underline;" href="https://www.kancloud.cn/niucloud/niucloud-admin-develop/3213544" target="blank">点击查看相关手册</a>',
     'WEB_DIR_NOT_EXIST' => '未找到web源码所在目录, <a style="text-decoration: underline;" href="https://www.kancloud.cn/niucloud/niucloud-admin-develop/3213544" target="blank">点击查看相关手册</a>',
@@ -74,6 +74,8 @@ return [
     'SITE_USER_CAN_NOT_LOGIN_IN_ADMIN' => '站点用户无法在平台端进行登录',
     'ADMIN_USER_CAN_NOT_LOGIN_IN_SITE' => '平台用户无法在站点端进行登录',
     'APP_TYPE_NOT_EXIST' => '无效的登录端口',
+    "USER_NOT_ALLOW_DEL" => "该用户是一些站点的管理员不允许删除",
+    "SUPER_ADMIN_NOT_ALLOW_DEL" => "超级管理员不允许删除",
 
     //用户组权限
 
@@ -91,7 +93,7 @@ return [
     'USER_NOT_EXIST' => '用户不存在',
     'NO_SITE_USER_ROLE' => '用户不存在关联权限',
     'ADMIN_NOT_ALLOW_EDIT_ROLE' => '超级管理员不允许改动权限',
-    'USERNAME_REPEAT' => '用户名重复',
+    'USERNAME_REPEAT' => '账号重复',
     'SITE_USER_EXIST' => '该用户已存在',
 
     //角色管理
@@ -110,7 +112,7 @@ return [
     'OSS_FILE_URL_NOT_EXIST' => '远程资源文件地址不能为空',
     'BASE_IMAGE_FILE_NOT_EXIST' => 'base图片资源不能为空',
     'UPLOAD_TYPE_NOT_SUPPORT' => '不支持的上传类型',
-    'FILE_ERROE' => '无效的资源',
+    'FILE_ERROR' => '无效的资源',
     'UPLOAD_STORAGE_TYPE_ALL_CLOSE' => '至少要有一个启用的存储方式',
     'STORAGE_NOT_HAS_HTTP_OR_HTTPS' => '空间域名请补全http://或https://',
 
@@ -137,12 +139,13 @@ return [
     'ACCOUNT_OR_PASSWORD_ERROR' => '账号或密码错误',
     'MEMBER_LOCK' => '账号被锁定',
     'MEMBER_NOT_EXIST' => '账号不存在',
+    'MEMBER_OPENID_EXIST' => 'openid已存在',
     'MEMBER_LOGOUT' => '账号退出',
     'MEMBER_TYPE_NOT_EXIST' => '账户类型不存在',
     'MEMBER_IS_EXIST' => '账号已存在',
     'MEMBER_NO_IS_EXIST' => '会员编号已存在',
     'REG_CHANNEL_NOT_EXIST' => '无效的注册渠道',
-    'MEMBER_USERNAME_LOGIN_NOT_OPEN' => '未开始账号登录注册',
+    'MEMBER_USERNAME_LOGIN_NOT_OPEN' => '未开启账号登录注册',
     'AUTH_LOGIN_NOT_OPEN' => '未开启第三方登录注册',
     'MOBILE_NEEDED' => '手机号必须填写',
     'MOBILE_CAPTCHA_ERROR' => '手机验证码有误',
@@ -184,7 +187,7 @@ return [
     'WEAPP_NOT_EXIST' => '微信小程序未配置完善',
     'WEAPP_EMPOWER_NOT_EXIST' => '微信小程序授信信息不存在',
     'WEAPP_EMPOWER_TEL_NOT_EXIST' => '微信小程序授信手机号不存在',
-    'CURR_SITE_IS_NOT_OPEN_SSL' => '微信小程序请求域名只支持https请先配置ssl',
+    'CURR_SITE_IS_NOT_OPEN_SSL' => '微信小程序请求地址只支持https请先配置ssl',
     'WECHAT_MINI_PROGRAM_CODE_GENERATION_FAILED' => '微信小程序码生成失败',
 
     //站点相关
@@ -204,7 +207,7 @@ return [
     'PAY_SUCCESS' => '当前支付已完成',
     'PAY_IS_REMOVE' => '当前支付已取消',
     'PAYMENT_METHOD_NOT_EXIST' => '你选择的支付方式未启用',
-    'PAYMENT_METHOD_NOT_SCENE'=> '你选择的支付方式不适用于当前场景',
+    'PAYMENT_METHOD_NOT_SCENE' => '你选择的支付方式不适用于当前场景',
     'TREAT_PAYMENT_IS_OPEN' => '只有待支付时可以关闭',
     'TRANFER_STATUS_NOT_IN_WAIT_TANSFER' => '当前转账未处于待转账状态',
     'TRANSFER_ORDER_INVALID' => '无效的转账单据',
@@ -277,7 +280,9 @@ return [
     'CONTINUE_SIGN' => '连签',
     'DAYS' => '天！',
     'SIGN_SUCCESS' => '签到成功',
+    'SIGN_AWARD' => '签到奖励',
     'GET_AWARD' => '恭喜您获得以下奖励',
+    'WILL_GET_AWARD' => '您将获得以下奖励',
 
     //导出相关
     'EXPORT_SUCCESS' => '导出成功',
@@ -290,5 +295,7 @@ return [
     'WECHAT_OPLATFORM_NOT_EXIST' => '未配置微信开放平台',
     'WEAPP_EXIST' => '该小程序已经授权给其他站点',
     'WECHAT_EXIST' => '该公众号已经授权给其他站点',
-    'PLEASE_ADD_FIRST_SITE_GROUP' => '请先添加站点套餐'
+    'PLEASE_ADD_FIRST_SITE_GROUP' => '请先添加站点套餐',
+
+    'PRINTER_NOT_EXIST' => '打印机不存在'
 ];

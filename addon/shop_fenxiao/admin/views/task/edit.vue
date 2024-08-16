@@ -5,7 +5,6 @@
         <el-card class="card !border-none" shadow="never">
             <el-page-header :content="pageName" :icon="ArrowLeft" @back="$router.back()" />
         </el-card>
-        <!--返回 end-->
 
         <el-card class="card mt-[15px] !border-none" shadow="never">
             <el-form class="page-form" :model="formData" label-width="120px" ref="taskFormRef" :rules="formRules">
@@ -151,13 +150,12 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, computed, nextTick } from 'vue'
+import { reactive, ref, computed } from 'vue'
 import { t } from '@/lang'
-import { TabsPaneContext, ElMessage, FormInstance } from 'element-plus'
+import { FormInstance } from 'element-plus'
 import { CollectionTag, Rank, ArrowLeft } from '@element-plus/icons-vue'
-import Sortable from 'sortablejs'
-import { range, cloneDeep } from 'lodash-es'
-import { debounce, timeStampTurnTime,filterNumber,filterDigit } from '@/utils/common'
+import { cloneDeep } from 'lodash-es'
+import { timeStampTurnTime,filterNumber,filterDigit } from '@/utils/common'
 import { useRoute, useRouter } from 'vue-router'
 import { addTask, editTask, getTaskDetail } from '@/addon/shop_fenxiao/api/task'
 import { getFenxiaoLevelListPage } from '@/addon/shop_fenxiao/api/level'
@@ -166,7 +164,7 @@ const route = useRoute()
 const router = useRouter()
 const pageName = route.meta.title
 const repeat = ref(false)
-let taskFormRef = ref<FormInstance>()
+const taskFormRef = ref<FormInstance>()
 
 // 表单数据
 const initialFormData = {
@@ -218,6 +216,7 @@ const formRules = computed(() => {
         ],
         times: [
             {
+                required: true,
                 validator: (rule: any, value: string, callback: any) => {
                     const regex = /^[1-9]\d*|0$/; 
                     if(!regex.test(parseFloat(formData.times))){
@@ -239,6 +238,7 @@ const formRules = computed(() => {
         ],
         type: [
             {
+                required: true,
                 validator: (rule: any, value: string, callback: any) => {
                     if(!formData.rules[0].condition.type.length){
                         callback(new Error(t('leastSelectTaskIndex')))
@@ -284,6 +284,7 @@ const formRules = computed(() => {
         ],
         send_time_type: [
             {
+                required: true,
                 validator: (rule: any, value: string, callback: any) => {
                     if(!formData.send_time){
                         callback(new Error(t('selectTimePlaceholder1')))
@@ -318,7 +319,7 @@ const formRules = computed(() => {
 })
 
 // 获取分销等级不分页
-let fenxiaoLevel = ref([]);
+const fenxiaoLevel = ref([]);
 const getFenxiaoLevelListPageFn = ()=>{
     getFenxiaoLevelListPage().then(res=>{
         fenxiaoLevel.value = res.data;
@@ -327,10 +328,10 @@ const getFenxiaoLevelListPageFn = ()=>{
 getFenxiaoLevelListPageFn();
 
 // 获取任务详情
-let loading = ref(true);
+const loading = ref(true);
 const getTaskDetailFn = ()=>{
     getTaskDetail({id: formData.id}).then(res=>{
-        let data = JSON.parse(JSON.stringify(res.data));
+        let data = cloneDeep(res.data);
         if (data && Object.keys(data).length) {
             formData.name = data.name;
             formData.cover = data.cover;
@@ -358,7 +359,7 @@ const onSave = async (formEl: FormInstance | undefined) => {
     if (repeat.value || !formEl) return
     await formEl.validate(async (valid) => {
         if (valid) {
-            let data = JSON.parse(JSON.stringify(formData));
+            let data = cloneDeep(formData);
             if(formData.time_type == 2){
                 data.end_time = 0;
             }
@@ -437,12 +438,6 @@ const conditionTypeChangeFn = (formEl)=>{
         if (!formEl) return
         formEl.clearValidate('type')
     })
-}
-
-
-const parseFloatConversion = (event:any)=>{
-    if(!event.target.value) return false;
-    event.target.value = parseFloat(event.target.value);
 }
 </script>
 

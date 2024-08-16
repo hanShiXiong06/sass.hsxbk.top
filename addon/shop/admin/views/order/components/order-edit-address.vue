@@ -16,16 +16,16 @@
                     <el-form-item :label="t('ContactInformation')"  prop="taker_mobile">
                         <el-input v-model.trim="formData.taker_mobile" clearable :placeholder="t('ContactInformationPlaceholder')" class="input-width" maxlength="15" />
                     </el-form-item>
-                    <el-form-item :label="t('address')">
-                        <el-select v-model="formData.taker_province" value-key="id" clearable class="w-[150px]"  ref="provinceRef" :placeholder="t('province')">
+                    <el-form-item :label="t('address')" prop="address_area">
+                        <el-select v-model="formData.taker_province" value-key="id" clearable class="w-[150px]"  ref="provinceRef" :placeholder="t('province')" @change="addressChange">
                             <el-option :label="t('province')"  :value="0"/>
-                            <el-option v-for="(item, index) in areaList.province " :key="index" :label="item.name"  :value="item.id"/>
+                            <el-option v-for="(item, index) in areaList.province" :key="index" :label="item.name"  :value="item.id"/>
                         </el-select>
-                        <el-select v-model="formData.taker_city" value-key="id" clearable class="w-[150px] ml-3" ref="cityRef" :placeholder="t('city')">
+                        <el-select v-model="formData.taker_city" value-key="id" clearable class="w-[150px] ml-3" ref="cityRef" :placeholder="t('city')" @change="addressChange">
                             <el-option :label="t('city')"  :value="0"/>
                             <el-option v-for="(item, index) in areaList.city " :key="index" :label="item.name"  :value="item.id"/>
                         </el-select>
-                        <el-select v-model="formData.taker_district" value-key="id" clearable class="w-[150px] mt-[20px]"  ref="districtRef" :placeholder="t('area')">
+                        <el-select v-model="formData.taker_district" value-key="id" clearable class="w-[150px] mt-[20px]"  ref="districtRef" :placeholder="t('area')" @change="addressChange">
                             <el-option :label="t('area')" :value="0"/>
                             <el-option v-for="(item, index) in areaList.district " :key="index" :label="item.name"  :value="item.id" />
                         </el-select>
@@ -62,15 +62,13 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onMounted, watch, nextTick } from 'vue'
 import { t } from '@/lang'
-import { FormInstance, ElMessage } from 'element-plus'
+import { FormInstance } from 'element-plus'
 import { getCompanyList, getShopDeliveryList } from '@/addon/shop/api/delivery'
 import { getOrderEditAddress, orderEditAddress, getDeliveryList } from '@/addon/shop/api/order'
 import { getIsTradeManaged } from '@/app/api/weapp'
 import { createMarker, latLngToAddress, addressToLatLng } from '@/utils/qqmap'
 import { getMap, getAreaListByPid, getAreaByCode } from '@/app/api/sys'
 import { debounce, deepClone } from '@/utils/common'
-import { addShopAddress, editShopAddress } from '@/addon/shop/api/shop_address'
-import { useRoute } from 'vue-router'
 
 const showDialog = ref(false)
 const loading = ref(false)
@@ -86,7 +84,7 @@ const isTradeManaged = ref(false)
 const deliveryList = ref([])
 
 getCompanyList({}).then((data) => {
-    companyData.value = data.data.data
+    companyData.value = data.data
 })
 
 getIsTradeManaged().then(res => {
@@ -128,6 +126,26 @@ const formRules = computed(() => {
         ],
         taker_mobile: [
             { required: true, validator: ContactInformation, trigger: 'blur' }
+        ],
+        address_area: [
+            {
+                required: true,
+                validator: (rule: any, value: any, callback: any) => {
+                    if (!formData.taker_province) {
+                        callback(new Error(t('provincePlaceholder')))
+                    }
+                    if (!formData.taker_city) {
+                        callback(new Error(t('cityPlaceholder')))
+                    }
+                    if (areaList.district.length && !formData.taker_district) {
+                        callback(new Error(t('districtPlaceholder')))
+                    }
+                    if (!formData.taker_address) {
+                        callback(new Error(t('detailedAddress')))
+                    }
+                    callback()
+                }
+            }
         ]
     }
 })
@@ -141,8 +159,8 @@ const companyPass = (rule: any, value: any, callback: any) => {
 }
 
 const ContactInformation = (rule: any, value: any, callback: any) => {
-    if (formData.delivery_type == 'express') {
-        const reg = /^1[23456789]\d{9}$/
+    if (formData.delivery_type == 'express' || formData.delivery_type =='local_delivery') {
+        const reg = /^1[3-9]\d{9}$/
         if (value === '') {
             callback(new Error(t('ContactInformationPlaceholder')))
         } else if (value.length != 11) {
@@ -156,9 +174,14 @@ const ContactInformation = (rule: any, value: any, callback: any) => {
 
 const emit = defineEmits(['complete'])
 
-const selectStore = (data) => {
+const selectStore = (data:any) => {
     formData.take_store_id = data
 }
+
+const addressChange=()=>{
+    formData.taker_address = ''
+}
+
 /**
  * 确认
  * @param formEl
@@ -171,9 +194,9 @@ const confirm = async (formEl: FormInstance | undefined) => {
             // 根据选择的配送方式进行不同的提交方法
             if (changeDeliveryType.value == 'express' || changeDeliveryType.value == 'local_delivery') {
                 const address = [
-                    formData.taker_province ? provinceRef.value.selectedLabel : '',
-                    formData.taker_city ? cityRef.value.selectedLabel : '',
-                    formData.taker_district ? districtRef.value.selectedLabel : '',
+                    formData.taker_province ? addressName(areaList.province, formData.taker_province) : '',
+                    formData.taker_city ? addressName(areaList.city, formData.taker_city) : '',
+                    formData.taker_district ? addressName(areaList.district, formData.taker_district) : '',
                     formData.taker_address
                 ]
                 formData.taker_full_address = address.join('')
@@ -183,10 +206,10 @@ const confirm = async (formEl: FormInstance | undefined) => {
                     loading.value = false
                     showDialog.value = false
                     emit('complete')
+                    initData()
                 }).catch(() => {
                     loading.value = false
                 })
-                initData()
             } else {
                 const params = {
                     order_id: formData.order_id,
@@ -205,7 +228,7 @@ const confirm = async (formEl: FormInstance | undefined) => {
     })
 }
 
-const getAddressInfoFn = (data) => {
+const getAddressInfoFn = (data:any) => {
     getOrderEditAddress(data).then((res) => {
         for (const i in formData) {
             if (res.data[i]) {
@@ -284,12 +307,14 @@ const initMap = () => {
         })
         latLngChange(evt.latLng.lat, evt.latLng.lng)
     })
-
-    latLngChange(center.lat, center.lng)
+    if(changeDeliveryType.value =='local_delivery'){
+        latLngChange(center.lat, center.lng)
+    }
 }
 
 const latLngChange = (lat: number, lng: number) => {
     latLngToAddress({ mapKey, lat, lng }).then(({ message, result }) => {
+        
         if (message == 'query ok' || message == 'Success') {
             formData.taker_latitude = result.location.lat
             formData.taker_longitude = result.location.lng
@@ -411,9 +436,9 @@ watch(() => formData.taker_district, (nval) => {
 const areaChange = debounce(() => {
     setTimeout(() => {
         const address = [
-            formData.taker_province ? provinceRef.value.selectedLabel : '',
-            formData.taker_city ? cityRef.value.selectedLabel : '',
-            formData.taker_district ? districtRef.value.selectedLabel : '',
+            formData.taker_province ? provinceRef.value.states.selectedLabel : '',
+            formData.taker_city ? cityRef.value.states.selectedLabel : '',
+            formData.taker_district ? districtRef.value.states.selectedLabel : '',
             formData.taker_address
         ]
 
@@ -505,6 +530,12 @@ const initData = () => {
         if (data[key] != undefined) formData[key] = data[key]
     })
 }
+
+const addressName = (data,id)=>{
+    const address = data.find(item => item.id === id);
+    return address.name;
+}
+
 defineExpose({
     showDialog,
     setFormData

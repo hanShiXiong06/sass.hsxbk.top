@@ -31,7 +31,7 @@
 import { reactive, ref } from 'vue'
 import { t } from '@/lang'
 import { getFenxiaoPosterConfig, setFenxiaoPosterConfig } from '@/addon/shop_fenxiao/api/config'
-import { FormInstance, FormRules } from 'element-plus'
+import { FormInstance } from 'element-plus'
 import {  useRouter } from "vue-router";
 
 const router = useRouter();
@@ -43,7 +43,7 @@ const formData = reactive<Record<string, string>>({
     poster_bg: ''
 })
 
-const setFormData = async (id: number = 0) => {
+const setFormData = async () => {
     const data = await (await getFenxiaoPosterConfig()).data
     Object.keys(formData).forEach((key: string) => {
         if (data[key] != undefined) formData[key] = data[key]
@@ -72,7 +72,7 @@ const save = async (formEl: FormInstance | undefined) => {
         }
     })
 }
-const toLink = (type)=>{
+const toLink = (type: any)=>{
     let routeData = router.resolve(`/setting/agreement/edit?key=${type}`)
     window.open(routeData.href,' blank');
 }

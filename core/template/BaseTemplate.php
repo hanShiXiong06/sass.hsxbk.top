@@ -29,27 +29,6 @@ abstract class BaseTemplate extends Storage
 
     }
 
-
-    /**
-     * 发送模板消息
-     * @return mixed
-     */
-    abstract protected function send(array $data);
-
-    /**
-     * 增加模板消息
-     * @param array $data
-     * @return mixed
-     */
-    abstract protected function addTemplate(array $data);
-
-    /**
-     * 删除消息模板
-     * @param array $data
-     * @return mixed
-     */
-    abstract protected function delete(array $data);
-
     /**
      * 获取消息模板列表
      * @return mixed

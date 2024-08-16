@@ -38,47 +38,47 @@ class CoreFenxiaoDataService extends BaseCoreService
      * @param string $type
      * @return true
      */
-    public static function setCommission(int $site_id, int $member_id, int|float $number, string $type, $relate_id = 0)
+    public static function setCommission(int $site_id, int $member_id, $number, string $type, $relate_id = 0)
     {
         $core_member_account = new CoreMemberAccountService();
         $data = [];
         $type_field = '';
         switch ($type) {
             case 'fenxiao':
-                $data['fenxiao_commission'] = Db::raw('fenxiao_commission + ' . $number);
+                $data[ 'fenxiao_commission' ] = Db::raw('fenxiao_commission + ' . $number);
                 $from_type = 'shop_fenxiao';
                 $memo = '分销订单佣金结算';
                 break;
             case 'agent':
-                $data['agent_commission'] = Db::raw('agent_commission + ' . $number);
+                $data[ 'agent_commission' ] = Db::raw('agent_commission + ' . $number);
                 $from_type = 'shop_fenxiao_agent';
                 $memo = '渠道代理订单结算';
                 break;
             case 'team':
-                $data['team_commission'] = Db::raw('team_commission + ' . $number);
+                $data[ 'team_commission' ] = Db::raw('team_commission + ' . $number);
                 $from_type = 'shop_fenxiao_team';
                 $memo = '团队分红订单结算';
                 break;
             case 'task':
-                $data['task_commission'] = Db::raw('task_commission + ' . $number);
+                $data[ 'task_commission' ] = Db::raw('task_commission + ' . $number);
                 $from_type = 'shop_fenxiao_task';
                 $memo = '任务奖励';
                 break;
             case 'sale':
-                $data['sale_commission'] = Db::raw('sale_commission + ' . $number);
+                $data[ 'sale_commission' ] = Db::raw('sale_commission + ' . $number);
                 $from_type = 'shop_fenxiao_sale';
                 $memo = '销售奖励';
                 break;
         }
         $type_field = $type . '_commission';
-        $data[$type_field] = Db::raw($type_field . ' + ' . $number);
+        $data[ $type_field ] = Db::raw($type_field . ' + ' . $number);
         if (!empty($data)) {
-            (new Fenxiao())->where([['site_id', '=', $site_id], ['member_id', '=', $member_id]])->update($data);
+            ( new Fenxiao() )->where([ [ 'site_id', '=', $site_id ], [ 'member_id', '=', $member_id ] ])->update($data);
 
             //累计增加会员佣金
             $core_member_account->addLog($site_id, $member_id, MemberAccountTypeDict:: COMMISSION, $number, $from_type, $memo, $relate_id);
             //佣金发生变化
-            CoreEventService::fenxiaoCommissionChangeAfter($site_id, $member_id, [$type_field => $number]);
+            CoreEventService::fenxiaoCommissionChangeAfter($site_id, $member_id, [ $type_field => $number ]);
         }
         return true;
     }
@@ -90,43 +90,43 @@ class CoreFenxiaoDataService extends BaseCoreService
      */
     public function orderDataInc($data)
     {
-        $order_data = $data['order_data'];
+        $order_data = $data[ 'order_data' ];
         if ($order_data) {
-            $site_id = $order_data['site_id'];
-            $member_id = $order_data['member_id'];
-            $fenxiao_member = (new CoreFenxiaoMemberService())->findFenxiaoMember($site_id, $member_id);
+            $site_id = $order_data[ 'site_id' ];
+            $member_id = $order_data[ 'member_id' ];
+            $fenxiao_member = ( new CoreFenxiaoMemberService() )->findFenxiaoMember($site_id, $member_id);
             if ($fenxiao_member->isEmpty()) return true;
-            $fenxiao_member_id = $fenxiao_member['fenxiao_member_id'];
+            $fenxiao_member_id = $fenxiao_member[ 'fenxiao_member_id' ];
             if ($fenxiao_member_id > 0) {
-                $fenxiao = (new Fenxiao())->where([['site_id', '=', $site_id], ['member_id', '=', $fenxiao_member_id]])->findOrEmpty();
+                $fenxiao = ( new Fenxiao() )->where([ [ 'site_id', '=', $site_id ], [ 'member_id', '=', $fenxiao_member_id ] ])->findOrEmpty();
                 if (!$fenxiao->isEmpty()) {
-                        //维护分销商的数据信息
-                        $fenxiao->save(
-                            [
-                                'fenxiao_total_order' => Db::raw('fenxiao_total_order + ' . $order_data['order_money']),
-                                'fenxiao_order_num' => Db::raw('fenxiao_order_num + ' . 1),
-                            ]
-                        );
+                    //维护分销商的数据信息
+                    $fenxiao->save(
+                        [
+                            'fenxiao_total_order' => Db::raw('fenxiao_total_order + ' . $order_data[ 'order_money' ]),
+                            'fenxiao_order_num' => Db::raw('fenxiao_order_num + ' . 1),
+                        ]
+                    );
 
-                        //当前分销商业绩变化事件
-                        CoreEventService::fenxiaoOrderChange($site_id, $fenxiao['member_id'], [
-                            'order_money' => $order_data['order_money'],
+                    //当前分销商业绩变化事件
+                    CoreEventService::fenxiaoOrderChange($site_id, $fenxiao[ 'member_id' ], [
+                        'order_money' => $order_data[ 'order_money' ],
+                        'order_num' => 1
+                    ]);
+
+                    //当前分销商团队业绩变化事件
+                    CoreEventService::fenxiaoTeamOrderChange($site_id, $fenxiao[ 'member_id' ], [
+                        'order_money' => $order_data[ 'order_money' ],
+                        'order_num' => 1
+                    ]);
+                    if ($fenxiao[ 'parent' ] > 0) {
+                        //当前分销商上级团队业绩变化事件
+                        CoreEventService::fenxiaoTeamOrderChange($site_id, $fenxiao[ 'parent' ], [
+                            'order_money' => $order_data[ 'order_money' ],
                             'order_num' => 1
                         ]);
-
-                        //当前分销商团队业绩变化事件
-                        CoreEventService::fenxiaoTeamOrderChange($site_id, $fenxiao['member_id'], [
-                            'order_money' => $order_data['order_money'],
-                            'order_num' => 1
-                        ]);
-                        if ($fenxiao['parent'] > 0) {
-                            //当前分销商上级团队业绩变化事件
-                            CoreEventService::fenxiaoTeamOrderChange($site_id, $fenxiao['parent'], [
-                                'order_money' => $order_data['order_money'],
-                                'order_num' => 1
-                            ]);
-                        }
                     }
+                }
             }
         }
         return true;
@@ -152,7 +152,7 @@ class CoreFenxiaoDataService extends BaseCoreService
     public function childMemberNumInc($site_id, $member_id)
     {
 
-        $fenxiao = (new Fenxiao())->where([['site_id', '=', $site_id], ['member_id', '=', $member_id]])->findOrEmpty();
+        $fenxiao = ( new Fenxiao() )->where([ [ 'site_id', '=', $site_id ], [ 'member_id', '=', $member_id ] ])->findOrEmpty();
         if (!$fenxiao->isEmpty()) {
             //维护分销商的数据信息
             $fenxiao->save(
@@ -160,7 +160,7 @@ class CoreFenxiaoDataService extends BaseCoreService
                     'child_num' => Db::raw('child_num + ' . 1),
                 ]
             );
-            CoreEventService::fenxiaoChildMemberChangeAfter($site_id, $member_id, ['child_num' => 1]);
+            CoreEventService::fenxiaoChildMemberChangeAfter($site_id, $member_id, [ 'child_num' => 1 ]);
         }
 
         return true;
@@ -175,7 +175,7 @@ class CoreFenxiaoDataService extends BaseCoreService
     public function childMemberNumDec($site_id, $member_id)
     {
 
-        $fenxiao = (new Fenxiao())->where([['site_id', '=', $site_id], ['member_id', '=', $member_id]])->findOrEmpty();
+        $fenxiao = ( new Fenxiao() )->where([ [ 'site_id', '=', $site_id ], [ 'member_id', '=', $member_id ] ])->findOrEmpty();
         if (!$fenxiao->isEmpty()) {
             //维护分销商的数据信息
             $fenxiao->save(
@@ -183,7 +183,7 @@ class CoreFenxiaoDataService extends BaseCoreService
                     'child_num' => Db::raw('child_num - ' . 1),
                 ]
             );
-            CoreEventService::fenxiaoChildMemberChangeAfter($site_id, $member_id, ['child_num' => -1]);
+            CoreEventService::fenxiaoChildMemberChangeAfter($site_id, $member_id, [ 'child_num' => -1 ]);
         }
 
         return true;
@@ -197,7 +197,7 @@ class CoreFenxiaoDataService extends BaseCoreService
      */
     public function childFenxiaoNumInc($site_id, $member_id)
     {
-        $fenxiao = (new Fenxiao())->where([['site_id', '=', $site_id], ['member_id', '=', $member_id]])->findOrEmpty();
+        $fenxiao = ( new Fenxiao() )->where([ [ 'site_id', '=', $site_id ], [ 'member_id', '=', $member_id ] ])->findOrEmpty();
         if (!$fenxiao->isEmpty()) {
             //维护分销商的数据信息
             $fenxiao->save(
@@ -207,8 +207,8 @@ class CoreFenxiaoDataService extends BaseCoreService
                 ]
             );
 
-            CoreEventService::fenxiaoChildMemberChangeAfter($site_id, $member_id, ['child_num' => 1]);
-            CoreEventService::fenxiaoChildFenxiaoChangeAfter($site_id, $member_id, ['child_fenxiao_num' => 1]);
+            CoreEventService::fenxiaoChildMemberChangeAfter($site_id, $member_id, [ 'child_num' => 1 ]);
+            CoreEventService::fenxiaoChildFenxiaoChangeAfter($site_id, $member_id, [ 'child_fenxiao_num' => 1 ]);
         }
         return true;
     }
@@ -220,7 +220,7 @@ class CoreFenxiaoDataService extends BaseCoreService
      */
     public function childFenxiaoNumDec($site_id, $member_id)
     {
-        $fenxiao = (new Fenxiao())->where([['site_id', '=', $site_id], ['member_id', '=', $member_id]])->findOrEmpty();
+        $fenxiao = ( new Fenxiao() )->where([ [ 'site_id', '=', $site_id ], [ 'member_id', '=', $member_id ] ])->findOrEmpty();
         if (!$fenxiao->isEmpty()) {
             //维护分销商的数据信息
             $fenxiao->save(
@@ -230,8 +230,8 @@ class CoreFenxiaoDataService extends BaseCoreService
                 ]
             );
 
-            CoreEventService::fenxiaoChildMemberChangeAfter($site_id, $member_id, ['child_num' => -1]);
-            CoreEventService::fenxiaoChildFenxiaoChangeAfter($site_id, $member_id, ['child_fenxiao_num' => -1]);
+            CoreEventService::fenxiaoChildMemberChangeAfter($site_id, $member_id, [ 'child_num' => -1 ]);
+            CoreEventService::fenxiaoChildFenxiaoChangeAfter($site_id, $member_id, [ 'child_fenxiao_num' => -1 ]);
         }
         return true;
     }

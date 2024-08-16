@@ -12,11 +12,11 @@ use think\facade\Route;
 /**
  * tk_cps
  */
-Route::group('tk_cps', function() {
+Route::group('tk_cps', function () {
     Route::post('bwcnotice', 'addon\tk_cps\app\api\controller\Notice@bwcNotice');
 });
-Route::group('tk_cps', function() {
-
+Route::group('tk_cps', function () {
+   // Route::get('ceshi', 'addon\tk_cps\app\api\controller\Bwc@ceshi');
     /***************************************************** 霸王餐活动****************************************************/
     //活动列表
     Route::get('bwc/actlist', 'addon\tk_cps\app\api\controller\Bwc@actList');
@@ -33,8 +33,8 @@ Route::group('tk_cps', function() {
     ->middleware(ApiCheckToken::class, false) //false表示不验证登录
     ->middleware(ApiLog::class);
 
-Route::group('tk_cps', function() {
-//    Route::post('ceshi', 'addon\tk_cps\app\api\controller\Bwc@ceshi');
+Route::group('tk_cps', function () {
+
     Route::get('bwc/list', 'addon\tk_cps\app\api\controller\Bwc@lists');
     Route::get('bwc/orderstatus', 'addon\tk_cps\app\api\controller\Bwc@getOrderStatus');
     Route::get('bwc/orderinfo/:id', 'addon\tk_cps\app\api\controller\Bwc@info');
@@ -44,6 +44,9 @@ Route::group('tk_cps', function() {
     Route::post('bwc/cancelevent', 'addon\tk_cps\app\api\controller\Bwc@cancelEvent');
     //分销关系检查
     Route::post('bwc/checkfenxiao', 'addon\tk_cps\app\api\controller\Bwc@checkFenxiao');
+    //分销绑定
+    Route::post('checkfenxiao', 'addon\tk_cps\app\api\controller\Fenxiao@checkFenxiao');
+
 })->middleware(ApiChannel::class)
     ->middleware(ApiCheckToken::class, true) //表示验证登录
     ->middleware(ApiLog::class);

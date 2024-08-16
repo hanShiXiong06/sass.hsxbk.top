@@ -10,16 +10,16 @@
 			<!--  #endif -->
 
 			<!-- #ifdef MP -->
-			<view class="btn-poster-save bg-[var(--primary-color)] border-[var(--primary-color)]" @click="save">保存海报</view>
+			<view class="btn-poster-save primary-btn-bg" @click="save">保存海报</view>
 			<!--  #endif -->
 
-			<u-popup :show="show" @close="show = false" mode="center" :round="10" :closeable="true" :safe-area-inset-bottom="false">
+			<u-popup :show="show" @close="show = false" mode="center" :round="'var(--rounded-big)'" :safe-area-inset-bottom="false" :customStyle="{'overflow':'hidden'}">
 				<view class="dialog-popup">
 					<view class="title">提示</view>
 					<view class="message">您拒绝了保存图片到相册的授权请求，无法保存图片到相册，如需正常使用，请授权之后再进行操作。</view>
 					<view class="action-wrap">
 						<view @click="closeDialog">取消</view>
-						<view>
+						<view class="flex items-end">
 							<button type="default" class="authorization-btn" open-type="openSetting" @opensetting="closeDialog" hover-class="none">立即授权</button>
 						</view>
 					</view>
@@ -27,33 +27,46 @@
 			</u-popup>
 		</block>
 
-		<u-loading-page bg-color="rgb(248,248,248)" :loading="loading" loadingText="" fontSize="16" color="#333"></u-loading-page>
+		<loading-page :loading="loading"></loading-page>
 
 		<!-- #ifdef MP-WEIXIN -->
 		<!-- 小程序隐私协议 -->
-		<wx-privacy-popup ref="wxPrivacyPopup"></wx-privacy-popup>
+		<wx-privacy-popup ref="wxPrivacyPopupRef"></wx-privacy-popup>
 		<!-- #endif -->
 	</view>
 </template>
 
 <script setup lang="ts">
-	import { img, getToken } from '@/utils/common';
-	import { ref } from 'vue';
+	import { img, getToken,redirect } from '@/utils/common';
+	import { ref,nextTick } from 'vue';
 	import { onLoad } from '@dcloudio/uni-app'
 	import { getPoster } from '@/app/api/system'
 	import { useShare } from '@/hooks/useShare'
     import { useLogin } from '@/hooks/useLogin'
 
-	let show = ref(false);
-	let loading = ref(true);
+	const show = ref(false);
+	const loading = ref(true);
 	
 	const closeDialog = ()=> {
 		show.value = false;
 	}
-	
+
+	const wxPrivacyPopupRef:any = ref(null)
+
 	const { setShare } = useShare()
 
-	onLoad((option) => {
+	onLoad((option:any) => {
+
+		if(!option.id) {
+			uni.showToast({
+				title: '缺少参数id',
+				icon: 'none'
+			});
+			setTimeout(()=>{
+				redirect({ url: '/addon/shop/pages/index', mode: 'reLaunch'})
+			},1000)
+			return;
+		}
 
 		if(!getToken()){
             useLogin().setLoginBack({ url: '/addon/shop_fenxiao/pages/promote_code', param: { id: option.id, mid: option.mid } });
@@ -75,11 +88,16 @@
 				...share
 			}
 		});
+		// #ifdef MP
+		nextTick(()=>{
+			if(wxPrivacyPopupRef.value) wxPrivacyPopupRef.value.proactive();
+		})
+		// #endif
 	})
 	
 	// 获取分享海报
-	let poster = ref('');
-	const getPosterFn = (id) => {
+	const poster = ref('');
+	const getPosterFn = (id: any) => {
 		loading.value = true;
 		let obj = {
 			type: 'fenxiao',
@@ -141,15 +159,15 @@
 
 <style lang="scss">
 	.container {
+		overflow: hidden;
 		width: 100vw;
 		min-height: 100vh;
-		background-color: #f5f5f5;
+		background-color: var(--page-bg-color);
 	}
 
 	.poster-wrap {
-		padding: 40rpx 0;
-		width: calc(100vw - 80rpx);
-		margin: 0 40rpx;
+		width: calc(100vw - var(--sidebar-m) * 2);
+		margin: var(--sidebar-m);
 		line-height: 1;
 
 		image {
@@ -164,28 +182,28 @@
 	}
 
 	.btn-poster-save {
-		margin: 0 40rpx;
-		margin-top: 30rpx;
+		margin: 30rpx 20rpx 30rpx;
 		height: 80rpx;
 		line-height: 80rpx;
 		color: #fff;
+        font-weight: 500;
 		text-align: center;
-		border-radius: 10rpx;
-		font-size:28rpx;
+		border-radius: 100rpx;
+		font-size:26rpx;
 	}
 
 	.tips {
 		text-align: center;
-		color: #999;
-		font-weight: 600;
-		margin-top: 20rpx;
+		color: var(--text-color-light6);
+		margin-top: var(--top-m);
+		font-size: 28rpx;
 	}
 
 	.dialog-popup {
 		width: 580rpx;
 		background: #fff;
 		box-sizing: border-box;
-		border-radius: 10rpx;
+		border-radius: var(--rounded-small);
 		overflow: hidden;
 		height: initial;
 
@@ -193,22 +211,22 @@
 			padding: 30rpx 30rpx 0 30rpx;
 			text-align: center;
 			font-size: 32rpx;
-			font-weight: bold;
+			font-weight: 500;
+			color: #333;
 		}
 
 		.message {
-			padding: 0 30rpx;
-			color: #666;
+			padding: 0 var(--popup-sidebar-m);
+			color: #333;
 			text-align: center;
 			line-height: 1.3;
 			margin-top: 30rpx;
 		}
 
 		.action-wrap {
-			margin-top: 50rpx;
+			margin-top: 60rpx;
 			height: 80rpx;
 			display: flex;
-			border-top: 2rpx solid #eee;
 
 			&>view {
 				flex: 1;
@@ -216,12 +234,13 @@
 				line-height: 80rpx;
 
 				&:first-child {
-					border-right: 2rpx solid #eee;
-					color: #999;
+					border-top: 2rpx solid #eee;
+					color: var(--text-color-light6);
 				}
 
 				button {
 					border: none;
+					border-top: 2rpx solid transparent;
 					line-height: 80rpx;
 					padding: 0;
 					margin: 0;

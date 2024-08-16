@@ -13,8 +13,9 @@ class Bwc extends BaseApiController
 {
     public function ceshi()
     {
-
-//        $data = $this->request->params([
+//       $res= (new BwcService())->execute('/cps/list',['limit'=>100,'offset'=>40]);
+//        return success($res);
+       //        $data = $this->request->params([
 //            ['pid', '1'],
 //        ]);
 //        return success((new BwcService())->checkFenxiao($data));

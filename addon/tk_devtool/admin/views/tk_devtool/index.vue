@@ -21,7 +21,7 @@
           为保证程序能正常运行，设置站点所有文件权限为755，所有者为www
         </el-descriptions-item>
         <el-descriptions-item label="一键打包">
-          一键打包需要配合队列功能，请先开启队列，请勿重新执行，尽量在服务器空闲执行
+          一键打包需要配合队列功能，请先开启队列，请勿重复执行，尽量在服务器空闲执行
         </el-descriptions-item>
       </el-descriptions>
     </el-card>

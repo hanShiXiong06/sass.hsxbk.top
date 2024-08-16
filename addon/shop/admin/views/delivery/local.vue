@@ -1,13 +1,9 @@
 <template>
     <div class="main-container">
-        <div class="detail-head">
-            <div class="left" @click="back">
-                <span class="iconfont iconxiangzuojiantou !text-xs"></span>
-                <span class="ml-[1px]">{{ t('returnToPreviousPage') }}</span>
-            </div>
-            <span class="adorn">|</span>
-            <span class="right">{{ pageName }}</span>
-        </div>
+        <el-card class="card !border-none mb-[15px]" shadow="never">
+            <el-page-header :content="pageName" :icon="ArrowLeft" @back="back" />
+        </el-card>
+        
         <el-card class="box-card !border-none" shadow="never">
             <el-form label-width="120px" ref="formRef" :rules="formRules" :model="formData" class="page-form" v-loading="loading">
                 <el-form-item :label="t('deliveryAddress')" prop="delivery_address">
@@ -16,8 +12,7 @@
                             {{ defaultDeliveryAddress ? defaultDeliveryAddress.full_address : t('defaultDeliveryAddressEmpty') }}
                             <el-button type="primary" @click="router.push('/shop/order/address')" link class="ml-[10px]">{{ defaultDeliveryAddress ? t('update') : t('toSetting') }}</el-button>
                         </div>
-                        <div class="text-error leading-none"
-                            v-if="formData.center.lat && defaultDeliveryAddress && (formData.center.lat != defaultDeliveryAddress.lat || formData.center.lng != defaultDeliveryAddress.lng)">
+                        <div class="text-error leading-none" v-if="formData.center.lat && defaultDeliveryAddress && (formData.center.lat != defaultDeliveryAddress.lat || formData.center.lng != defaultDeliveryAddress.lng)">
                             {{ t('deliveryAddressChange') }}</div>
                     </div>
                 </el-form-item>
@@ -136,13 +131,13 @@ const router = useRouter()
 const loading = ref(false)
 const pageName = route.meta.title
 const formRef = ref<FormInstance>()
-const areaFromRef = ref<FormInstance[]>()
+const areaFromRef: any = ref<FormInstance[]>()
 interface addressType{
     full_address:string
     lat:string
     lng:string
 }
-const defaultDeliveryAddress = ref<addressType|null>(null)
+const defaultDeliveryAddress:any = ref<addressType|null>(null)
 const getDefaultDeliveryAddress = async () => {
     await getShopDefaultDeliveryAddressInfo().then(({ data }) => {
         defaultDeliveryAddress.value = data

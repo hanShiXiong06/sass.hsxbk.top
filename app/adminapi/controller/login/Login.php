@@ -11,18 +11,10 @@
 
 namespace app\adminapi\controller\login;
 
-use addon\vipcard\app\service\core\CoreOrderRefundService;
-use app\dict\member\MemberAccountTypeDict;
 use app\service\admin\auth\ConfigService;
 use app\service\admin\auth\LoginService;
-use app\service\admin\member\MemberService;
-use app\service\admin\upgrade\UpgradeService;
-use app\service\core\addon\CoreAddonDevelopBuildService;
 use app\service\core\addon\WapTrait;
-use app\service\core\menu\CoreMenuService;
-use app\service\core\upload\CoreFileService;
 use core\base\BaseAdminController;
-use think\facade\Db;
 use think\Response;
 
 class Login extends BaseAdminController
@@ -37,12 +29,12 @@ class Login extends BaseAdminController
     {
 
         $data = $this->request->params([
-            ['username', ''],
-            ['password', ''],
+            [ 'username', '' ],
+            [ 'password', '' ],
         ]);
         //参数验证
         //验证码验证
-        $result = (new LoginService())->login($data['username'], $data['password'], $app_type);
+        $result = ( new LoginService() )->login($data[ 'username' ], $data[ 'password' ], $app_type);
         if (!$result) {
             //账号密码错误...., 重置验证码
             return fail('USER_ERROR');
@@ -57,10 +49,9 @@ class Login extends BaseAdminController
      */
     public function logout()
     {
-        (new LoginService)->logout();
+        ( new LoginService )->logout();
         return success('LOGOUT');
     }
-
 
     /**
      * 获取登录设置
@@ -68,15 +59,6 @@ class Login extends BaseAdminController
      */
     public function getConfig()
     {
-        return success((new ConfigService())->getConfig());
-    }
-
-    public function test(){
-        (new UpgradeService())->executeSql(root_path().'app/upgrade/v011/upgrade.sql');
-    }
-
-    public function geAddonPackagePath(string $addon)
-    {
-        return root_path() . 'addon' .DIRECTORY_SEPARATOR . $addon . DIRECTORY_SEPARATOR . 'package' . DIRECTORY_SEPARATOR;
+        return success(( new ConfigService() )->getConfig());
     }
 }

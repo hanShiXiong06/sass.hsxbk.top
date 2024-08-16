@@ -243,10 +243,10 @@ class AttachmentService extends BaseAdminService
         if (!empty($data[ 'type' ])) {
             $where[] = [ 'type', '=', $data[ 'type' ] ];
         }
-        if (!empty($data[ 'name' ])) {
-            $where[] = [ 'name', 'like', '%' . $data[ 'name' ] . '%' ];
+        if (isset($data[ 'name' ]) && $data[ 'name' ] != '') {
+            $where[] = [ 'name', 'like', '%' . $this->model->handelSpecialCharacter($data[ 'name' ]) . '%' ];
         }
-        return SysAttachmentCategory::where($where)->field('id,name,type')->order('id desc')->select()->toArray();
+        return SysAttachmentCategory::where($where)->field('id,name,type')->order('id asc')->select()->toArray();
     }
 
     /**
@@ -259,7 +259,7 @@ class AttachmentService extends BaseAdminService
         $icon_list = IconDict::getIcon();
         foreach ($icon_list as $k => $v) {
             unset($icon_list[ $k ][ 'glyphs' ]);
-            if (!empty($data[ 'name' ]) && !str_contains($v['name'], $data['name'])) {
+            if (isset($data[ 'name' ]) && $data[ 'name' ] !=''  && !str_contains($v['name'], $data['name'])) {
                 unset($icon_list[ $k ]);
             }
         }

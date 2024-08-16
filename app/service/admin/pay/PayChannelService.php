@@ -156,6 +156,8 @@ class PayChannelService extends BaseAdminService
                     'collection_desc' => $data[ 'collection_desc' ] ?? '',// 必填-转账说明
                 ];
                 break;
+            default:
+                $config = $data;
         }
         return $config;
     }

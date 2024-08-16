@@ -1150,22 +1150,28 @@ export function useGoodsEdit(params: any = {}) {
                     repeatSpecNameArr.push(spec.spec_name);
                 }
 
-                for (let v = 0; v < spec.values.length; v++) {
-                    const value = spec.values[v]
-                    if (Test.require(value.spec_value_name)) {
-                        specVerify = false
-                        ElMessage({ type: 'warning', message: `${ t('specValueRequire') }` })
-                        break
-                    }
+                if (spec.values.length) {
+                    for (let v = 0; v < spec.values.length; v++) {
+                        const value = spec.values[v]
+                        if (Test.require(value.spec_value_name)) {
+                            specVerify = false
+                            ElMessage({ type: 'warning', message: `${ t('specValueRequire') }` })
+                            break
+                        }
 
-                    if (repeatSpecValueNameArr.indexOf(value.spec_value_name) > -1) {
-                        specVerify = false
-                        ElMessage({ type: 'warning', message: `${ t('specValueNameRepeat') }` })
-                        break
-                    } else {
-                        repeatSpecValueNameArr.push(value.spec_value_name);
+                        if (repeatSpecValueNameArr.indexOf(value.spec_value_name) > -1) {
+                            specVerify = false
+                            ElMessage({ type: 'warning', message: `${ t('specValueNameRepeat') }` })
+                            break
+                        } else {
+                            repeatSpecValueNameArr.push(value.spec_value_name);
+                        }
                     }
+                } else {
+                    specVerify = false
+                    ElMessage({ type: 'warning', message: `${ t('specValueRequire') }` })
                 }
+
                 if (!specVerify) break
             }
 
@@ -1297,7 +1303,7 @@ export function useGoodsEdit(params: any = {}) {
 
     let attrLoad = false;
     const attrTableData: any = reactive([])
-    let editCallFn = ref(false) //用于编辑时，只调用一次的变量标识
+    const editCallFn = ref(false) //用于编辑时，只调用一次的变量标识
 
     const attrChange = (attr_id: any = 0) => {
         if (attrLoad || !attr_id) return false; // !attr_id 防止多次进入

@@ -51,10 +51,10 @@ class RechargeOrderItemRefund extends BaseModel
      */
     public function getStatusNameAttr($value, $data)
     {
-        if (empty($data['status']))
+        if (empty($data[ 'status' ]))
             return '';
-        $temp = RechargeOrderDict::getRefundStatus()[$data['status']] ?? [];
-        return $temp['name'] ?? '';
+        $temp = RechargeOrderDict::getRefundStatus()[ $data[ 'status' ] ] ?? [];
+        return $temp[ 'name' ] ?? '';
     }
 
     /**
@@ -92,11 +92,10 @@ class RechargeOrderItemRefund extends BaseModel
      */
     public function searchRefundNoAttr($query, $value, $data)
     {
-        if ($value) {
-            $query->where('refund_no', 'like', '%'.$value.'%');
+        if ($value != '') {
+            $query->where('refund_no', 'like', '%' . $value . '%');
         }
     }
-
 
     /**
      * 订单号搜索
@@ -107,7 +106,7 @@ class RechargeOrderItemRefund extends BaseModel
     public function searchOrderNoAttr($query, $value, $data)
     {
         if ($value) {
-            $query->where('order_no', 'like', '%'.$value.'%');
+            $query->where('order_no', 'like', '%' . $value . '%');
         }
     }
 
@@ -184,14 +183,14 @@ class RechargeOrderItemRefund extends BaseModel
      */
     public function searchCreateTimeAttr($query, $value, $data)
     {
-        $start_time = empty($value[0]) ? 0 : strtotime($value[0]);
-        $end_time = empty($value[1]) ? 0 : strtotime($value[1]);
+        $start_time = empty($value[ 0 ]) ? 0 : strtotime($value[ 0 ]);
+        $end_time = empty($value[ 1 ]) ? 0 : strtotime($value[ 1 ]);
         if ($start_time > 0 && $end_time > 0) {
             $query->whereBetweenTime('create_time', $start_time, $end_time);
         } else if ($start_time > 0 && $end_time == 0) {
-            $query->where([['create_time', '>=', $start_time]]);
+            $query->where([ [ 'create_time', '>=', $start_time ] ]);
         } else if ($start_time == 0 && $end_time > 0) {
-            $query->where([['create_time', '<=', $end_time]]);
+            $query->where([ [ 'create_time', '<=', $end_time ] ]);
         }
     }
 
@@ -203,14 +202,14 @@ class RechargeOrderItemRefund extends BaseModel
      */
     public function searchJoinCreateTimeAttr($query, $value, $data)
     {
-        $start_time = empty($value[0]) ? 0 : strtotime($value[0]);
-        $end_time = empty($value[1]) ? 0 : strtotime($value[1]);
+        $start_time = empty($value[ 0 ]) ? 0 : strtotime($value[ 0 ]);
+        $end_time = empty($value[ 1 ]) ? 0 : strtotime($value[ 1 ]);
         if ($start_time > 0 && $end_time > 0) {
             $query->whereBetweenTime('recharge_order_item_refund.create_time', $start_time, $end_time);
         } else if ($start_time > 0 && $end_time == 0) {
-            $query->where([['recharge_order_item_refund.create_time', '>=', $start_time]]);
+            $query->where([ [ 'recharge_order_item_refund.create_time', '>=', $start_time ] ]);
         } else if ($start_time == 0 && $end_time > 0) {
-            $query->where([['recharge_order_item_refund.create_time', '<=', $end_time]]);
+            $query->where([ [ 'recharge_order_item_refund.create_time', '<=', $end_time ] ]);
         }
     }
 }

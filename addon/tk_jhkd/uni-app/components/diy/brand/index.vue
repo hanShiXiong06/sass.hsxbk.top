@@ -1,7 +1,7 @@
 <template>
 	<view :style="warpCss">
 		<view :style="maskLayer"></view>
-		<view class="" :style="{ padding:diyComponent.padding* 2 + 'rpx', }">
+		<view class="flex items-center justify-center" :style="{ padding:diyComponent.padding* 2 + 'rpx', }">
 			<block v-for="(item,index) in listData" key=index>
 				<image :src="img(item.logo)" mode="" style="border-radius: 100%;"
 					:style="{ width:diyComponent.iconsize* 2 + 'rpx',  height:diyComponent.iconsize* 2 + 'rpx',borderRadius:diyComponent.radiussize+'%',marginRight:diyComponent.mrsize* 2 + 'rpx',}">

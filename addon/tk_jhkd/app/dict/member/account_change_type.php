@@ -5,7 +5,7 @@ use app\dict\member\MemberAccountTypeDict;
 return [
     MemberAccountTypeDict::POINT => [
         //调整
-        'jhkd_award' => [
+        'tk_jhkd_order' => [
             //名称
             'name' => '聚合快递激励',
             //是否增加
@@ -16,7 +16,7 @@ return [
     ],
     MemberAccountTypeDict::BALANCE => [
         //调整
-        'jhkd_award' => [
+        'tk_jhkd_order' => [
             //名称
             'name' => '聚合快递激励',
             //是否增加
@@ -27,7 +27,7 @@ return [
     ],
     MemberAccountTypeDict::MONEY => [
            //调整
-        'jhkd_award' => [
+        'tk_jhkd_order' => [
             //名称
             'name' => '聚合快递激励',
             //是否增加

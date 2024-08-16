@@ -33,7 +33,7 @@ class ShopFenxiaoPoster
             if ($mode == 'preview') {
                 $return_data = [
                     'nickname' => '会员昵称',
-                    'headimg' => 'static/resource/images/default_headimg.jpg',
+                    'headimg' => 'static/resource/images/default_headimg.png',
                     'url' => [
                         'url' => ( new CoreSysConfigService() )->getSceneDomain($site_id)[ 'wap_url' ],
                         'page' => 'addon/shop/pages/index',
@@ -50,7 +50,7 @@ class ShopFenxiaoPoster
             if ($member->isEmpty()) return [];
 
             if (empty($member[ 'headimg' ])) {
-                $member[ 'headimg' ] = 'static/resource/images/default_headimg.jpg';
+                $member[ 'headimg' ] = 'static/resource/images/default_headimg.png';
             }
 
             $return_data = [
@@ -89,7 +89,7 @@ class ShopFenxiaoPoster
                     'goods_market_price' => '￥2690.00',
                     'goods_img' => 'addon/shop/goods_template.png',
                     'nickname' => '会员昵称',
-                    'headimg' => 'static/resource/images/default_headimg.jpg',
+                    'headimg' => 'static/resource/images/default_headimg.png',
                     'url' => [
                         'url' => ( new CoreSysConfigService() )->getSceneDomain($site_id)[ 'wap_url' ],
                         'page' => 'addon/shop/pages/goods/detail',
@@ -108,9 +108,9 @@ class ShopFenxiaoPoster
             if ($goods->isEmpty()) return [];
 
             $goods_name = $goods[ 'goods_name' ] . $sku[ 'sku_name' ];
-            if (mb_strlen($goods_name, 'UTF-8') > 14) {
-                $goods_name = mb_substr($goods_name, 0, 14, 'UTF-8') . '...';
-            }
+//            if (mb_strlen($goods_name, 'UTF-8') > 14) {
+//                $goods_name = mb_substr($goods_name, 0, 14, 'UTF-8') . '...';
+//            }
             //查询会员信息
             $member = ( new Member() )->where([ [ 'member_id', '=', $member_id ], [ 'site_id', '=', $site_id ] ])->findOrEmpty();
             if ($member->isEmpty()) return [];
@@ -140,7 +140,7 @@ class ShopFenxiaoPoster
 
             $url_data[] = [ 'key' => 'mid', 'value' => $member_id ];
             if (empty($member[ 'headimg' ])) {
-                $member[ 'headimg' ] = 'static/resource/images/default_headimg.jpg';
+                $member[ 'headimg' ] = 'static/resource/images/default_headimg.png';
             }
             $return_data = [
                 'goods_name' => $goods_name,

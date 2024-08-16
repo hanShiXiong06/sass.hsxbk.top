@@ -8,16 +8,14 @@
 			<el-card class="box-card !border-none table-search-wra base-bg !px-[35px]" shadow="never">
 				<el-row class="flex">
 					<el-col :span="12" class="min-w-[100px]">
-						<el-statistic
-							:value="rechargeStatistics.recharge_money ? Number.parseFloat(rechargeStatistics.recharge_money).toFixed(2) : '0.00'">
+						<el-statistic :value="rechargeStatistics.recharge_money ? Number.parseFloat(rechargeStatistics.recharge_money).toFixed(2) : '0.00'">
 							<template #title>
 								<div class="text-[14px] mb-[9px]">{{ t('totalRechargeMoney') }}</div>
 							</template>
 						</el-statistic>
 					</el-col>
 					<el-col :span="12" class="min-w-[100px]">
-						<el-statistic
-							:value="rechargeStatistics.recharge_refund_money ? Number.parseFloat(rechargeStatistics.recharge_refund_money).toFixed(2) : '0.00'">
+						<el-statistic :value="rechargeStatistics.recharge_refund_money ? Number.parseFloat(rechargeStatistics.recharge_refund_money).toFixed(2) : '0.00'">
 							<template #title>
 								<div class="text-[14px] mb-[9px]">{{ t('totalRechargeRefundMoney') }}</div>
 							</template>
@@ -88,7 +86,7 @@
 						<template #default="{ row }">
 							<div class="flex items-center cursor-pointer " @click="toMember(row.member.member_id)">
 								<img class="w-[50px] h-[50px] mr-[10px]" v-if="row.member.headimg" :src="img(row.member.headimg)" alt="">
-								<img class="w-[50px] h-[50px] mr-[10px]" v-else src="@/app/assets/images/default_headimg.png" alt="">
+                                <img class="w-[50px] h-[50px] rounded-full mr-[10px]" v-else src="@/app/assets/images/member_head.png" alt="">
 								<div class="flex flex flex-col">
 									<span>{{ row.member.nickname || '' }}</span>
 									<span>{{ row.member.mobile || '' }}</span>
@@ -132,7 +130,7 @@
 							</el-button>
 
 							<template v-for="(item, index) in row.order_status_info.action" :key="index">
-								<el-button type="danger" link  @click="orderEvent(row, item.class)">{{ item.name }}</el-button>
+								<el-button type="primary" link  @click="orderEvent(row, item.class)">{{ item.name }}</el-button>
 							</template>
 						</template>
 					</el-table-column>

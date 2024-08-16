@@ -2,10 +2,13 @@
     <div class="main-container">
         <div class="flex ml-[18px] justify-between items-center mt-[20px] mb-[5px]">
 			<span class="text-[20px]">{{pageName}}</span>
+		</div>
+		<div class="flex ml-[18px] justify-between items-center mt-[20px] mb-[5px]">
+			<span class="text-[15px]"><a href="https://xuanloo.com/faq/67.html" target="_blank">点击查看cps联盟教程</a></span>
 		</div> 
         <el-form :model="formData" label-width="150px" ref="formRef" :rules="formRules" class="page-form" v-loading="loading">
             <el-card class="box-card !border-none" shadow="never">
-                <h3 class="panel-title !text-sm">蚂蚁星球</h3>
+                <h3 class="panel-title !text-sm">蚂蚁星球<a href="http://www.haojingke.com" target="_blank">  点我注册</a></h3>
 
                 <el-form-item label="会员id" prop="my_uid">
                     <el-input v-model="formData.my_uid" placeholder="请输入会员id" class="input-width" clearable />
@@ -20,7 +23,7 @@
               </el-form-item> 
             </el-card>
             <el-card class="box-card !border-none" shadow="never">
-                <h3 class="panel-title !text-sm">聚推客</h3>
+                <h3 class="panel-title !text-sm">聚推客配置<a href="https://www.jutuike.com" target="_blank">  点我注册</a></h3>
 				<el-form-item label="pub_id" prop="jutuike_pub_id">
 				    <el-input v-model="formData.jutuike_pub_id" placeholder="请输入pub_id" class="input-width" clearable   />
 				</el-form-item> <el-form-item label="apikey" prop="jutuike_apikey">

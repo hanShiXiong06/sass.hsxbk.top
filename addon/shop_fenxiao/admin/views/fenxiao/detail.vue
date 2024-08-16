@@ -19,11 +19,11 @@
                                         <el-image v-if="formData.member.headimg" class="w-[70px] h-[70px]" :src="img(formData.member.headimg)" fit="contain">
                                             <template #error>
                                                 <div class="image-slot">
-                                                    <img class="w-[70px] h-[70px]" src="@/app/assets/images/default_headimg.png" />
+                                                    <img class="w-[70px] h-[70px] rounded-full" src="@/app/assets/images/member_head.png" alt="">
                                                 </div>
                                             </template>
                                         </el-image>
-                                        <img v-else class="w-[70px] h-[70px]" src="@/app/assets/images/default_headimg.png" fit="contain" />
+                                        <img class="w-[70px] h-[70px] rounded-full" v-else src="@/app/assets/images/member_head.png" alt="">
                                     </div>
                                 </el-form-item>
                             </el-col>
@@ -144,23 +144,17 @@
                         </template>
                         <el-table-column :label="t('accountMoney')" min-width="120">
                             <template #default="{ row }">
-                                <div>
-                                    {{ row.account_data }}
-                                </div>
+                                <div>{{ row.account_data }}</div>
                             </template>
                         </el-table-column>
                         <el-table-column :label="t('source')" min-width="120">
                             <template #default="{ row }">
-                                <div>
-                                    {{ row.from_type_name }}
-                                </div>
+                                <div>{{ row.from_type_name }}</div>
                             </template>
                         </el-table-column>
                         <el-table-column :label="t('accountSum')" min-width="120">
                             <template #default="{ row }">
-                                <div>
-                                    {{ row.account_sum }}
-                                </div>
+                                <div>{{ row.account_sum }}</div>
                             </template>
                         </el-table-column>
                         <el-table-column prop="create_time" :label="t('createTime')" min-width="120"></el-table-column>
@@ -188,11 +182,11 @@
                                         <el-image v-if="row.headimg && row.headimg" class="w-[50px] h-[50px]" :src="img(row.headimg)" fit="contain">
                                             <template #error>
                                                 <div class="image-slot">
-                                                    <img class="w-[50px] h-[50px]" src="@/app/assets/images/default_headimg.png" />
+                                                    <img class="w-[50px] h-[50px] rounded-full" src="@/app/assets/images/member_head.png" alt="">
                                                 </div>
                                             </template>
                                         </el-image>
-                                        <img v-else class="w-[50px] h-[50px]" src="@/app/assets/images/default_headimg.png" fit="contain" />
+                                        <img class="w-[50px] h-[50px] rounded-full" v-else src="@/app/assets/images/member_head.png" alt="">
                                     </div>
                                     <div class="ml-2">
                                         <span v-if="row.nickname" :title="row.nickname" class="multi-hidden">{{row.nickname}}</span>
@@ -238,7 +232,7 @@
             <div>
                 <el-form-item :label="t('fenxiaoLevel')">
                     <el-select v-model="levelFormData.level_id" class="input-width" clearable :placeholder="t('fenxiaoLevelPlaceholder')">
-                        <el-option v-for="item in leveList" :key="item.value" :label="item.level_name" :value="item.level_id" />
+                        <el-option v-for="item in levelList" :key="item.value" :label="item.level_name" :value="item.level_id" />
                     </el-select>
                     <span class="text-[var(--el-color-primary)] ml-[10px] cursor-pointer" @click="getFenxiaoLevelListFn(true)">刷新</span>
                     <span class="text-[var(--el-color-primary)] ml-[10px] cursor-pointer" @click="addLevelFn">添加等级</span>
@@ -273,7 +267,7 @@ const route = useRoute()
 const router = useRouter()
 const pageName = route.meta.title
 
-const formData = ref<Object<any>>({})
+const formData: any = ref({})
 const loading = ref<boolean>(false)
 
 // 佣金账户明细
@@ -344,11 +338,11 @@ getFenxiaoTeamFn()
 
 const activeName = ref('commission')
 
-const handleClick = (data) => {
+const handleClick = (data: any) => {
     activeName.value = data
 }
 
-const tabsClick = (data) => {
+const tabsClick = (data: any) => {
     fenxiaoTeam.searchParam.type = data
     getFenxiaoTeamFn()
 }
@@ -389,7 +383,7 @@ const selectFenxiaoCallbackFn = (row: any) => {
 /******************* 上级分销商弹框end *************************/
 
 /******************* 分销商等级弹框start *************************/
-let leveList :Record<any, any> = reactive([])
+const levelList = ref([])
 const levelFormData: Record<string, any> = reactive({
     id: 0,
     level_id: null,
@@ -402,7 +396,7 @@ const getFenxiaoLevelListFn = (bool=false) => {
         page: 1,
         limit: 11
     }).then((res:any) => {
-        leveList = res.data.data
+        levelList.value = res.data.data
         if(bool){
             ElMessage({
                 message: t('refreshSuccess'),

@@ -49,7 +49,10 @@ return [
                         "link" => [
                             "name" =>""
                         ]
-                    ]
+                    ],
+                    "pageStartBgColor" =>"rgba(236, 253, 254, 0.22)",
+                    "pageEndBgColor" =>"rgba(185, 206, 249, 0.51)",
+                    "pageGradientAngle" =>"to bottom"
                 ],
                 "value" =>[
                     [
@@ -86,49 +89,13 @@ return [
                             "bottom" =>0,
                             "both" =>0
                         ],
-                        "pageStyle" =>"padding-top:0rpx;padding-bottom:0rpx;padding-right:0rpx;padding-left:0rpx;"
-                    ],
-                    [
-                        "path" =>"edit-notice",
-                        "uses" =>0,
-                        "id" =>"52z9b9fzox80",
-                        "componentName" =>"Notice",
-                        "componentTitle" =>"公告",
-                        "ignore" =>[],
-                        "list" => [
-                            "link" => [
-                                "parent" =>"TK_JHKD_LINK",
-                                "name" =>"TK_JHKD_HELP",
-                                "title" =>"帮助中心",
-                                "url" =>"/addon/tk_jhkd/pages/help",
-                                "action" =>""
-                            ],
-                            "text" =>"请打包好物品，不足一公斤按照一公斤收取"
-                        ],
-                        "iconType" =>"custom",
-                        "systemIcon" =>"style_01",
-                        "showType" =>"link",
-                        "imageUrl" =>"addon/tk_jhkd/diy/index/notice.png",
-                        "textColor" =>"#303133",
-                        "pageBgColor" =>"",
-                        "componentBgColor" =>"",
-                        "topRounded" =>0,
-                        "bottomRounded" =>0,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>0,
-                            "bottom" =>0,
-                            "both" =>0
-                        ],
-                        "fontSize" =>12,
-                        "pageStyle" =>"padding-top:0rpx;padding-bottom:0rpx;padding-right:0rpx;padding-left:0rpx;"
+                        "pageStyle" =>"padding-top:2rpx;padding-bottom:0rpx;padding-right:0rpx;padding-left:0rpx;",
+                        "componentBgUrl" =>""
                     ],
                     [
                         "path" =>"edit-graphic-nav",
                         "uses" =>0,
-                        "id" =>"11iquu92mxcg",
+                        "id" =>"2xbdfz1tl3g0",
                         "componentName" =>"GraphicNav",
                         "componentTitle" =>"图文导航",
                         "ignore" =>[],
@@ -147,12 +114,12 @@ return [
                             "type" =>"circle",
                             "color" =>"#FFFFFF"
                         ],
-                        "imageSize" =>40,
+                        "imageSize" =>38,
                         "aroundRadius" =>25,
                         "font" => [
                             "size" =>14,
-                            "weight" =>"normal",
-                            "color" =>"#303133"
+                            "weight" =>"bold",
+                            "color" =>"rgba(108, 108, 108, 1)"
                         ],
                         "list" =>[
                             [
@@ -173,7 +140,7 @@ return [
                                     "bgColorEnd" =>"#FE3423"
                                 ],
                                 "id" =>"6k02y3zk9vo0",
-                                "imgWidth" =>276,
+                                "imgWidth" =>200,
                                 "imgHeight" =>200
                             ],
                             [
@@ -243,17 +210,98 @@ return [
                         "textColor" =>"#303133",
                         "pageBgColor" =>"",
                         "componentBgColor" =>"",
-                        "topRounded" =>0,
-                        "bottomRounded" =>0,
+                        "topRounded" =>3,
+                        "bottomRounded" =>10,
                         "elementBgColor" =>"",
                         "topElementRounded" =>0,
                         "bottomElementRounded" =>0,
                         "margin" => [
-                            "top" =>0,
+                            "top" =>-12,
                             "bottom" =>0,
-                            "both" =>0
+                            "both" =>12
                         ],
-                        "pageStyle" =>"padding-top:0rpx;padding-bottom:0rpx;padding-right:0rpx;padding-left:0rpx;"
+                        "pageStyle" =>"padding-top:2rpx;padding-bottom:0rpx;padding-right:24rpx;padding-left:24rpx;",
+                        "componentBgUrl" =>"",
+                        "componentStartBgColor" =>"rgba(255, 255, 255, 1)",
+                        "componentEndBgColor" =>"rgba(255, 255, 255, 1)",
+                        "componentGradientAngle" =>"to bottom"
+                    ],
+                    [
+                        "path" =>"edit-notice",
+                        "uses" =>0,
+                        "id" =>"1wbnbit16y4g",
+                        "componentName" =>"Notice",
+                        "componentTitle" =>"公告",
+                        "ignore" =>[],
+                        "noticeType" =>"text",
+                        "imgType" =>"system",
+                        "systemUrl" =>"style_2",
+                        "imageUrl" =>"",
+                        "showType" =>"popup",
+                        "scrollWay" =>"horizontal",
+                        "fontSize" =>14,
+                        "fontWeight" =>"normal",
+                        "noticeTitle" =>"公告",
+                        "list" =>[
+                            [
+                                "text" =>"5元起全国寄快递",
+                                "link" => [
+                                    "name" =>""
+                                ],
+                                "id" =>"15chwibgbtq8"
+                            ]
+                        ],
+                        "textColor" =>"#525252",
+                        "pageBgColor" =>"",
+                        "componentBgColor" =>"",
+                        "topRounded" =>0,
+                        "bottomRounded" =>12,
+                        "elementBgColor" =>"",
+                        "topElementRounded" =>0,
+                        "bottomElementRounded" =>0,
+                        "margin" => [
+                            "top" =>-12,
+                            "bottom" =>0,
+                            "both" =>12
+                        ],
+                        "componentBgUrl" =>"",
+                        "pageStyle" =>"padding-top:2rpx;padding-bottom:0rpx;padding-right:24rpx;padding-left:24rpx;",
+                        "componentStartBgColor" =>"rgba(255, 255, 255, 1)",
+                        "componentEndBgColor" =>"rgba(255, 255, 255, 1)",
+                        "componentGradientAngle" =>"to bottom"
+                    ],
+                    [
+                        "path" =>"edit-jhkd",
+                        "uses" =>1,
+                        "id" =>"l0m47pvyspo",
+                        "componentName" =>"Jhkd",
+                        "componentTitle" =>"下单组件",
+                        "ignore" =>[],
+                        "songbackground" =>"#4541c7",
+                        "btbackground" =>"#4541c7",
+                        "btfontcolor" =>"#ffffff",
+                        "btname" =>"去下单",
+                        "qsfontcolor" =>"#030307",
+                        "slfontcolor" =>"#a9a9a9",
+                        "padding" =>"12",
+                        "textColor" =>"#303133",
+                        "pageBgColor" =>"",
+                        "componentBgColor" =>"",
+                        "topRounded" =>10,
+                        "bottomRounded" =>10,
+                        "elementBgColor" =>"",
+                        "topElementRounded" =>0,
+                        "bottomElementRounded" =>0,
+                        "margin" => [
+                            "top" =>8,
+                            "bottom" =>0,
+                            "both" =>12
+                        ],
+                        "componentBgUrl" =>"",
+                        "pageStyle" =>"padding-top:22rpx;padding-bottom:0rpx;padding-right:24rpx;padding-left:24rpx;",
+                        "componentStartBgColor" =>"rgba(246, 252, 255, 0.79)",
+                        "componentEndBgColor" =>"rgba(255, 255, 255, 0.91)",
+                        "componentGradientAngle" =>"to bottom"
                     ],
                     [
                         "path" =>"edit-jhkdbrand",
@@ -262,58 +310,33 @@ return [
                         "componentName" =>"Brand",
                         "componentTitle" =>"快递列表",
                         "ignore" =>[],
-                        "iconsize" =>24,
-                        "radiussize" =>7,
+                        "iconsize" =>20,
+                        "radiussize" =>100,
                         "padding" =>"12",
-                        "mrsize" =>6,
+                        "mrsize" =>5,
                         "textColor" =>"#303133",
                         "pageBgColor" =>"",
                         "componentBgColor" =>"",
-                        "topRounded" =>0,
-                        "bottomRounded" =>0,
+                        "topRounded" =>12,
+                        "bottomRounded" =>12,
                         "elementBgColor" =>"",
                         "topElementRounded" =>0,
                         "bottomElementRounded" =>0,
                         "margin" => [
-                            "top" =>0,
+                            "top" =>8,
                             "bottom" =>0,
-                            "both" =>0
+                            "both" =>12
                         ],
-                        "pageStyle" =>"padding-top:0rpx;padding-bottom:0rpx;padding-right:0rpx;padding-left:0rpx;"
-                    ],
-                    [
-                        "path" =>"edit-jhkd",
-                        "uses" =>1,
-                        "id" =>"17uvxove3bj4",
-                        "componentName" =>"Jhkd",
-                        "componentTitle" =>"下单组件",
-                        "ignore" =>[],
-                        "songbackground" =>"#2979ff",
-                        "btbackground" =>"#2979ff",
-                        "btfontcolor" =>"#ffffff",
-                        "btname" =>"去下单",
-                        "qsfontcolor" =>"#030307",
-                        "slfontcolor" =>"#a9a9a9",
-                        "padding" =>12,
-                        "textColor" =>"#303133",
-                        "pageBgColor" =>"",
-                        "componentBgColor" =>"rgba(255, 255, 255, 1)",
-                        "topRounded" =>16,
-                        "bottomRounded" =>16,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>0,
-                            "bottom" =>0,
-                            "both" =>13
-                        ],
-                        "pageStyle" =>"padding-top:0rpx;padding-bottom:0rpx;padding-right:26rpx;padding-left:26rpx;"
+                        "pageStyle" =>"padding-top:24rpx;padding-bottom:0rpx;padding-right:24rpx;padding-left:24rpx;",
+                        "componentBgUrl" =>"",
+                        "componentStartBgColor" =>"rgba(255, 255, 255, 1)",
+                        "componentEndBgColor" =>"rgba(244, 244, 244, 1)",
+                        "componentGradientAngle" =>"to bottom"
                     ],
                     [
                         "path" =>"edit-text",
                         "uses" =>0,
-                        "id" =>"71tyvgjwt4o0",
+                        "id" =>"1damta0p9tz4",
                         "componentName" =>"Text",
                         "componentTitle" =>"标题",
                         "ignore" =>[],
@@ -345,21 +368,52 @@ return [
                             "link" => [
                                 "name" =>""
                             ],
-                            "color" =>"#999999"
+                            "color" =>"#060606"
                         ],
                         "pageBgColor" =>"",
                         "componentBgColor" =>null,
-                        "topRounded" =>0,
+                        "topRounded" =>12,
                         "bottomRounded" =>0,
+                        "elementBgColor" =>"",
+                        "topElementRounded" =>0,
+                        "bottomElementRounded" =>0,
+                        "margin" => [
+                            "top" =>8,
+                            "bottom" =>0,
+                            "both" =>12
+                        ],
+                        "pageStyle" =>"padding-top:26rpx;padding-bottom:0rpx;padding-right:24rpx;padding-left:24rpx;",
+                        "componentBgUrl" =>"",
+                        "componentStartBgColor" =>"rgba(238, 246, 255, 1)",
+                        "componentEndBgColor" =>"rgba(195, 214, 255, 1)",
+                        "componentGradientAngle" =>"to bottom"
+                    ],
+                    [
+                        "path" =>"edit-rich-text",
+                        "uses" =>0,
+                        "id" =>"6dbj8npp5mw0",
+                        "componentName" =>"RichText",
+                        "componentTitle" =>"富文本",
+                        "ignore" =>[],
+                        "html" =>"<p style=\"text-align: center;\">温馨提示：</p><p><span style=\"color: #7F7F7F;\">请提前打包好物品，核对包裹重量并拍照，及时联系快递员上门取件，所有费用均通过线上支付，无需额外支付快递小哥费用~~~</span></p>",
+                        "textColor" =>"#303133",
+                        "pageBgColor" =>"",
+                        "componentBgColor" =>"",
+                        "topRounded" =>0,
+                        "bottomRounded" =>12,
                         "elementBgColor" =>"",
                         "topElementRounded" =>0,
                         "bottomElementRounded" =>0,
                         "margin" => [
                             "top" =>0,
                             "bottom" =>0,
-                            "both" =>0
+                            "both" =>12
                         ],
-                        "pageStyle" =>"padding-top:0rpx;padding-bottom:0rpx;padding-right:0rpx;padding-left:0rpx;"
+                        "componentBgUrl" =>"",
+                        "componentStartBgColor" =>"rgba(171, 220, 255, 0.23)",
+                        "componentGradientAngle" =>"to bottom",
+                        "componentEndBgColor" =>"rgba(217, 199, 255, 0.26)",
+                        "pageStyle" =>"padding-top:2rpx;padding-bottom:0rpx;padding-right:24rpx;padding-left:24rpx;"
                     ]
                 ]
             ]

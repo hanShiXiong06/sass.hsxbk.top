@@ -172,10 +172,10 @@ class CoreCouponMemberService extends BaseCoreService
         if (strtotime($coupon[ 'start_time' ]) > 0) {
             $time = time();
             if ($time < strtotime($coupon[ 'start_time' ])) {
-                throw new CommonException('COUPON_RECEIVE_NOT_TIME');//优惠券已被领完
+                throw new CommonException('COUPON_RECEIVE_NOT_TIME');//优惠券不在领取时间范围内
             }
             if ($time > strtotime($coupon[ 'end_time' ])) {
-                throw new CommonException('COUPON_RECEIVE_NOT_TIME');//优惠券已被领完
+                throw new CommonException('COUPON_RECEIVE_NOT_TIME');//优惠券不在领取时间范围内
             }
         }
 

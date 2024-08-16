@@ -1,0 +1,10 @@
+{
+  "title": "考试系统",
+  "desc": "考试系统",
+  "key": "hsx_exam",
+  "version": "0.0.1",
+  "author": "hsx",
+  "type": "app",
+  "support_app": "",
+  "compile":[]
+}

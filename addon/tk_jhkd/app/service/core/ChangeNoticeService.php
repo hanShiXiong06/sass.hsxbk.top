@@ -16,6 +16,7 @@ use think\Exception;
 use addon\tk_jhkd\app\dict\order\JhkdOrderAddDict;
 use addon\tk_jhkd\app\dict\order\JhkdOrderDict;
 use think\facade\Db;
+use think\facade\Log;
 use think\Response;
 use addon\tk_jhkd\app\model\shop_order\ShopOrder;
 use addon\tk_jhkd\app\service\admin\shop\OrderService;
@@ -79,15 +80,15 @@ class ChangeNoticeService extends BaseApiService
             if ($data['contextObj']['ydOrderStatus'] == 11 || $data['contextObj']['ydOrderStatus'] == 2) {
                 $orderInfo = $this->orderModel->where(['order_id' => $deliveryInfo['order_id']])->findOrEmpty();
                 $orderInfo->save(['order_status' => JhkdOrderDict::FINISH_PICK]);
-                (new NoticeService())->send($orderInfo['site_id'], 'tk_jhkd_order_pick', ['order_id' =>$orderInfo['order_id']]);
+                (new NoticeService())->send($orderInfo['site_id'], 'tk_jhkd_order_pick', ['order_id' => $orderInfo['order_id']]);
             }
             //订单完成时候完成系统订单  易达3 完成
             if ($data['contextObj']['ydOrderStatus'] == 3) {
                 $orderInfo = $this->orderModel->where(['order_id' => $deliveryInfo['order_id']])->findOrEmpty();
-                if($orderInfo['order_status']==JhkdOrderDict::FINISH) return true;
+                if ($orderInfo['order_status'] == JhkdOrderDict::FINISH) return true;
                 $orderInfo->save(['order_status' => JhkdOrderDict::FINISH]);
                 (new NoticeService())->send($orderInfo['site_id'], 'tk_jhkd_order_sign', ['order_id' => $orderInfo['order_id']]);
-                event('JhkdOrderFinish',$orderInfo);
+                event('JhkdOrderFinish', $orderInfo);
             }
             //快递方取消订单同步发起退款
             if ($data['contextObj']['ydOrderStatus'] == 10) {
@@ -134,13 +135,12 @@ class ChangeNoticeService extends BaseApiService
                 return Response::create(['msg' => '接受成功', 'code' => 200, 'success' => true], 'json', 200);
             }
             $realInfo = $this->deliveryRealModel->where(['order_id' => $deliveryInfo['order_id']])->findOrEmpty();
-
-            $realInfo->save([
+            $realInfo->where(['order_id' => $deliveryInfo['order_id']])->update([
                 'order_id' => $deliveryInfo['order_id'],
-                'weight' => $info['realWeight'],
-                'volume' => $info['realVolume'] ?? '',
-                'fee_weight' => $info['calcFeeWeight'],
-                'package_count' => $info['packageCount'],
+                'weight' => $info['realWeight']??1,
+                'volume' => $info['realVolume'] ??1,
+                'fee_weight' => $info['calcFeeWeight']??1,
+                'package_count' => $info['packageCount']??1,
                 'fee_blockList' => json_encode($info['feeBlockList']),
                 'total_fee' => $total_fee,
             ]);
@@ -150,7 +150,7 @@ class ChangeNoticeService extends BaseApiService
             //生成补差价订单
             if ($orderInfo['order_money'] < $total_fee) {
                 $add_money = ($total_fee - $orderInfo['order_money']) * 1.2;
-                $addinfo = (new OrderAdd())->save([
+                $addinfo = (new OrderAdd())->create([
                     'site_id' => $orderInfo['site_id'],
                     'member_id' => $orderInfo['member_id'],
                     'order_no' => create_no(),
@@ -160,12 +160,13 @@ class ChangeNoticeService extends BaseApiService
                 ]);
                 //添加订单支付表
                 (new CorePayService())->create($orderInfo['site_id'], PayDict::MEMBER, $orderInfo['member_id'], $add_money, JhkdOrderAddDict::getOrderType()['type'], $addinfo['id'], "快递补差价付款");
-                (new NoticeService())->send($orderInfo['site_id'], 'tk_jhkd_order_add', ['order_id' =>$orderInfo['order_id']]);
+                (new NoticeService())->send($orderInfo['site_id'], 'tk_jhkd_order_add', ['order_id' => $orderInfo['order_id']]);
             }
             Db::commit();
             return Response::create(['msg' => '接受成功', 'code' => 200, 'success' => true], 'json', 200);
         } catch (Exception $e) {
             Db::rollback();
+            Log::write('易达回调处理-重量推送-异常' . $e->getMessage());
             return Response::create(['msg' => '接受成功', 'code' => 200, 'success' => true], 'json', 200);
         }
 

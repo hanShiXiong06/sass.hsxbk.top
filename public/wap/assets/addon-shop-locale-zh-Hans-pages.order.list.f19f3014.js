@@ -1,1 +1,0 @@
-const e="暂无收货地址，请先创建地址",d="新增收货地址",s="选择地址",r="评价",t="关闭订单",a="确认收货",o="支付",l={emptyAddress:e,addAddress:d,selectAddress:s,evaluate:"评价",orderClose:t,orderFinish:a,topay:"支付"};export{d as addAddress,l as default,e as emptyAddress,r as evaluate,t as orderClose,a as orderFinish,s as selectAddress,o as topay};

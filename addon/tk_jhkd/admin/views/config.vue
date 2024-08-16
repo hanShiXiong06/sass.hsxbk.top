@@ -11,7 +11,7 @@
       <el-card class="box-card !border-none" shadow="never">
         <el-descriptions title="配置说明" column="1">
           <el-descriptions-item label="价格说明"
-            >计算价格系统会限制在优惠价格和官方价格之间，低于优惠价会自动加2元，高于官方价会自动减0.02</el-descriptions-item
+            >为保证订单利润，订单优惠低于成本价会自动在成本价上加3元</el-descriptions-item
           >
           <el-descriptions-item label="充值说明"
             >对接后台账户余额大于100元才能下单</el-descriptions-item

@@ -11,7 +11,7 @@ return [
             // 页面数据源
             "data" => [
                 "global" => [
-                    "title" =>"CPS生活特惠",
+                    "title" =>"CPS特惠",
                     "pageBgColor" =>"#F8F8F8",
                     "bgUrl" =>"addon/tk_cps/diy/img/bg.png",
                     "imgWidth" =>750,
@@ -69,7 +69,7 @@ return [
                             "pageBgColor",
                             "marginBoth"
                         ],
-                        "positionWay" =>"fixed",
+                        "positionWay" =>"static",
                         "fixedBgColor" =>"",
                         "bgGradient" =>false,
                         "search" => [
@@ -109,7 +109,7 @@ return [
                             ]
                         ],
                         "tab" => [
-                            "control" =>true,
+                            "control" =>false,
                             "noColor" =>"",
                             "selectColor" =>"",
                             "fixedNoColor" =>"",
@@ -169,7 +169,11 @@ return [
                                     "imgWidth" =>1000,
                                     "imgHeight" =>400,
                                     "link" => [
-                                        "name" =>""
+                                        "parent" =>"TK_CPS_COMMONLINK",
+                                        "name" =>"TK_CPS_FEIZHU",
+                                        "title" =>"飞猪",
+                                        "url" =>"/addon/tk_cps/pages/index?type=0&act_id=120&style=embedded",
+                                        "action" =>""
                                     ],
                                     "id" =>"2oqe5pe7sjk0",
                                     "width" =>355,
@@ -223,15 +227,15 @@ return [
                         "list" =>[
                             [
                                 "id" =>"73r398jtz1g0",
-                                "title" =>"美团红包",
+                                "title" =>"美团外卖",
                                 "imageUrl" =>"addon/tk_cps/diy/logo/meituan.png",
                                 "imgWidth" =>51,
                                 "imgHeight" =>51,
                                 "link" => [
                                     "parent" =>"TK_CPS_COMMONLINK",
-                                    "name" =>"TK_CPS_MEISHI_HOME",
-                                    "title" =>"美团红包",
-                                    "url" =>"/addon/tk_cps/pages/index?type=0&act_id=89&style=embedded",
+                                    "name" =>"TK_CPS_MEISHI_SHOP",
+                                    "title" =>"美团外卖",
+                                    "url" =>"/addon/tk_cps/pages/index?type=0&act_id=7&style=embedded",
                                     "action" =>""
                                 ],
                                 "label" => [
@@ -446,7 +450,8 @@ return [
                             "both" =>10
                         ],
                         "pageStyle" =>"padding-top:20rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;",
-                        "componentBgUrl" =>""
+                        "componentBgUrl" =>"",
+                        "componentStartBgColor" =>"rgba(255, 255, 255, 0.91)"
                     ],
                     [
                         "path" =>"edit-image-ads",
@@ -499,153 +504,8 @@ return [
                             "bottom" =>0,
                             "both" =>10
                         ],
-                        "pageStyle" =>"padding-top:16rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
-                    ],
-                    [
-                        "path" =>"edit-image-ads",
-                        "uses" =>0,
-                        "id" =>"4uhtkx64900",
-                        "componentName" =>"ImageAds",
-                        "componentTitle" =>"图片广告",
-                        "ignore" =>[],
-                        "imageHeight" =>112,
-                        "list" =>[
-                            [
-                                "link" => [
-                                    "parent" =>"TK_CPS_COMMONLINK",
-                                    "name" =>"TK_CPS_ZHEKOU_JUHECHONGZHI",
-                                    "title" =>"聚合充值",
-                                    "url" =>"/addon/tk_cps/pages/index?type=1&act_id=189&style=embedded",
-                                    "action" =>""
-                                ],
-                                "imageUrl" =>"addon/tk_cps/diy/img/jhcz.jpg",
-                                "imgWidth" =>937,
-                                "imgHeight" =>280,
-                                "width" =>375,
-                                "height" =>112.05976520811099,
-                                "id" =>"52h8mt6dz1g0"
-                            ]
-                        ],
-                        "textColor" =>"#303133",
-                        "pageBgColor" =>"",
-                        "componentBgColor" =>"",
-                        "topRounded" =>10,
-                        "bottomRounded" =>10,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>10,
-                            "bottom" =>0,
-                            "both" =>10
-                        ],
+                        "pageStyle" =>"padding-top:16rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;",
                         "componentBgUrl" =>""
-                    ],
-                    [
-                        "path" =>"edit-image-ads",
-                        "uses" =>0,
-                        "id" =>"2lfn8st65w60",
-                        "componentName" =>"ImageAds",
-                        "componentTitle" =>"图片广告",
-                        "ignore" =>[],
-                        "imageHeight" =>168,
-                        "list" =>[
-                            [
-                                "link" => [
-                                    "parent" =>"TK_CPS_COMMONLINK",
-                                    "name" =>"TK_CPS_DOUYIN_",
-                                    "title" =>"抖音精选联盟",
-                                    "url" =>"/addon/tk_cps/pages/index?type=0&act_id=56&style=embedded",
-                                    "action" =>""
-                                ],
-                                "imageUrl" =>"addon/tk_cps/diy/img/douyinhaowu.png",
-                                "imgWidth" =>552,
-                                "imgHeight" =>248,
-                                "width" =>375,
-                                "height" =>168.47826086956522,
-                                "id" =>"2mzytcj86yc0"
-                            ],
-                            [
-                                "id" =>"4ercyi345rw0",
-                                "imageUrl" =>"addon/tk_cps/diy/img/douyintuangou.png",
-                                "imgWidth" =>1000,
-                                "imgHeight" =>400,
-                                "link" => [
-                                    "parent" =>"TK_CPS_COMMONLINK",
-                                    "name" =>"TK_CPS_DOUYIN_TUANGOU",
-                                    "title" =>"抖音团购",
-                                    "url" =>"/addon/tk_cps/pages/index?type=0&act_id=152&style=embedded",
-                                    "action" =>""
-                                ]
-                            ]
-                        ],
-                        "textColor" =>"#303133",
-                        "pageBgColor" =>"",
-                        "componentBgColor" =>"",
-                        "topRounded" =>10,
-                        "bottomRounded" =>10,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>10,
-                            "bottom" =>0,
-                            "both" =>10
-                        ]
-                    ],
-                    [
-                        "path" =>"edit-rubik-cube",
-                        "uses" =>0,
-                        "id" =>"6yojdi4pqzc0",
-                        "componentName" =>"RubikCube",
-                        "componentTitle" =>"魔方",
-                        "ignore" =>[],
-                        "mode" =>"row1-of2",
-                        "imageGap" =>2,
-                        "list" =>[
-                            [
-                                "imageUrl" =>"addon/tk_cps/diy/img/elmtqq.png",
-                                "imgWidth" =>179.5,
-                                "imgHeight" =>143.6,
-                                "link" => [
-                                    "parent" =>"TK_CPS_COMMONLINK",
-                                    "name" =>"TK_CPS_ELM_WUMENKAN",
-                                    "title" =>"饿了么",
-                                    "url" =>"/addon/tk_cps/pages/index?type=0&act_id=69&style=embedded",
-                                    "action" =>""
-                                ],
-                                "pageItemStyle" =>"border-top-left-radius:20rpx;border-top-right-radius:20rpx;border-bottom-left-radius:20rpx;border-bottom-right-radius:20rpx;border-top-left-radius:20rpx;border-top-right-radius:20rpx;border-bottom-left-radius:20rpx;border-bottom-right-radius:20rpx;",
-                                "widthStyle" =>"calc((100% - 3px) / 2)"
-                            ],
-                            [
-                                "imageUrl" =>"addon/tk_cps/diy/img/didi.png",
-                                "imgWidth" =>179.5,
-                                "imgHeight" =>143.6,
-                                "link" => [
-                                    "parent" =>"TK_CPS_COMMONLINK",
-                                    "name" =>"TK_CPS_MEISHI_DIDI",
-                                    "title" =>"滴滴出行",
-                                    "url" =>"/addon/tk_cps/pages/index?type=0&act_id=42&style=embedded",
-                                    "action" =>""
-                                ],
-                                "pageItemStyle" =>"border-top-left-radius:20rpx;border-top-right-radius:20rpx;border-bottom-left-radius:20rpx;border-bottom-right-radius:20rpx;border-top-left-radius:20rpx;border-top-right-radius:20rpx;border-bottom-left-radius:20rpx;border-bottom-right-radius:20rpx;",
-                                "widthStyle" =>"calc((100% - 3px) / 2)"
-                            ]
-                        ],
-                        "textColor" =>"#303133",
-                        "pageBgColor" =>"",
-                        "componentBgColor" =>"",
-                        "topRounded" =>10,
-                        "bottomRounded" =>10,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>10,
-                        "bottomElementRounded" =>10,
-                        "margin" => [
-                            "top" =>10,
-                            "bottom" =>0,
-                            "both" =>10
-                        ],
-                        "pageStyle" =>"padding-top:20rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
                     ],
                     [
                         "path" =>"edit-image-ads",
@@ -685,7 +545,8 @@ return [
                             "bottom" =>0,
                             "both" =>10
                         ],
-                        "pageStyle" =>"padding-top:20rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
+                        "pageStyle" =>"padding-top:20rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;",
+                        "componentBgUrl" =>""
                     ],
                     [
                         "path" =>"edit-image-ads",
@@ -725,7 +586,8 @@ return [
                             "bottom" =>0,
                             "both" =>10
                         ],
-                        "pageStyle" =>"padding-top:20rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
+                        "pageStyle" =>"padding-top:20rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;",
+                        "componentBgUrl" =>""
                     ],
                     [
                         "path" =>"edit-image-ads",
@@ -765,7 +627,8 @@ return [
                             "bottom" =>0,
                             "both" =>10
                         ],
-                        "pageStyle" =>"padding-top:20rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
+                        "pageStyle" =>"padding-top:20rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;",
+                        "componentBgUrl" =>""
                     ]
                 ]
             ]
@@ -1538,7 +1401,7 @@ return [
             // 页面数据源
             "data" => [
                 "global" => [
-                    "title" =>"CPS生活特惠",
+                    "title" =>"CPS特惠",
                     "pageBgColor" =>"#F8F8F8",
                     "bgUrl" =>"addon/tk_cps/diy/img/bg.png",
                     "imgWidth" =>750,
@@ -1596,7 +1459,7 @@ return [
                             "pageBgColor",
                             "marginBoth"
                         ],
-                        "positionWay" =>"fixed",
+                        "positionWay" =>"static",
                         "fixedBgColor" =>"",
                         "bgGradient" =>false,
                         "search" => [
@@ -1636,7 +1499,7 @@ return [
                             ]
                         ],
                         "tab" => [
-                            "control" =>true,
+                            "control" =>false,
                             "noColor" =>"",
                             "selectColor" =>"",
                             "fixedNoColor" =>"",
@@ -1696,7 +1559,11 @@ return [
                                     "imgWidth" =>1000,
                                     "imgHeight" =>400,
                                     "link" => [
-                                        "name" =>""
+                                        "parent" =>"TK_CPS_COMMONLINK",
+                                        "name" =>"TK_CPS_FEIZHU",
+                                        "title" =>"飞猪",
+                                        "url" =>"/addon/tk_cps/pages/index?type=0&act_id=120&style=embedded",
+                                        "action" =>""
                                     ],
                                     "id" =>"2oqe5pe7sjk0",
                                     "width" =>355,
@@ -1750,15 +1617,15 @@ return [
                         "list" =>[
                             [
                                 "id" =>"73r398jtz1g0",
-                                "title" =>"美团红包",
+                                "title" =>"美团外卖",
                                 "imageUrl" =>"addon/tk_cps/diy/logo/meituan.png",
                                 "imgWidth" =>51,
                                 "imgHeight" =>51,
                                 "link" => [
                                     "parent" =>"TK_CPS_COMMONLINK",
-                                    "name" =>"TK_CPS_MEISHI_HOME",
-                                    "title" =>"美团红包",
-                                    "url" =>"/addon/tk_cps/pages/index?type=0&act_id=89&style=embedded",
+                                    "name" =>"TK_CPS_MEISHI_SHOP",
+                                    "title" =>"美团外卖",
+                                    "url" =>"/addon/tk_cps/pages/index?type=0&act_id=7&style=embedded",
                                     "action" =>""
                                 ],
                                 "label" => [
@@ -1973,7 +1840,8 @@ return [
                             "both" =>10
                         ],
                         "pageStyle" =>"padding-top:20rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;",
-                        "componentBgUrl" =>""
+                        "componentBgUrl" =>"",
+                        "componentStartBgColor" =>"rgba(255, 255, 255, 0.91)"
                     ],
                     [
                         "path" =>"edit-image-ads",
@@ -2026,153 +1894,8 @@ return [
                             "bottom" =>0,
                             "both" =>10
                         ],
-                        "pageStyle" =>"padding-top:16rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
-                    ],
-                    [
-                        "path" =>"edit-image-ads",
-                        "uses" =>0,
-                        "id" =>"4uhtkx64900",
-                        "componentName" =>"ImageAds",
-                        "componentTitle" =>"图片广告",
-                        "ignore" =>[],
-                        "imageHeight" =>112,
-                        "list" =>[
-                            [
-                                "link" => [
-                                    "parent" =>"TK_CPS_COMMONLINK",
-                                    "name" =>"TK_CPS_ZHEKOU_JUHECHONGZHI",
-                                    "title" =>"聚合充值",
-                                    "url" =>"/addon/tk_cps/pages/index?type=1&act_id=189&style=embedded",
-                                    "action" =>""
-                                ],
-                                "imageUrl" =>"addon/tk_cps/diy/img/jhcz.jpg",
-                                "imgWidth" =>937,
-                                "imgHeight" =>280,
-                                "width" =>375,
-                                "height" =>112.05976520811099,
-                                "id" =>"52h8mt6dz1g0"
-                            ]
-                        ],
-                        "textColor" =>"#303133",
-                        "pageBgColor" =>"",
-                        "componentBgColor" =>"",
-                        "topRounded" =>10,
-                        "bottomRounded" =>10,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>10,
-                            "bottom" =>0,
-                            "both" =>10
-                        ],
+                        "pageStyle" =>"padding-top:16rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;",
                         "componentBgUrl" =>""
-                    ],
-                    [
-                        "path" =>"edit-image-ads",
-                        "uses" =>0,
-                        "id" =>"2lfn8st65w60",
-                        "componentName" =>"ImageAds",
-                        "componentTitle" =>"图片广告",
-                        "ignore" =>[],
-                        "imageHeight" =>168,
-                        "list" =>[
-                            [
-                                "link" => [
-                                    "parent" =>"TK_CPS_COMMONLINK",
-                                    "name" =>"TK_CPS_DOUYIN_",
-                                    "title" =>"抖音精选联盟",
-                                    "url" =>"/addon/tk_cps/pages/index?type=0&act_id=56&style=embedded",
-                                    "action" =>""
-                                ],
-                                "imageUrl" =>"addon/tk_cps/diy/img/douyinhaowu.png",
-                                "imgWidth" =>552,
-                                "imgHeight" =>248,
-                                "width" =>375,
-                                "height" =>168.47826086956522,
-                                "id" =>"2mzytcj86yc0"
-                            ],
-                            [
-                                "id" =>"4ercyi345rw0",
-                                "imageUrl" =>"addon/tk_cps/diy/img/douyintuangou.png",
-                                "imgWidth" =>1000,
-                                "imgHeight" =>400,
-                                "link" => [
-                                    "parent" =>"TK_CPS_COMMONLINK",
-                                    "name" =>"TK_CPS_DOUYIN_TUANGOU",
-                                    "title" =>"抖音团购",
-                                    "url" =>"/addon/tk_cps/pages/index?type=0&act_id=152&style=embedded",
-                                    "action" =>""
-                                ]
-                            ]
-                        ],
-                        "textColor" =>"#303133",
-                        "pageBgColor" =>"",
-                        "componentBgColor" =>"",
-                        "topRounded" =>10,
-                        "bottomRounded" =>10,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>10,
-                            "bottom" =>0,
-                            "both" =>10
-                        ]
-                    ],
-                    [
-                        "path" =>"edit-rubik-cube",
-                        "uses" =>0,
-                        "id" =>"6yojdi4pqzc0",
-                        "componentName" =>"RubikCube",
-                        "componentTitle" =>"魔方",
-                        "ignore" =>[],
-                        "mode" =>"row1-of2",
-                        "imageGap" =>2,
-                        "list" =>[
-                            [
-                                "imageUrl" =>"addon/tk_cps/diy/img/elmtqq.png",
-                                "imgWidth" =>179.5,
-                                "imgHeight" =>143.6,
-                                "link" => [
-                                    "parent" =>"TK_CPS_COMMONLINK",
-                                    "name" =>"TK_CPS_ELM_WUMENKAN",
-                                    "title" =>"饿了么",
-                                    "url" =>"/addon/tk_cps/pages/index?type=0&act_id=69&style=embedded",
-                                    "action" =>""
-                                ],
-                                "pageItemStyle" =>"border-top-left-radius:20rpx;border-top-right-radius:20rpx;border-bottom-left-radius:20rpx;border-bottom-right-radius:20rpx;border-top-left-radius:20rpx;border-top-right-radius:20rpx;border-bottom-left-radius:20rpx;border-bottom-right-radius:20rpx;",
-                                "widthStyle" =>"calc((100% - 3px) / 2)"
-                            ],
-                            [
-                                "imageUrl" =>"addon/tk_cps/diy/img/didi.png",
-                                "imgWidth" =>179.5,
-                                "imgHeight" =>143.6,
-                                "link" => [
-                                    "parent" =>"TK_CPS_COMMONLINK",
-                                    "name" =>"TK_CPS_MEISHI_DIDI",
-                                    "title" =>"滴滴出行",
-                                    "url" =>"/addon/tk_cps/pages/index?type=0&act_id=42&style=embedded",
-                                    "action" =>""
-                                ],
-                                "pageItemStyle" =>"border-top-left-radius:20rpx;border-top-right-radius:20rpx;border-bottom-left-radius:20rpx;border-bottom-right-radius:20rpx;border-top-left-radius:20rpx;border-top-right-radius:20rpx;border-bottom-left-radius:20rpx;border-bottom-right-radius:20rpx;",
-                                "widthStyle" =>"calc((100% - 3px) / 2)"
-                            ]
-                        ],
-                        "textColor" =>"#303133",
-                        "pageBgColor" =>"",
-                        "componentBgColor" =>"",
-                        "topRounded" =>10,
-                        "bottomRounded" =>10,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>10,
-                        "bottomElementRounded" =>10,
-                        "margin" => [
-                            "top" =>10,
-                            "bottom" =>0,
-                            "both" =>10
-                        ],
-                        "pageStyle" =>"padding-top:20rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
                     ],
                     [
                         "path" =>"edit-image-ads",
@@ -2212,7 +1935,8 @@ return [
                             "bottom" =>0,
                             "both" =>10
                         ],
-                        "pageStyle" =>"padding-top:20rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
+                        "pageStyle" =>"padding-top:20rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;",
+                        "componentBgUrl" =>""
                     ],
                     [
                         "path" =>"edit-image-ads",
@@ -2252,7 +1976,8 @@ return [
                             "bottom" =>0,
                             "both" =>10
                         ],
-                        "pageStyle" =>"padding-top:20rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
+                        "pageStyle" =>"padding-top:20rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;",
+                        "componentBgUrl" =>""
                     ],
                     [
                         "path" =>"edit-image-ads",
@@ -2292,7 +2017,8 @@ return [
                             "bottom" =>0,
                             "both" =>10
                         ],
-                        "pageStyle" =>"padding-top:20rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
+                        "pageStyle" =>"padding-top:20rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;",
+                        "componentBgUrl" =>""
                     ]
                 ]
             ]

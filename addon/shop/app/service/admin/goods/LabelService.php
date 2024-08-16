@@ -55,7 +55,7 @@ class LabelService extends BaseAdminService
      */
     public function getList(array $where = [], $field = 'label_id,label_name,memo,sort,create_time,update_time')
     {
-        $order = 'sort asc';
+        $order = 'sort desc,label_id desc';
         return $this->model->where([ ['site_id', '=', $this->site_id] ])->withSearch([ "label_name" ], $where)->field($field)->order($order)->select()->toArray();
     }
 

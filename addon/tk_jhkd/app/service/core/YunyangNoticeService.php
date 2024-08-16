@@ -27,8 +27,7 @@ class YunyangNoticeService extends BaseApiService
         Log::write('-----云洋回调处理-----' . date('Y-m-d H:i:s', time()));
         Log::write($data);
         try {
-            $this->changeService->changeOrderStatus($data);
-            return true;
+           return $this->changeService->changeOrderStatus($data);
         } catch (Exception $e) {
             throw new CommonException($e->getMessage());
         }

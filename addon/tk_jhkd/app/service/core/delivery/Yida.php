@@ -3,6 +3,7 @@
 namespace addon\tk_jhkd\app\service\core\delivery;
 
 use Exception;
+use think\facade\Log;
 
 /**
  * 易达178渠道
@@ -36,7 +37,9 @@ class Yida extends BaseDelivery
     public function sendOrder($params)
     {
         $resInfo = $this->execute('SUBMIT_ORDER_V2', $params);
-        if ($resInfo['code'] != 200) throw new Exception($resInfo['msg']);
+        if ($resInfo['code'] != 200) {
+            Log::write($resInfo['msg']);
+        }
         return $resInfo['data'] ?? '';
     }
 
@@ -70,7 +73,9 @@ class Yida extends BaseDelivery
             "userMobile" => $this->config['bindMobile']
         ];
         $resInfo= $this->execute('ACCOUNT_BALANCE', $data);
-        if ($resInfo['code'] != 200) throw new Exception($resInfo['msg']);
+        if ($resInfo['code'] != 200) {
+            Log::write($resInfo['msg']);
+        }
         return $resInfo['data']['accountBalance'];
     }
 

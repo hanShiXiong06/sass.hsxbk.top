@@ -14,9 +14,9 @@ namespace app\service\core\niucloud;
 use app\model\addon\Addon;
 use app\service\core\addon\CoreAddonBaseService;
 use app\service\core\addon\CoreAddonDevelopDownloadService;
-use app\service\core\addon\CoreAddonInstallService;
 use core\base\BaseCoreService;
 use core\exception\CommonException;
+use core\util\niucloud\BaseNiucloudClient;
 use core\util\niucloud\CloudService;
 use think\facade\Cache;
 
@@ -97,6 +97,8 @@ class CoreCloudBuildService extends BaseCoreService
     public function cloudBuild() {
         if ($this->build_task) throw new CommonException('CLOUD_BUILD_TASK_EXIST');
 
+        $action_token = (new CoreModuleService())->getActionToken('cloudbuild', ['data' => [ 'product_key' => BaseNiucloudClient::PRODUCT ]]);
+
         // 上传任务key
         $task_key = uniqid();
         // 此次上传任务临时目录
@@ -129,7 +131,8 @@ class CoreCloudBuildService extends BaseCoreService
 
         $query = [
             'authorize_code' => $this->auth_code,
-            'timestamp' => time()
+            'timestamp' => time(),
+            'token' => $action_token['data']['token'] ?? ''
         ];
         $response = (new CloudService())->httpPost('cloud/build?' . http_build_query($query), [
             'multipart' => [

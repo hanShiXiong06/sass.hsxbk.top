@@ -11,7 +11,6 @@
 
 namespace addon\shop\app\api\controller\goods;
 
-use core\base\BaseAdminController;
 use addon\shop\app\service\api\goods\EvaluateService;
 use core\base\BaseApiController;
 
@@ -90,7 +89,6 @@ class Evaluate extends BaseApiController
     /**
      * 评价信息
      * @param $id
-     * @return Response
      */
     public function getEvaluate($id)
     {

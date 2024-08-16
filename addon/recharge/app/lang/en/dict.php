@@ -13,15 +13,11 @@ return [
     'dict_member' => [
         'account_point_recharge_give' => 'recharge give',
         'account_balance_recharge' => 'recharge',
-
     ],
     'dict_order' => [
         //订单类型
         'order_type_recharge' => 'recharge order',
-
     ],
-
-
     'dict_menu_admin' => [
         'order' => 'order',
         'recharge_order' => 'recharge order',

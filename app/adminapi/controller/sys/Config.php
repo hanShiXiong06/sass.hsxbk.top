@@ -46,8 +46,6 @@ class Config extends BaseAdminController
             [ "full_address", "" ],
             [ "phone", "" ],
             [ "business_hours", "" ],
-            [ "site_name", "" ],
-            [ "logo", "" ],
             [ "front_end_name", "" ],
             [ "front_end_logo", "" ],
             [ "front_end_icon", "" ],
@@ -133,26 +131,6 @@ class Config extends BaseAdminController
     public function getMap()
     {
         return success(( new ConfigService() )->getMap());
-    }
-
-    /**
-     * 设置快捷菜单
-     */
-    public function setShortcutMenu()
-    {
-        $data = $this->request->params([
-            [ 'menu', [] ],
-        ]);
-        ( new ConfigService() )->setShortcutMenu($data[ 'menu' ]);
-        return success();
-    }
-
-    /**
-     * 获取站点快捷菜单
-     */
-    public function getShortcutMenu()
-    {
-        return success(data: ( new ConfigService() )->getShortcutMenu());
     }
 
     /**

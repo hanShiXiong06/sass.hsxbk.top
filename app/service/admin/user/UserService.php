@@ -14,6 +14,7 @@ namespace app\service\admin\user;
 
 use app\dict\sys\AppTypeDict;
 use app\dict\sys\UserDict;
+use app\model\sys\SysRole;
 use app\model\sys\SysUser;
 use app\model\sys\SysUserRole;
 use app\model\sys\UserCreateSiteLimit;
@@ -249,13 +250,15 @@ class UserService extends BaseAdminService
      * @return true
      */
     public function del(int $uid){
-        $where = [
-            ['uid', '=', $uid],
-            ['site_id', '=', $this->site_id]
-        ];
-        (new SysUserRole())->where($where)->delete();
-        return true;
+        AuthService::isSuperAdmin();
+        $super_admin_uid = Cache::get('super_admin_uid');
+        if ($super_admin_uid == $uid) throw new CommonException("SUPER_ADMIN_NOT_ALLOW_DEL");
 
+        $site_num = (new SysUserRole())->where([['uid', '=', $uid], ['site_id', '<>', request()->defaultSiteId() ] ])->count();
+        if ($site_num) throw new CommonException("USER_NOT_ALLOW_DEL");
+
+        $this->model->where([ ['uid', '=', $uid] ])->delete();
+        return true;
     }
 
     /**
@@ -280,6 +283,29 @@ class UserService extends BaseAdminService
             ->order('uid desc')
             ->select()
             ->toArray();
+    }
+
+    /**
+     * 获取可选站点管理员（用于站点添加）
+     * @param array $where
+     * @return array
+     */
+    public function getUserSelect(array $where)
+    {
+        $field = 'SysUser.uid, username, head_img';
+        $all_uid = array_column($this->getUserAll($where), 'uid');
+        $all_role_uid = (new SysUserRole())->distinct(true)->order('id desc')->select()->column('uid');
+        $data = $this->model->distinct(true)->hasWhere('userrole', function ($query) {
+                $query->where([['is_admin', '=', 1]])->whereOr([['site_id', '=', 0]]);
+            })->withSearch(['username', 'realname', 'create_time'], $where)
+            ->field($field)
+            ->order('SysUser.uid desc')
+            ->select()
+            ->toArray();
+        $uids = array_diff($all_uid, $all_role_uid);
+        $diff_users = $this->model->where([['uid', 'in', $uids]])->withSearch(['username', 'realname', 'create_time'], $where)
+            ->field('uid, username, head_img')->order('uid desc')->select()->toArray();
+        return array_merge($diff_users, $data);
     }
 
     /**

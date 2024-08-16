@@ -62,7 +62,6 @@ class PayChannel extends BaseAdminController
         return success((new PayChannelService())->getListByChannel($channel));
     }
 
-
     /**
      * 支付设置
      * @return Response

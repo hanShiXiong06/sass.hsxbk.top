@@ -101,6 +101,43 @@
           </el-form-item>
         </div>
       </el-form>
+      <h3 class="mb-[10px]">分类设置</h3>
+      <el-form label-width="80px" class="px-[10px]">
+        <el-form-item label="分类显示">
+          <el-radio-group
+            v-model="diyStore.editComponent.cateshow"
+            class="ml-4"
+          >
+            <el-radio :label="'0'" size="large">隐藏</el-radio>
+            <el-radio :label="'1'" size="large">显示</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="字体颜色">
+          <el-color-picker
+            v-model="diyStore.editComponent.catefontcolor"
+            show-alpha
+            :predefine="diyStore.predefineColors"
+          />
+        </el-form-item>
+        <el-form-item label="选中背景">
+          <div>
+            <color-picker
+              v-model:pureColor="diyStore.editComponent.catebackground"
+              v-model:gradientColor="diyStore.editComponent.catebackground"
+              format="hex6"
+              shape="square"
+              useType="both"
+            />
+          </div>
+        </el-form-item>
+        <el-form-item label="选中颜色">
+          <el-color-picker
+            v-model="diyStore.editComponent.cateselectfontcolor"
+            show-alpha
+            :predefine="diyStore.predefineColors"
+          />
+        </el-form-item>
+      </el-form>
     </div>
   </div>
 
@@ -115,6 +152,8 @@
 <script lang="ts" setup>
 import { t } from "@/lang";
 import useDiyStore from "@/stores/modules/diy";
+import { ColorPicker } from "vue3-colorpicker";
+import "vue3-colorpicker/style.css";
 import { reactive, ref, watch } from "vue";
 const pureColor = ref<ColorInputWithoutInstance>("red");
 const gradientColor = ref(

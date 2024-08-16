@@ -44,8 +44,8 @@ class AgentService extends BaseAdminService
 //            ['fenxiao.agent_status', '=', [AgentDict::NORMAL]],
             ['fenxiao.is_agent', '=', 1]
         );
-        if (!empty($where['search'])) {
-            $condition[] = ['member.nickname|member.username|member.mobile', 'like', '%' . $where['search'] . '%'];
+        if (isset($where['search']) && $where['search'] != '') {
+            $condition[] = ['member.nickname|member.username|member.mobile', 'like', '%' . $this->model->handelSpecialCharacter($where['search']) . '%'];
         }
         $search_model = $this->model->where($condition)
             ->withSearch(['agent_level', 'agent_time', 'agent_status'], $where)

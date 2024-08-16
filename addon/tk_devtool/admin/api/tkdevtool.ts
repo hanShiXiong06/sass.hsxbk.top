@@ -2,6 +2,12 @@ import request from '@/addon/tk_devtool/utils/tkdevtoolrequest'
 
 
 /***************************************************** DEVTOOL接口 ****************************************************/
+export function addonUpload(params: Record<string, any>) {
+    return request.post(`tk_devtool/addonupload`, params)
+}
+export function build(key) {
+    return request.get(`tk_devtool/build/${key}`)
+}
 
 
 /**

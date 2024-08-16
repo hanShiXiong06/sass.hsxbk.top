@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS `{{prefix}}shop_fenxiao`;
 
+DROP TABLE IF EXISTS `{{prefix}}shop_fenxiao`;
 CREATE TABLE `{{prefix}}shop_fenxiao` (
 	`fenxiao_id` int NOT NULL AUTO_INCREMENT COMMENT '主键Id',
 	`site_id` int NOT NULL DEFAULT 0 COMMENT '站点id',
@@ -28,8 +28,8 @@ CREATE TABLE `{{prefix}}shop_fenxiao` (
 	PRIMARY KEY USING BTREE (`fenxiao_id`)
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE utf8mb4_general_ci COMMENT '分销商表';
 
-DROP TABLE IF EXISTS `{{prefix}}shop_fenxiao_agent_level`;
 
+DROP TABLE IF EXISTS `{{prefix}}shop_fenxiao_agent_level`;
 CREATE TABLE `{{prefix}}shop_fenxiao_agent_level` (
 	`level_id` int NOT NULL AUTO_INCREMENT,
 	`site_id` int NOT NULL DEFAULT 0 COMMENT '站点id',
@@ -41,8 +41,8 @@ CREATE TABLE `{{prefix}}shop_fenxiao_agent_level` (
 	PRIMARY KEY USING BTREE (`level_id`)
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE utf8mb4_general_ci COMMENT '代理等级表';
 
-DROP TABLE IF EXISTS `{{prefix}}shop_fenxiao_apply`;
 
+DROP TABLE IF EXISTS `{{prefix}}shop_fenxiao_apply`;
 CREATE TABLE `{{prefix}}shop_fenxiao_apply` (
 	`apply_id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '申请id',
 	`site_id` int NOT NULL DEFAULT 0 COMMENT '站点id',
@@ -54,8 +54,8 @@ CREATE TABLE `{{prefix}}shop_fenxiao_apply` (
 	PRIMARY KEY USING BTREE (`apply_id`)
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE utf8mb4_general_ci;
 
-DROP TABLE IF EXISTS `{{prefix}}shop_fenxiao_goods`;
 
+DROP TABLE IF EXISTS `{{prefix}}shop_fenxiao_goods`;
 CREATE TABLE `{{prefix}}shop_fenxiao_goods` (
 	`fenxiao_goods_id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键id',
 	`goods_id` int UNSIGNED NOT NULL DEFAULT 0 COMMENT '商品ID',
@@ -66,8 +66,8 @@ CREATE TABLE `{{prefix}}shop_fenxiao_goods` (
 	PRIMARY KEY USING BTREE (`fenxiao_goods_id`)
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE utf8mb4_general_ci COMMENT '分销商品表';
 
-DROP TABLE IF EXISTS `{{prefix}}shop_fenxiao_level`;
 
+DROP TABLE IF EXISTS `{{prefix}}shop_fenxiao_level`;
 CREATE TABLE `{{prefix}}shop_fenxiao_level` (
 	`level_id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '分销等级Id',
 	`site_id` int NOT NULL DEFAULT 0 COMMENT '站点id',
@@ -92,8 +92,8 @@ CREATE TABLE `{{prefix}}shop_fenxiao_level` (
 	PRIMARY KEY USING BTREE (`level_id`)
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE utf8mb4_general_ci COMMENT '分销等级配置表';
 
-DROP TABLE IF EXISTS `{{prefix}}shop_fenxiao_member`;
 
+DROP TABLE IF EXISTS `{{prefix}}shop_fenxiao_member`;
 CREATE TABLE `{{prefix}}shop_fenxiao_member` (
 	`member_id` int UNSIGNED NOT NULL DEFAULT 0 COMMENT '会员id',
 	`site_id` int NOT NULL DEFAULT 0 COMMENT '站点id',
@@ -105,8 +105,8 @@ CREATE TABLE `{{prefix}}shop_fenxiao_member` (
 	PRIMARY KEY USING BTREE (`member_id`)
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE utf8mb4_general_ci;
 
-DROP TABLE IF EXISTS `{{prefix}}shop_fenxiao_order`;
 
+DROP TABLE IF EXISTS `{{prefix}}shop_fenxiao_order`;
 CREATE TABLE `{{prefix}}shop_fenxiao_order` (
 	`id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '分销订单Id',
 	`order_id` int UNSIGNED NOT NULL DEFAULT 0 COMMENT '订单ID',
@@ -126,8 +126,8 @@ CREATE TABLE `{{prefix}}shop_fenxiao_order` (
 	PRIMARY KEY USING BTREE (`id`)
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE utf8mb4_general_ci COMMENT '分销订单表';
 
-DROP TABLE IF EXISTS `{{prefix}}shop_fenxiao_order_goods`;
 
+DROP TABLE IF EXISTS `{{prefix}}shop_fenxiao_order_goods`;
 CREATE TABLE `{{prefix}}shop_fenxiao_order_goods` (
 	`id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
 	`site_id` int NOT NULL DEFAULT 0 COMMENT '站点id',
@@ -151,8 +151,8 @@ CREATE TABLE `{{prefix}}shop_fenxiao_order_goods` (
 	PRIMARY KEY USING BTREE (`id`)
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE utf8mb4_general_ci COMMENT '分销订单项表';
 
-DROP TABLE IF EXISTS `{{prefix}}shop_fenxiao_sale_period`;
 
+DROP TABLE IF EXISTS `{{prefix}}shop_fenxiao_sale_period`;
 CREATE TABLE `{{prefix}}shop_fenxiao_sale_period` (
 	`id` int NOT NULL AUTO_INCREMENT,
 	`site_id` int NOT NULL DEFAULT 0 COMMENT '站点id',
@@ -170,8 +170,8 @@ CREATE TABLE `{{prefix}}shop_fenxiao_sale_period` (
 	PRIMARY KEY USING BTREE (`id`)
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE utf8mb4_general_ci COMMENT '销售奖励周期表';
 
-DROP TABLE IF EXISTS `{{prefix}}shop_fenxiao_sale_period_member`;
 
+DROP TABLE IF EXISTS `{{prefix}}shop_fenxiao_sale_period_member`;
 CREATE TABLE `{{prefix}}shop_fenxiao_sale_period_member` (
 	`id` int NOT NULL AUTO_INCREMENT,
 	`site_id` int NOT NULL DEFAULT 0 COMMENT '站点id',
@@ -190,8 +190,8 @@ CREATE TABLE `{{prefix}}shop_fenxiao_sale_period_member` (
 	PRIMARY KEY USING BTREE (`id`)
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE utf8mb4_general_ci COMMENT '会员销售奖励周期表';
 
-DROP TABLE IF EXISTS `{{prefix}}shop_fenxiao_stat`;
 
+DROP TABLE IF EXISTS `{{prefix}}shop_fenxiao_stat`;
 CREATE TABLE `{{prefix}}shop_fenxiao_stat` (
 	`id` int UNSIGNED NOT NULL AUTO_INCREMENT,
 	`site_id` int NOT NULL DEFAULT 0 COMMENT '站点id',
@@ -222,8 +222,8 @@ CREATE TABLE `{{prefix}}shop_fenxiao_stat` (
 	INDEX `IDX_shop_fenxiao_stat_year` USING BTREE(`year` ASC)
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE utf8mb4_general_ci COMMENT '分销统计表';
 
-DROP TABLE IF EXISTS `{{prefix}}shop_fenxiao_task`;
 
+DROP TABLE IF EXISTS `{{prefix}}shop_fenxiao_task`;
 CREATE TABLE `{{prefix}}shop_fenxiao_task` (
 	`id` int NOT NULL AUTO_INCREMENT,
 	`site_id` int NOT NULL DEFAULT 0 COMMENT '站点id',
@@ -246,8 +246,8 @@ CREATE TABLE `{{prefix}}shop_fenxiao_task` (
 	PRIMARY KEY USING BTREE (`id`)
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE utf8mb4_general_ci COMMENT '分销任务奖励';
 
-DROP TABLE IF EXISTS `{{prefix}}shop_fenxiao_task_member`;
 
+DROP TABLE IF EXISTS `{{prefix}}shop_fenxiao_task_member`;
 CREATE TABLE `{{prefix}}shop_fenxiao_task_member` (
 	`id` int NOT NULL AUTO_INCREMENT,
 	`site_id` int NOT NULL DEFAULT 0 COMMENT '站点id',
@@ -266,8 +266,8 @@ CREATE TABLE `{{prefix}}shop_fenxiao_task_member` (
 	PRIMARY KEY USING BTREE (`id`)
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE utf8mb4_general_ci COMMENT '任务进度表';
 
-DROP TABLE IF EXISTS `{{prefix}}shop_fenxiao_task_member_reward`;
 
+DROP TABLE IF EXISTS `{{prefix}}shop_fenxiao_task_member_reward`;
 CREATE TABLE `{{prefix}}shop_fenxiao_task_member_reward` (
 	`id` int NOT NULL AUTO_INCREMENT,
 	`site_id` int NOT NULL DEFAULT 0 COMMENT '站点id',

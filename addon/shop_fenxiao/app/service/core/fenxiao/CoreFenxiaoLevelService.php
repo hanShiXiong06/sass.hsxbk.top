@@ -20,7 +20,7 @@ use think\Model;
 
 
 /**
- * 分校申请
+ * 分销申请
  */
 class CoreFenxiaoLevelService extends BaseCoreService
 {
@@ -48,12 +48,12 @@ class CoreFenxiaoLevelService extends BaseCoreService
             $fenxiao_info['order_money'] = (new Order())->where([['status', '=', OrderDict::FINISH], ['member_id', '=', $fenxiao_member_id], ['site_id', '=', $site_id]])->sum('order_money');
             $upgrade_level = [];
             if ($level_info['upgrade_type'] == 2) {
-                if (($level_info['order_num'] > 0 && $fenxiao_info['order_num'] >= $level_info['order_num']) &&
-                    ($level_info['order_money'] > 0 && $fenxiao_info['order_money'] >= $level_info['order_money']) &&
-                    ($level_info['fenxiao_order_num'] > 0 && $fenxiao_info['fenxiao_order_num'] >= $level_info['fenxiao_order_num']) &&
-                    ($level_info['fenxiao_order_money'] > 0 && $fenxiao_info['fenxiao_total_order'] >= $level_info['fenxiao_order_money']) &&
-                    ($level_info['child_num'] > 0 && $fenxiao_info['child_num'] >= $level_info['child_num']) &&
-                    ($level_info['child_fenxiao_num'] > 0 && $fenxiao_info['child_fenxiao_num'] >= $level_info['child_fenxiao_num'])
+                if (($level_info['order_num'] == 0 || ($level_info['order_num'] > 0 && $fenxiao_info['order_num'] >= $level_info['order_num'])) &&
+                    ($level_info['order_money'] == 0 || ($level_info['order_money'] > 0 && $fenxiao_info['order_money'] >= $level_info['order_money'])) &&
+                    ($level_info['fenxiao_order_num'] == 0 || ($level_info['fenxiao_order_num'] > 0 && $fenxiao_info['fenxiao_order_num'] >= $level_info['fenxiao_order_num'])) &&
+                    ($level_info['fenxiao_order_money'] == 0 || ($level_info['fenxiao_order_money'] > 0 && $fenxiao_info['fenxiao_total_order'] >= $level_info['fenxiao_order_money'])) &&
+                    ($level_info['child_num'] == 0 || ($level_info['child_num'] > 0 && $fenxiao_info['child_num'] >= $level_info['child_num'])) &&
+                    ($level_info['child_fenxiao_num'] == 0 || ($level_info['child_fenxiao_num'] > 0 && $fenxiao_info['child_fenxiao_num'] >= $level_info['child_fenxiao_num']))
 
                 ) {
                     $upgrade_level = $level_info;

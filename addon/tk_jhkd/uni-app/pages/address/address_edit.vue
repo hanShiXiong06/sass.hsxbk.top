@@ -192,11 +192,28 @@
 <style lang="scss" scoped>
 	@import '@/addon/tk_jhkd/utils/styles/common.scss';
 
+	page {
+		--primary-color: #4541c7;
+		--primary-color-dark: #F26F3E;
+		--primary-color-disabled: #FFB397;
+		--primary-color-light: #FFEAE2;
+		--page-bg-color: #f7f7f7;
+		--price-text-color: #e1251b;
+	}
+
+	.tk-tag {
+		padding: 4rpx 8rpx;
+		background: var(--primary-color);
+		color: #ffffff;
+		border-radius: 8rpx;
+		font-size: 22rpx;
+	}
+
 	.tk-card1 {
 		background-color: rgba(255, 255, 255, 0.9);
 
 		border-radius: 12rpx;
 
-		box-shadow: 0 1px 1px 0 rgba(234, 234, 234, 0.2), 0 2px 2px 0 rgba(231, 231, 231, 0.2);
+		bbbox-shadow: 0 1px 1px 0 rgba(234, 234, 234, 0.2), 0 2px 2px 0 rgba(231, 231, 231, 0.2);
 	}
 </style>

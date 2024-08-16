@@ -37,7 +37,7 @@ class DiyConfigService extends BaseAdminService
         $site_addon = ( new CoreSiteService() )->getSiteCache($this->site_id);
 
         // 单应用，排除 系统 底部导航设置
-        if (count($site_addon[ 'apps' ]) == 1) {
+        if (count($list) > 1 && count($site_addon[ 'apps' ]) == 1) {
             foreach ($list as $k => $v) {
                 if ($v[ 'key' ] = 'app') {
                     unset($list[ $k ]);

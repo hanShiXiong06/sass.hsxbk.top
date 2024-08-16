@@ -31,11 +31,11 @@ class OrderCreateService extends BaseApiService
         $this->model = new Order();
     }
 
-
     /**
      * 计算
      * @param array $data
-     * @return void
+     * @return array
+     * @throws \Exception
      */
     public function calculate(array $data)
     {

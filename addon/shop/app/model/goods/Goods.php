@@ -216,11 +216,10 @@ class Goods extends BaseModel
 
     public function getGoodsLabelNameAttr($value, $data)
     {
-        if(isset($data['label_ids']) && !empty($data['label_ids'])){
+        if (isset($data[ 'label_ids' ]) && !empty($data[ 'label_ids' ])) {
             $goods_label_model = new Label();
             return $goods_label_model->where([
-                [ 'site_id', '=', $this->site_id ],
-                [ 'label_id', 'in', $data['label_ids'] ]
+                [ 'label_id', 'in', $data[ 'label_ids' ] ]
             ])->field('label_id, label_name, memo')
                 ->select()->toArray();
         }
@@ -246,8 +245,8 @@ class Goods extends BaseModel
      */
     public function searchGoodsNameAttr($query, $value, $data)
     {
-        if ($value) {
-            $query->where("goods_name", "like", "%" . $value . "%");
+        if ($value != '') {
+            $query->where("goods_name", "like", "%" . $this->handelSpecialCharacter($value) . "%");
         }
     }
 
@@ -258,7 +257,7 @@ class Goods extends BaseModel
      */
     public function searchSubTitleAttr($query, $value, $data)
     {
-        if ($value) {
+        if ($value != '') {
             $query->where("sub_title", "like", "%" . $value . "%");
         }
     }
@@ -447,34 +446,7 @@ class Goods extends BaseModel
             ->joinType('left')
             ->withField('brand_id, brand_name, logo, desc');
     }
-//    hsx start
-    public function skuNo(){
-        return $this->hasOne(GoodsSku::class,'sku_no','sku_no');
-    }
-    public function getBrandNameAttr($value, $data)
-    {
-        // 如果已经加载了 brand 关联，则直接返回 brand_name
-        if (isset($this->brand) && $this->brand) {
-            return $this->brand->brand_name;
-        }
-        return null;
-    }
-    /**
-     * 搜索器: 商品编号id
-     * @param $value
-     * @param $data
-     * sku_no 模糊搜索
-     */
 
-    public function searchSkuNoAttr($query, $value, $data)
-    {
-        if ($value) {
-            $query->where("sku_no", "like", "%". $value. "%");
-        }
-    }
-
-    protected $append = ['brand_name'];  // 确保在模型数组/JSON表示中包含 brand_name
-//    end
     /**
      * 关联商品参数
      * @return \think\model\relation\HasOne
@@ -485,6 +457,5 @@ class Goods extends BaseModel
             ->joinType('left')
             ->withField('attr_id, attr_name, attr_value_format, sort');
     }
-
 
 }

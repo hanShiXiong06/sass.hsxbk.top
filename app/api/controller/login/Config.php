@@ -23,9 +23,7 @@ class Config extends BaseController
      */
     public function getLoginConfig()
     {
-
-        return success((new MemberConfigService())->getLoginConfig());
+        return success(( new MemberConfigService() )->getLoginConfig());
     }
-
 
 }

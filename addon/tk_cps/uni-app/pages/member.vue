@@ -23,17 +23,23 @@
 
 		<!-- #ifdef MP-WEIXIN -->
 		<!-- 小程序隐私协议 -->
-		<wx-privacy-popup ref="wxPrivacyPopup"></wx-privacy-popup>
+		<wx-privacy-popup ref="wxPrivacyPopupRef"></wx-privacy-popup>
 		<!-- #endif -->
 
 	</view>
 </template>
 
 <script setup lang="ts">
-	import { ref } from 'vue';
+	import { ref, computed } from 'vue';
 	import { useDiy } from '@/hooks/useDiy'
+	import { redirect } from '@/utils/common';
 	import diyGroup from '@/addon/components/diy/group/index.vue'
 	import fixedGroup from '@/addon/components/fixed/group/index.vue'
+	import useMemberStore from '@/stores/member'
+
+	// 会员信息
+	const memberStore = useMemberStore()
+	const userInfo = computed(() => memberStore.info)
 
 	const diy = useDiy({
 		name: 'DIY_TK_CPS_MEMBER_INDEX'
@@ -46,8 +52,22 @@
 
 	// 监听页面显示
 	diy.onShow((data : any) => {
+		if (data.value) {
+			// uni.setNavigationBarTitle({
+			// 	title: diyData.title
+			// })
+		} else if (data.page) {
+			// 跳转到设置的启动页
+			redirect({ url: data.page, mode: 'reLaunch' })
+		}
 		diyGroupRef.value?.refresh();
+		if (userInfo.value) {
+			useMemberStore().getMemberInfo()
+		}
 	});
+
+	// 监听页面卸载
+	diy.onUnload();
 
 	// 监听下拉刷新事件
 	diy.onPullDownRefresh()
@@ -57,4 +77,19 @@
 </script>
 <style lang="scss" scoped>
 	@import '@/styles/diy.scss';
+</style>
+<style lang="scss">
+	.diy-template-wrap {
+
+		/* #ifdef MP */
+		.child-diy-template-wrap {
+			::v-deep .diy-group {
+				>.draggable-element.top-fixed-diy {
+					display: block !important;
+				}
+			}
+		}
+
+		/* #endif */
+	}
 </style>

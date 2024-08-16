@@ -19,17 +19,6 @@ class Addon
      */
     public function install()
     {
-        //初始文件及配置
-        (new DevtoolService())->moveFile();
-        //修改admin打包配置
-        //合并依赖
-        (new DevtoolService())->dependadmin();
-        //执行相关命令队列
-        AdminInstall::dispatch([]);
-        AdminBuild::dispatch([]);
-        UniappInstall::dispatch([]);
-        UniappBuildH5::dispatch([]);
-
         return true;
     }
 

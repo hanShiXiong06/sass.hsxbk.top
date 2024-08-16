@@ -11,7 +11,6 @@
 
 namespace app\adminapi\controller\wxoplatform;
 
-use app\service\admin\wechat\WechatConfigService;
 use app\service\admin\wxoplatform\OplatformConfigService;
 use core\base\BaseAdminController;
 use think\Response;

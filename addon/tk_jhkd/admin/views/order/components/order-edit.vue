@@ -83,6 +83,7 @@
         <el-tag v-if="detailData.is_send == 1"> 已发单 </el-tag>
         <el-tag type="info" v-if="detailData.is_send == 0"> 未发单 </el-tag>
         <span class="ml-4 font-bold">{{ detailData.close_reason }}</span>
+        <el-button class="ml-4" @click="openDialog()">更改状态</el-button>
       </div>
 
       <div class="mt-4 flex items-center" v-if="detailData.remark">
@@ -159,6 +160,29 @@
       </div>
     </el-card>
   </el-dialog>
+  <el-dialog v-model="changestatusDialog" title="更改状态" width="400">
+    <div class="mb-2">
+              <el-alert
+                type="info"
+                title="这里更改状态仅更新订单状态，不会有额外操作，请谨慎修改"
+                :closable="false"
+                show-icon
+              />
+            </div>
+    <div class="w-[320px]">
+      <el-select v-model="orderstatus" placeholder="请选择订单状态">
+        <el-option
+          v-for="(item, index) in order_statusList"
+          :key="index"
+          :label="item.name"
+          :value="item.value"
+        />
+      </el-select>
+    </div>
+    <el-button type="primary" @click="saveStatus()" class="mt-4"
+      >确定</el-button
+    >
+  </el-dialog>
 </template>
 
 <script lang="ts" setup>
@@ -166,7 +190,30 @@ import { ref, reactive, computed, watch } from "vue";
 import { useDictionary } from "@/app/api/dict";
 import type { FormInstance } from "element-plus";
 import { img } from "@/utils/common";
-import { getOrderInfo, getDeliveryInfo } from "@/addon/tk_jhkd/api/order";
+import {
+  getOrderInfo,
+  getDeliveryInfo,
+  changeStatus,
+} from "@/addon/tk_jhkd/api/order";
+const order_statusList = ref([] as any[]);
+const order_statusDictList = async () => {
+  order_statusList.value = await (
+    await useDictionary("jhkd_order_status")
+  ).data.dictionary;
+};
+order_statusDictList();
+const orderstatus = ref();
+const changestatusDialog = ref(false);
+const openDialog = () => {
+  changestatusDialog.value = true;
+};
+const saveStatus = async () => {
+  await changeStatus({
+    order_id: detailData.value.order_id,
+    order_status: orderstatus.value,
+  });
+  changestatusDialog.value = false;
+};
 /**
  * 复制
  */

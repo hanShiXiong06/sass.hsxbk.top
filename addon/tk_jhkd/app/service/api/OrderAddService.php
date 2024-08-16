@@ -30,6 +30,7 @@ class OrderAddService extends BaseApiService
         $field = 'id,site_id,member_id,order_id,order_no,order_money,order_status,out_trade_no,pay_time,create_time,close_time,ip,update_time,delete_time';
         $order = 'create_time desc';
         $search_model = $this->model
+            ->where([['member_id', '=', $this->member_id]])
             ->where([['site_id', "=", $this->site_id]])
             ->withSearch(["id","member_id","order_id","order_no","order_money","order_status","out_trade_no","pay_time","create_time","close_time","ip","update_time","delete_time"], $where)
             ->with(

@@ -222,7 +222,7 @@
                             callback(t('stockTips'))
                         } else if (value <=0) {
                             callback(t('stockTipsTwo'))
-                        }else if(formData.product_list[0].sum_count != '-1'&&parseInt(value)>parseInt(formData.product_list[0].sum_count.sum_count)){
+                        }else if(formData.product_list[0].sum_count != '-1' && parseInt(value)>parseInt(formData.product_list[0].sum_count.sum_count)){
                             callback(t('stockTipsThree'))
                         }else {
                             callback();
@@ -265,7 +265,7 @@
                                                         } else{
                                                             callback();
                                                         }
-                                            }
+                                                    }
                                             }]" class="sku-form-item-wrap">
                                             <!-- @blur="inputBlur(row,'reduce',$index)" -->
                                             <el-input v-model.trim="formData.point" class="!w-[200px]"  clearable placeholder="0" maxlength="8" >
@@ -429,7 +429,6 @@
                 </el-form-item>
             </el-card>
         </el-form>
-
 
         <!-- 提交按钮 -->
         <div class="fixed-footer-wrap">

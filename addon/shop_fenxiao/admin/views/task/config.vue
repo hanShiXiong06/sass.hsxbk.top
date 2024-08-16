@@ -18,18 +18,17 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed, toRaw } from "vue";
+import { ref, reactive } from "vue";
 import { t } from "@/lang";
 import { getTaskConfig, setTaskConfig } from '@/addon/shop_fenxiao/api/task'
-import {  ElMessage, FormInstance, ElMessageBox } from 'element-plus'
 import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
 const router = useRouter();
 const pageName = route.meta.title;
 
-let config = ref({is_open: '0'});
-let configLoading = ref(true);
+const config = ref({is_open: '0'});
+const configLoading = ref(true);
 const getTaskConfigFn = ()=>{
     getTaskConfig().then((res:any)=>{
         configLoading.value = false;

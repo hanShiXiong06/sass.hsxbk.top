@@ -162,7 +162,7 @@ class CoreTaskMemberService extends BaseCoreService
         //计算预计的发放时间
         $send_time_type = $task['send_time_type'];
         if ($send_time_type == TaskDict::SEND_TIME_ACTIVITY_FINISH) {
-            $send_timer = $now_time + strtotime($task['send_time']) * 86400;
+            $send_timer = $now_time + $task['send_time'] * 86400;
         } else {
             $send_timer = $task['send_time'];
         }

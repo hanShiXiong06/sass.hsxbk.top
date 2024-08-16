@@ -85,8 +85,7 @@
                     </el-table-column>
                     <el-table-column :label="t('isParticipate')" min-width="150">
                         <template #default="{ row }">
-                            <el-tag class="cursor-pointer" :type="row.is_set_fenxiao ? 'success' : 'info'"
-                                @click="isFenxiaoChange(row, row.is_set_fenxiao ? 0 : 1)">{{ row.is_set_fenxiao ? t('yes') : t('no') }}</el-tag>
+                            <el-tag class="cursor-pointer" :type="row.is_set_fenxiao ? 'success' : 'info'" @click="isFenxiaoChange(row, row.is_set_fenxiao ? 0 : 1)">{{ row.is_set_fenxiao ? t('yes') : t('no') }}</el-tag>
                         </template>
                     </el-table-column>
                     <el-table-column prop="" min-width="150">
@@ -96,8 +95,7 @@
                                 <template #content>
                                     <div class="max-w-[300px]">
                                         <p class="leading-[25px]">1. 分销规则可以是默认规则和单独设置</p>
-                                        <p class="leading-[25px]">
-                                            2. 商品可以设置分销计算价，设置之后按照计算价作为商品业绩计算比率，默认按照商品卖价作为商品业绩然后通过比率计算佣金</p>
+                                        <p class="leading-[25px]">2. 商品可以设置分销计算价，设置之后按照计算价作为商品业绩计算比率，默认按照商品卖价作为商品业绩然后通过比率计算佣金</p>
                                         <p class="leading-[25px]">3. 商品佣金比率也可以单独设置，设置之后按照商品佣金比率计算</p>
                                     </div>
                                 </template>
@@ -135,7 +133,7 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import { t } from '@/lang'
-import { debounce, img, moneyFormat } from '@/utils/common'
+import { img, moneyFormat } from '@/utils/common'
 import { ElMessage, ElMessageBox, FormInstance } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router'
 import { cloneDeep } from 'lodash-es'
@@ -145,7 +143,6 @@ import { getFenxiaoGoodsPageList, editGoodsIsFenxiao } from '@/addon/shop_fenxia
 const route = useRoute()
 const pageName = route.meta.title
 const repeat = ref(false)
-
 const router = useRouter()
 
 const goodsTable = reactive({
@@ -253,7 +250,6 @@ const handleSelectionChange = (val: []) => {
     }
 }
 
-
 // 修改商品参与不参与
 const isFenxiaoChange = (row: any, value: any) => {
     ElMessageBox.confirm(value?t('participateTip'):t('offParticipateTip'), t('warning'),
@@ -311,7 +307,6 @@ const batchGoodsFenxiao = (is_fenxiao: any) => {
 
 }
 
-
 /**
  * 获取商品列表
  */
@@ -363,7 +358,6 @@ const setConfig = (goods_id: Number) => {
 }
 const detail = (goods_id: Number) => {
     router.push('/shop_fenxiao/management/goods_detail?goods_id=' + goods_id)
-
 }
 
 const resetForm = (formEl: FormInstance | undefined) => {

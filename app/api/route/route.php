@@ -144,5 +144,15 @@ Route::group(function() {
 })->middleware(ApiChannel::class)
     ->middleware(ApiCheckToken::class)
     ->middleware(ApiLog::class);
+
+Route::group(function() {
+    //公众号更新用户openid
+    Route::put('wechat/update_openid', 'wechat.Wechat/updateOpenid');
+    //小程序更新用户openid
+    Route::put('weapp/update_openid', 'weapp.Weapp/updateOpenid');
+
+})->middleware(ApiChannel::class)
+    ->middleware(ApiCheckToken::class, true)
+    ->middleware(ApiLog::class);
 //加载插件路由
 ( new DictLoader("Route") )->load([ 'app_type' => 'api' ]);

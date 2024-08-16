@@ -123,7 +123,8 @@ const couponTable = reactive({
     loading: true,
     data: [],
     searchParam: {
-        title: ''
+        title: '',
+        status: 1
     }
 })
 
@@ -179,7 +180,7 @@ const loadCouponList = (page: number = 1, callback: any = null) => {
     couponTable.loading = true
     couponTable.page = page
 
-    const searchData = cloneDeep(couponTable.searchParam);
+    const searchData: any = cloneDeep(couponTable.searchParam);
 
     if (searchData.select_type == 'selected') {
         const ids = <any>[]

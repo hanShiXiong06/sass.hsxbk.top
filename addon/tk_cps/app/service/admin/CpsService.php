@@ -11,6 +11,8 @@ use addon\tk_cps\app\model\act\Act;
 use addon\tk_cps\app\model\actitem\ActItem;
 use addon\tk_cps\app\job\ActItemJob;
 use addon\tk_cps\app\model\job\Job;
+use think\facade\Log;
+
 class CpsService extends BaseApiService
 {
     protected $fromPath;

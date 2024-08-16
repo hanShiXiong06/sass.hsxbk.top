@@ -25,7 +25,8 @@
 							<view class="flex justify-between flex-1" @click="chooseLocation">
 								<view class="text-[15px]"
 									:class="{ 'text-[#303133]': formData.area,'text-[#c3c4d5]':!formData.area  }">
-									{{formData.area ? formData.address_name : t('selectAddressPlaceholder')}}</view>
+									{{formData.area ? formData.address_name : t('selectAddressPlaceholder')}}
+								</view>
 								<u-icon name="arrow-right" color="#c3c4d5"></u-icon>
 							</view>
 						</u-form-item>
@@ -253,4 +254,13 @@
 	}
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+	page {
+		--primary-color: #4541c7;
+		--primary-color-dark: #F26F3E;
+		--primary-color-disabled: #FFB397;
+		--primary-color-light: #FFEAE2;
+		--page-bg-color: #f7f7f7;
+		--price-text-color: #e1251b;
+	}
+</style>

@@ -1,0 +1,9 @@
+{
+    "pages": {
+        "hsx_exam": {
+            "hello_world": {
+                "index": "hello_world"
+            }
+        }
+    }
+}

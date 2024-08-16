@@ -174,7 +174,7 @@ class CoreMemberService extends BaseCoreService
      */
     public static function sendGrowth(int $site_id, int $member_id, string $key, array $param = []) {
         $config = (new CoreMemberConfigService())->getGrowthRuleConfig($site_id);
-        if (!isset($config[$key]) || !$config[$key]['is_use']) return true;
+        if (!isset($config[$key]) || empty($config[$key]) || !$config[$key]['is_use']) return true;
 
         $config = $config[$key];
 
@@ -208,7 +208,7 @@ class CoreMemberService extends BaseCoreService
      */
     public static function sendPoint(int $site_id, int $member_id, string $key, array $param = []) {
         $config = (new CoreMemberConfigService())->getPointRuleConfig($site_id)['grant'] ?? [];
-        if (!isset($config[$key]) || !$config[$key]['is_use']) return true;
+        if (!isset($config[$key]) || empty($config[$key]) || !$config[$key]['is_use']) return true;
 
         $config = $config[$key];
 
@@ -276,7 +276,7 @@ class CoreMemberService extends BaseCoreService
 
         foreach ($gifts as $k => $item) {
             $gifts[$k]['content'] = null;
-            if (!isset($item['is_use']) || !$item['is_use'] || !isset($dict[$k]['content']) || !isset($dict[$k]['content'][$scene])) {
+            if (!isset($item['is_use']) || !$item['is_use'] || !isset($dict[$k]['content']) || empty($dict[$k]['content']) || !isset($dict[$k]['content'][$scene])) {
                 continue;
             } else {
                 $content = $dict[$k]['content'][$scene];
@@ -301,7 +301,7 @@ class CoreMemberService extends BaseCoreService
 
         foreach ($benefits as $k => $item) {
             $benefits[$k]['content'] = null;
-            if (!isset($item['is_use']) || !$item['is_use'] || !isset($dict[$k]['content']) || !isset($dict[$k]['content'][$scene])) {
+            if (!isset($item['is_use']) || !$item['is_use'] || !isset($dict[$k]['content']) || empty($dict[$k]['content']) || !isset($dict[$k]['content'][$scene])) {
                 continue;
             } else {
                 $content = $dict[$k]['content'][$scene];
@@ -326,7 +326,7 @@ class CoreMemberService extends BaseCoreService
 
         foreach ($config as $k => $item) {
             $config[$k]['content'] = null;
-            if (!isset($item['is_use']) || !$item['is_use'] || !isset($dict[$k]['content']) || !isset($dict[$k]['content'][$scene])) {
+            if (!isset($item['is_use']) || !$item['is_use'] || !isset($dict[$k]['content']) || empty($dict[$k]['content']) || !isset($dict[$k]['content'][$scene])) {
                 continue;
             } else {
                 $content = $dict[$k]['content'][$scene];
@@ -351,7 +351,7 @@ class CoreMemberService extends BaseCoreService
 
         foreach ($config as $k => $item) {
             $config[$k]['content'] = null;
-            if (!isset($item['is_use']) || !$item['is_use'] || !isset($dict[$k]['content']) || !isset($dict[$k]['content'][$scene])) {
+            if (!isset($item['is_use']) || !$item['is_use'] || !isset($dict[$k]['content']) || empty($dict[$k]['content']) || !isset($dict[$k]['content'][$scene])) {
                 continue;
             } else {
                 $content = $dict[$k]['content'][$scene];
@@ -376,7 +376,7 @@ class CoreMemberService extends BaseCoreService
 
         foreach ($config as $k => $item) {
             $config[$k]['content'] = null;
-            if (!isset($item['is_use']) || !$item['is_use'] || !isset($dict[$k]['content']) || !isset($dict[$k]['content'][$scene])) {
+            if (!isset($item['is_use']) || !$item['is_use'] || !isset($dict[$k]['content']) || empty($dict[$k]['content']) || !isset($dict[$k]['content'][$scene])) {
                 continue;
             } else {
                 $content = $dict[$k]['content'][$scene];

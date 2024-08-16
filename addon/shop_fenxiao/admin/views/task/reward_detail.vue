@@ -5,7 +5,6 @@
         <el-card class="card !border-none" shadow="never">
             <el-page-header :content="pageName" :icon="ArrowLeft" @back="$router.back()" />
         </el-card>
-        <!--返回 end-->
 
         <el-card class="card mt-[15px] !border-none" shadow="never" v-if="!loading">
             <div class="text text-[14px] leading-[25px]">{{t('baseInfo')}}</div>
@@ -16,7 +15,7 @@
                 <el-form-item :label="t('recipient')" prop="name">
                     <div class="flex items-center">
                         <el-image class="w-[50px] h-[50px] mr-[10px]" v-if="formData.member.headimg" :src="img(formData.member.headimg)" fit="contain" />
-                        <img class="w-[50px] h-[50px] mr-[10px]" v-else src="@/app/assets/images/default_headimg.png" alt="">
+                        <img class="w-[50px] h-[50px] mr-[10px] rounded-full" v-else src="@/app/assets/images/member_head.png" alt="">
                         <div class="flex flex-col">
                             <span class="text-[14px] leading-[1]">{{formData.member.nickname || formData.member.username}}</span>
                             <span class="text-[14px] leading-[1] mt-[5px] text-[#666]">{{formData.mobile || '--'}}</span>
@@ -66,22 +65,21 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, computed, nextTick } from 'vue'
+import { reactive, ref } from 'vue'
 import { t } from '@/lang'
-import { TabsPaneContext, ElMessage, FormInstance } from 'element-plus'
+import { FormInstance } from 'element-plus'
 import { CollectionTag, Rank, ArrowLeft } from '@element-plus/icons-vue'
-import Sortable from 'sortablejs'
-import { range, cloneDeep } from 'lodash-es'
-import { debounce, img } from '@/utils/common'
+import { cloneDeep } from 'lodash-es'
+import { img } from '@/utils/common'
 import { useRoute, useRouter } from 'vue-router'
-import { addTask, editTask, getTaskDetail, getTaskMemberDetail } from '@/addon/shop_fenxiao/api/task'
+import { getTaskMemberDetail } from '@/addon/shop_fenxiao/api/task'
 import { getFenxiaoLevelListPage } from '@/addon/shop_fenxiao/api/level'
 
 const route = useRoute()
 const router = useRouter()
 const pageName = route.meta.title
 const repeat = ref(false)
-let taskFormRef = ref<FormInstance>()
+const taskFormRef = ref<FormInstance>()
 
 // 表单数据
 const initialFormData = {
@@ -114,7 +112,7 @@ const table = reactive({
 });
 
 // 获取分销等级不分页
-let fenxiaoLevel = ref([]);
+const fenxiaoLevel = ref([]);
 const getFenxiaoLevelListPageFn = ()=>{
     getFenxiaoLevelListPage().then(res=>{
         fenxiaoLevel.value = res.data;
@@ -123,11 +121,11 @@ const getFenxiaoLevelListPageFn = ()=>{
 getFenxiaoLevelListPageFn();
 
 // 获取任务详情
-let loading = ref(true);
+const loading = ref(true);
 const detailFn = ()=>{
     loading.value = true;
     getTaskMemberDetail({id: formData.id}).then(res=>{
-        let data = JSON.parse(JSON.stringify(res.data));
+        let data = cloneDeep(res.data);
         if (data) {
             formData.member = data.member;
             formData.name = data.task.name;

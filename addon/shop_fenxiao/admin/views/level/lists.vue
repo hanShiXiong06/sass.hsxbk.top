@@ -73,7 +73,6 @@ const labelTable = reactive({
 
 })
 const levelWeightList = ['默认等级','一级','二级','三级','四级','五级','六级','七级','八级','九级','十级']
-// const searchFormRef = ref()
 const getFenxiaoLevelListFn = ()=>{
     labelTable.loading=true
     getFenxiaoLevelList({
@@ -88,12 +87,6 @@ const getFenxiaoLevelListFn = ()=>{
     })
 }
 getFenxiaoLevelListFn()
-// const resetForm = (formEl: FormInstance | undefined) => {
-//     if (!formEl) return
-//     formEl.resetFields()
-
-//     getFenxiaoLevelListFn()
-// }
 const addEvent = () => {
     router.push('/shop_fenxiao/management/level_edit')
 };

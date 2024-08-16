@@ -15,13 +15,15 @@ class RefundSuccessListener
 {
     public function handle($data)
     {
-        $this->PayModel = new Pay();
-        $trade_id = $data['trade_id'];
-        $site_id = $data['site_id'];
-        $payInfo = $this->PayModel->where(['site_id' => $site_id, 'trade_id' => $trade_id])->findOrEmpty();
-        if($payInfo['trade_type']==JhkdOrderDict::getOrderType()['type']){
-            (new OrderService())->refund($data);
+        if($data['trade_type']==JhkdOrderDict::getOrderType()['type']){
+            $this->PayModel = new Pay();
+            $trade_id = $data['trade_id'];
+            $site_id = $data['site_id'];
+            $payInfo = $this->PayModel->where(['site_id' => $site_id, 'trade_id' => $trade_id,'trade_type'=>JhkdOrderDict::getOrderType()['type']])->where('status', '<>', -1)->findOrEmpty();
+            if(!$payInfo->isEmpty()){
+                (new OrderService())->refund($data);
+                return true;
+            }
         }
-
     }
 }

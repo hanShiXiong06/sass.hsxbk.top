@@ -66,10 +66,19 @@
     <div class="!border-none mt-4" shadow="never" style="width: 640px">
       <el-alert
         type="info"
-        title="这里上传的是带插件的小程序，请先在渠道-微信小程序里面配置好小程序APPID、密钥和上传密钥，小程序需要关闭白名单或者放行IP"
+        title="请先在渠道-微信小程序里面配置好小程序APPID、密钥和上传密钥，小程序需要关闭白名单或者放行IP；这里上传的小程序带插件，没有申请插件会自动尝试申请"
         :closable="false"
         show-icon
       />
+      <el-button
+        :loading="loading"
+        class="mb-6 ml-6"
+        type="primary"
+        plain
+        @click="addPlugin()"
+      >
+        申请小程序插件
+      </el-button>
       <el-button
         :loading="loading"
         class="mb-6 ml-6"
@@ -102,6 +111,7 @@ import {
   addFile,
   delFile,
   codeUpload,
+  addPlugin,
 } from "@/addon/tk_cps/api/config";
 import { FormInstance, FormRules } from "element-plus";
 import { useRoute, useRouter } from "vue-router";

@@ -16,6 +16,7 @@ use addon\tk_jhkd\app\service\core\TranceService;
 use addon\tk_jhkd\app\service\core\YidaService;
 use app\dict\common\ChannelDict;
 use app\dict\pay\PayDict;
+use app\service\admin\member\MemberService;
 use core\base\BaseAdminController;
 use addon\tk_jhkd\app\service\admin\order\OrderService;
 use think\Response;
@@ -32,6 +33,14 @@ class Order extends BaseAdminController
     {
         return success((new OrderService())->getLink());
     }
+    public function changeStatus(){
+    $data = $this->request->params([
+
+        ["order_id",""],
+        ["order_status",0],
+    ]);
+    return success('操作成功',(new OrderService())->changeStatus($data));
+}
    /**
     * 获取订单列列表
     * @return \think\Response
@@ -41,6 +50,7 @@ class Order extends BaseAdminController
              ["member_id",""],
              ["order_from",""],
              ["order_id",""],
+             ["out_trade_no",""],
              ["is_send",""],
              ["order_status",""],
              ["refund_status",""],
@@ -63,31 +73,15 @@ class Order extends BaseAdminController
      * 添加订单列
      * @return \think\Response
      */
-    public function add(){
-        $data = $this->request->params([
-             ["member_id",0],
-             ["order_from",""],
-             ["order_id",""],
-             ["order_money",0.00],
-             ["order_discount_money",0.00],
-             ["is_send",0],
-             ["order_status",0],
-             ["refund_status",0],
-             ["out_trade_no",""],
-             ["remark",""],
-             ["pay_time",0],
-             ["close_reason",""],
-             ["is_enable_refund",""],
-             ["close_time",0],
-             ["ip",""],
-             ["delete_time",0],
-             ["send_log",""]
-        ]);
-        $this->validate($data, 'addon\tk_jhkd\app\validate\order\Order.add');
-        $id = (new OrderService())->add($data);
-        return success('ADD_SUCCESS', ['id' => $id]);
-    }
 
+    public function remark(int $id){
+        $data = $this->request->params([
+            ["id",""],
+            ["remark",""],
+        ]);
+        (new OrderService())->edit($data['id'], $data);
+        return success('EDIT_SUCCESS');
+    }
     /**
      * 订单列编辑
      * @param $id  订单列id
@@ -143,9 +137,17 @@ class Order extends BaseAdminController
         return success('DELETE_SUCCESS');
     }
 
-    
+
     public function getMemberAll(){
-         return success(( new OrderService())->getMemberAll());
+        $data = $this->request->params([
+            ['keyword', ''],
+            ['register_type', ''],
+            ['register_channel', ''],
+            ['create_time', []],
+            ['member_label', 0],
+            ['member_level', 0],
+        ]);
+        return success((new MemberService())->getPage($data));
     }
     /**
      * 获取支付方式

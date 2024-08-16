@@ -45,25 +45,24 @@ class CoreWechatApiService extends BaseCoreService
     public function userInfoBatchget(int $site_id, array $openids, string $lang = 'zh_CN')
     {
         return CoreWechatService::appApiClient($site_id)->postJson('/cgi-bin/user/info/batchget', [
-            'user_list' => array_map(function ($openid) use ($lang) {
-                return [
-                    'openid' => $openid,
-                    'lang' => $lang,
-                ];
-            }, $openids)
+                'user_list' => array_map(function($openid) use ($lang) {
+                    return [
+                        'openid' => $openid,
+                        'lang' => $lang,
+                    ];
+                }, $openids)
             ]
         );
     }
-    
+
     /**
      * 用户列表(可以再外部设计一个递归查询全部的函数)  返回的是 openid
      */
     public function userGet(int $site_id, ?string $next_openid = '')
     {
         $api = CoreWechatService::appApiClient($site_id);
-        return $api->get('/cgi-bin/user/get', ['next_openid' => $next_openid]);
+        return $api->get('/cgi-bin/user/get', [ 'next_openid' => $next_openid ]);
     }
-
 
     /**
      * 创建菜单按钮接口
@@ -84,8 +83,7 @@ class CoreWechatApiService extends BaseCoreService
             ]);
         }
 
-        return $api->postJson('cgi-bin/menu/create', ['button' => $buttons]);
+        return $api->postJson('cgi-bin/menu/create', [ 'button' => $buttons ]);
     }
-
 
 }

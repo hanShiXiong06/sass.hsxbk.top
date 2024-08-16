@@ -195,13 +195,9 @@ const orderTable = reactive<OrderTable>({
     loading: true,
     data: [],
     searchParam: {
-        // search_type: 'order_no',
         // search_name: '',
-        // pay_type: '',
-        // order_from: '',
         is_settlement: '',
         create_time: [],
-        // pay_time: []
     }
 })
 
@@ -220,7 +216,8 @@ const loadOrderList = (page: number = 1) => {
         ...orderTable.searchParam
     }).then((res: any) => {
         orderTable.loading = false
-        res.data.data.forEach((el:any)=>{
+        orderTable.data = [];
+        res.data.data.forEach((el: any) => {
             let rowspan = 0
             el.goods_list = []
             el.shop_order.order_goods.forEach((v: any,) => {
@@ -277,7 +274,6 @@ const detailEvent = (data: any) => {
     const routeData = router.resolve('/shop/order/detail?order_id=' + data.order_id)
     window.open(routeData.href, '_blank')
 }
-
 
 const memberEvent = (id: number) => {
     const routeUrl = router.resolve({

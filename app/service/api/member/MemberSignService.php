@@ -255,6 +255,7 @@ class MemberSignService extends BaseApiService
     public function getDayAward(int $year, int $month, int $day)
     {
         $max_continue_sign = 1;//连签奖励最大天数
+        $continue_sign_day = 0;//连签奖励天数
 
         $time = $year.'-'.sprintf("%02d", $month).'-'.sprintf("%02d", $day);
         $info = $this->getSign();
@@ -275,25 +276,29 @@ class MemberSignService extends BaseApiService
         $award = [];//当日奖励
         //判断查询日期是否在签到周期内
         if (in_array($time, $days_array)) {
+            $counter = 0;//计数器
             foreach ($days_array as $key => $value) {
+                $counter++;
                 if ($value == $time) {
+
+                    $continue_sign_day = $counter;
                     $award['day_award'] = $info['day_award'];
 
                     if (!empty($info['continue_award'])) {
-                        $day = $key + 1;
+                        $days = $key + 1;
                         foreach ($info['continue_award'] as $k => $v) {
                             $gift = $v;
                             unset($gift['continue_sign'], $gift['continue_tag'], $gift['receive_limit'], $gift['receive_num']);
                             if ($v['receive_limit'] == 1) {//不限制次数奖励添加
                                 $period_num = intdiv($sign_period, $max_continue_sign);//周期内可循环轮次
                                 for ($i = 0; $i < $period_num; $i++) {
-                                    if ($max_continue_sign * $i + $v['continue_sign'] == $day) {
+                                    if ($max_continue_sign * $i + $v['continue_sign'] == $days) {
                                         $award['continue_award'] = $gift;
                                     }
                                 }
                             } else {//限制次数奖励添加
                                 for ($i = 0; $i < $v['receive_num']; $i++) {
-                                    if ($max_continue_sign * $i + $v['continue_sign'] == $day) {
+                                    if ($max_continue_sign * $i + $v['continue_sign'] == $days) {
                                         $award['continue_award'] = $gift;
                                     }
                                 }
@@ -301,6 +306,15 @@ class MemberSignService extends BaseApiService
                         }
                     }
 
+                }
+                if (!empty($info['continue_award'])) {
+                    if ($counter % $max_continue_sign == 0) {
+                        $counter = 0;
+                    }
+                } else {
+                    if ($counter % $sign_period == 0) {
+                        $counter = 0;
+                    }
                 }
             }
         } else {
@@ -315,7 +329,19 @@ class MemberSignService extends BaseApiService
             }
         }
         $awards_total = $this->getTotalAward($award);
-        return $awards_total;
+        $continue_text = $continue_sign_day > 0 ? get_lang('CONTINUE_SIGN').$continue_sign_day.get_lang('DAYS') : '';
+        $result['title'] = get_lang('SIGN_AWARD');
+        $result['info'] = $continue_text.get_lang('WILL_GET_AWARD');
+        $result['awards'] = $awards_total;
+        if ($awards_total) {
+            return $result;
+        } else {
+            return [
+                'title' => '',
+                'info' => '',
+                'awards' => [],
+            ];
+        }
     }
 
     /**
@@ -338,12 +364,6 @@ class MemberSignService extends BaseApiService
 
         $is_use_coupon_day = false;
         $is_use_coupon_continue = false;
-
-//        foreach ($awards['day_award'] as $key => $value) {
-//            if ($value['is_use'] == 1) {
-//                $awards['day_award'][$key] = $value;
-//            }
-//        }
 
         if (!empty($awards['day_award']['point'])) {
             if ($awards['day_award']['point']['is_use'] == 1) {

@@ -22,7 +22,7 @@
                         </el-form-item>
                         <el-form-item :label="t('fenxiaoLevel')" prop="level_id">
                             <el-select v-model="fenxiaoTable.searchParam.level_id" class="input-width" clearable :placeholder="t('fenxiaoLevelPlaceholder')">
-                                <el-option v-for="item in config.leveList" :key="item.value" :label="item.level_name" :value="item.level_id" />
+                                <el-option v-for="item in config.levelList" :key="item.value" :label="item.level_name" :value="item.level_id" />
                             </el-select>
                         </el-form-item>
                         <el-form-item :label="t('fenxiaoState')" prop="status">
@@ -53,11 +53,11 @@
                                     <el-image v-if="row.member && row.member.headimg" class="w-[50px] h-[50px]" :src="img(row.member.headimg)" fit="contain">
                                         <template #error>
                                             <div class="image-slot">
-                                                <img class="w-[50px] h-[50px]" src="@/app/assets/images/default_headimg.png" />
+                                                <img class="w-[50px] h-[50px] rounded-full" src="@/app/assets/images/member_head.png" alt="">
                                             </div>
                                         </template>
                                     </el-image>
-                                    <img v-else class="w-[50px] h-[50px]" src="@/app/assets/images/default_headimg.png" fit="contain" />
+                                    <img class="w-[50px] h-[50px] rounded-full" v-else src="@/app/assets/images/member_head.png" alt="">
                                 </div>
                                 <div class="ml-2">
                                     <span v-if="row.member.nickname" :title="row.member.nickname" class="multi-hidden">{{row.member.nickname}}</span>
@@ -161,11 +161,11 @@
                                     <el-image v-if="row.member && row.member.headimg" class="w-[50px] h-[50px]" :src="img(row.member.headimg)" fit="contain">
                                         <template #error>
                                             <div class="image-slot">
-                                                <img class="w-[50px] h-[50px]" src="@/app/assets/images/default_headimg.png" />
+                                                <img class="w-[50px] h-[50px] rounded-full" src="@/app/assets/images/member_head.png" alt="">
                                             </div>
                                         </template>
                                     </el-image>
-                                    <img v-else class="w-[50px] h-[50px]" src="@/app/assets/images/default_headimg.png" fit="contain" />
+                                    <img class="w-[50px] h-[50px] rounded-full" v-else src="@/app/assets/images/member_head.png" alt="">
                                 </div>
                                 <div class="ml-2">
                                     <span v-if="row.member.nickname" :title="row.member.nickname" class="multi-hidden">{{row.member.nickname}}</span>
@@ -224,11 +224,11 @@
                                     <el-image v-if="applyData.member && applyData.member.headimg" class="w-[50px] h-[50px]" :src="img(applyData.member.headimg)" fit="contain">
                                         <template #error>
                                             <div class="image-slot">
-                                                <img class="w-[50px] h-[50px]" src="@/app/assets/images/default_headimg.png" />
+                                                <img class="w-[50px] h-[50px] rounded-full" src="@/app/assets/images/member_head.png" alt="">
                                             </div>
                                         </template>
                                     </el-image>
-                                    <img v-else class="w-[50px] h-[50px]" src="@/app/assets/images/default_headimg.png" fit="contain" />
+                                    <img class="w-[50px] h-[50px] rounded-full" v-else src="@/app/assets/images/member_head.png" alt="">
                                 </div>
                             </div>
                         </el-form-item>
@@ -278,7 +278,7 @@
                 <div>
                     <el-form-item :label="t('fenxiaoLevel')">
                         <el-select v-model="formData.level_id" class="input-width" clearable :placeholder="t('fenxiaoLevelPlaceholder')">
-                            <el-option v-for="item in config.leveList" :key="item.value" :label="item.level_name" :value="item.level_id" />
+                            <el-option v-for="item in config.levelList" :key="item.value" :label="item.level_name" :value="item.level_id" />
                         </el-select>
                         <span class="text-[var(--el-color-primary)] ml-[10px] cursor-pointer" @click="getFenxiaoLevelListFn(true)">刷新</span>
                         <span class="text-[var(--el-color-primary)] ml-[10px] cursor-pointer" @click="addLevelFn">添加等级</span>
@@ -313,7 +313,7 @@ const router = useRouter()
 const pageName = route.meta.title
 
 const config :Record<string, any> = reactive({
-    leveList: [],
+    levelList: [],
     statusList: [
         { label: '正常', value: 1 },
         { label: '已冻结', value: -1 }
@@ -365,7 +365,7 @@ const getFenxiaoLevelListFn = (bool=false) => {
         page: 1,
         limit: 11
     }).then((res:any) => {
-        config.leveList = res.data.data
+        config.levelList = res.data.data
         if(bool){
             ElMessage({
                 message: t('refreshSuccess'),
@@ -556,7 +556,7 @@ const refuseFengxiaoFn = (apply_id:number) => {
 }
 
 // tab切换
-const tabChange = (data)=>{
+const tabChange = (data: any)=>{
     if(data == 'lists'){
         getFenxiaoPageFn();
     }else if(data == 'apply'){

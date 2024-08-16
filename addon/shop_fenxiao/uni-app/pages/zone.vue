@@ -1,7 +1,7 @@
 <template>
 	<view :style="themeColor()">
 
-		<u-loading-page :loading="diy.getLoading()" loadingText="" bg-color="#f7f7f7" />
+		<loading-page :loading="diy.getLoading()"></loading-page>
 
 		<view v-show="!diy.getLoading()">
 
@@ -23,18 +23,19 @@
 
 		<!-- #ifdef MP-WEIXIN -->
 		<!-- 小程序隐私协议 -->
-		<wx-privacy-popup ref="wxPrivacyPopup"></wx-privacy-popup>
+		<wx-privacy-popup ref="wxPrivacyPopupRef"></wx-privacy-popup>
 		<!-- #endif -->
 
 	</view>
 </template>
 
 <script setup lang="ts">
-    import {ref} from 'vue';
+    import {ref,watch,nextTick} from 'vue';
     import {useDiy} from '@/hooks/useDiy'
     import diyGroup from '@/addon/components/diy/group/index.vue'
     import fixedGroup from '@/addon/components/fixed/group/index.vue'
 	import useSystemStore from '@/stores/system'
+    import { redirect } from '@/utils/common';
 	
 	const systemStore = useSystemStore()
 
@@ -44,26 +45,54 @@
 
     const diyGroupRef = ref(null)
 
+    const wxPrivacyPopupRef:any = ref(null)
+
     // 监听页面加载
     diy.onLoad();
 
     // 监听页面显示
     diy.onShow((data: any) => {
-        setTimeout(()=>{
-            if(!systemStore.siteAddons.includes('shop_fenxiao')){
-                uni.showToast({
-                    title: '该站点未安装分销插件',
-                    icon: 'none'
-                });
+        watch(
+            () => systemStore.siteAddons,
+            (newValue, oldValue) => {
+                if (newValue && Object.keys(newValue).length) {
 
-                setTimeout(() => {
-                    uni.navigateBack();
-                }, 1500);
-                return false;
-            }
-        },500);
+                    if (!systemStore.siteAddons.includes('shop_fenxiao')) {
+                        uni.showToast({
+                            title: '该站点未安装分销插件',
+                            icon: 'none'
+                        });
+
+                        setTimeout(() => {
+                            if(getCurrentPages().length > 1){
+                                uni.navigateBack({
+                                    delta: 1
+                                });
+                            }else{
+                                redirect({
+                                    url: '/addon/shop/pages/member/index',
+                                    mode: 'reLaunch'
+                                });
+                            }
+                        }, 1500);
+                    }
+                }
+            },
+            { deep: true }
+        )
         diyGroupRef.value?.refresh();
+	    // #ifdef MP
+	    nextTick(()=>{
+		    if(wxPrivacyPopupRef.value) wxPrivacyPopupRef.value.proactive();
+	    })
+	    // #endif
     });
+
+    // 监听页面隐藏
+    diy.onHide();
+	
+	// 监听页面卸载
+	diy.onUnload();
 
     // 监听下拉刷新事件
     diy.onPullDownRefresh()

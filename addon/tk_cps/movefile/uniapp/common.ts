@@ -2,8 +2,12 @@ import { getTabbarPages } from './pages'
 import useDiyStore from '@/app/stores/diy'
 import useMemberStore from '@/stores/member'
 import useSystemStore from '@/stores/system'
-//TK 0.4.0框架 CPS联盟文件修改
+import useConfigStore from '@/stores/config'
+import { getNeedLoginPages } from '@/utils/pages'
+//TK 0.5.0框架 CPS联盟文件修改
 import { getCpsInfo } from '../app/api/cps'
+
+
 /**
  * 跳转页面
  */
@@ -12,6 +16,14 @@ export const redirect = (redirect : redirectOptions) => {
 	if (useDiyStore().mode == 'decorate') return
 
 	let { url, mode, param, success, fail, complete } = redirect
+
+	const config = useConfigStore()
+	// 如果未开启普通账号登录注册,不展示登录注册页面
+	if(!getToken() && getNeedLoginPages().indexOf(url) != -1 && !config.login.is_username && !config.login.is_mobile && !config.login.is_bind_mobile){
+		uni.showToast({ title: '商家未开启普通账号登录注册', icon: 'none' })
+		return
+	}
+
 	mode = mode || 'navigateTo'
 	const tabBar = getTabbarPages()
 	tabBar.includes(url) && (mode = 'switchTab')
@@ -65,7 +77,7 @@ export const diyRedirect = (link: any) => {
 
 	if (link == null || Object.keys(link).length == 1) return;
 	//适配小程序插件情况进行拦截跳转
-	if (link.url.indexOf('type=11') !== -1) {
+	if (link.url && link.url.indexOf('type=11') !== -1) {
 		function parseQueryString(queryString) {
 			const params = {};
 			const keyValuePairs = queryString.split('&');
@@ -103,7 +115,7 @@ export const diyRedirect = (link: any) => {
 		return
 	}
 	//适配半屏小程序
-	if (link.url.indexOf('style=embedded') !== -1) {
+	if (link.url && link.url.indexOf('style=embedded') !== -1) {
 		function parseQueryString(queryString) {
 			const params = {};
 			const keyValuePairs = queryString.split('&');
@@ -551,3 +563,8 @@ const isArray = (value: any) => {
 	return Object.prototype.toString.call(value) === '[object Array]'
 }
 
+// px转rpx
+export function pxToRpx(px: any) {
+	const screenWidth = uni.getSystemInfoSync().screenWidth;
+	return (750 * Number.parseInt(px)) / screenWidth;
+}

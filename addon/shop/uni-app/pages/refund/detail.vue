@@ -1,174 +1,226 @@
 <template>
     <view :style="themeColor()">
-        <view class="bg-[#f8f8f8] min-h-screen overflow-hidden" v-if="!loading">
+        <view class="bg-[var(--page-bg-color)] min-h-screen overflow-hidden" v-if="!loading">
             <view class="pb-[200rpx]" v-if="type != 'logistics'">
-                <view v-if="detail.status_name" class="flex justify-between items-center pl-[40rpx] pr-[50rpx] bg-linear h-[170rpx]">
-                    <view class="text-[36rpx] font-500 leading-[42rpx] text-[#fff]">{{ detail.status_name }}</view>
-                    <view>
-                        <image v-if="['1','2','4','6','7'].indexOf(detail.status) != -1" class="w-[110rpx] h-[110rpx]" :src="img('addon/shop/detail/payment.png')" />
-                        <image v-if="['8'].indexOf(detail.status) != -1" class="w-[110rpx] h-[110rpx]" :src="img('addon/shop/detail/complete.png')" />
-                        <image v-if="['3','5','-1'].indexOf(detail.status) != -1" class="w-[110rpx] h-[110rpx]" :src="img('addon/shop/detail/close.png')" />
+                <view class="bg-linear">
+                    <!-- #ifdef MP-WEIXIN -->
+                    <top-tabbar :data="topTabbarData" :scrollBool="topTabarObj.getScrollBool()" />
+                    <!-- #endif -->
+                    <view v-if="detail.status_name" class="flex justify-between items-center pl-[40rpx] pr-[50rpx]  h-[280rpx] box-border pb-[90rpx]">
+                        <view class="text-[36rpx] font-500 leading-[42rpx] text-[#fff]">{{ detail.status_name }}</view>
+                        <view class="flex items-center">
+                            <image v-if="['1','2','4','6','7'].indexOf(detail.status) != -1" class="w-[180rpx] h-[140rpx]" :src="img('addon/shop/detail/payment.png')" mode="aspectFit"/>
+                            <image v-if="['8'].indexOf(detail.status) != -1" class="w-[180rpx] h-[140rpx]" :src="img('addon/shop/detail/complete.png')" mode="aspectFit" />
+                            <image v-if="['3','5','-1'].indexOf(detail.status) != -1" class="w-[180rpx] h-[140rpx]" :src="img('addon/shop/detail/close.png')" mode="aspectFit" />
+                        </view>
                     </view>
                 </view>
-
-                <view class="bg-[#fff] mx-[30rpx] p-[20rpx] rounded-[16rpx] flex justify-between flex-wrap mt-[20rpx]">
-                    <view class="w-[150rpx] h-[150rpx] flex-2" @click="goodsEvent(detail.order_goods.goods_id)">
-                        <u--image class="rounded-[10rpx] overflow-hidden" width="150rpx" height="150rpx" :src="img(detail.order_goods.goods_image_thumb_small ? detail.order_goods.goods_image_thumb_small : '')" model="aspectFill">
+                <view class="sidebar-marign card-template flex justify-between flex-wrap mt-[-76rpx]">
+                    <view class="w-[150rpx] h-[150rpx] rounded-[var(--goods-rounded-big)] overflow-hidden" @click="goodsEvent(detail.order_goods.goods_id)">
+                        <u--image class="rounded-[var(--goods-rounded-big)] overflow-hidden" width="150rpx" height="150rpx" :src="img(detail.order_goods.goods_image_thumb_small ? detail.order_goods.goods_image_thumb_small : '')" model="aspectFill">
                             <template #error>
-                                <u-icon name="photo" color="#999" size="50"></u-icon>
-                            </template>
-                        </u--image>
-                    </view>
-                    <view class="ml-[20rpx] flex flex-1 flex-col justify-between text-[#303133]">
-                        <view>
-                            <text class="text-[28rpx] text-item leading-[40rpx]">{{ detail.order_goods.goods_name }}</text>
-                            <view class="flex" v-if="detail.order_goods.sku_name">
-                                <view class="text-[24rpx] mt-[10rpx] text-[#999] truncate max-w-[450rpx] leading-[28rpx]">{{ detail.order_goods.sku_name }}</view>
-                            </view>
-                        </view>
-                        <view class="flex justify-between items-center leading-[28rpx]">
-                            <view class="price-font">
-                                <text class="text-[24rpx]">￥</text>
-                                <text class="text-[32rpx] font-500">{{ parseFloat(detail.order_goods.price).toFixed(2).split('.')[0] }}</text>
-                                <text class="text-[22rpx] font-500">.{{ parseFloat(detail.order_goods.price).toFixed(2).split('.')[1] }}</text>
-                            </view>
-                            <text class="text-right text-[26rpx]">x{{ detail.order_goods.num }}</text>
-                        </view>
-                    </view>
-                </view>
-                <view class="bg-[#fff] mx-[30rpx] p-[20rpx] mt-[20rpx] rounded-[16rpx]">
-                    <view class="flex justify-between text-[28rpx] leading-[32rpx] ">
-                        <view>{{t('refundType')}}</view>
-                        <view>{{ detail.refund_type_name }}</view>
-                    </view>
-                    <view class="flex justify-between text-[28rpx] leading-[32rpx] mt-[30rpx]">
-                        <view>{{t('refundCause')}}</view>
-                        <view class="w-[400rpx] multi-hidden text-right">{{ detail.reason || '--' }}</view>
-                    </view>
-                    <view class="flex justify-between text-[28rpx] leading-[32rpx] mt-[30rpx]">
-                        <view>{{t('refundNo')}}</view>
-                        <view>{{ detail.order_refund_no }}</view>
-                    </view>
-                    <view class="flex justify-between text-[28rpx] leading-[32rpx] mt-[30rpx]">
-                        <view>{{t('createTime')}}</view>
-                        <view>{{ detail.create_time }}</view>
-                    </view>
-                    <view class="flex justify-between text-[28rpx] leading-[32rpx] mt-[30rpx]">
-                        <view>{{t('createExplain')}}</view>
-                        <view class="flex-1 ml-[20rpx] flex justify-end break-all">{{ detail.remark }}</view>
-                    </view>
-                    <view class="flex justify-between text-[28rpx] leading-[32rpx]  mt-[30rpx]">
-                        <view>{{t('reasonRefusal')}}</view>
-                        <view class="w-[400rpx] text-right">{{ detail.shop_reason || '--' }}</view>
-                    </view>
-                </view>
-
-                <view class="bg-[#fff] mx-[30rpx] p-[20rpx] mt-[20rpx] rounded-[16rpx]">
-                    <view class="flex justify-between text-[28rpx] leading-[32rpx]">
-                        <view>{{t('record')}}</view>
-                        <view class="flex items-center" @click="redirect({url: '/addon/shop/pages/refund/log', param: { order_refund_no: orderRefundNo }})">
-                            <text>{{t('check')}}</text>
-                            <text class="nc-iconfont nc-icon-youV6xx text-[30rpx] text-[#999]"></text>
-                        </view>
-                    </view>
-                </view>
-
-                <view class="flex tab-bar justify-end items-center bg-[#fff] fixed left-0 right-0 bottom-0 min-h-[100rpx] px-1 flex-wrap">
-                    <view class="flex w-[70rpx] flex-col justify-center items-center" @click="redirect({ url: '/addon/shop/pages/index', mode: 'reLaunch' })">
-                        <text class="iconfont iconshouye text-[32rpx]"></text>
-                        <!-- <text class="text-xs mt-1">{{t('index')}}</text> -->
-                    </view>
-                    <view class="flex justify-end mr-[30rpx]">
-                        <view class="text-[26rpx] leading-[52rpx] px-[23rpx] border-[2rpx] border-solid border-[#999] rounded-full ml-[20rpx] text-[#303133]" @click="refundBtnFn('cancel')" v-if="['6','7','8','-1'].indexOf(detail.status) == -1">{{t('refundApply')}}</view>
-                        <view v-if="['3'].indexOf(detail.status) != -1" class="text-[24rpx] text-[#303133] leading-[52rpx] px-[23rpx] border-[2rpx] border-solid border-[#999] rounded-full ml-[20rpx]" @click.stop="refundBtnFn('edit')" >编辑退款信息</view>
-                        <view v-if="['2'].indexOf(detail.status) != -1" class=" text-[24rpx] text-[#303133] leading-[52rpx] px-[23rpx] border-[2rpx] border-solid border-[#999] rounded-full ml-[20rpx]" @click.stop="refundBtnFn('logistics')">填写发货物流</view>
-                        <view v-if="['5'].indexOf(detail.status) != -1" class="text-[24rpx] text-[#303133] leading-[52rpx] px-[23rpx] border-[2rpx] border-solid border-[#999] rounded-full ml-[20rpx]" @click.stop="refundBtnFn('editLogistics')">编辑发货物流</view>
-                    </view>
-                </view>
-            </view>
-            <view  v-else>
-                <view class="bg-[#fff] mx-[30rpx] p-[20rpx] rounded-[16rpx] flex justify-between flex-wrap mt-[20rpx]">
-                    <view class="w-[150rpx] h-[150rpx] flex-2" @click="goodsEvent(detail.order_goods.goods_id)">
-                        <u--image class="rounded-[10rpx] overflow-hidden" width="150rpx" height="150rpx" :src="img(detail.order_goods.sku_image ? detail.order_goods.sku_image : '')" model="aspectFill">
-                            <template #error>
-                                <u-icon name="photo" color="#999" size="50"></u-icon>
+                                <image class="w-[150rpx] h-[150rpx] rounded-[var(--goods-rounded-big)] overflow-hidden" :src="img('static/resource/images/diy/shop_default.jpg')" mode="aspectFill"></image>
                             </template>
                         </u--image>
                     </view>
                     <view class="ml-[20rpx] flex flex-1 flex-col justify-between">
                         <view>
-                            <text class="text-[28rpx] text-item leading-[40rpx]">{{ detail.order_goods.goods_name }}</text>
-                            <view class="flex" v-if="detail.order_goods.sku_name">
-                                <text class="text-[24rpx] mt-[10rpx] text-[#999] truncate max-w-[450rpx] leading-[28rpx]">{{ detail.order_goods.sku_name }}</text>
-                            </view>
+                            <view class="text-[28rpx] max-w-[490rpx] truncate leading-[40rpx]">{{ detail.order_goods.goods_name }}</view>
+							<view class="text-[22rpx] mt-[10rpx] text-[var(--text-color-light9)] truncate max-w-[490rpx] leading-[28rpx]"  v-if="detail.order_goods.sku_name">{{ detail.order_goods.sku_name }}</view>
                         </view>
-                        <view class="flex justify-between items-center leading-[28rpx]">
+                        <view class="flex justify-between items-center leading-[28rpx] ">
                             <view class="price-font">
                                 <text class="text-[24rpx]">￥</text>
-                                <text class="text-[32rpx] font-500">{{ parseFloat(detail.order_goods.price).toFixed(2).split('.')[0] }}</text>
-                                <text class="text-[22rpx] font-500">.{{ parseFloat(detail.order_goods.price).toFixed(2).split('.')[1] }}</text>
+                                <text class="text-[40rpx] font-500">{{ parseFloat(detail.order_goods.price).toFixed(2).split('.')[0] }}</text>
+                                <text class="text-[24rpx] font-500">.{{ parseFloat(detail.order_goods.price).toFixed(2).split('.')[1] }}</text>
                             </view>
                             <text class="text-right text-[26rpx]">x{{ detail.order_goods.num }}</text>
                         </view>
                     </view>
                 </view>
-                <view class="bg-[#fff] mx-[30rpx] p-[20rpx] rounded-[16rpx] mt-[20rpx]">
-                    <view class="flex justify-between text-[28rpx] leading-[32rpx] ">
+                <view class="sidebar-marign mt-[var(--top-m)] card-template">
+					<view class="justify-between text-[28rpx] card-template-item">
+					    <view>{{t('refundMoney')}}</view>
+						<view class="price-font text-[var(--price-text-color)]">
+							<text class="text-[24rpx] mr-[4rpx]">￥</text>
+							<text class="text-[28rpx]">{{ parseFloat(detail.apply_money).toFixed(2) }}</text>
+						</view>
+					</view>
+                    <view class="justify-between text-[28rpx] card-template-item">
+                        <view>{{t('refundType')}}</view>
+                        <view>{{ detail.refund_type_name }}</view>
+                    </view>
+                    <view class="justify-between text-[28rpx] card-template-item">
+                        <view>{{t('refundCause')}}</view>
+                        <view class="w-[400rpx] multi-hidden text-right">{{ detail.reason || '--' }}</view>
+                    </view>
+                    <view class="justify-between text-[28rpx] card-template-item">
+                        <view>{{t('refundNo')}}</view>
+                        <view>{{ detail.order_refund_no }}</view>
+                    </view>
+                    <view class="justify-between text-[28rpx] card-template-item">
+                        <view>{{t('createTime')}}</view>
+                        <view>{{ detail.create_time }}</view>
+                    </view>
+                    <view class="justify-between text-[28rpx] card-template-item !items-baseline">
+                        <view>{{t('createExplain')}}</view>
+                        <view class="flex-1 ml-[60rpx] text-right leading-[1.5] flex justify-end break-all">{{ detail.remark }}</view>
+                    </view>
+                    <view class="justify-between text-[28rpx] card-template-item !items-baseline">
+                        <view>{{t('reasonRefusal')}}</view>
+                        <view class="flex-1 ml-[60rpx] leading-[1.5] text-right" :class="{'#333': detail.shop_reason, 'text-[var(--text-color-light9)]': !detail.shop_reason}">{{ detail.shop_reason || '--' }}</view>
+                    </view>
+                </view>
+
+                <view class="sidebar-marign mt-[var(--top-m)] card-template">
+                    <view class="justify-between text-[28rpx] card-template-item">
+                        <view>{{t('record')}}</view>
+                        <view class="flex items-center" @click="redirect({url: '/addon/shop/pages/refund/log', param: { order_refund_no: orderRefundNo }})">
+                            <text class="text-[26rpx] text-[var(--text-color-light9)]">{{t('check')}}</text>
+                            <text class="nc-iconfont nc-icon-youV6xx text-[24rpx] text-[var(--text-color-light9)] pt-[2rpx]"></text>
+                        </view>
+                    </view>
+                </view>
+
+                <view class="flex tab-bar justify-between items-center bg-[#fff] fixed left-0 right-0 bottom-0 min-h-[100rpx] pl-[30rpx] pr-[20rpx] flex-wrap">
+                    <view class="flex">
+						<view class="flex mr-[20rpx] flex-col justify-center items-center" @click="redirect({ url: '/addon/shop/pages/index', mode: 'reLaunch' })">
+						    <view class="nc-iconfont nc-icon-shouyeV6xx text-[36rpx]"></view>
+						    <text class="text-[20rpx] mt-[10rpx]">{{t('index')}}</text>
+						</view>
+						<!-- #ifdef MP-WEIXIN -->
+						<view>
+							<nc-contact
+									:send-message-title="sendMessageTitle"
+									:send-message-path="sendMessagePath"
+									:send-message-img="sendMessageImg">
+								<view class="flex flex-col justify-center items-center">
+									<text class="nc-iconfont nc-icon-kefuV6xx-1 text-[36rpx]"></text>
+									<text class="text-[20rpx] mt-[10rpx]">客服</text>
+								</view>
+							</nc-contact>
+						</view>
+						<!-- #endif -->
+					</view>
+					
+                    <view class="flex justify-end">
+                        <view class="min-w-[180rpx] box-border text-[26rpx] h-[70rpx] flex-center border-[2rpx] border-solid border-[#ccc] text-[#333] rounded-full ml-[20rpx]" @click="refundBtnFn('cancel')" v-if="['6','7','8','-1'].indexOf(detail.status) == -1">{{t('refundApply')}}</view>
+                        <view v-if="['3'].indexOf(detail.status) != -1" class="min-w-[180rpx] box-border text-[#333] text-[26rpx] h-[70rpx] flex-center border-[2rpx] border-solid border-[#ccc] rounded-full ml-[20rpx] px-[20rpx]" @click.stop="refundBtnFn('edit')" >编辑退款信息</view>
+                        <view v-if="['2'].indexOf(detail.status) != -1" class="min-w-[180rpx] box-border text-[#333] text-[26rpx] h-[70rpx] flex-center border-[2rpx] border-solid border-[#ccc] rounded-full ml-[20rpx] px-[20rpx]" @click.stop="refundBtnFn('logistics')">填写发货物流</view>
+                        <view v-if="['5'].indexOf(detail.status) != -1" class="min-w-[180rpx] box-border text-[#333] text-[26rpx] h-[70rpx] flex-center border-[2rpx] border-solid border-[#ccc] rounded-full ml-[20rpx] px-[20rpx]" @click.stop="refundBtnFn('editLogistics')">编辑发货物流</view>
+                    </view>
+                </view>
+            </view>
+            <view v-else>
+                <view class="bg-linear">
+                    <!-- #ifdef MP-WEIXIN -->
+                    <top-tabbar :data="topTabbarData" :scrollBool="topTabarObj.getScrollBool()" />
+                    <!-- #endif -->
+                    <view class="flex justify-between items-center pl-[40rpx] pr-[50rpx]  h-[280rpx] box-border pb-[90rpx]">
+                        <view class="text-[36rpx] font-500 leading-[42rpx] text-[#fff]">{{ detail.status_name }}</view>
+                        <view class="flex items-center">
+                            <image class="w-[180rpx] h-[140rpx]" :src="img('addon/shop/detail/payment.png')" mode="aspectFit"/>
+                        </view>
+                    </view>
+                </view>
+                <view class="sidebar-marign card-template mt-[-79rpx] flex justify-between flex-wrap">
+                    <view class="w-[150rpx] h-[150rpx] flex-2" @click="goodsEvent(detail.order_goods.goods_id)">
+                        <u--image  radius="var(--goods-rounded-big)" width="150rpx" height="150rpx" :src="img(detail.order_goods.sku_image ? detail.order_goods.sku_image.split(',')[0] : '')" model="aspectFill">
+                            <template #error>
+                                <image class="w-[150rpx] h-[150rpx] rounded-[var(--goods-rounded-big)] overflow-hidden" :src="img('static/resource/images/diy/shop_default.jpg')" mode="aspectFill"></image>
+                            </template>
+                        </u--image>
+                    </view>
+                    <view class="ml-[20rpx] flex flex-1 flex-col justify-between">
+                        <view>
+                            <view class="text-[28rpx] max-w-[490rpx] truncate leading-[40rpx]">{{ detail.order_goods.goods_name }}</view>
+                            <view class="text-[24rpx] mt-[14rpx] text-[var(--text-color-light9)] truncate max-w-[490rpx] leading-[28rpx]" v-if="detail.order_goods.sku_name">
+                                {{ detail.order_goods.sku_name }}
+                            </view>
+                        </view>
+                        <view class="flex justify-between items-center leading-[28rpx]">
+                            <view class="price-font">
+                                <text class="text-[24rpx] font-500">￥</text>
+                                <text class="text-[40rpx] font-500">{{ parseFloat(detail.order_goods.price).toFixed(2).split('.')[0] }}</text>
+                                <text class="text-[24rpx] font-500">.{{ parseFloat(detail.order_goods.price).toFixed(2).split('.')[1] }}</text>
+                            </view>
+                            <text class="text-right text-[26rpx]">x{{ detail.order_goods.num }}</text>
+                        </view>
+                    </view>
+                </view>
+                <view class="sidebar-marign card-template top-mar">
+                    <view class="card-template-item justify-between text-[28rpx]">
                         <view>联系人</view>
                         <view>{{ detail.refund_address.contact_name }}</view>
                     </view>
-                    <view class="flex justify-between text-[28rpx] leading-[32rpx]  mt-[30rpx]">
+                    <view class="card-template-item justify-between text-[28rpx]">
                         <view>手机号</view>
                         <view>{{ detail.refund_address.mobile }}</view>
                     </view>
-                    <view class="flex justify-between text-[28rpx] leading-[32rpx] mt-[30rpx]">
+                    <view class="card-template-item justify-between text-[28rpx]">
                         <view>退货地址</view>
                         <view class="w-[460rpx] text-sm text-right" v-if="detail.refund_address">{{ detail.refund_address.full_address || '--' }}</view>
                     </view>
                 </view>
-                <view class="bg-[#fff] mx-[30rpx] p-[20rpx] rounded-[16rpx] mt-[20rpx]">
-                    <u--form labelPosition="left" :model="formData" :rules="rules" ref="deliveryForm" labelWidth="140rpx" :labelStyle="{'fontSize': '28rpx'}">
-                        <u-form-item label="物流公司" prop="express_company" borderBottom="true" ref="item1">
-                            <u--input pl border="none" v-model="formData.express_company" placeholder="请输入物流公司" placeholderClass="text-sm" fontSize="28rpx"></u--input>
+                <view class="sidebar-marign card-template top-mar py-[var(--top-m)]">
+					<view class="title">物流信息</view>
+                    <u--form labelPosition="left" :model="formData" :rules="rules"  errorType='toast' ref="deliveryForm" labelWidth="140rpx" :labelStyle="{'fontSize': '28rpx'}">
+                        <u-form-item label="物流公司" prop="express_company" :borderBottom="false">
+                            <u--input border="none" v-model="formData.express_company" placeholder="请输入物流公司" placeholderClass="text-sm !text-[var(--text-color-light9)]" fontSize="28rpx" maxlength="50"></u--input>
                         </u-form-item>
-                        <u-form-item label="物流单号" prop="express_number" borderBottom="true" ref="item1">
-                            <u--input border="none" placeholder="请输入物流单号" v-model="formData.express_number" placeholderClass="text-sm" fontSize="28rpx"></u--input>
-                        </u-form-item>
-                        <u-form-item label="物流说明" borderBottom ref="item1">
-                            <u--input border="none" placeholder="选填" v-model="formData.remark" placeholderClass="text-sm" fontSize="28rpx"></u--input>
-                        </u-form-item>
+						<view class="mt-[16rpx]">
+							<u-form-item label="物流单号" prop="express_number" :borderBottom="false">
+								<u--input border="none" placeholder="请输入物流单号" v-model="formData.express_number" placeholderClass="text-sm !text-[var(--text-color-light9)]" fontSize="28rpx" maxlength="100"></u--input>
+							</u-form-item>
+						</view>
+						<view class="mt-[16rpx]">
+							<u-form-item label="物流说明" :borderBottom="false">
+								<u--input border="none" placeholder="选填" v-model="formData.remark" placeholderClass="text-sm !text-[var(--text-color-light9)]" fontSize="28rpx" maxlength="200"></u--input>
+							</u-form-item>
+						</view>
                     </u--form>
                 </view>
-                <view class="mx-[30rpx]">
-                    <u-button class="mt-[20rpx]" text="提交" type="primary" shape="circle" @click="deliverySave"></u-button>
+                <view class="common-tab-bar-placeholder"></view>
+				<view class="common-tab-bar fixed left-[var(--sidebar-m)] right-[var(--sidebar-m)] bottom-[0]">
+                    <button class="mt-[80rpx] primary-btn-bg text-[#fff] h-[80rpx] leading-[80rpx] rounded-[100rpx] text-[26rpx] font-500"   hover-class="none" @click="deliverySave">提交</button>
                 </view>
             </view>
             <logistics-tracking ref="materialRef"></logistics-tracking>
-            <u-modal :show="cancelRefundShow" :content="t('cancelRefundContent')" :showCancelButton="true" :closeOnClickOverlay="true" @cancel="refundCancel" @confirm="refundConfirm"></u-modal>
+            <u-modal :show="cancelRefundShow" confirmColor="var(--primary-color)" :content="t('cancelRefundContent')" :showCancelButton="true" :closeOnClickOverlay="true" @cancel="refundCancel" @confirm="refundConfirm"></u-modal>
         </view>
 
-        <u-loading-page bg-color="rgb(248,248,248)" :loading="loading" loadingText="" fontSize="16" color="#303133"></u-loading-page>
+		<loading-page :loading="loading"></loading-page>
 
         <!-- #ifdef MP-WEIXIN -->
         <!-- 小程序隐私协议 -->
-        <wx-privacy-popup ref="wxPrivacyPopup"></wx-privacy-popup>
+        <wx-privacy-popup ref="wxPrivacyPopupRef"></wx-privacy-popup>
         <!-- #endif -->
     </view>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive, computed, nextTick } from 'vue';
 import { onLoad } from '@dcloudio/uni-app'
 import { t } from '@/locale'
 import { img, redirect, copy } from '@/utils/common';
+import { topTabar } from '@/utils/topTabbar'
 import { getRefundDetail, refundDelivery, editRefundDelivery, closeRefund } from '@/addon/shop/api/refund';
 import logisticsTracking from '@/addon/shop/pages/order/components/logistics-tracking/logistics-tracking.vue'
 
-let detail = ref<Object>({});
-let loading = ref<boolean>(true);
-let orderRefundNo = ref('');
-let type = ref('');
-let isEditDelivery = ref(false);
+/********* 自定义头部 - start ***********/
+const topTabarObj = topTabar()
+let topTabbarData = topTabarObj.setTopTabbarParam({title:'退款详情'})
+/********* 自定义头部 - end ***********/
+
+const detail = ref<Object>({});
+const loading = ref<boolean>(true);
+const orderRefundNo = ref('');
+const type = ref('');
+const isEditDelivery = ref(false);
+
+const sendMessageTitle = ref('')
+const sendMessagePath = ref('')
+const sendMessageImg = ref('')
 // 物流信息
 const formData = ref({
 	express_number: '',
@@ -177,32 +229,41 @@ const formData = ref({
 })
 
 // 物流验证
-const rules = {
-	'express_number': {
-		type: 'string',
-		required: true,
-		message: '请输入物流单号',
-		trigger: ['blur', 'change']
-	},
-	'express_company': {
-		type: 'string',
-		required: true,
-		message: '请输入物流公司',
-		trigger: ['blur', 'change']
+const rules = computed(() => {
+	return {
+		'express_number': {
+			type: 'string',
+			required: true,
+			message: '请输入物流单号',
+			trigger: ['blur', 'change']
+		},
+		'express_company': {
+			type: 'string',
+			required: true,
+			message: '请输入物流公司',
+			trigger: ['blur', 'change']
+		},
 	}
-}
+})
 
-onLoad((option) => {
+const wxPrivacyPopupRef:any = ref(null)
+
+onLoad((option: any) => {
 	orderRefundNo.value = option.order_refund_no;
 	type.value = option.type;
 	isEditDelivery.value = option.is_edit_delivery;
 
 	refundDetailFn(orderRefundNo.value);
+    // #ifdef MP
+    nextTick(()=>{
+        if(wxPrivacyPopupRef.value) wxPrivacyPopupRef.value.proactive();
+    })
+    // #endif
 });
 
-const refundDetailFn = (refundNo) => {
+const refundDetailFn = (refundNo: any) => {
 	loading.value = true;
-	getRefundDetail(refundNo).then((res) => {
+	getRefundDetail(refundNo).then((res: any) => {
 		detail.value = res.data;
 		// 赋值物流信息
 		if(isEditDelivery.value && detail.value.delivery){
@@ -210,6 +271,9 @@ const refundDetailFn = (refundNo) => {
 			formData.value.express_company = detail.value.delivery.express_company
 			formData.value.remark = detail.value.delivery.remark
 		}
+		
+		sendMessageTitle.value = detail.value.order_goods.goods_name
+		sendMessageImg.value = img(detail.value.order_goods.goods_image_thumb_small || '')
 		loading.value = false;
 	}).catch(() => {
 		loading.value = false;
@@ -226,7 +290,7 @@ const goodsEvent = (id: number) => {
 }
 
 // 提交物流信息
-let deliveryForm = ref()
+const deliveryForm = ref()
 const deliverySave = ()=>{
 	deliveryForm.value.validate().then(res => {
 		let obj = {delivery: formData.value,order_refund_no: detail.value.order_refund_no}
@@ -254,7 +318,7 @@ const refundBtnFn = (type:any) => {
 }
 
 // 撤销维权
-let cancelRefundShow = ref(false);
+const cancelRefundShow = ref(false);
 let currRefundOn = "";
 
 const refundConfirm = ()=>{
@@ -280,10 +344,17 @@ const refundCancel = ()=>{
 	-webkit-box-orient: vertical;
 }
 
-.text-color {
-	color: $u-primary;
-}
 .bg-linear {
-	background: linear-gradient( 94deg, #E73835 15%, #FE8448 87%);
+	background: linear-gradient( 94deg, #F84949 8%, #FF9A68 99%);
+}
+:deep(.u-form-item__body__left__content__label){
+		height: 40rpx !important;
+}
+:deep(.u-form-item__body){
+	padding: 0 !important;
+	height: 40rpx !important;
+}
+:deep(.u-form-item){
+	margin-bottom: 34rpx;
 }
 </style>

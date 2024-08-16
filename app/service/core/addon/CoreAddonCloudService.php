@@ -224,10 +224,6 @@ class CoreAddonCloudService extends CoreCloudBaseService
      */
     public function downloadAddon(string $addon, string $version) {
         $action_token = (new CoreModuleService())->getActionToken('download', ['data' => ['app_key' => $addon, 'version' => $version, 'product_key' => BaseNiucloudClient::PRODUCT ]]);
-        if (isset($action_token['code']) && $action_token['code'] != 1) {
-            if ($action_token['code'] == 401) $action_token = (new CoreModuleService())->getActionToken('download', ['data' => ['app_key' => $addon, 'version' => $version, 'product_key' => BaseNiucloudClient::PRODUCT]]);
-            if ($action_token['code'] != 1) throw new CommonException($action_token['msg']);
-        }
 
         $query = [
             'authorize_code' => $this->auth_code,
@@ -265,10 +261,6 @@ class CoreAddonCloudService extends CoreCloudBaseService
      */
     public function upgradeAddon(array $data = []) {
         $action_token = (new CoreModuleService())->getActionToken('upgrade', ['data' => $data ]);
-        if (isset($action_token['code']) && $action_token['code'] != 1) {
-            if ($action_token['code'] == 401) $action_token = (new CoreModuleService())->getActionToken('upgrade', ['data' => $data ]);
-            if ($action_token['code'] != 1) throw new CommonException($action_token['msg']);
-        }
 
         $query = [
             'authorize_code' => $this->auth_code,

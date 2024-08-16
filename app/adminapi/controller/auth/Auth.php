@@ -29,9 +29,9 @@ class Auth extends BaseAdminController
     public function authMenuList()
     {
         $data = $this->request->params([
-            ['addon', 'all'],
+            [ 'addon', 'all' ],
         ]);
-        return success((new AuthService())->getAuthMenuList(1, $data['addon']));
+        return success(( new AuthService() )->getAuthMenuList(1, $data[ 'addon' ]));
     }
 
     /**
@@ -41,18 +41,19 @@ class Auth extends BaseAdminController
      * @throws DbException
      * @throws ModelNotFoundException
      */
-    public function getAuthAddonList(){
-        return success((new AuthSiteService())->getAuthAddonList());
+    public function getAuthAddonList()
+    {
+        return success(( new AuthSiteService() )->getAuthAddonList());
     }
+
     /**
      * 获取登录用户信息
      * @return Response
      */
     public function get()
     {
-        return success((new AuthService())->getAuthInfo());
+        return success(( new AuthService() )->getAuthInfo());
     }
-
 
     /**
      * 修改登录用户信息
@@ -62,14 +63,13 @@ class Auth extends BaseAdminController
     public function modify($field)
     {
         $data = $this->request->params([
-            ['value', ''],
-            ['field', $field]
+            [ 'value', '' ],
+            [ 'field', $field ]
         ]);
 //        $this->validate($data, 'app\validate\sys\User.modify');
-        (new AuthService())->modifyAuth($field, $data['value']);
+        ( new AuthService() )->modifyAuth($field, $data[ 'value' ]);
         return success('MODIFY_SUCCESS');
     }
-
 
     /**
      * 更新用户
@@ -77,12 +77,12 @@ class Auth extends BaseAdminController
     public function edit()
     {
         $data = $this->request->params([
-            ['real_name', ''],
-            ['head_img', ''],
-            ['password', ''],
-            ['original_password', '']
+            [ 'real_name', '' ],
+            [ 'head_img', '' ],
+            [ 'password', '' ],
+            [ 'original_password', '' ]
         ]);
-        (new AuthService())->editAuth($data);
+        ( new AuthService() )->editAuth($data);
         return success('MODIFY_SUCCESS');
     }
 
@@ -92,7 +92,7 @@ class Auth extends BaseAdminController
      */
     public function site()
     {
-        return success((new AuthSiteService())->getSiteInfo());
+        return success(( new AuthSiteService() )->getSiteInfo());
     }
 
     /**
@@ -104,6 +104,6 @@ class Auth extends BaseAdminController
      */
     public function getShowMenuList()
     {
-        return success((new AuthSiteService())->getShowMenuList());
+        return success(( new AuthSiteService() )->getShowMenuList());
     }
 }

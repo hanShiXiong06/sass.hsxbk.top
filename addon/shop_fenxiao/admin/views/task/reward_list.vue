@@ -5,7 +5,6 @@
         <el-card class="card !border-none" shadow="never">
             <el-page-header :content="pageName" :icon="ArrowLeft" @back="$router.back()" />
         </el-card>
-        <!--返回 end-->
 
         <el-card class="card mt-[15px] !border-none" shadow="never">
             <el-card class="card !border-none my-[10px] table-search-wrap" shadow="never">
@@ -29,7 +28,7 @@
                     <template #default="{ row }">
                         <div class="flex items-center">
                             <el-image class="w-[50px] h-[50px] mr-[10px]" v-if="row.member.headimg" :src="img(row.member.headimg)" fit="contain" />
-                            <img class="w-[50px] h-[50px] mr-[10px]" v-else src="@/app/assets/images/default_headimg.png" alt="">
+                            <img class="w-[50px] h-[50px] mr-[10px] rounded-full" v-else src="@/app/assets/images/member_head.png" alt="">
                             <div class="flex flex-col">
                                 <span class="text-[14px]">{{row.member.nickname || row.member.username}}</span>
                                 <span class="text-[14px] text-[#666]">{{row.mobile || '--'}}</span>
@@ -50,7 +49,7 @@
                 </el-table-column>
                 <el-table-column prop="create_time" :label="t('accomplishStatus')" min-width="100">
                     <template #default="{ row }">
-                        {{ row.complete_num > 1 ? '已完成' :  '未完成'}}
+                        {{ row.complete_num >= 1 ? '已完成' :  '未完成'}}
                     </template>
                 </el-table-column>
                 <el-table-column :label="t('operation')" fixed="right" align="right" min-width="120">
@@ -69,13 +68,13 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed } from 'vue'
-import { getTaskMemberList, getTaskStatus } from '@/addon/shop_fenxiao/api/task'
+import { ref, reactive } from 'vue'
+import { getTaskMemberList } from '@/addon/shop_fenxiao/api/task'
 import { t } from '@/lang'
 import { img } from '@/utils/common'
 import { cloneDeep } from 'lodash-es'
 import { useRoute, useRouter } from 'vue-router'
-import { ElMessageBox, FormInstance } from 'element-plus'
+import { FormInstance } from 'element-plus'
 import { CollectionTag, ArrowLeft } from '@element-plus/icons-vue'
 
 const route = useRoute()
@@ -83,7 +82,7 @@ const router = useRouter()
 const pageName = route.meta.title
 const searchFormRef = ref<FormInstance>()
 const repeat = ref(false)
-let id = ref(route.query.id) || 0
+const id = ref(route.query.id) || 0
 
 // 重置搜索条件
 const resetForm = (formEl: FormInstance | undefined) => {

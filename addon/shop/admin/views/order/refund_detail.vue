@@ -1,13 +1,9 @@
 <template>
 	<div class="main-container">
-		<div class="detail-head">
-			<div class="left" @click="router.push({ path: '/shop/order/refund' })">
-				<span class="iconfont iconxiangzuojiantou !text-xs"></span>
-				<span class="ml-[1px]">{{ t('returnToPreviousPage') }}</span>
-			</div>
-			<span class="adorn">|</span>
-			<span class="right">{{ pageName }}</span>
-		</div>
+        <el-card class="card !border-none mb-[15px]" shadow="never">
+            <el-page-header :content="pageName" :icon="ArrowLeft" @back="router.push({ path: '/shop/order/refund' })" />
+        </el-card>
+        
 		<el-form :model="formData" label-width="100px" class="page-form" v-loading="loading" label-position="left">
 			<el-card class="box-card !border-none relative" shadow="never" v-if="formData">
 				<h3 class="panel-title">{{ t('orderInfo') }}</h3>
@@ -203,7 +199,7 @@
 		</el-dialog>
 		<!-- 同意弹框 -->
 		<el-dialog v-model="agreeRefundDialog" :title="t('orderRefundAgree')" width="460px" class="diy-dialog-wrap" :destroy-on-close="true">
-			<el-form :model="refuseFormData" label-width="120px" ref="formRef" :rules="formRules" class="page-form" v-loading="loading">
+			<el-form @submit.native.prevent="onSubmit" :model="refuseFormData" label-width="120px" ref="formRef" :rules="formRules" class="page-form" v-loading="loading">
 				<el-form-item :label="t('applyMoney')">
 					<span>￥{{ refuseFormData.apply_money }}</span>
 				</el-form-item>
@@ -462,5 +458,5 @@ const toOrderDetail = (id:number) => {
 <style lang="scss" scoped>
 .line-feed{
         word-wrap:break-word;
-    }
+}
 </style>

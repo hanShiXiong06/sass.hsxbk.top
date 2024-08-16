@@ -5,7 +5,6 @@
         <el-card class="card !border-none" shadow="never">
             <el-page-header :content="pageName" :icon="ArrowLeft" @back="$router.back()" />
         </el-card>
-        <!--返回 end-->
 
         <el-card class="card mt-[15px] !border-none" shadow="never">
             <el-form class="page-form" label-width="200px" ref="formRef" v-if="Object.keys(detail).length">
@@ -109,7 +108,7 @@
 <script lang="ts" setup>
 import { ref} from "vue";
 import { t } from "@/lang";
-import { debounce, img } from '@/utils/common'
+import { img } from '@/utils/common'
 import { getFenxiaoGoodsInfo } from '@/addon/shop_fenxiao/api/goods'
 import { ArrowLeft } from '@element-plus/icons-vue'
 import { useRoute, useRouter } from "vue-router";

@@ -166,42 +166,6 @@ class ConfigService extends BaseAdminService
     }
 
     /**
-     * 设置站点快捷菜单
-     * @param $data
-     * @return bool
-     */
-    public function setShortcutMenu($data)
-    {
-        ( new CoreConfigService() )->setConfig($this->site_id, 'shortcut_menu', $data);
-        return true;
-    }
-
-    /**
-     * 获取站点快捷菜单
-     * @return array|mixed
-     */
-    public function getShortcutMenu()
-    {
-        $config = ( new CoreConfigService() )->getConfig($this->site_id, 'shortcut_menu');
-        $menu = $config[ 'value' ] ?? [];
-        if (!empty($menu)) {
-            $menu_service = new MenuService();
-            foreach ($menu as $k => &$v) {
-                $menu_key = $v[ 'menu_key' ] ?? '';
-                if ($menu_key != '') {
-                    $item_router_path = $menu_service->getFullRouterPath($menu_key);
-                    if (empty($item_router_path)) {
-                        unset($v[ $k ]);
-                    } else {
-                        $v[ 'router_path' ] = $item_router_path;
-                    }
-                }
-            }
-        }
-        return $menu;
-    }
-
-    /**
      * 获取手机端首页列表
      * @param $data
      * @return array

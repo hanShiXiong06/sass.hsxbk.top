@@ -11,7 +11,6 @@
 
 namespace app\model\sys;
 
-use app\dict\sys\RoleStatusDict;
 use app\dict\sys\UserDict;
 use core\base\BaseModel;
 use think\model\concern\SoftDelete;
@@ -80,8 +79,8 @@ class SysUser extends BaseModel
      */
     public function searchUsernameAttr($query, $value)
     {
-        if ($value) {
-            $query->whereLike('username', '%' . $value . '%');
+        if ($value != '') {
+            $query->whereLike('username', '%' . $this->handelSpecialCharacter($value) . '%');
         }
 
     }
@@ -93,7 +92,7 @@ class SysUser extends BaseModel
      */
     public function searchRealnameAttr($query, $value)
     {
-        if ($value) {
+        if ($value != '') {
             $query->whereLike('real_name', '%' . $value . '%');
         }
 
@@ -108,7 +107,7 @@ class SysUser extends BaseModel
     public function getStatusNameAttr($value, $data)
     {
         if (empty($data['status'])) return '';
-        return RoleStatusDict::getStatus()[$data['status']] ?? '';
+        return UserDict::getStatus()[$data['status']] ?? '';
     }
 
     /**

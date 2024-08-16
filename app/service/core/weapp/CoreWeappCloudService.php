@@ -12,14 +12,13 @@
 namespace app\service\core\weapp;
 
 use app\dict\addon\AddonDict;
-use app\dict\sys\CloudDict;
 use app\model\addon\Addon;
-use app\model\weapp\WeappVersion;
 use app\service\core\addon\CoreAddonDevelopDownloadService;
 use app\service\core\addon\WapTrait;
 use app\service\core\niucloud\CoreCloudBaseService;
-use app\service\core\site\CoreSiteService;
+use app\service\core\niucloud\CoreModuleService;
 use core\exception\CommonException;
+use core\util\niucloud\BaseNiucloudClient;
 use core\util\niucloud\CloudService;
 
 /**
@@ -44,32 +43,36 @@ class CoreWeappCloudService extends CoreCloudBaseService
 
     use WapTrait;
 
-     public function __construct()
-     {
-         parent::__construct();
-         $this->root_path = dirname(root_path()) . DIRECTORY_SEPARATOR;
-         $this->addon_path = root_path() . 'addon' . DIRECTORY_SEPARATOR;
-         $this->config['base_url'] = (string)url('/', [], '', true);
-     }
+    public function __construct()
+    {
+        parent::__construct();
+        $this->root_path = dirname(root_path()) . DIRECTORY_SEPARATOR;
+        $this->addon_path = root_path() . 'addon' . DIRECTORY_SEPARATOR;
+        $this->config[ 'base_url' ] = (string) url('/', [], '', true);
+    }
 
-     public function setConfig($function) {
-         $this->config = array_merge($this->config, $function());
-         return $this;
-     }
+    public function setConfig($function)
+    {
+        $this->config = array_merge($this->config, $function());
+        return $this;
+    }
 
     /**
      * 上传小程序
      * @param $addon
      */
-    public function uploadWeapp(array $data) {
-        if (strpos($this->config['base_url'], 'https://') === false) throw new CommonException('CURR_SITE_IS_NOT_OPEN_SSL');
-        $this->site_id = $data['site_id'] ?? 0;
+    public function uploadWeapp(array $data)
+    {
+        if (strpos($this->config[ 'base_url' ], 'https://') === false) throw new CommonException('CURR_SITE_IS_NOT_OPEN_SSL');
+        $this->site_id = $data[ 'site_id' ] ?? 0;
 
-        if (empty($this->config['app_id'])) throw new CommonException('WEAPP_APPID_EMPTY');
-        if (empty($this->config['upload_private_key'])) throw new CommonException('UPLOAD_KEY_EMPTY');
-        if (!file_exists($this->config['upload_private_key'])) throw new CommonException('UPLOAD_KEY_NOT_EXIST');
+        if (empty($this->config[ 'app_id' ])) throw new CommonException('WEAPP_APPID_EMPTY');
+        if (empty($this->config[ 'upload_private_key' ])) throw new CommonException('UPLOAD_KEY_EMPTY');
+        if (!file_exists($this->config[ 'upload_private_key' ])) throw new CommonException('UPLOAD_KEY_NOT_EXIST');
 
-        $compile_addon = (new Addon())->where([ ['compile', 'like', "%weapp%"] ])->field('key')->findOrEmpty();
+        $action_token = ( new CoreModuleService() )->getActionToken('weappbuild', [ 'data' => [ 'product_key' => BaseNiucloudClient::PRODUCT ] ]);
+
+        $compile_addon = ( new Addon() )->where([ [ 'compile', 'like', "%weapp%" ] ])->field('key')->findOrEmpty();
         // 上传任务key
         $task_key = uniqid();
         // 此次上传任务临时目录
@@ -81,7 +84,7 @@ class CoreWeappCloudService extends CoreCloudBaseService
 
         // 如果不存在编译版小程序
         if ($compile_addon->isEmpty()) {
-            dir_copy($this->root_path . 'uni-app', $uni_dir, exclude_dirs:['node_modules', 'unpackage', 'dist']);
+            dir_copy($this->root_path . 'uni-app', $uni_dir, exclude_dirs:[ 'node_modules', 'unpackage', 'dist' ]);
             $this->handleUniapp($uni_dir);
             // 替换env文件
             $this->weappEnvReplace($uni_dir . DIRECTORY_SEPARATOR . '.env.production');
@@ -91,25 +94,26 @@ class CoreWeappCloudService extends CoreCloudBaseService
             dir_copy($compile_dir, $uni_dir);
             $this->weappCompileReplace($uni_dir);
         }
-        file_put_contents($package_dir . 'private.key', file_get_contents($this->config['upload_private_key']));
+        file_put_contents($package_dir . 'private.key', file_get_contents($this->config[ 'upload_private_key' ]));
 
         // 将临时目录下文件生成压缩包
         $zip_file = $temp_dir . DIRECTORY_SEPARATOR . 'weapp.zip';
-        (new CoreAddonDevelopDownloadService(''))->compressToZip($package_dir, $zip_file);
+        ( new CoreAddonDevelopDownloadService('') )->compressToZip($package_dir, $zip_file);
 
         $query = [
             'compile' => $compile_addon->isEmpty() ? 0 : 1,
             'authorize_code' => $this->auth_code,
-            'appid' => $this->config['app_id'],
-            'version' => $data['version'] ?? '',
-            'desc' => $data['desc'] ?? '',
+            'appid' => $this->config[ 'app_id' ],
+            'version' => $data[ 'version' ] ?? '',
+            'desc' => $data[ 'desc' ] ?? '',
             'do' => 1,
-            'timestamp' => time()
+            'timestamp' => time(),
+            'token' => $action_token[ 'data' ][ 'token' ] ?? ''
         ];
-        $response = (new CloudService())->httpPost('cloud/weapp?' . http_build_query($query), [
+        $response = ( new CloudService() )->httpPost('cloud/weapp?' . http_build_query($query), [
             'multipart' => [
                 [
-                    'name'     => 'file',
+                    'name' => 'file',
                     'contents' => fopen($zip_file, 'r'),
                     'filename' => 'weapp.zip'
                 ]
@@ -119,9 +123,9 @@ class CoreWeappCloudService extends CoreCloudBaseService
         // 删除临时文件
         del_target_dir(runtime_path() . 'backup' . DIRECTORY_SEPARATOR . 'weapp', true);
 
-        if (isset($response['code']) && $response['code'] == 0) throw new CommonException($response['msg']);
+        if (isset($response[ 'code' ]) && $response[ 'code' ] == 0) throw new CommonException($response[ 'msg' ]);
 
-        return ['key' => $query['timestamp'] ];
+        return [ 'key' => $query[ 'timestamp' ] ];
     }
 
     /**
@@ -129,18 +133,19 @@ class CoreWeappCloudService extends CoreCloudBaseService
      * @param string $dir
      * @return void
      */
-    private function handleUniapp(string $dir) {
-        $site_addon = $this->config['addon'];
-        $local_addon = (new Addon())->where([['status', '=', AddonDict::ON]])->column('key');
+    private function handleUniapp(string $dir)
+    {
+        $site_addon = $this->config[ 'addon' ];
+        $local_addon = ( new Addon() )->where([ [ 'status', '=', AddonDict::ON ] ])->column('key');
 
         // 移除uniapp中该站点没有的插件
-        $diff_addon = array_filter(array_map(function ($key) use ($site_addon) {
+        $diff_addon = array_filter(array_map(function($key) use ($site_addon) {
             if (!in_array($key, $site_addon)) return $key;
         }, $local_addon));
 
         $this->handlePageCode($dir . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR, $site_addon);
 
-        if (!empty($diff_addon) ) {
+        if (!empty($diff_addon)) {
             foreach ($diff_addon as $addon) {
                 $this->addon = $addon;
 
@@ -162,7 +167,8 @@ class CoreWeappCloudService extends CoreCloudBaseService
         }
     }
 
-    private function handlePageCode($compile_path, $addon_arr) {
+    private function handlePageCode($compile_path, $addon_arr)
+    {
         $pages = [];
         foreach ($addon_arr as $addon) {
             if (!file_exists($this->geAddonPackagePath($addon) . 'uni-app-pages.php')) continue;
@@ -173,8 +179,8 @@ class CoreWeappCloudService extends CoreCloudBaseService
             $page_end = strtoupper($addon) . '_PAGE_END';
 
             // 对0.2.0之前的版本做处理
-            $uniapp_pages[ 'pages' ] = preg_replace_callback('/(.*)(\\r\\n.*\/\/ PAGE_END.*)/s', function ($match){
-                return $match[1] . (substr($match[1], -1) == ',' ? '' : ',') .$match[2];
+            $uniapp_pages[ 'pages' ] = preg_replace_callback('/(.*)(\\r\\n.*\/\/ PAGE_END.*)/s', function($match) {
+                return $match[ 1 ] . ( substr($match[ 1 ], -1) == ',' ? '' : ',' ) . $match[ 2 ];
             }, $uniapp_pages[ 'pages' ]);
 
             $uniapp_pages[ 'pages' ] = str_replace('PAGE_BEGIN', $page_begin, $uniapp_pages[ 'pages' ]);
@@ -185,8 +191,8 @@ class CoreWeappCloudService extends CoreCloudBaseService
         }
 
         $content = @file_get_contents($compile_path . "pages.json");
-        $content = preg_replace_callback('/(.*\/\/ \{\{ PAGE_BEGAIN \}\})(.*)(\/\/ \{\{ PAGE_END \}\}.*)/s', function ($match) use ($pages) {
-            return $match[1] . PHP_EOL . implode(PHP_EOL, $pages) . PHP_EOL . $match[3];
+        $content = preg_replace_callback('/(.*\/\/ \{\{ PAGE_BEGAIN \}\})(.*)(\/\/ \{\{ PAGE_END \}\}.*)/s', function($match) use ($pages) {
+            return $match[ 1 ] . PHP_EOL . implode(PHP_EOL, $pages) . PHP_EOL . $match[ 3 ];
         }, $content);
 
         // 找到页面路由文件 pages.json，写入内容
@@ -198,10 +204,11 @@ class CoreWeappCloudService extends CoreCloudBaseService
      * @param string $env_file
      * @return void
      */
-    private function weappEnvReplace(string $env_file) {
+    private function weappEnvReplace(string $env_file)
+    {
         $env = file_get_contents($env_file);
-        $env = str_replace("VITE_APP_BASE_URL=''", "VITE_APP_BASE_URL='" . $this->config['base_url'] . 'api/' . "'", $env);
-        $env = str_replace("VITE_IMG_DOMAIN=''", "VITE_IMG_DOMAIN='" . $this->config['base_url'] . "'", $env);
+        $env = str_replace("VITE_APP_BASE_URL=''", "VITE_APP_BASE_URL='" . $this->config[ 'base_url' ] . 'api/' . "'", $env);
+        $env = str_replace("VITE_IMG_DOMAIN=''", "VITE_IMG_DOMAIN='" . $this->config[ 'base_url' ] . "'", $env);
         $env = str_replace("VITE_SITE_ID = ''", "VITE_SITE_ID='" . $this->site_id . "'", $env);
         file_put_contents($env_file, $env);
     }
@@ -211,18 +218,19 @@ class CoreWeappCloudService extends CoreCloudBaseService
      * @param string $vendor_file
      * @return void
      */
-    private function weappCompileReplace(string $path) {
+    private function weappCompileReplace(string $path)
+    {
         // 替换request.js
         $request_file = $path . DIRECTORY_SEPARATOR . 'utils' . DIRECTORY_SEPARATOR . 'request.js';
         $content = file_get_contents($request_file);
-        $content = str_replace('{{$baseUrl}}', $this->config['base_url'] . 'api/', $content);
-        $content = str_replace('{{$siteId}}',  $this->site_id, $content);
+        $content = str_replace('{{$baseUrl}}', $this->config[ 'base_url' ] . 'api/', $content);
+        $content = str_replace('{{$siteId}}', $this->site_id, $content);
         file_put_contents($request_file, $content);
 
         // 替换common.js
         $common_file = $path . DIRECTORY_SEPARATOR . 'utils' . DIRECTORY_SEPARATOR . 'common.js';
         $content = file_get_contents($common_file);
-        $content = str_replace('{{$imgUrl}}',  $this->config['base_url'], $content);
+        $content = str_replace('{{$imgUrl}}', $this->config[ 'base_url' ], $content);
         file_put_contents($common_file, $content);
     }
 
@@ -230,11 +238,12 @@ class CoreWeappCloudService extends CoreCloudBaseService
      * 获取微信小程序预览码
      * @return void
      */
-    public function getWeappPreviewImage() {
+    public function getWeappPreviewImage()
+    {
         $query = [
             'authorize_code' => $this->auth_code,
         ];
-        $preview_url = (new CloudService())->getUrl('cloud/get_weapp_preview?' . http_build_query($query));
+        $preview_url = ( new CloudService() )->getUrl('cloud/get_weapp_preview?' . http_build_query($query));
 
         try {
             $path = runtime_path() . uniqid() . '.jpg';
@@ -250,12 +259,13 @@ class CoreWeappCloudService extends CoreCloudBaseService
      * @param string $timestamp
      * @return void
      */
-    public function getWeappCompileLog(string $timestamp) {
+    public function getWeappCompileLog(string $timestamp)
+    {
         $query = [
             'authorize_code' => $this->auth_code,
             'timestamp' => $timestamp
         ];
-        return (new CloudService())->httpGet('cloud/get_weapp_logs?' . http_build_query($query));
+        return ( new CloudService() )->httpGet('cloud/get_weapp_logs?' . http_build_query($query));
     }
 
     /**

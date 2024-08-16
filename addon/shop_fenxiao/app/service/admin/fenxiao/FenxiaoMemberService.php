@@ -43,8 +43,8 @@ class FenxiaoMemberService extends BaseAdminService
         $condition = [
             ['fenxiao_member.site_id', '=', $this->site_id]
         ];
-        if (!empty($where['search'])) {
-            $condition[] = ['member.username|member.nickname|member.mobile', 'like', '%' . $where['search'] . '%'];
+        if (isset($where['search']) && $where['search'] != '') {
+            $condition[] = ['member.username|member.nickname|member.mobile', 'like', '%' . $this->model->handelSpecialCharacter($where['search']) . '%'];
         }
         //是否是分销商
         if (!empty($where['is_fenxiao']) && $where['is_fenxiao'] != 'all') {

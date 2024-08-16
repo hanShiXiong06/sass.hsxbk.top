@@ -336,11 +336,11 @@ const getDetail = (id: number) => {
         formData.value.skuList = res.data.goods_info.skuList
 
         formData.value.fenxiao_rule = res.data.goods_info.fenxiaoGoods && Object.keys(res.data.goods_info.fenxiaoGoods.fenxiao_rule).length ? JSON.parse(res.data.goods_info.fenxiaoGoods.fenxiao_rule) : {};
-        res.data.goods_info.skuList.forEach((item,index) => {
+        res.data.goods_info.skuList.forEach((item: any,index: any) => {
             item.calculate_price = item.calculate_price || '';
             if(!formData.value.fenxiao_rule[item.sku_id]){
                 formData.value.fenxiao_rule[item.sku_id] = {}
-                res.data.rule.forEach((subItem,subIndex) => {
+                res.data.rule.forEach((subItem: any,subIndex: any) => {
                     formData.value.fenxiao_rule[item.sku_id][subItem.level_id] = cloneDeep(subItem);
                     formData.value.fenxiao_rule[item.sku_id][subItem.level_id].one_money = "0";
                     formData.value.fenxiao_rule[item.sku_id][subItem.level_id].two_money = "0";

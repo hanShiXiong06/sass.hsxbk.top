@@ -25,6 +25,29 @@ return [
                 }
             ]
         ],
+        'tk_cps_order' => [
+            'key' => 'tk_cps_order',
+            'name' => 'CPS活动下单',
+            'desc' => 'CPS活动下单结算完成赠送积分',
+            'component' => '/src/addon/tk_cps/views/member/components/point-rule-cpsorder.vue',
+            'calculate' => '', // 计算成长值,
+            'content' => [
+                'admin' => function ($site_id, $config) {
+                    return "CPS活动下单结算完成后赠送{$config['point']}积分";
+                },
+                'task' => function ($site_id, $config) {
+                    return [
+                        'icon' => '/addon/tk_cps/rule/growth-rule-cart.png',
+                        'title' => 'CPS活动下单',
+                        'desc' => "CPS活动下单结算完成赠送{$config['point']}积分",
+                        'button' => [
+                            'text' => '去购买',
+                            'wap_redirect' => '/addon/tk_cps/pages/diy'
+                        ]
+                    ];
+                }
+            ]
+        ],
     ],
     'consume' => [
 //        'shop_order_deduction' => [

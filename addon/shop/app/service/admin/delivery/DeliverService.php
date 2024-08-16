@@ -66,7 +66,6 @@ class DeliverService extends BaseAdminService
         $data['site_id'] = $this->site_id;
         $res = $this->model->create($data);
         return $res->deliver_id;
-
     }
 
     /**

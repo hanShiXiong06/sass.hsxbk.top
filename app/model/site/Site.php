@@ -72,8 +72,8 @@ class Site extends BaseModel
      */
     public function searchKeywordsAttr($query, $value, $data)
     {
-        if ($value) {
-            $query->where('site_name|keywords', 'like', '%' . $value . '%');
+        if ($value != '') {
+            $query->where('site_name|keywords', 'like', '%' . $this->handelSpecialCharacter($value) . '%');
         }
     }
 
@@ -86,8 +86,8 @@ class Site extends BaseModel
      */
     public function searchSiteDomainAttr($query, $value, $data)
     {
-        if ($value) {
-            $query->where('site_domain', 'like', '%' . $value . '%');
+        if ($value != '') {
+            $query->where('site_domain', 'like', '%' . $this->handelSpecialCharacter($value) . '%');
         }
     }
 
@@ -99,7 +99,7 @@ class Site extends BaseModel
      */
     public function searchAppAttr($query, $value, $data)
     {
-        if ($value) {
+        if ($value != '') {
             $query->where('app', 'like', '%"' . $value . '"%');
         }
     }

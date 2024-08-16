@@ -12,7 +12,7 @@
             <el-card class="card !border-none my-[10px] table-search-wrap" shadow="never">
                 <el-form :inline="true" :model="agentTable.searchParam" ref="searchFormRef">
                     <el-form-item :label="t('memberInfo')">
-                        <el-input v-model="agentTable.searchParam.search" :placeholder="t('fenxiaoNamePlaceholder')" maxlength="60" />
+                        <el-input v-model="agentTable.searchParam.search" :placeholder="t('memberInfoPlaceholder')" maxlength="60" />
                     </el-form-item>
                     <el-form-item :label="t('agentLevel')">
                         <el-select v-model="agentTable.searchParam.agent_level" :placeholder="t('selectAgentLevelPlaceholder')">
@@ -48,11 +48,11 @@
                                 <el-image v-if="row.member && row.member.headimg" class="w-[50px] h-[50px]" :src="img(row.member.headimg)" fit="contain">
                                     <template #error>
                                         <div class="image-slot">
-                                            <img class="w-[50px] h-[50px]" src="@/app/assets/images/default_headimg.png" />
+                                            <img class="w-[50px] h-[50px] rounded-full" src="@/app/assets/images/member_head.png" alt="">
                                         </div>
                                     </template>
                                 </el-image>
-                                <img v-else class="w-[50px] h-[50px]" src="@/app/assets/images/default_headimg.png" fit="contain" />
+                                <img class="w-[50px] h-[50px] rounded-full" v-else src="@/app/assets/images/member_head.png" alt="">
                             </div>
                             <div class="ml-2">
                                 <span :title="row.member && row.member.nickname" class="multi-hidden">{{row.member && row.member.nickname || row.member && row.member.username}}</span>
@@ -128,7 +128,7 @@
 <script lang="ts" setup>
 import { ref, reactive, computed } from 'vue'
 import { img, moneyFormat } from '@/utils/common'
-import { getAgentList, getAgentStatus, getAgentLevelList, editAgent, addAgent, editAgentStatus, addAgentLevel } from '@/addon/shop_fenxiao/api/agent'
+import { getAgentList, getAgentStatus, getAgentLevelList, editAgent, addAgent, editAgentStatus } from '@/addon/shop_fenxiao/api/agent'
 import { t } from '@/lang'
 import { cloneDeep } from 'lodash-es'
 import { useRoute, useRouter } from 'vue-router'
@@ -142,18 +142,18 @@ const pageName = route.meta.title
 const searchFormRef = ref<FormInstance>()
 
 // 等级
-let fenxiaoLevelOptions = ref([])
+const fenxiaoLevelOptions = ref([])
 // 获取代理商等级
 let getLevelLoad = false
 const getAgentLevelListFn=(bool=false)=>{
     if(getLevelLoad) return false;
     getLevelLoad = true;
     getAgentLevelList().then((res:any)=>{
-        let data = [];
+        let data: any = [];
         fenxiaoLevelOptions.value = [];
         if(res.data.length){
-            res.data.forEach((item,index) => {
-                let obj = {};
+            res.data.forEach((item: any,index: any) => {
+                let obj: any = {};
                 obj.label = item.name;
                 obj.value = item.level_id;
                 data.push(obj);
@@ -172,8 +172,7 @@ const getAgentLevelListFn=(bool=false)=>{
 getAgentLevelListFn();
 
 // 状态
-let fenxiaoStateProps = ref("")
-let fenxiaoStateOptions = ref([])
+const fenxiaoStateOptions = ref([])
 // 获取代理商状态
 const getAgentStatusFn=()=>{
     getAgentStatus().then((res:any)=>{
@@ -181,7 +180,7 @@ const getAgentStatusFn=()=>{
         fenxiaoStateOptions.value = [];
         if(Object.keys(res.data).length){
             for(let i in res.data){
-                let obj = {};
+                let obj: any = {};
                 obj.label = res.data[i];
                 obj.value = i;
                 data.push(obj);
@@ -248,9 +247,9 @@ const addLevelFn = ()=>{
 /******************* 添加代理商等级 -end *****************************/
 /*************** 渠道代理商-start ***************/
 let agentInfoRef = ref<FormInstance>()
-let agentDialog = ref(false);
-let isEditLevelDialog = ref(false);
-let agentDialogData = ref({
+const agentDialog = ref(false);
+const isEditLevelDialog = ref(false);
+const agentDialogData = ref({
     agent_level: '',
     member_id: '',
     member_name: '',
@@ -261,7 +260,7 @@ const selectFenxiaoFn = ()=>{
     fenxiaoOfSelectPopupRef.value.show();
 }
 // 选择分销商callback
-const selectFenxiaoCallbackFn = (data)=>{
+const selectFenxiaoCallbackFn = (data: any)=>{
     agentDialogData.value.member_name = data.member.nickname || data.member.username;
     agentDialogData.value.member_id = data.member_id;
 }
@@ -286,7 +285,7 @@ const addEvent = ()=>{
     isEditLevelDialog.value = false;
 }
 // 编辑渠道代理商
-const editEvent = (data)=>{
+const editEvent = (data: any)=>{
     agentDialogData.value.agent_level = data.agentLevel.level_id;
     agentDialogData.value.member_id = data.member_id;
     agentDialogData.value.member_name = data.member.nickname || data.member.username;
@@ -295,7 +294,7 @@ const editEvent = (data)=>{
     isEditLevelDialog.value = true;
 }
 
-let saveLoading = ref(false);
+const saveLoading = ref(false);
 const saveAgent = async (formEl: FormInstance | undefined) => {
     if (saveLoading.value || !formEl) return
     await formEl.validate(async (valid) => {
@@ -317,7 +316,7 @@ const saveAgent = async (formEl: FormInstance | undefined) => {
 
 /*************** 修改代理商状态-start ***************/
 let isStartRepeat = false;
-let spreadEvent = (data)=>{
+const spreadEvent = (data: any)=>{
     if(data.agent_status == 1){
         freezeEvent(data.member_id);
     }else{
@@ -334,7 +333,7 @@ const freezeEvent = (id) => {
     ).then(() => {
         if (isStartRepeat) return
         isStartRepeat = true
-        let obj = {};
+        let obj: any = {};
         obj.member_id = id;
         obj.status = 2;
         editAgentStatus(obj).then(() => {
@@ -350,7 +349,7 @@ const toFenxiao = (id:number)=>{
     let routeData = router.resolve(`/shop_fenxiao/detail?id=${id}`)
     window.open(routeData.href,' blank');
 }
-const normalEvent = (id) => {
+const normalEvent = (id: any) => {
     ElMessageBox.confirm(t('normalAgentTips'), t('warning'),
         {
             confirmButtonText: t('confirm'),
@@ -360,7 +359,7 @@ const normalEvent = (id) => {
     ).then(() => {
         if (isStartRepeat) return
         isStartRepeat = true
-        let obj = {};
+        let obj: any = {};
         obj.member_id = id;
         obj.status = 1;
         editAgentStatus(obj).then(() => {

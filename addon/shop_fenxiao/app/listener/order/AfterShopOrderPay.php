@@ -20,7 +20,7 @@ class AfterShopOrderPay
         $site_id = $order_data['site_id'];
         $member_id = $order_data['member_id'];
         //1. 先处理支付后绑定上下级  2. 计算佣金
-        (new CoreFenxiaoMemberService())->orderCreate($site_id, $member_id);
+        (new CoreFenxiaoMemberService())->orderPay($site_id, $member_id);
         //计算佣金
         (new CoreOrderCalculateService())->calculate($data);
         //todo  可能成为分销商,居于最后

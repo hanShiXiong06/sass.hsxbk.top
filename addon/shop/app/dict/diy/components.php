@@ -6,7 +6,7 @@ return [
         'list' => [
             'GoodsList' => [
                 'title' => '商品列表',
-                'icon' => 'iconfont iconshangpinliebiao',
+                'icon' => 'iconfont iconshangpinliebiaopc',
                 'path' => 'edit-goods-list',
                 'support_page' => [],
                 'uses' => 0,
@@ -38,7 +38,7 @@ return [
             ],
             'ShopSearch' => [
                 'title' => '搜索',
-                'icon' => 'iconfont iconsousuo',
+                'icon' => 'iconfont iconsousuopc-1',
                 'path' => 'edit-shop-search',
                 'support_page' => [],
                 'uses' => 1,
@@ -56,7 +56,7 @@ return [
             ],
             'ManyGoodsList' => [
                 'title' => '多商品组',
-                'icon' => 'iconfont iconduoshangpinzu',
+                'icon' => 'iconfont iconduoshangpinzupc',
                 'path' => 'edit-many-goods-list',
                 'support_page' => [],
                 'uses' => 0,
@@ -100,7 +100,7 @@ return [
             ],
             'GoodsCoupon' => [
                 'title' => '优惠券',
-                'icon' => 'iconfont iconyouhuiquan1',
+                'icon' => 'iconfont iconyouhuiquanpc',
                 'path' => 'edit-goods-coupon',
                 'support_page' => [],
                 'uses' => 0,
@@ -118,7 +118,7 @@ return [
             ],
             'ShopMemberInfo' => [
                 'title' => '会员信息',
-                'icon' => 'iconfont iconhuiyuanzhongxin',
+                'icon' => 'iconfont iconhuiyuanqiandaopc',
                 'path' => 'edit-shop-member-info',
                 'support_page' => [ 'DIY_SHOP_MEMBER_INDEX' ],
                 'uses' => 1,
@@ -154,7 +154,7 @@ return [
             ],
             'ShopExchangeInfo' => [
                 'title' => '积分兑换',
-                'icon' => 'iconfont iconjinbi',
+                'icon' => 'iconfont iconjifenpc',
                 'path' => 'edit-shop-exchange-info',
                 'support_page' => [],
                 'uses' => 0,
@@ -165,7 +165,7 @@ return [
             ],
             'ShopExchangeGoods' => [
                 'title' => '积分商品',
-                'icon' => 'iconfont iconjifenshangpin',
+                'icon' => 'iconfont iconjifenshangpinpc',
                 'path' => 'edit-shop-exchange-goods',
                 'support_page' => [],
                 'uses' => 0,

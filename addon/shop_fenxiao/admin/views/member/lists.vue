@@ -30,11 +30,11 @@
                                 <el-image v-if="row.member.headimg" class="w-[50px] h-[50px]" :src="img(row.member.headimg)" fit="contain">
                                     <template #error>
                                         <div class="image-slot">
-                                            <img class="w-[50px] h-[50px]" src="@/app/assets/images/default_headimg.png" />
+                                            <img class="w-[50px] h-[50px] rounded-full" src="@/app/assets/images/member_head.png" alt="">
                                         </div>
                                     </template>
                                 </el-image>
-                                <img v-else class="w-[50px] h-[50px]" src="@/app/assets/images/default_headimg.png" fit="contain" />
+                                <img class="w-[50px] h-[50px] rounded-full" v-else src="@/app/assets/images/member_head.png" alt="">
                             </div>
                             <div class="ml-2">
                                 <span :title="(row.member.nickname || row.member.username)" class="multi-hidden">{{row.member.nickname || row.member.username}}</span>
@@ -51,7 +51,7 @@
                 <el-table-column :label="t('bindingSupFenxiao')" min-width="120" >
                     <template #default="{ row }">
                         <div class="cursor-pointer stock-wrap" @click="editSupEvent(row)">
-                            <span>{{row.parent_fenxiao&&row.parent_fenxiao.nickname || row.parent_fenxiao&&row.parent_fenxiao.username || '--'}}</span>
+                            <span>{{ row.parent_fenxiao && row.parent_fenxiao.nickname || row.parent_fenxiao && row.parent_fenxiao.username || '--'}}</span>
                             <el-icon class="ml-[5px]" :size="14"><EditPen /></el-icon>
                         </div>
                     </template>
@@ -111,13 +111,13 @@ import { ElMessage, ElMessageBox, FormInstance } from 'element-plus'
 const route = useRoute()
 const router = useRouter()
 const pageName = route.meta.title
-let fenxiaoSelectParams = ref({})
+const fenxiaoSelectParams = ref({})
 
 // 上级分销
-let supFenxiaoProps = ref("")
-let supFenxiaoOptions = ref([])
+const supFenxiaoProps = ref("")
+const supFenxiaoOptions = ref([])
 // 弹窗
-let supFenxiaoDialog = ref(false)
+const supFenxiaoDialog = ref(false)
 
 const memberTable = reactive({
     page: 1,
@@ -165,26 +165,25 @@ const detailEvent = (member_id:number)=>{
 let formData: Record<string, any> = reactive({});
 //选择上级分销商弹框
 const fenxiaoOfSelectPopupRef = ref<any>()
-let fenxiaoOfSelectIndex = ref(0)
+const fenxiaoOfSelectIndex = ref(0)
 const editSupEvent = (row:any)=>{
     fenxiaoSelectParams.value = {};
     formData = {};
-    fenxiaoOfSelectIndex = row.is_fenxiao
+    fenxiaoOfSelectIndex.value = row.is_fenxiao
     if(!row.is_fenxiao){
         fenxiaoSelectParams.value.not_in = row.member_id;
-
         formData.member_id = row.member_id;
     }else{
         fenxiaoSelectParams.value.not_in = row.child_ids ? [row.member_id, row.parent_fenxiao.member_id,...row.child_ids] : [row.member_id, row.parent_fenxiao.member_id];
         fenxiaoSelectParams.value.is_agent = 'all';
-        
         formData.id = row.member_id
     }
     fenxiaoOfSelectPopupRef.value?.show();
 }
+
 //选择回调
 const selectFenxiaoCallbackFn = (row: any) => {
-    if(!fenxiaoOfSelectIndex){
+    if(!fenxiaoOfSelectIndex.value){
         formData.fenxiao_member_id = row.member_id;
         ElMessageBox.confirm(t('editSupFenxiaoTip'), t('warning'),
             {

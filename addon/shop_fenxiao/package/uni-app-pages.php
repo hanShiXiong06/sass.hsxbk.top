@@ -22,6 +22,9 @@ return [
 				{
 					"path": "shop_fenxiao/pages/level",
 					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
 						"navigationBarTitleText": "%shop_fenxiao.pages.level%"
 					},
 					"needLogin": true
@@ -78,6 +81,9 @@ return [
 				{
 					"path": "shop_fenxiao/pages/task_rewards",
 					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
 						"navigationBarTitleText": "%shop_fenxiao.pages.task_rewards%"
 					},
 					"needLogin": true
@@ -85,6 +91,9 @@ return [
 				{
 					"path": "shop_fenxiao/pages/task_detail",
 					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
 						"navigationBarTitleText": "%shop_fenxiao.pages.task_detail%"
 					},
 					"needLogin": true
@@ -99,6 +108,9 @@ return [
 				{
 					"path": "shop_fenxiao/pages/sale",
 					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
 						"navigationBarTitleText": "%shop_fenxiao.pages.sale%"
 					},
 					"needLogin": true

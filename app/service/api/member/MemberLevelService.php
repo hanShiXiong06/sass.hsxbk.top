@@ -51,6 +51,7 @@ class MemberLevelService extends BaseApiService
 
                 $length = empty($item['level_benefits']) ? 0 : count($item['level_benefits']);
                 if ($length < 4) {
+                    if (empty($item['level_benefits'])) $list[$k]['level_benefits'] = [];
                     foreach ($filling as $key => $content) {
                         if (count($list[$k]['level_benefits']) == 4) break;
                         $list[$k]['level_benefits'][$key] = [
@@ -59,7 +60,7 @@ class MemberLevelService extends BaseApiService
                     }
                 }
 
-                $level_key = $k % 8 + 1;
+                $level_key = $k % 7 + 1;
                 $list[$k]['level_bg'] = '/static/resource/images/member/level/bg_'. $level_key .'.png';
                 $list[$k]['member_bg'] = '/static/resource/images/member/level/member_'. $level_key .'.png';
                 $list[$k]['level_icon'] = '/static/resource/images/member/level/level_icon'. $level_key .'.png';

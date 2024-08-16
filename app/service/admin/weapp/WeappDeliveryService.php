@@ -11,17 +11,9 @@
 
 namespace app\service\admin\weapp;
 
-use app\dict\notice\NoticeTypeDict;
-use app\service\admin\notice\NoticeService;
-use app\service\core\notice\CoreNoticeService;
 use app\service\core\weapp\CoreWeappDeliveryService;
 use core\base\BaseAdminService;
-use core\exception\NoticeException;
-use core\template\TemplateLoader;
 use EasyWeChat\Kernel\Exceptions\InvalidArgumentException;
-use think\db\exception\DataNotFoundException;
-use think\db\exception\DbException;
-use think\db\exception\ModelNotFoundException;
 
 /**
  * 小程序发货信息管理服务

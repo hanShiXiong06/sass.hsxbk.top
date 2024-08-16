@@ -33,7 +33,7 @@
               class="w-[280px]"
               v-model="bwcOrderTable.searchParam.state"
               clearable
-              :placeholder="t('isSendPlaceholder')"
+              placeholder="请选择"
             >
               <el-option label="全部" value=""></el-option>
               <el-option
@@ -45,12 +45,12 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item :label="t('xgzSettleStatus')" prop="xgzSettleStatus">
+          <!-- <el-form-item :label="t('xgzSettleStatus')" prop="xgzSettleStatus">
             <el-input
               v-model="bwcOrderTable.searchParam.xgzSettleStatus"
               :placeholder="t('xgzSettleStatusPlaceholder')"
             />
-          </el-form-item>
+          </el-form-item> -->
 
           <el-form-item :label="t('isFanxian')" prop="is_fanxian">
             <el-input

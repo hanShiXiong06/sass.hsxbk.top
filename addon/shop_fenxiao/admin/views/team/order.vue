@@ -127,9 +127,10 @@
                                         </template>
                                     </el-table-column>
                                 </el-table>
-                                <div v-if="item.shop_remark"
-                                    class="text-[14px] h-[30px] leading-[30px] px-3 bg-[#fff0e5] text-[#ff7f5b]"><span
-                                        class="mr-[5px]">{{ t('notes') }}：</span><span>{{ item.shop_remark }}</span></div>
+                                <div v-if="item.shop_remark" class="text-[14px] h-[30px] leading-[30px] px-3 bg-[#fff0e5] text-[#ff7f5b]">
+                                    <span class="mr-[5px]">{{ t('notes') }}：</span>
+                                    <span>{{ item.shop_remark }}</span>
+                                </div>
                             </div>
                         </template>
                         <el-empty v-else :image-size="1" :description="t('emptyData')" />
@@ -154,6 +155,7 @@ import { img } from '@/utils/common'
 import { ElMessageBox, FormInstance } from 'element-plus'
 import { useRouter, useRoute } from 'vue-router'
 import { cloneDeep } from 'lodash-es'
+
 const route = useRoute()
 const router = useRouter()
 const pageName = route.meta.title
@@ -182,13 +184,9 @@ const orderTable = reactive<OrderTable>({
     loading: true,
     data: [],
     searchParam: {
-        // search_type: 'order_no',
         // search_name: '',
-        // pay_type: '',
-        // order_from: '',
         is_settlement: '',
         create_time: [],
-        // pay_time: []
     }
 })
 
@@ -205,18 +203,18 @@ const loadOrderList = (page: number = 1) => {
         page: orderTable.page,
         limit: orderTable.limit,
         ...orderTable.searchParam
-    }).then((res:any) => {
+    }).then((res: any) => {
         orderTable.loading = false
-        orderTable.data = res.data.data.map((el:any) => {
+        orderTable.data = res.data.data.map((el: any) => {
             let rowspan = 0
             el.goods_list = []
-            el.shop_order.order_goods.forEach((v:any,) => {
-                rowspan+=v.fenxiao_order_goods.length//循环商品时累加计算单个订单的操作列需要合并的行数
+            el.shop_order.order_goods.forEach((v: any,) => {
+                rowspan += v.fenxiao_order_goods.length//循环商品时累加计算单个订单的操作列需要合并的行数
                 //循环组装商品及对应的分销信息，从上下级关系改为以分销数据为主同级数据
-                v.fenxiao_order_goods.forEach((item:any,index:number)=>{
-                    let obj =cloneDeep(Object.assign(v,item))//深拷贝数据防止出现其它数据出现联动变更
+                v.fenxiao_order_goods.forEach((item: any, index: number) => {
+                    let obj = cloneDeep(Object.assign(v, item))//深拷贝数据防止出现其它数据出现联动变更
                     delete obj.fenxiao_order_goods
-                    obj.goodsRowspan = index?0:v.fenxiao_order_goods.length//每次在循环商品及对应分销信息时在同种商品的第一条记录该分销信息长度用于跨行合并商品信息
+                    obj.goodsRowspan = index ? 0 : v.fenxiao_order_goods.length//每次在循环商品及对应分销信息时在同种商品的第一条记录该分销信息长度用于跨行合并商品信息
                     obj.rowspan = 0
                     el.goods_list.push(obj)
                 })

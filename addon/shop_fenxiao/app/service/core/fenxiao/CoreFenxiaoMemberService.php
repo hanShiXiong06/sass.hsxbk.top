@@ -120,9 +120,9 @@ class CoreFenxiaoMemberService extends BaseCoreService
      * @param $site_id
      * @param $data
      */
-    public function orderPay($site_id, $data)
+    public function orderPay($site_id, $member_id)
     {
-        $this->bindRelation($site_id, $data['order_data']['member_id'], 3);
+        $this->bindRelation($site_id, $member_id, 3);
     }
 
     /**

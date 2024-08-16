@@ -130,15 +130,6 @@ class Order extends BaseController
         return success((new OrderService())->preOrder($data));
     }
 
-//    /**
-//     *快递下单
-//     * @return Response
-//     */
-//    public function submitOrder()
-//    {
-//        $data = $this->request->post();
-//        return success((new YidaService())->submitOrder($data));
-//    }
 
     /**
      * 易达回调
@@ -235,9 +226,7 @@ class Order extends BaseController
                 ],
                 "businessTypeNew"=>'',
                 "deliveryIdNew"=>''
-
             ],
-
 
         ];
         (new XindaNoticeService())->notice($params);

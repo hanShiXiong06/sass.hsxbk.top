@@ -1,24 +1,26 @@
 <template>
-	<view class="member-record-detail" :style="themeColor()" v-show="loading">
-		<view class="money-wrap">
-			<text>￥{{ rechargeInfo.order_money }}</text>
-			<text v-if="rechargeInfo.order_status_info">{{rechargeInfo.order_status_info.name}}</text>
-		</view>
-		<view class="item">
-			<view class="line-wrap" v-if="rechargeInfo.item">
-				<text class="label">{{ rechargeInfo.item[0].item_name }}</text>
-				<text class="value">￥{{ rechargeInfo.order_money }}</text>
-			</view>
-			<view class="line-wrap">
-				<text class="label">{{t('orderNo')}}</text>
-				<text class="value">{{ rechargeInfo.order_no }}</text>
-			</view>
-			<view class="line-wrap">
-				<text class="label">{{t('createTime')}}</text>
-				<text class="value">{{ rechargeInfo.create_time }}</text>
-			</view>
-		</view>
-	</view>
+    <view class="overflow-hidden bg-[var(--page-bg-color)] min-h-[100vh] px-[var(--sidebar-m)]" :style="themeColor()" v-show="loading">
+        <view class="top-mar card-template !pt-[60rpx] !pb-[40rpx]">
+            <view class="flex items-center flex-col mb-[80rpx]">
+                <text class="text-[60rpx] font-bold price-font mb-[20rpx]">￥{{ rechargeInfo.order_money }}</text>
+                <text class="text-[28rpx]" :class="{'text-primary': rechargeInfo.order_status_info && rechargeInfo.order_status_info.status == 0}" v-if="rechargeInfo.order_status_info">{{rechargeInfo.order_status_info.name}}</text>
+            </view>
+            <view>
+                <view class="flex justify-between text-[28rpx] mt-[34rpx] leading-[32rpx]" v-if="rechargeInfo.item">
+                    <text class="text-[#333] w-[200rpx]">{{ rechargeInfo.item[0].item_name }}</text>
+                    <text class="text-[#333]">￥{{ rechargeInfo.order_money }}</text>
+                </view>
+                <view class="flex justify-between text-[28rpx] mt-[34rpx] leading-[32rpx]">
+                    <text class="text-[#333] w-[200rpx]">{{t('orderNo')}}</text>
+                    <text class="text-[#333]">{{ rechargeInfo.order_no }}</text>
+                </view>
+                <view class="flex justify-between text-[28rpx] mt-[34rpx] leading-[32rpx]">
+                    <text class="text-[#333] w-[200rpx]">{{t('createTime')}}</text>
+                    <text class="text-[#333]">{{ rechargeInfo.create_time }}</text>
+                </view>
+            </view>
+        </view>
+    </view>
 </template>
 
 <script lang="ts" setup>
@@ -27,8 +29,8 @@
     import {t} from '@/locale'
     import {getRechargeDetail} from '@/addon/recharge/api/recharge'
 
-    let rechargeInfo = ref({});
-    let loading = ref<boolean>(false);
+    const rechargeInfo = ref({});
+    const loading = ref<boolean>(false);
     onLoad((option) => {
         let id = option.id || "";
         getRechargeDetailFn(id)
@@ -47,29 +49,5 @@
 </script>
 
 <style lang="scss">
-page{
-    background-color: #f5f6fa;
-    @apply pt-4;
-}
-.member-record-detail{
-    @apply m-4 mt-0 bg-white rounded-md px-4 py-6;
-    .money-wrap{
-        @apply flex items-center flex-col mb-6;
-        text:first-of-type{
-            @apply text-3xl font-bold mt-1;
-        }
-        text:last-of-type{
-            @apply text-sm mt-3;
-        }
-    }
-    .line-wrap{
-        @apply flex justify-between text-sm mt-3;
-        .label{
-            @apply text-[#878787];
-        }
-        .value{
-            @apply text-[#222];
-        }
-    }
-}
+
 </style>

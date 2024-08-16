@@ -14,7 +14,6 @@ namespace app\service\admin\upgrade;
 use app\dict\addon\AddonDict;
 use app\service\admin\generator\GenerateService;
 use core\util\DbBackup;
-use core\util\niucloud\BaseNiucloudClient;
 
 /**
  * 框架及插件升级备份

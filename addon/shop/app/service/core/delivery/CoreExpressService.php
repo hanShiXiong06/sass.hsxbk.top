@@ -38,14 +38,6 @@ class CoreExpressService extends BaseCoreService
             return;
         }
 
-        // 判断会员等级是否有包邮的权益
-        if (isset($order->buyer['member_level']['level_benefits']) && isset($order->buyer['member_level']['level_benefits']['shop_free_shipping'])) {
-            if ($order->buyer['member_level']['level_benefits']['shop_free_shipping']['is_use']) {
-                $order->basic['delivery_money'] = 0;
-                return;
-            }
-        }
-
         foreach ($order->goods_data as $k => &$v) {
             $goods_type = $v['goods']['goods_type'];
             if ($goods_type == GoodsDict::REAL) {
@@ -64,6 +56,15 @@ class CoreExpressService extends BaseCoreService
                 }
             }
         }
+
+        // 判断会员等级是否有包邮的权益
+        if (isset($order->buyer['member_level']['level_benefits']) && isset($order->buyer['member_level']['level_benefits']['shop_free_shipping'])) {
+            if ($order->buyer['member_level']['level_benefits']['shop_free_shipping']['is_use']) {
+                $order->basic['delivery_money'] = 0;
+                return;
+            }
+        }
+
         $order->basic['delivery_money'] = $delivery_money;
     }
 
@@ -75,6 +76,10 @@ class CoreExpressService extends BaseCoreService
         $nationwide = (new ShippingTemplateItem())->where([ ['template_id', '=', $goods['goods']['delivery_template_id'] ], ['city_id', '=', 0 ] ])->field($field)->findOrEmpty()->toArray();
         if (empty($template)) {
             $template = $nationwide;
+            if(empty($nationwide)){
+                $order->error[] = get_lang('SHOP_THE_AVAILABLE_SHIPPING_RATES_AREN_T_CONFIGURED');
+                return true;
+            }
         } else {
             if (empty($template['snum'])) $template['snum'] = $nationwide['snum'];
             if (empty($template['sprice'])) $template['sprice'] = $nationwide['sprice'];

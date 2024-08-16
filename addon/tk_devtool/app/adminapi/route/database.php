@@ -29,6 +29,3 @@ Route::group("tk_devtool", function () {
     AdminCheckRole::class,
     AdminLog::class
 ]);
-Route::group("tk_devtool", function () {
-    Route::post('ceshi', 'addon\tk_devtool\app\adminapi\controller\Database@ceshi');
-});

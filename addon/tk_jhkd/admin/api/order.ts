@@ -1,6 +1,12 @@
 import request from '@/utils/request'
+export function remarkOrder(params: Record<string, any>) {
+    return request.post(`tk_jhkd/remark`, params, { showErrorMessage: true, showSuccessMessage: true })
+}
 export function getLink() {
     return request.get(`tk_jhkd/getlink`)
+}
+export function changeStatus(params: Record<string, any>) {
+    return request.post(`tk_jhkd/changestatus`, params, { showErrorMessage: true, showSuccessMessage: true })
 }
 // USER_CODE_BEGIN -- tkjhkd_order
 /**

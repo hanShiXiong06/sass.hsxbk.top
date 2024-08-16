@@ -2,6 +2,7 @@
 namespace addon\tk_cps\app\api\controller;
 use addon\tk_cps\app\service\core\CpsWapService;
 use core\base\BaseController;
+use addon\tk_cps\app\service\core\CpsWapApiService;
 use addon\tk_cps\app\service\core\CpsService;
 class Cps extends BaseController
 {
@@ -13,7 +14,7 @@ class Cps extends BaseController
             ['type', '0'],
             ['act_id', '1'],
         ]);
-        return success('获取成功',(new CpsWapService())->getCpsInfo($data['type'],$data['act_id']));
+        return success('获取成功',(new CpsWapApiService())->getCpsInfo($data['type'],$data['act_id']));
     }
     public function actList()
     {

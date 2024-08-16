@@ -10,6 +10,7 @@
 // +----------------------------------------------------------------------
 
 namespace addon\recharge\app\listener\pay;
+
 use addon\recharge\app\service\core\CoreRechargeOrderService;
 
 
@@ -20,9 +21,9 @@ class PaySuccessListener
 {
     public function handle(array $pay_info)
     {
-        $trade_type = $pay_info['trade_type'] ?? '';
+        $trade_type = $pay_info[ 'trade_type' ] ?? '';
         if ($trade_type == 'recharge') {
-            (new CoreRechargeOrderService())->pay($pay_info);
+            ( new CoreRechargeOrderService() )->pay($pay_info);
         }
     }
 }

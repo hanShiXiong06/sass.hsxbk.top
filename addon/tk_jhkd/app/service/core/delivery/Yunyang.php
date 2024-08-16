@@ -3,6 +3,7 @@
 namespace addon\tk_jhkd\app\service\core\delivery;
 
 use Exception;
+use think\facade\Log;
 
 /**
  * 云洋快递通道
@@ -124,7 +125,10 @@ class Yunyang extends BaseDelivery
         ];
 
         $resInfo = $this->execute('ADD_BILL_INTELLECT', $data);
-        if ($resInfo['code'] != 1) throw new Exception($resInfo['message']);
+        if ($resInfo['code'] != 1) {
+            Log::write('提交运单失败：yunyang_error--' . $resInfo['message']);
+        }
+
         $res = [
             'orderNo' => $resInfo['result']['shopbill'],
             'deliveryId' => $resInfo['result']['waybill'],

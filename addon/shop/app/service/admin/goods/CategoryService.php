@@ -12,6 +12,7 @@
 namespace addon\shop\app\service\admin\goods;
 
 use addon\shop\app\model\goods\Category;
+use addon\shop\app\model\goods\Goods;
 use addon\shop\app\service\core\goods\CoreGoodsCategoryService;
 use core\base\BaseAdminService;
 use core\exception\AdminException;
@@ -78,9 +79,11 @@ class CategoryService extends BaseAdminService
     {
         $field = 'category_id,category_name,image,level,pid,category_full_name,is_show,sort';
         $info = $this->model->field($field)->where([ [ 'category_id', '=', $id ], [ 'site_id', '=', $this->site_id ] ])->findOrEmpty()->toArray();
-        $info[ 'child_count' ] = 0;
-        if ($info[ 'level' ] == 1) {
-            $info[ 'child_count' ] = $this->model->where([ [ 'pid', '=', $info[ 'category_id' ] ] ])->count();
+        if (!empty($info)) {
+            $info[ 'child_count' ] = 0;
+            if ($info[ 'level' ] == 1) {
+                $info[ 'child_count' ] = $this->model->where([ [ 'pid', '=', $info[ 'category_id' ] ] ])->count();
+            }
         }
         return $info;
     }
@@ -159,6 +162,12 @@ class CategoryService extends BaseAdminService
      */
     public function del(int $id)
     {
+
+        $goods = (new Goods())->where([ [ 'site_id', '=', $this->site_id ] ])->withSearch([ 'goods_category' ], [ 'goods_category' => $id ])->count();
+        if ($goods) {
+            throw new AdminException('SHOP_GOODS_CATEGORY_EXIST_GOODS');
+        }
+        
         $field = 'category_id,level,pid';
         $info = $this->model->field($field)->where([ [ 'category_id', '=', $id ], [ 'site_id', '=', $this->site_id ] ])->findOrEmpty()->toArray();
         if (!empty($info[ 'level' ] == 1)) {

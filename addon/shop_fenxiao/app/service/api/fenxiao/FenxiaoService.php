@@ -77,7 +77,7 @@ class FenxiaoService extends BaseApiService
             ->with(
                 [
                     'member' => function ($query) {
-                        $query->field('member_id,nickname,headimg,commission,commission_get,commission_cash_outing');
+                        $query->field('member_id,member_no,nickname,headimg,commission,commission_get,commission_cash_outing');
                     },
                     'parent_fenxiao' => function ($query) {
                         $query->field('member_id, nickname,headimg');

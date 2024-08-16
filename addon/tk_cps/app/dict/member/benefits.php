@@ -12,9 +12,9 @@ return [
             },
             'member_level' => function($site_id, $config) {
                 return [
-                    'title' => "单单多享{$config['expand']}元",
+                    'title' => "单单多返{$config['expand']}元",
                     'desc' => '霸王餐特权',
-                    'icon' => '/static/resource/images/member/benefits/benefits_discount.png'
+                    'icon' => '/addon/tk_cps/rule/dandanfan.png'
                 ];
             }
         ]
@@ -30,9 +30,27 @@ return [
             },
             'member_level' => function($site_id, $config) {
                 return [
-                    'title' => "分销权益",
-                    'desc' => '分销特权',
-                    'icon' => '/static/resource/images/member/benefits/benefits_discount.png'
+                    'title' => "霸王餐分销",
+                    'desc' => '霸王餐分销',
+                    'icon' => '/addon/tk_cps/rule/bwcfenxiao.png'
+                ];
+            }
+        ]
+    ],
+    'tk_cps_fenxiao' => [
+        'key' => 'tk_cps_fenxiao',
+        'name' => 'CPS分销', // 权益名称
+        'desc' => 'CPS分销', // 权益说明
+        'component' => '/src/addon/tk_cps/views/member/components/benefits-cps-fenxiao.vue',
+        "content" => [
+            'admin' => function($site_id, $config) {
+                return "CPS分销特权";
+            },
+            'member_level' => function($site_id, $config) {
+                return [
+                    'title' => "CPS分销",
+                    'desc' => 'CPS分销',
+                    'icon' => '/addon/tk_cps/rule/cpsfenxiao.png'
                 ];
             }
         ]

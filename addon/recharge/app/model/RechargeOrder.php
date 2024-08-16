@@ -53,8 +53,8 @@ class RechargeOrder extends BaseModel
      */
     public function getOrderFromNameAttr($value, $data)
     {
-        if (isset($data['order_from'])) {
-            return ChannelDict::getType()[$data['order_from']] ?? '';
+        if (isset($data[ 'order_from' ])) {
+            return ChannelDict::getType()[ $data[ 'order_from' ] ] ?? '';
         }
 
     }
@@ -106,8 +106,8 @@ class RechargeOrder extends BaseModel
      */
     public function searchOutTradeNoAttr($query, $value, $data)
     {
-        if ($value) {
-            $query->where('out_trade_no', 'like', '%'.$value.'%');
+        if ($value != '') {
+            $query->where('out_trade_no', 'like', '%' . $value . '%');
         }
     }
 
@@ -133,14 +133,14 @@ class RechargeOrder extends BaseModel
      */
     public function searchOrderMoneyAttr($query, $value, $data)
     {
-        if (!empty($data['start_money']) && !empty($data['end_money'])) {
-            $money = [$data['start_money'], $data['end_money']];
+        if (!empty($data[ 'start_money' ]) && !empty($data[ 'end_money' ])) {
+            $money = [ $data[ 'start_money' ], $data[ 'end_money' ] ];
             sort($money);
             $query->where('order_money', 'between', $money);
-        } else if (!empty($data['start_money'])) {
-            $query->where('order_money', '>=', $data['start_money']);
-        } else if (!empty($data['end_money'])) {
-            $query->where('order_money', '<=', $data['end_money']);
+        } else if (!empty($data[ 'start_money' ])) {
+            $query->where('order_money', '>=', $data[ 'start_money' ]);
+        } else if (!empty($data[ 'end_money' ])) {
+            $query->where('order_money', '<=', $data[ 'end_money' ]);
         }
     }
 
@@ -165,14 +165,14 @@ class RechargeOrder extends BaseModel
      */
     public function searchCreateTimeAttr($query, $value, $data)
     {
-        $start_time = empty($value[0]) ? 0 : strtotime($value[0]);
-        $end_time = empty($value[1]) ? 0 : strtotime($value[1]);
+        $start_time = empty($value[ 0 ]) ? 0 : strtotime($value[ 0 ]);
+        $end_time = empty($value[ 1 ]) ? 0 : strtotime($value[ 1 ]);
         if ($start_time > 0 && $end_time > 0) {
             $query->whereBetweenTime('create_time', $start_time, $end_time);
         } else if ($start_time > 0 && $end_time == 0) {
-            $query->where([['create_time', '>=', $start_time]]);
+            $query->where([ [ 'create_time', '>=', $start_time ] ]);
         } else if ($start_time == 0 && $end_time > 0) {
-            $query->where([['create_time', '<=', $end_time]]);
+            $query->where([ [ 'create_time', '<=', $end_time ] ]);
         }
     }
 
@@ -185,14 +185,14 @@ class RechargeOrder extends BaseModel
      */
     public function searchPayTimeAttr($query, $value, $data)
     {
-        $start_time = empty($value[0]) ? 0 : strtotime($value[0]);
-        $end_time = empty($value[1]) ? 0 : strtotime($value[1]);
+        $start_time = empty($value[ 0 ]) ? 0 : strtotime($value[ 0 ]);
+        $end_time = empty($value[ 1 ]) ? 0 : strtotime($value[ 1 ]);
         if ($start_time > 0 && $end_time > 0) {
             $query->whereBetweenTime('pay_time', $start_time, $end_time);
         } else if ($start_time > 0 && $end_time == 0) {
-            $query->where([['pay_time', '>=', $start_time]]);
+            $query->where([ [ 'pay_time', '>=', $start_time ] ]);
         } else if ($start_time == 0 && $end_time > 0) {
-            $query->where([['pay_time', '<=', $end_time]]);
+            $query->where([ [ 'pay_time', '<=', $end_time ] ]);
         }
     }
 
@@ -220,6 +220,6 @@ class RechargeOrder extends BaseModel
      */
     public function pay()
     {
-        return $this->hasOne(Pay::class, 'out_trade_no', 'out_trade_no')->bind(['pay_type_name' => 'type_name']);
+        return $this->hasOne(Pay::class, 'out_trade_no', 'out_trade_no')->bind([ 'pay_type_name' => 'type_name' ]);
     }
 }

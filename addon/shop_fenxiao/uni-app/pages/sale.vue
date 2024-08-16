@@ -1,87 +1,202 @@
 <template>
-    <view class="bg-[#f8f8f8] min-h-[100vh]" :style="themeColor()">
-        <mescroll-body ref="mescrollRef" :down="{ use: false }" @init="mescrollInit" @up="getSaleMemberFn">
-            <block v-if="!loading">
-            <view class="wechat w-full h-[180rpx]"></view>
-            <view class="wechat w-full h-[20rpx]  rounded-b-[50%]"></view>
-            <view class="p-[24rpx] relative mt-[-120rpx] box-border">
-                <view class="w-full box-border bg-[#fff] px-[24rpx] py-[30rpx] rounded-[10rpx] overflow-hidden">
-                    <view class="text-[26rpx] text-center text-[#999]">销售奖励（元）</view>
-                    <view class="text-[50rpx] font-600 text-center mt-[24rpx]">{{moneyFormat(saleCommission.sale_commission)||0.00}}</view>
-                    <view class="mt-[24rpx] flex justify-center">
-                        <view class="px-[10rpx] leading-[35rpx] h-[35rpx] text-[#999] rounded-[2rpx]">
-                            待发放:{{moneyFormat(saleCommission.wait_sale_commission)||0.00}}（元）
-                        </view>
-                    </view>
-                </view>
-                <view class="mt-[24rpx] bg-[#fff] px-[24rpx] box-border rounded-[10rpx] overflow-hidden">
-                    <template v-for="(item,index) in info">
-                        <view class="flex py-[30rpx] box-border border-0 border-solid border-[#ddd]" :class="{'border-b-[1rpx]':index!=info.length-1}" @click="toDetail(item.period_id)">
-                            <view class="flex-1 flex flex-col justify-between">
-                                <view class="text-[26rpx] font-600">{{item.is_send?'已发放':'待发放'}}</view>
-                                <view v-if="item.is_settlement" class="text-[24rpx] text-[#999]">已于 {{item.sale_end_time}} 结算该奖励</view>
-                                <view v-else class="text-[24rpx] text-[#999]">预计于 {{item.sale_end_time}} 结算该奖励</view>
-                            </view>
-                            <view class="text-[35rpx] font-600 text-[var(--price-text-color)] h-[100rpx] leading-[100rpx]">
-                                +{{moneyFormat(item.reward_money)}}
-                            </view>
-                        </view>
-                    </template>    
-                </view>
-                <mescroll-empty :option="{ 'icon': img('static/resource/images/empty.png') }" v-if="!info.length && !loading"></mescroll-empty>
+    <view class="bg-[var(--page-bg-color)] min-h-[100vh]" :style="themeColor()">
+		<block v-if="saleOpen == 1 && !pageLoading">
+			<view class="fixed w-full z-2  !bg-[var(--page-bg-color)]">
+				<view class="w-full overflow-hidden" :style="headerStyle">
+					<!-- #ifdef MP-WEIXIN -->
+					<top-tabbar :data="param" :scrollBool="topTabarObj.getScrollBool()" class="top-header"/>
+					<!-- #endif -->
+					<view class="card-template sidebar-marign mt-[312rpx]">
+						<view class="flex flex-col  mb-[56rpx]"  @click="applyCashOut">
+							<text class="text-[30rpx] h-[36rpx] leading-[36rpx] text-[#333] mb-[16rpx]">销售奖励（元）</text>
+							<text class="text-[48rpx] price-font text-[var(--price-text-color)] min-h-[58rpx]">{{moneyFormat(saleCommission.sale_commission)||0.00}}</text>
+						</view>
+						<view class="flex item-center justify-between">
+							<view class="flex flex-col w-[50%]">
+								<text class="text-[28rpx] h-[34rpx] text-[var(--text-color-light6)] mb-[10rpx]">待发放（元）</text>
+								<text class="text-[36rpx] min-h-[46rpx] text-[#333] price-font">{{moneyFormat(saleCommission.wait_sale_commission)||0.00}}</text>
+							</view>
+							<view class="flex flex-col w-[50%]">
+								<text class="text-[28rpx] h-[34rpx] text-[var(--text-color-light6)] mb-[10rpx]">已发放（元）</text>
+								<text class="text-[36rpx] min-h-[46rpx] text-[#333] price-font">{{moneyFormat(saleCommission.sale_commission_send)||0.00}}</text>
+							</view>
+						</view>
+					</view>
+				</view>
+				
+				<view class="tab-style-1  mt-[40rpx]">
+					<view class="tab-left">
+						<view  class="tab-left-item" :class="{ 'class-select': fromType === item.key}" @click="fromTypeFn(item.key,index)" v-for="(item, index) in typeList">{{ item.name }}</view>
+					</view>
+				</view>
+			</view>
+			<mescroll-body ref="mescrollRef" :down="{ use: false }" @init="mescrollInit" @up="getSaleMemberFn" :top="mescrollTop">
+				<block v-if="info.length && !infoLoading && !loading">
+					<view v-for="(item,index) in info" :keys="index" class="flex justify-between items-center card-template mt-[var(--top-m)] sidebar-marign" @click="toDetail(item.period_id)">
+						<view class="flex flex-col">
+							<view v-if="item.is_settlement" class="text-[#333] text-[28rpx] flex items-center">
+								<text class="text-[28rpx] mr-[6rpx]">结算时间</text>
+								<text>{{item.sale_end_time}}</text>
+							</view>
+							<view v-else class="text-[#333] text-[28rpx] flex items-center">
+								<text class="text-[28rpx] mr-[6rpx]">预计结算时间</text>
+								<text>{{item.sale_end_time}}</text>
+							</view>
+							<view class="mt-[16rpx] h-[34rpx] flex items-center text-[24rpx] text-[var(--text-color-light6)]">
+								销售金额：{{item.order_money}}
+							</view>
+						</view>
+						<view class="text-[28rpx] text-[var(--text-color-light6)]" :class="{'text-[#333]': item.is_send, 'text-[var(--primary-color)]': !item.is_send}">
+							{{item.is_send?'已发放':'待发放'}}
+						</view>
+					</view>
+				</block>
+				<mescroll-empty :option="{'icon': img('addon/shop_fenxiao/sale/empty.png'), 'tip': '暂无销售奖励记录', 'btnText': '去逛逛'}" @emptyclick="redirect({ url: '/addon/shop_fenxiao/pages/goods' })"  v-if="!info.length && !infoLoading && !loading"></mescroll-empty>
+			</mescroll-body>
+		</block>
+		<view class="h-[100vh] w-[100vw] overflow-hidden" v-if="saleOpen == 0 && !pageLoading">
+			<!-- #ifdef MP-WEIXIN -->
+			<top-tabbar :data="param" :scrollBool="topTabarObj.getScrollBool()" class="top-header"/>
+			<!-- #endif -->
+			<view  class="empty-page">
+                <image class="img" :src="img('static/resource/images/system/empty.png')" mode="aspectFit" />
+                <view class="desc">销售奖励设置未开启</view>
             </view>
-        </block>
-        </mescroll-body>
+        </view>
+		<loading-page :loading="pageLoading"></loading-page>
+
     </view>
 </template>
 <script lang="ts" setup>
-import { ref} from 'vue'
-import { img, redirect, moneyFormat } from '@/utils/common';
-import { getSaleMemberList,getSaleMemberNowList,getSaleMemberCommission } from '@/addon/shop_fenxiao/api/sale'
+import { t } from '@/locale'
+import { ref, computed } from 'vue'
+import { img, redirect, moneyFormat,pxToRpx } from '@/utils/common';
+import { getSaleMemberList,getSaleMemberNowList,getSaleMemberCommission,getSaleConfig } from '@/addon/shop_fenxiao/api/sale'
 import MescrollBody from '@/components/mescroll/mescroll-body/mescroll-body.vue';
 import MescrollEmpty from '@/components/mescroll/mescroll-empty/mescroll-empty.vue';
 import useMescroll from '@/components/mescroll/hooks/useMescroll.js';
-import { onPageScroll, onReachBottom } from '@dcloudio/uni-app';
+import { onPageScroll, onReachBottom, onLoad } from '@dcloudio/uni-app';
+import { topTabar } from '@/utils/topTabbar'
+import { cloneDeep } from 'lodash-es'
+
+// 获取系统状态栏的高度
+let menuButtonInfo: any = {};
+// 如果是小程序，获取右上角胶囊的尺寸信息，避免导航栏右侧内容与胶囊重叠(支付宝小程序非本API，尚未兼容)
+// #ifdef MP-WEIXIN || MP-BAIDU || MP-TOUTIAO || MP-QQ
+menuButtonInfo = uni.getMenuButtonBoundingClientRect();
+// #endif
 const { mescrollInit, downCallback, getMescroll } = useMescroll(onPageScroll, onReachBottom);
 
-let loading = ref<boolean>(true);//页面加载动画
+/********* 自定义头部 - start ***********/
+const topTabarObj = topTabar()
+let param = topTabarObj.setTopTabbarParam({title:'销售奖励'})
+/********* 自定义头部 - end ***********/
+
+/********* 头部样式 - start ***********/
+const headerStyle = computed(()=>{
+	let obj:any = {
+		backgroundImage: 'url(' + img('addon/shop_fenxiao/sale/head_bg.png') + ') ',
+		backgroundSize: 'contain',
+		backgroundRepeat: 'no-repeat'
+	}
+	// #ifdef H5
+	obj.backgroundPositionY = '-170rpx';
+	// #endif
+	return obj
+})
+const mescrollTop = computed(()=>{
+	if(Object.keys(menuButtonInfo).length){
+		// pxToRpx(8) => 表示胶囊的padding-bottom  728 => 表示列表以上的该高度【不包括自定义头部】
+		return (pxToRpx(Number(menuButtonInfo.height)) + pxToRpx(menuButtonInfo.top) + pxToRpx(8) + 728)+'rpx'
+	}else{
+		// 表示列表以上的高度
+		return '728rpx'
+	}
+})
+
+/********* 头部样式 - end ***********/
+/********* 是否开启销售奖励设置 - start ***********/
+const saleOpen = ref<any>('');
+const pageLoading = ref<boolean>(true);
+onLoad(async ()=>{
+	await getSaleConfig().then(res =>{
+        saleOpen.value = res.data.is_open
+		if(saleOpen.value == 0){
+			param = topTabarObj.setTopTabbarParam({title:'销售奖励',topStatusBar:{textColor:'#333',bgColor:'#fff'}})
+		}
+		pageLoading.value = false;
+    })
+})
+/********* 是否开启销售奖励设置  - end ***********/
+
+/************ 类型筛选-start ************/ 
+const typeList = ref([
+	{name:'全部',key:'all'},
+	{name:'待发放',key:'0'},
+	{name:'已发放',key:'1'}
+])
+const fromType = ref('all')
+const subActive = ref(0)
+const fromTypeFn = (key: any, index: any)=>{
+	fromType.value = key;
+	subActive.value = index;
+	info.value = [];
+	getMescroll().resetUpScroll();
+}
+
+/************ 类型-start ************/
+const loading = ref<boolean>(true);//页面加载动画
+const infoLoading = ref<boolean>(true);//页面加载动画
 const info: Record<string, any> = ref([])
 const getSaleMemberFn = (mescroll: any) => {
+	infoLoading.value = true;
     getSaleMemberList({
         page: mescroll.num,
         limit: mescroll.size,
+		is_send: fromType.value
     }).then((res: any) => {
         let newArr = res.data.data
         //设置列表数据
         if (mescroll.num == 1) {
             info.value = []; //如果是第一页需手动制空列表
-			getSaleMemberNowListFn(newArr); // 加载第一次时调用函数
+			if(fromType.value != '1'){
+				getSaleMemberNowListFn(newArr);
+			}
         }
         info.value = info.value.concat(newArr);
+		infoLoading.value = false;
         mescroll.endSuccess(newArr.length);
     }).catch(() => {
         loading.value = false;
+		infoLoading.value = false;
         mescroll.endErr(); // 请求失败, 结束加载
     })
 }
 const getSaleMemberNowListFn= async(newArr:any)=>{
+	loading.value = true;
     const res :any = await getSaleMemberNowList()
 	let idArr = newArr.map(el=>el.period_id);
 	if(Object.keys(res.data).length &&(idArr.length && idArr.indexOf(res.data.id) == -1 || !idArr.length)){
-		let obj = JSON.parse(JSON.stringify(res.data))
+		let obj = cloneDeep(res.data)
 		obj.reward_money = obj.total_reward_money;
 		obj.period_id = obj.id;
+		obj.order_money = obj.total_order_money;
 		info.value.unshift(obj);
 	}
 	loading.value = false;
 }
-let saleCommission = ref({})
+const saleCommission = ref({})
 const getSaleMemberCommissionFn=()=>{
     getSaleMemberCommission().then((res:any)=>{
         saleCommission.value = res.data;
     })
 }
 getSaleMemberCommissionFn()
+
+// 我的佣金
+const applyCashOut = () => {
+	redirect({ url: '/app/pages/member/commission' })
+}
 
 const toDetail = (id: any) => {
     redirect({ url: '/addon/shop_fenxiao/pages/sale_detail', param: {id:id} })
@@ -90,4 +205,5 @@ const toDetail = (id: any) => {
 <style lang="scss" scoped>
 .wechat {
     background: linear-gradient(to right, var(--primary-color-dark) 40%, var(--primary-color) 90%);
-}</style>
+}
+</style>

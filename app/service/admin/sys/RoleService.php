@@ -14,6 +14,7 @@ namespace app\service\admin\sys;
 use app\dict\sys\RoleStatusDict;
 use app\model\sys\SysRole;
 use app\model\sys\SysUserRole;
+use app\service\admin\auth\AuthService;
 use app\service\admin\site\SiteService;
 use core\base\BaseAdminService;
 use core\exception\AdminException;
@@ -44,8 +45,8 @@ class RoleService extends BaseAdminService
     public function getPage(array $data)
     {
         $where = [['site_id', '=', $this->site_id]];
-        if(!empty($data['role_name'])) {
-            $where[] = ['role_name', 'like', "%".$data['role_name']."%"];
+        if(isset($data['role_name']) && $data['role_name'] !== '') {
+            $where[] = ['role_name', 'like', "%".$this->model->handelSpecialCharacter($data['role_name'])."%"];
         }
         $field = 'role_id,role_name,status,create_time';
         $search_model = $this->model->where($where)->field($field)->order('create_time desc')->append(['status_name']);
@@ -73,7 +74,33 @@ class RoleService extends BaseAdminService
             ['site_id', '=', $this->site_id],
             ['status', '=', 1]
         );
-        return $this->model->where($where)->field('role_id,role_name,status,create_time')->select()->toArray();
+        $site_role_all = $this->model->where($where)->field('role_id,role_name,rules,status,create_time')->select()->toArray();
+        foreach ($site_role_all as $key => $value) {
+            $site_role_all[$key]['disabled'] = false;
+        }
+        if (AuthService::isSuperAdmin()) {
+            $is_admin = 1;
+        } else {
+            $user_role_info = (new AuthService())->getAuthRole($this->site_id);
+            if(empty($user_role_info))
+                return [];
+            $is_admin = $user_role_info['is_admin'];//是否是超级管理员组
+        }
+
+        if (!$is_admin) {
+            $user_role_ids = $user_role_info['role_ids'];
+            $role_service = new RoleService();
+            $menu_keys = $role_service->getMenuIdsByRoleIds($this->site_id, $user_role_ids);
+            foreach ($site_role_all as $key => $value) {
+                if (!empty(array_diff($value['rules'], $menu_keys))) {
+                    $site_role_all[$key]['disabled'] = true;
+                }
+            }
+        }
+        foreach ($site_role_all as &$value) {
+            unset($value['rules']);
+        }
+        return $site_role_all;
     }
 
     /**

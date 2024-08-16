@@ -139,6 +139,7 @@ class CorePosterService extends BaseCoreService
             $path = $dir . '/' . $file_path;
 
             //判断当前海报是否存在,存在直接返回地址,不存在的话则创建
+
             if (is_file($path)) {
                 return $path;
             } else {

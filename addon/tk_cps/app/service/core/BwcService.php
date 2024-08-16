@@ -113,7 +113,7 @@ class BwcService extends BaseApiService
                     }
                     $commission = number_format($commission, 2, '.', '');
                     //记录佣金信息
-                    $orderFenxiao = $fenxiaoOrderModel->where(['order_id' => $orderInfo['order_id']])->update([
+                    $orderFenxiao = $fenxiaoOrderModel->where(['order_id' => $orderInfo['orderSn']])->update([
                         'two_commission' => $commission,
                     ]);
 
@@ -558,7 +558,10 @@ class BwcService extends BaseApiService
         $config = $this->getSiteConfig($this->site_id);
         $rate = $config['fanxianratio'] / 100;
         $res=$this->execute('bwc/union/shopDetail', $data);
-        if ($res['code'] != 0) throw new Exception($res['message']);
+        if ($res['code'] != 0){
+            $res['data']=[];
+            return $res;
+        }
         $res['data']['plan']['ratio']=number_format(($res['data']['plan']['ratio']/100*$rate)*100, 2, '.', '');
         $res['data']['plan']['commission']=number_format($res['data']['plan']['commission']*$rate, 2, '.', '');
 

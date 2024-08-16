@@ -3,7 +3,6 @@ declare (strict_types = 1);
 
 namespace addon\shop\app\listener\notice_template;
 
-use addon\shop\app\dict\order\OrderDict;
 use addon\shop\app\service\core\order\CoreOrderService;
 use app\listener\notice_template\BaseNoticeTemplate;
 

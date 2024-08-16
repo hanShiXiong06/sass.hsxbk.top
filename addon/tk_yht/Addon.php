@@ -40,10 +40,6 @@ class Addon
      */
     public function uninstall()
     {
-        $to = root_path() . 'core' . DIRECTORY_SEPARATOR . 'sms' . DIRECTORY_SEPARATOR . 'Yht.php';
-        if (file_exists( $to)) {
-            unlink( $to);
-        }
         return true;
     }
 

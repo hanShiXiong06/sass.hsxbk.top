@@ -59,5 +59,4 @@ class Agreement extends BaseAdminController
         return success('EDIT_SUCCESS');
     }
 
-
 }

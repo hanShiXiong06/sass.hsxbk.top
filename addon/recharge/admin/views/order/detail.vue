@@ -78,25 +78,22 @@ const loading = ref(true)
 const formData: Record<string, any> | null = ref(null)
 
 const setFormData = async (orderId: number = 0) => {
-    loading.value = true
-    formData.value = null
-    await getRechargeOrderInfo(orderId)
-        .then(({ data }) => {
-            formData.value = data
-        })
-        .catch(() => {
-
-        })
-    loading.value = false
+	loading.value = true
+	formData.value = null
+	await getRechargeOrderInfo(orderId).then(({ data }) => {
+		formData.value = data
+	})
+	loading.value = false
 }
+
 if (orderId) setFormData(orderId)
 else loading.value = false
 
 const formRef = ref<FormInstance>()
 
 /**
-     * 会员详情
-     */
+ * 会员详情
+ */
 const toMember = (memberId: number) => {
     router.push(`/member/detail?id=${memberId}`)
 }

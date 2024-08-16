@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 
-// USER_CODE_BEGIN -- shop_fenxiao_level
 /**
  * 获取分销等级列表
  * @param params
@@ -65,7 +64,3 @@ export function editFenxiaoLevel(params: Record<string, any>) {
 export function deleteFenxiaoLevel(id: number) {
     return request.delete(`shop_fenxiao/fenxiao_level/${id}`, { showErrorMessage: true, showSuccessMessage: true })
 }
-
-
-
-// USER_CODE_END -- shop_fenxiao_level

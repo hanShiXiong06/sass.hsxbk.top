@@ -1,153 +1,156 @@
 <template>
-    <view class="bg-[#f8f8f8] min-h-[100vh] p-[24rpx] box-border" :style="themeColor()">
+    <view class="bg-[var(--page-bg-color)] min-h-[100vh] box-border" :style="themeColor()">
         <template v-if="Object.keys(detail).length">
-            <view class="bg-[#fff] rounded-[10rpx]overflow-hidden">
-                <view class="w-[100%] h-[270rpx] relative  background-size box-border p-[24rpx]" :style="{ backgroundImage: 'url(' + img('addon/shop_fenxiao/task-detail-header.png') + ')' }">
-                    <view class="text-[40rpx] mt-[30rpx] text-[#fff] font-600">
-                        <text>{{ detail.name }}</text>
-                    </view>
-                    <view class="mt-[30rpx] text-[22rpx] text-[#fff]">
-                        {{ detail.start_time ? detail.start_time.substring(0, 10) : '--' }} 至 {{ detail.time_type == 1 ? detail.end_time.substring(0, 10) : "长期有效" }}（{{ detail.status === 1?'未开始':detail.status === 2?'已开始':'已结束' }}）
-                    </view>
-                    <!-- 跳转个任务奖励明细 -->
-                    <view class="absolute top-[24rpx] right-[24rpx] text-[24rpx] text-[#fdf6ec] leading-[35rpx] h-[35rpx] bg-[rgba(0,0,0,0.2)] px-[17.5rpx] rounded-[17.5rpx]" @click="toDetail">奖励明细</view>
+            <!-- #ifdef H5 -->
+            <view class="w-[100%] h-[375rpx] relative  background-size box-border py-[24rpx] px-[var(--sidebar-m)]" :style="{ backgroundImage: 'url(' + img('addon/shop_fenxiao/task_detail_wechat.png') + ')'}">
+            <!-- #endif -->
+            <!-- #ifdef MP-WEIXIN -->
+            <view class="w-[100%] h-[550rpx] relative  background-size box-border py-[24rpx] px-[var(--sidebar-m)]" :style="{ backgroundImage: 'url(' + img('addon/shop_fenxiao/task_detail_wechat.png') + ')' }">
+                <top-tabbar :data="param" :scrollBool="topTabarObj.getScrollBool()" class="top-header"/>
+            <!-- #endif -->
+                <!-- 跳转个任务奖励明细 -->
+                <view class="side-tab" :style="{top: topStyle}" @click="toDetail">
+                    <text class="iconfont iconlishijiluV6xx icon"></text>
+                    <text class="desc">奖励明细</text> 
+                </view>
+             </view>
+             <view class="px-[var(--sidebar-m)] pb-[20rpx] mt-[-75rpx]">
+                <!-- 活动未开始 -->
+                <view class="bg-[#fff] rounded-[var(--rounded-big)] py-[60rpx] text-center relative mb-[var(--top-m)]" v-if="detail.status === 1">
+                    <view class="text-[#333] text-[30rpx] font-500 mb-[30rpx]">该任务还未开始</view>
+                    <view class="text-[var(--text-color-light9)] text-[26rpx]">请您耐心等待...</view>
+                </view>
+                <view class="card-template relative" v-if="detail.status !== 1">
+                    <view class="text-[30rpx] font-500 text-[#333] leading-[45rpx] multi-hidden text-center mb-[77rpx]">{{ detail.name }}</view>
                     <!-- 进度条 -->
-                    <view class="mx-auto mt-[70rpx] text-[#fff] relative mx-[15rpx]">
-                        <view class="w-full h-[15rpx] rounded-[7.5rpx] bg-[#ececec] flex">
-                            <view class="h-[15rpx] rounded-[7.5rpx] bg-[#eebe77]" :style="{ 'width': detail.task_member ? detail.task_member.task_data.show_progress.rate + '%' : 0 }"></view>
-                        </view>
-                        <!-- 当前进度 -->
-                        <view
-                            class="w-[30rpx] h-[30rpx] rounded-[15rpx] bg-[#eebe77] absolute z-10 top-[-7.5rpx] ml-[-15rpx] ltft-0"
-                            :style="{ 'left': detail.task_member ? detail.task_member.task_data.show_progress.rate + '%' : 0 }">
-                            <view class="w-[15rpx] h-[15rpx] rounded-[7.5rpx] bg-[#fff] absolute top-[7.5rpx] left-[7.5rpx]"></view>
+                    <view class="relative pb-[58rpx] mb-[30rpx] mx-[30rpx]">
+                        <view class="w-full h-[24rpx] rounded-[12rpx] bg-[#FFF2D0] flex">
+                            <!-- 进度条 -->
+                            <view class="h-[24rpx] rounded-[12rpx] bg-linear flex overflow-hidden" :style="{ width : detail.task_member && detail.task_member.task_data.show_progress.rate ? detail.task_member.task_data.show_progress.rate + '%' : 24 + 'rpx' }">
+                                <view class="mr-[10rpx] h-[24rpx] flex-1 flex items-center justify-end box-border" v-if="detail.task_member && detail.task_member.task_data.show_progress.rate">
+                                    <text class="w-[4rpx] h-[4rpx] rounded-full bg-[#fff] mr-[6rpx]"></text>
+                                    <text class="w-[6rpx] h-[6rpx] rounded-full bg-[#fff] mr-[6rpx]"></text>
+                                    <text class="w-[8rpx] h-[8rpx] rounded-full bg-[#fff]"></text>
+                                </view>
+                            </view>
+                            <!-- 总进度图标 -->
+                            <image class="w-[52rpx] h-[52rpx] align-middle absolute right-0 top-[12rpx] transform -translate-y-1/2" mode="widthFix" :src="img('addon/shop_fenxiao/task_icon.png')"></image>
+                            <!-- 总进度金额 -->
+                             <view class="money min-w-[60rpx] h-[36rpx] px-[12rpx] box-border bg-[var(--primary-color)] text-[#fff] absolute right-[26rpx] top-[-56rpx] transform translate-x-1/2 rounded-[18rpx] z-10 flex items-center">
+                                <text class="text-[24rpx]">￥</text>
+                                <text class="text-[24rpx]">{{ detail.rules[0].reward?.commission }}</text>
+                             </view>
                         </view>
                         <!-- 当前完成进度文字 -->
                         <view ref="mytext" v-if="detail.task_member && detail.task_member.task_data.show_progress.rate != 100"
-                            class="absolute text-[24rpx] bottom-[30rpx] transform -translate-x-1/2"
+                            class="absolute text-[26rpx] bottom-0  leading-[34rpx] text-[var(--primary-color)]" :class="{' transform -translate-x-1/2': detail.task_member && detail.task_member.task_data.show_progress.rate > 0}"
                             :style="{ 'left': detail.task_member ? detail.task_member.task_data.show_progress.rate + '%' : 0 }">{{ detail.task_member.task_data.now_data + detail.task_member.task_data.util }}</view>
-                        <view
-                            class="w-[30rpx] h-[30rpx] rounded-[15rpx] absolute z-9 top-[-7.5rpx] mr-[-15rpx] right-0 bg-[#ececec]"
-                            :class="{ '!bg-[#eebe77]': detail.task_member && detail.task_member.task_data.show_progress.rate == 100 }">
-                            <view class="w-[15rpx] h-[15rpx] rounded-[7.5rpx] bg-[#fff] absolute top-[7.5rpx] left-[7.5rpx]"></view>
-                        </view>
                         <!-- 需完成的总进度完成 -->
-                        <view ref="overallText" class="absolute text-[24rpx] bottom-[30rpx] right-0">{{
-                            detail.task_member ? (detail.task_member.task_data.util=='元'?moneyFormat(detail.task_member.task_data.end_data):detail.task_member.task_data.end_data) + detail.task_member.task_data.util : (detail.task_data.util=='元'?moneyFormat(detail.task_data.end_data):detail.task_data.end_data) + detail.task_data.util
-                        }}</view>
+                        <view ref="overallText" class="absolute text-[26rpx] leading-[34rpx] flex-center min-w-[100rpx]  bottom-0 -right-[20rpx]">{{ detail.task_member ? (detail.task_member.task_data.util=='元'?moneyFormat(detail.task_member.task_data.end_data):detail.task_member.task_data.end_data) + detail.task_member.task_data.util : (detail.task_data.util=='元'?moneyFormat(detail.task_data.end_data):detail.task_data.end_data) + detail.task_data.util }}</view>
+                    </view>
+                    <view class="bg-[#FFF8EF] rounded-[var(--goods-rounded-big)] px-[30rpx] py-[30rpx]" v-if="detail.task_member">
+                        <view class="text-center text-[28rpx] font-500 mb-[40rpx]">完成进度</view>
+						<view class="text-[26rpx] flex-1 w-[615rpx] break-all flex items-center mb-[34rpx]">
+							<text class="text-[#823D19]">{{detail.task_member.task_data.util=='元' ? '完成金额：' :detail.task_member.task_data.util=='单' ? '完成单数：' : '推广人数'}}</text>
+							<view  class="text-[26rpx] text-[#333]">
+								{{detail.task_member.task_data.title}}已达<text class="text-[var(--primary-color)]">{{detail.task_member.task_data.util=='元'?moneyFormat(detail.task_member.task_data.now_data):detail.task_member.task_data.now_data }}</text>{{detail.task_member.task_data.util}}
+							</view>
+						</view>
+						<view class="text-[26rpx] flex-1 w-[615rpx] break-all flex items-center mb-[34rpx]">
+							<text class="text-[#823D19]">完成次数：</text>
+							<view class="text-[26rpx] text-[#333]">
+								<text class="text-[var(--primary-color)]">{{ detail.task_member.complete_num }}</text>
+								<text>/{{ detail.times?detail.times+'次':'不限次' }}</text>
+							</view>
+						</view>
+						<view class="text-[26rpx] flex-1 w-[615rpx] break-all flex items-center">
+							<text class="text-[#823D19]">领取奖励：</text>
+							<text class="text-[#333]">累计领取{{ detail.task_member.complete_num }}次奖励共计{{ moneyFormat(detail.task_member.complete_num * detail.rules[0].reward?.commission)}}元</text>
+						</view>
                     </view>
                 </view>
-                <view class="p-[24rpx]">
-                    <view v-if="!detail.task_member" class="text-[26rpx] font-600">
-                      {{detail.task_data.title}}达<text class="text-[#eebe77] mx-[10rpx]">{{detail.task_data.util=='元'?moneyFormat(detail.task_data.end_data):detail.task_data.end_data }}{{detail.task_data.util}}</text>即可获得以下奖励：
-                    </view>
-                    <view v-else class="text-[26rpx] font-600">
-                      {{detail.task_member.task_data.title}}达<text class="text-[#eebe77] mx-[10rpx]">{{detail.task_member.task_data.util=='元'?moneyFormat(detail.task_member.task_data.end_data):detail.task_member.task_data.end_data }}{{detail.task_member.task_data.util}}</text>即可获得以下奖励：
-                    </view>
-                    <view class="w-full mt-[24rpx] flex">
-                        <view class="flex flex-col items-center">
-                            <image class="w-[56rpx] h-[56rpx] rounded-[50%]" :src="img('addon/shop_fenxiao/tark-money.png')" mode="aspectFill"></image>
-                            <view class="mt-[14rpx] text-[22rpx]">{{ moneyFormat(detail.rules[0].reward?.commission)}}元</view>
-                        </view>
-                    </view>
+                <!-- 任务信息 -->
+                <view class="overflow-hidden mt-[20rpx] card-template">
+                    <view class="title">任务信息</view>
+					<view class="text-[26rpx] flex-1 card-template-item">
+						<text class="text-[var(--text-color-light9)]">任务内容：</text>
+						<view v-if="!detail.task_member" class="text-[26rpx] text-[#333]">
+							{{detail.task_data.title}}达{{detail.rules[0].condition?.type.includes('order_num') ? detail.rules[0].condition?.order_num : detail.rules[0].condition?.type.includes('order_money') ? detail.rules[0].condition?.order_money : detail.rules[0].condition?.child_num }}{{detail.task_data.util}}
+						</view>
+						<view v-else class="text-[26rpx] text-[#333]">
+							{{detail.task_member.task_data.title}}达{{detail.rules[0].condition?.type.includes('order_num') ? detail.rules[0].condition?.order_num : detail.rules[0].condition?.type.includes('order_money') ? detail.rules[0].condition?.order_money : detail.rules[0].condition?.child_num }}{{detail.task_member.task_data.util}}
+						</view>
+					</view>
+					<view class="text-[26rpx] flex-1 card-template-item">
+						<text class="text-[var(--text-color-light9)]">任务奖励：</text>
+						<text class="text-[#333]">{{ moneyFormat(detail.rules[0].reward?.commission)}}元</text>
+					</view>
+					<view class="text-[26rpx] flex-1 card-template-item" v-if="detail.type===1">
+						<text class="text-[var(--text-color-light9)]">参与次数：</text>
+						<text class="text-[#333]">{{ detail.times?detail.times+'次':'不限次' }}</text>
+					</view>
+					<view class="text-[26rpx] flex-1 card-template-item">
+						<text class="text-[var(--text-color-light9)]">活动时间：</text>
+						<view class="text-[#333]">
+							{{ detail.start_time ? detail.start_time.substring(0, 10) : '--' }} 至 {{ detail.time_type == 1 ? detail.end_time.substring(0, 10) : "长期有效" }}（{{ detail.status === 1?'未开始':detail.status === 2?'已开始':'已结束' }}）
+						</view>
+					</view>
                 </view>
-                <view class="px-[24rpx] pt-[30rpx] border-0 border-t-[1rpx] border-solid border-[#ddd]" v-if="detail.status === 1">
-                    <view class="text-center text-[28rpx] font-600">
-                        距离开始还剩
-                    </view>
-                    <view class="flex justify-center mt-[26rpx]">
-                        <u-count-down :time="detail.time" format="DD:HH:mm:ss" autoStart millisecond @change="onChange">
-                            <view class="time text-[26rpx] font-600 flex items-center">
-                                <text class="time__days mr-[24rpx]">{{ timeData.days }}天</text>
-                                <text class="time__hours">{{ timeData.hours > 10 ? timeData.hours : '0' + timeData.hours}}</text>
-                                <text class="mx-[7rpx] text-[var(--primary-color)]">:</text>
-                                <text class="time__minutes">{{ timeData.minutes > 10 ? timeData.minutes : '0' + timeData.minutes}}</text>
-                                <text class="mx-[7rpx] text-[var(--primary-color)]">:</text>
-                                <text class="time__seconds">{{ timeData.seconds > 10 ? timeData.seconds : '0' + timeData.seconds}}</text>
-                            </view>
-                        </u-count-down>
-                    </view>
-                    <view class="text-center text-[24rpx] pb-[40rpx] text-[35rpx] text-[#ddd] mt-[50rpx]">即将开始</view>
+                <!-- 奖励规则 -->
+                <view class="card-template overflow-hidden mt-[var(--top-m)]">
+                    <view class="title">{{t('rewardRules')}}</view>
+					<view class="text-[26rpx] flex-1 card-template-item">
+						<text class="text-[var(--text-color-light9)]">参与等级：</text>
+						<text class="text-[#333]">
+							{{ detail.level_type == 1 && '全部等级' || detail.level_type == 2 && Object.values(detail.level_data).toString() }}
+						</text>
+					</view>
+					<view class="text-[26rpx] flex-1 card-template-item">
+						<text class="text-[var(--text-color-light9)]">奖励指标：</text>
+						<text class="text-[#333]">{{ detail.task_member ? detail.task_member.task_data.title : detail.task_data.title }}</text>
+					</view>
+					<view v-if="!detail.task_member" class="text-[26rpx] card-template-item">
+						<text class="text-[var(--text-color-light9)]">奖励说明：</text>
+						<text class="text-[#333]">
+							{{detail.task_data.title}}达{{detail.rules[0].condition?.type.includes('order_num') ? detail.rules[0].condition?.order_num : detail.rules[0].condition?.type.includes('order_money') ? detail.rules[0].condition?.order_money : detail.rules[0].condition?.child_num }}{{detail.task_data.util}}即可获得{{moneyFormat(detail.rules[0].reward?.commission)}}元佣金</text>
+					</view>
+					<view v-else class="text-[26rpx] card-template-item">
+						<text class="text-[var(--text-color-light9)]">奖励说明：</text>
+						<text class="text-[#333]">
+							{{detail.task_member.task_data.title}}达{{detail.rules[0].condition?.type.includes('order_num') ? detail.rules[0].condition?.order_num : detail.rules[0].condition?.type.includes('order_money') ? detail.rules[0].condition?.order_money : detail.rules[0].condition?.child_num }}{{detail.task_member.task_data.util}}即可获得{{moneyFormat(detail.rules[0].reward?.commission)}}元佣金
+						</text>
+					</view>
                 </view>
-            </view>
-            <view class="bg-[#fff] rounded-[10rpx] overflow-hidden mt-[30rpx] p-[24rpx]">
-                <view class="text-[30rpx] font-600 mt-[24rpx]">{{t('rewardRules')}}</view>
-                <!-- <view class="flex items-center mt-[24rpx]">
-                    <view class="flex h-[26rpx] items-center flex-shrink-0">
-                        <view class="h-[15rpx] w-[15rpx] rounded-[50%] bg-[#f8e3c5] mr-[24rpx] flex-shrink-0"></view>
-                    </view>
-                    <view class="text-[26rpx] flex-1 text-[#999] w-[615rpx] break-all">
-                        <text>任务类型：</text>
-                        <text>{{ detail.type_name }}</text>
-                    </view>
-                </view> -->
-                <view class="flex items-center mt-[24rpx]" v-if="detail.type===1">
-                    <view class="flex h-[26rpx] items-center flex-shrink-0">
-                        <view class="h-[15rpx] w-[15rpx] rounded-[50%] bg-[#f8e3c5] mr-[24rpx] flex-shrink-0"></view>
-                    </view>
-                    <view class="text-[26rpx] flex-1 text-[#999] w-[615rpx] break-all">
-                        <text>参与次数：</text>
-                        <text>{{ detail.times?detail.times+'次':'不限次' }}</text>
-                    </view>
+                <!-- 任务说明 -->
+                <view v-if="detail.remark" class="card-template overflow-hidden mt-[var(--top-m)]">
+                    <view class="title">{{t('taskSpecification')}}</view>
+                    <view class="text-[#333] text-[26rpx] leading-[1.6]">{{ detail.remark }}</view>
                 </view>
-                <view class="flex mt-[24rpx]">
-                    <view class="flex h-[26rpx] items-center flex-shrink-0">
-                        <view class="h-[15rpx] w-[15rpx] rounded-[50%] bg-[#f8e3c5] mr-[24rpx] flex-shrink-0"></view>
-                    </view>
-                    <view class="text-[26rpx] flex-1 text-[#999] w-[615rpx] break-all">
-                        <text>参与等级：</text>
-                        <text>
-                            {{ detail.level_type == 1 && '全部等级' || detail.level_type == 2 && Object.values(detail.level_data).toString() }}
-                        </text>
-                    </view>
-                </view>
-                <view class="flex items-center mt-[24rpx]">
-                    <view class="flex h-[26rpx] items-center flex-shrink-0">
-                        <view class="h-[15rpx] w-[15rpx] rounded-[50%] bg-[#f8e3c5] mr-[24rpx] flex-shrink-0"></view>
-                    </view>
-                    <view class="text-[26rpx] flex-1 text-[#999] w-[615rpx] break-all">
-                        <text>参与指标：</text>
-                        <text>{{ detail.task_member ? detail.task_member.task_data.title : detail.task_data.title }}</text>
-                    </view>
-                </view>
-                <view class="flex items-center mt-[24rpx]">
-                    <view class="flex h-[26rpx] items-center flex-shrink-0">
-                        <view class="h-[15rpx] w-[15rpx] rounded-[50%] bg-[#f8e3c5] mr-[24rpx] flex-shrink-0"></view>
-                    </view>
-                    <view v-if="!detail.task_member" class="text-[26rpx] flex-1 text-[#999] w-[615rpx] break-all">
-                        <text>奖励说明：</text>
-                        <text>
-                            {{detail.task_data.title}}达{{detail.task_data.util=='元'?moneyFormat(detail.task_data.end_data):detail.task_data.end_data }}{{detail.task_data.util}}即可获得{{moneyFormat(detail.rules[0].reward?.commission)}}元佣金</text>
-                    </view>
-                    <view v-else class="text-[26rpx] flex-1 text-[#999] w-[615rpx] break-all">
-                        <text>奖励说明：</text>
-                        <text>
-                            {{detail.task_member.task_data.title}}达{{detail.task_member.task_data.util=='元'?moneyFormat(detail.task_member.task_data.end_data):detail.task_member.task_data.end_data }}{{detail.task_member.task_data.util}}即可获得{{moneyFormat(detail.rules[0].reward?.commission)}}元佣金
-                        </text>
-                    </view>
-                </view>
-            </view>
+             </view>
         </template>
-        <view v-if="detail.remark" class="bg-[#fff] rounded-[10rpx] overflow-hidden mt-[30rpx] p-[24rpx]">
-            <view class="text-[30rpx] font-600 mt-[24rpx]">{{t('taskSpecification')}}</view>
-            <view class="text-[#999] text-[26rpx] mt-[24rpx]">{{ detail.remark }}</view>
-        </view>
-        <u-loading-page bg-color="rgb(248,248,248)" :loading="loading" loadingText="" fontSize="16" color="#333"></u-loading-page>
+		<loading-page :loading="loading"></loading-page>
     </view>
 </template>
 
 <script lang="ts" setup>
 import { t } from '@/locale';
-import { ref } from 'vue'
-import { img, redirect,moneyFormat } from '@/utils/common';
+import { ref, computed } from 'vue'
+import { img, redirect,moneyFormat, pxToRpx } from '@/utils/common';
 import { onLoad } from '@dcloudio/uni-app'
 import { getTaskInfo } from '@/addon/shop_fenxiao/api/task'
+import { topTabar } from '@/utils/topTabbar'
 
+/********* 自定义头部 - start ***********/
+const topTabarObj = topTabar()
+let param = topTabarObj.setTopTabbarParam({title:'任务奖励详情'})
+/********* 自定义头部 - end ***********/
+
+//头部高度
 const detail: Record<string, any> = ref({})
 onLoad((option: any) => {
     getTaskInfoFn(Number(option.id))
 })
-let loading = ref<boolean>(true);//页面加载动画
+const loading = ref<boolean>(true);//页面加载动画
 const getTaskInfoFn = (id: number) => {
     getTaskInfo(id).then((res: any) => {
         detail.value = res.data
@@ -168,6 +171,18 @@ const getTaskInfoFn = (id: number) => {
     })
 
 }
+
+// 获取系统状态栏的高度
+let menuButtonInfo: any = {};
+// 如果是小程序，获取右上角胶囊的尺寸信息，避免导航栏右侧内容与胶囊重叠(支付宝小程序非本API，尚未兼容)
+// #ifdef MP-WEIXIN || MP-BAIDU || MP-TOUTIAO || MP-QQ
+menuButtonInfo = uni.getMenuButtonBoundingClientRect();
+// #endif
+const topStyle = computed(() => {
+	let style = Object.keys(menuButtonInfo).length?(pxToRpx(Number(menuButtonInfo.height)) + pxToRpx(menuButtonInfo.top) +  50) + 'rpx;':'50rpx'
+	return style
+})
+
 const timeData: Record<string, any> = ref({})
 //计算进度条上方文字极限展示位置
 // const Progresslock: Record<string, any> = ref({
@@ -202,6 +217,23 @@ const toDetail = ()=>{
 }
 
 .background-size {
-    background-size: 100% 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: bottom;
+}
+.bg-linear{
+    background: linear-gradient( 90deg, #FFB054 0%, #FF2524 100%);
+}
+.money{
+    &::after{
+        content: "";
+        width:8rpx;
+        height: 8rpx;
+        background-color: var(--primary-color);
+        transform: rotate(45deg)  translateX(-50%);
+        position:absolute;
+        bottom:-6rpx;
+        left:50%;
+    }
 }
 </style>

@@ -19,6 +19,12 @@ return [
                 'is_share' => 1
             ],
             [
+                'name' => 'Cpsllk',
+                'title' => '流量卡',
+                'url' => '/addon/cps/pages/cps/index?type=llk',
+                'is_share' => 1
+            ],
+            [
                 'name' => 'Cpshfdf',
                 'title' => '话费电费',
                 'url' => '/addon/cps/pages/cps/index?type=hfdf',
@@ -204,6 +210,12 @@ return [
         'title' => '外部联盟',
         'child_list' => [
             [
+                'name' => 'Cpsdddj',
+                'title' => '滴滴加油',
+                'url' => '/addon/cps/pages/cps/index?type=dddj',
+                'is_share' => 0
+            ],
+            [
                 'name' => 'Cpsjtktjkd',
                 'title' => '特价快递',
                 'url' => '/addon/cps/pages/cps/index?type=jtktjkd',
@@ -225,6 +237,18 @@ return [
                 'name' => 'Cpsfzcps',
                 'title' => '飞猪聚合',
                 'url' => '/addon/cps/pages/cps/index?type=fzcps',
+                'is_share' => 0,
+            ],
+            [
+                'name' => 'Cpsmtbwc',
+                'title' => '美团霸王餐',
+                'url' => '/addon/cps/pages/cps/index?type=mtbwc',
+                'is_share' => 0,
+            ],
+            [
+                'name' => 'Cpscngg',
+                'title' => '菜鸟裹裹',
+                'url' => '/addon/cps/pages/cps/index?type=cngg',
                 'is_share' => 0,
             ],
         ]

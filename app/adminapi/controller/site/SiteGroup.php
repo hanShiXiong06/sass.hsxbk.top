@@ -87,7 +87,6 @@ class SiteGroup extends BaseAdminController
      */
     public function del($group_id)
     {
-
         (new SiteGroupService())->del($group_id);
         return success('DELETE_SUCCESS');
     }

@@ -46,8 +46,7 @@
                     <div v-if="!orderTable.loading">
                         <template v-if="orderTable.data.length">
                             <div v-for="(item, index) in orderTable.data" :key="index">
-                                <div
-                                    class="flex items-center justify-between h-[35px] mt-[10px] px-3 text-[12px] text-[#666] border-solid border-b-[1px] border-[var(--el-border-color)] bg-[var(--el-color-info-light-9)]">
+                                <div class="flex items-center justify-between h-[35px] mt-[10px] px-3 text-[12px] text-[#666] border-solid border-b-[1px] border-[var(--el-border-color)] bg-[var(--el-color-info-light-9)]">
                                     <div>
                                         <span>{{ t('orderNo') }}：{{ (item as any).order_no }}</span>
                                         <span class="ml-5">{{ t('createTime') }}：{{ (item as any).create_time }}</span>
@@ -149,10 +148,10 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import { t } from '@/lang'
-import {  getOrderStatus, orderFinish, getOrderPayType, getOrderFrom } from '@/addon/shop/api/order'
+import { getOrderStatus, getOrderPayType, getOrderFrom } from '@/addon/shop/api/order'
 import {getAgentOrderList} from '@/addon/shop_fenxiao/api/agent'
 import { img } from '@/utils/common'
-import { ElMessageBox, FormInstance } from 'element-plus'
+import { FormInstance } from 'element-plus'
 import { useRouter, useRoute } from 'vue-router'
 import { cloneDeep } from 'lodash-es'
 
@@ -184,13 +183,9 @@ const orderTable = reactive<OrderTable>({
     loading: true,
     data: [],
     searchParam: {
-        // search_type: 'order_no',
         // search_name: '',
-        // pay_type: '',
-        // order_from: '',
         is_settlement: '',
         create_time: [],
-        // pay_time: []
     }
 })
 
@@ -207,18 +202,18 @@ const loadOrderList = (page: number = 1) => {
         page: orderTable.page,
         limit: orderTable.limit,
         ...orderTable.searchParam
-    }).then((res:any) => {
+    }).then((res: any) => {
         orderTable.loading = false
-        orderTable.data = res.data.data.map((el:any) => {
+        orderTable.data = res.data.data.map((el: any) => {
             let rowspan = 0
             el.goods_list = []
-            el.shop_order.order_goods.forEach((v:any,) => {
-                rowspan+=v.fenxiao_order_goods.length//循环商品时累加计算单个订单的操作列需要合并的行数
+            el.shop_order.order_goods.forEach((v: any,) => {
+                rowspan += v.fenxiao_order_goods.length//循环商品时累加计算单个订单的操作列需要合并的行数
                 //循环组装商品及对应的分销信息，从上下级关系改为以分销数据为主同级数据
-                v.fenxiao_order_goods.forEach((item:any,index:number)=>{
-                    let obj =cloneDeep(Object.assign(v,item))//深拷贝数据防止出现其它数据出现联动变更
+                v.fenxiao_order_goods.forEach((item: any, index: number) => {
+                    let obj = cloneDeep(Object.assign(v, item))//深拷贝数据防止出现其它数据出现联动变更
                     delete obj.fenxiao_order_goods
-                    obj.goodsRowspan = index?0:v.fenxiao_order_goods.length//每次在循环商品及对应分销信息时在同种商品的第一条记录该分销信息长度用于跨行合并商品信息
+                    obj.goodsRowspan = index ? 0 : v.fenxiao_order_goods.length//每次在循环商品及对应分销信息时在同种商品的第一条记录该分销信息长度用于跨行合并商品信息
                     obj.rowspan = 0
                     el.goods_list.push(obj)
                 })
@@ -231,6 +226,7 @@ const loadOrderList = (page: number = 1) => {
         orderTable.loading = false
     })
 }
+
 loadOrderList()
 
 // 合并表格行

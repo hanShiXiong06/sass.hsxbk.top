@@ -32,7 +32,6 @@ class User extends BaseAdminController
         ]);
         $list = (new SiteUserService())->getPage($data);
         return success($list);
-
     }
 
     /**
@@ -65,7 +64,6 @@ class User extends BaseAdminController
         $uid = (new SiteUserService())->add($data);
         return success('ADD_SUCCESS', ['uid' => $uid]);
     }
-
 
     /**
      * 更新用户

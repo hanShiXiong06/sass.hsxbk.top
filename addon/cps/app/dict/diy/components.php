@@ -6,7 +6,7 @@ return [
         'list' => [
             'cps' => [
                 'title' => 'CPS联盟',
-                'icon' => 'iconfont icontuwendaohang2',
+                'icon' => 'iconfont-iconshangpinliebiao',
                 'path' => 'edit-cps',
                 'support_page' => [],
                 'uses' => 0,

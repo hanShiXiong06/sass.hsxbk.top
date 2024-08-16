@@ -22,6 +22,7 @@ use app\service\core\weapp\CoreWeappDeliveryService;
 use core\base\BaseCoreService;
 use core\exception\CommonException;
 use think\db\exception\DbException;
+use think\facade\Log;
 
 /**
  *  订单完成服务层
@@ -142,7 +143,7 @@ class CoreOrderEditPriceService extends BaseCoreService
             }
 
             // 设置消息跳转路径设置接口
-            $result_jump_path = $weapp_delivery_service->setMsgJumpPath($site_id);
+            $result_jump_path = $weapp_delivery_service->setMsgJumpPath($site_id, 'shop_order');
             if ($result_jump_path[ 'errcode' ] != 0) {
                 return '设置消息跳转路径设置接口，报错：' . $result_jump_path[ "errmsg" ];
             }
@@ -153,7 +154,7 @@ class CoreOrderEditPriceService extends BaseCoreService
             $weapp_delivery_service->notifyConfirmReceive($site_id, $data);
 
         } catch (\Exception $e) {
-            return $this->error([], $e->getMessage());
+            Log::write('确认收货提醒接口失败' . $e->getMessage() . $e->getFile() . $e->getLine());
         }
     }
 

@@ -1,0 +1,12 @@
+{
+ "plugins": {                              
+        "menpiao-plugin": { 
+          "version": "latest",
+          "provider": "wx06aa3a687000c5d1"
+        },
+          "meishi": {
+            "version": "latest",
+            "provider": "wx5c787b48e6a02a51"
+          }
+      }
+    }

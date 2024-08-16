@@ -24,7 +24,7 @@ class YidaNoticeService extends BaseApiService
      */
     public function notice($data)
     {
-        Log::write('-----易达回调处理-----'.date('Y-m-d H:i:s', time()));
+        Log::write('-----易达回调处理-----' . date('Y-m-d H:i:s', time()));
         Log::write($data);
         try {
             $type = $data['pushType'];
@@ -34,17 +34,16 @@ class YidaNoticeService extends BaseApiService
             }
             //重量推送
             if ($type == 2) {
-                $this->changeService->changeWeight($data);
+                return $this->changeService->changeWeight($data);
             }
             //揽收推送
             if ($type == 3) {
-                $this->changeService->doPick($data);
+                return $this->changeService->doPick($data);
             }
             //订单变更
             if ($type == 5) {
-                $this->changeService->changeOrder($data);
+                return $this->changeService->changeOrder($data);
             }
-            return true;
         } catch (Exception $e) {
             throw new CommonException($e->getMessage());
         }

@@ -1,4 +1,3 @@
-
 import request from '@/utils/request'
 
 
@@ -6,7 +5,7 @@ import request from '@/utils/request'
 
 /**
  * 获取分销设置
- * @returns 
+ * @returns
  */
 export function getConfig() {
     return request.get(`shop_fenxiao/config`)
@@ -14,7 +13,7 @@ export function getConfig() {
 
 /**
  * 获取分销等级列表
- * @returns 
+ * @returns
  */
 export function getLevelList() {
     return request.get(`shop_fenxiao/level`)
@@ -22,39 +21,40 @@ export function getLevelList() {
 
 /**
  * 获取分销商品列表【分页】
- * @returns 
+ * @returns
  */
-export function getFenxiaoGoodsList(params : Record<string, any>) {
-    return request.get(`shop_fenxiao/goods/pages_of_share`,params)
+export function getFenxiaoGoodsList(params: Record<string, any>) {
+    return request.get(`shop_fenxiao/goods/pages_of_share`, params)
 }
 
 /**
  * 获取分销商品列表【组件】
- * @returns 
+ * @returns
  */
-export function getFenxiaoComponents(params : Record<string, any>) {
-    return request.get(`shop_fenxiao/goods/components`,params)
+export function getFenxiaoComponents(params: Record<string, any>) {
+    return request.get(`shop_fenxiao/goods/components`, params)
 }
 
 /**
  * 获取分销等级详情
- * @param id 
- * @returns 
+ * @param id
+ * @returns
  */
 export function getLevelInfo(id: number) {
-    return request.get(`shop_fenxiao/level/${id}`)
+    return request.get(`shop_fenxiao/level/${ id }`)
 }
 
 /**
  * 检测分销商申请
- * @returns 
+ * @returns
  */
 export function applyCheck() {
     return request.get(`shop_fenxiao/apply/check`)
 }
+
 /**
  * 获取分销会员信息
- * @returns 
+ * @returns
  */
 export function getMemberInfo() {
     return request.get(`shop_fenxiao/fenxiao_member`)
@@ -62,7 +62,7 @@ export function getMemberInfo() {
 
 /**
  * 分销商申请信息
- * @returns 
+ * @returns
  */
 export function applyInfo() {
     return request.get(`shop_fenxiao/apply/info`)
@@ -70,7 +70,7 @@ export function applyInfo() {
 
 /**
  * 申请分销商
- * @returns 
+ * @returns
  */
 export function apply() {
     return request.post(`shop_fenxiao/apply`)
@@ -78,7 +78,7 @@ export function apply() {
 
 /**
  * 获取申请分销商的条件
- * @returns 
+ * @returns
  */
 export function getCheck() {
     return request.get(`/shop_fenxiao/apply/get_check`)
@@ -86,7 +86,7 @@ export function getCheck() {
 
 /**
  * 获取分销商详情
- * @returns 
+ * @returns
  */
 export function getDetail() {
     return request.get(`shop_fenxiao/fenxiao/detail`)
@@ -94,7 +94,7 @@ export function getDetail() {
 
 /**
  * 获取分销商账户信息
- * @returns 
+ * @returns
  */
 export function getAccount() {
     return request.get(`shop_fenxiao/fenxiao/account`)
@@ -102,7 +102,7 @@ export function getAccount() {
 
 /**
  * 获取分销商账户信息
- * @returns 
+ * @returns
  */
 export function getFenxiaoDetail() {
     return request.get('shop_fenxiao/fenxiao/detail')
@@ -110,15 +110,15 @@ export function getFenxiaoDetail() {
 
 /**
  * 分销订单分页列表
- * @returns 
+ * @returns
  */
-export function getFenxiaoOrder(params : Record<string, any>) {
+export function getFenxiaoOrder(params: Record<string, any>) {
     return request.get("shop_fenxiao/order/fenxiao", params)
 }
 
 /**
  * 分销佣金统计
- * @returns 
+ * @returns
  */
 export function getFenxiaoStat() {
     return request.get("shop_fenxiao/order/fenxiao/stat")
@@ -126,7 +126,7 @@ export function getFenxiaoStat() {
 
 /**
  * 获取下级分销商
- * @returns 
+ * @returns
  */
 export function getChildFenxiao() {
     return request.get("shop_fenxiao/fenxiao/child_fenxiao")
@@ -134,7 +134,7 @@ export function getChildFenxiao() {
 
 /**
  * 获取我的团队
- * @returns 
+ * @returns
  */
 export function getFenxiaoTeam() {
     return request.get("shop_fenxiao/fenxiao/team")
@@ -142,7 +142,7 @@ export function getFenxiaoTeam() {
 
 /**
  * 获取分销商信息
- * @returns 
+ * @returns
  */
 export function getFenxiaoInfo() {
     return request.get("shop_fenxiao/fenxiao/info")

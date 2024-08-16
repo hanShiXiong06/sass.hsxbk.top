@@ -38,7 +38,7 @@
 			<el-form label-width="90px" class="px-[10px]">
 
 				<el-form-item :label="t('couponTitle')">
-					<el-input v-model="diyStore.editComponent.couponTitle" clearable maxlength="10" show-word-limit/>
+					<el-input v-model="diyStore.editComponent.couponTitle" clearable maxlength="8" show-word-limit/>
 				</el-form-item>
 
 				<el-form-item :label="t('couponSubTitle')">

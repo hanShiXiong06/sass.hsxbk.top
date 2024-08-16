@@ -13,7 +13,6 @@ namespace addon\shop\app\job\order;
 use addon\shop\app\dict\order\OrderDict;
 use addon\shop\app\dict\order\OrderLogDict;
 use addon\shop\app\model\order\Order;
-use addon\shop\app\service\core\order\CoreOrderCloseService;
 use addon\shop\app\service\core\order\CoreOrderFinishService;
 use core\base\BaseJob;
 

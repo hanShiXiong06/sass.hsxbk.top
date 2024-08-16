@@ -31,19 +31,7 @@ class CpsWapService extends BaseApiService
         if($type==11){
             return $this->changeWeappAct($actid);
         }
-        //快递100
-        if($type==100&&$actid==100){
-            $info= [
-                'wap_url'=>'',
-                'h5'=>'',
-                'act_name'=>'快递100',
-                'weapp'=>[
-                    'appid'=>'wxf772255062165d94',
-                    'pagepath'=>'',
-                ]
-            ];
-            return $info;
-        }
+
         $info = $this->actItemModel->where(['site_id' => $this->site_id, 'type' => $type, 'act_id' => $actid])->findOrEmpty();
         if ($info->isEmpty()) {
             (new \addon\tk_cps\app\service\admin\CpsService())->asyncActItem($actid, $type);

@@ -6,9 +6,7 @@ namespace addon\shop\app\listener\point_exchange;
 
 use addon\shop\app\service\admin\marketing\pointexchange\ExchangeService;
 use addon\shop\app\model\goods\GoodsSku;
-use core\exception\CommonException;
 use think\facade\Log;
-use think\Model;
 
 /**
  *  订单关闭后 积分商城业务服务层

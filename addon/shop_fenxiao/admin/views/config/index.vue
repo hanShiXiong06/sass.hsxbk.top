@@ -243,7 +243,7 @@ const save = ()=>{
         }
     })
 }
-const toLink = (type)=>{
+const toLink = (type: any)=>{
     let routeData = router.resolve(`/setting/agreement/edit?key=${type}`)
     window.open(routeData.href,' blank');
 }

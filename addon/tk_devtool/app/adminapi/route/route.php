@@ -10,6 +10,9 @@ use app\adminapi\middleware\AdminLog;
 * 路由（注意最好group路由名称与插件名称一致，防止路由冲突）
 */
 Route::group("tk_devtool", function () {
+    Route::get('ceshi', 'addon\tk_devtool\app\adminapi\controller\Addon@ceshi');
+    Route::post('addonupload', 'addon\tk_devtool\app\adminapi\controller\Addon@addonUpload');
+    Route::get('build/:key', 'addon\tk_devtool\app\adminapi\controller\Addon@build');
     Route::post('execute', 'addon\tk_devtool\app\adminapi\controller\Index@execute');
     Route::post('moveFile', 'addon\tk_devtool\app\adminapi\controller\Index@moveFile');
     Route::post('depend', 'addon\tk_devtool\app\adminapi\controller\Index@depend');

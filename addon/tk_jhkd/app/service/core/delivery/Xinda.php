@@ -4,6 +4,7 @@ namespace addon\tk_jhkd\app\service\core\delivery;
 
 use addon\tk_jhkd\app\dict\delivery\XindaBrandDict;
 use Exception;
+use think\facade\Log;
 
 /**
  * 辛达快递通道
@@ -124,7 +125,9 @@ class Xinda extends BaseDelivery
             "itemName" => $params['goods'],
         ];
         $resInfo = $this->execute('COURIER_PLACE_ORDER', $data);
-        if ($resInfo['code'] != 0) throw new Exception($resInfo['msg']);
+        if ($resInfo['code'] != 0) {
+            Log::write('XINDA_error--' . $resInfo['msg']);
+        }
         $res = [
             'orderNo' => $resInfo['data']['XinDabill'],
             'deliveryId' => $resInfo['data']['Waybill'],
@@ -143,7 +146,9 @@ class Xinda extends BaseDelivery
             "xinDabill" => $data['order_no'],
         ];
         $resInfo = $this->execute('COURIER_ORDER_CANCEL', $params);
-        if($resInfo['code'] != 0) throw new Exception($resInfo['msg']);
+        if($resInfo['code'] != 0) {
+            Log::write('XINDA_error--' . $resInfo['msg']);
+        }
         //code  适配易达
         if ($resInfo['code'] == 0) {
             $resInfo['code'] = 200;

@@ -77,8 +77,8 @@ class SiteGroup extends BaseModel
      */
     public function searchKeywordsAttr($query, $value, $data)
     {
-        if ($value) {
-            $query->where('group_name', 'like', '%' . $value . '%');
+        if ($value != '') {
+            $query->where('group_name', 'like', '%' . $this->handelSpecialCharacter($value) . '%');
         }
     }
 

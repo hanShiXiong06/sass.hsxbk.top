@@ -4,6 +4,7 @@ namespace addon\tk_cps\app\service\admin;
 
 use addon\tk_cps\app\service\core\CommonService;
 use addon\tk_cps\app\service\core\ConfigService;
+use addon\tk_cps\app\service\core\CoreWeappService;
 use addon\tk_cps\app\service\core\UniappService;
 use app\dict\addon\AddonDict;
 use app\dict\sys\CloudDict;
@@ -76,7 +77,6 @@ class VersionService extends CoreCloudBaseService
      */
     public function uploadWeapp(array $data)
     {
-
         if (!request()->isSsl()) throw new CommonException('CURR_SITE_IS_NOT_OPEN_SSL');
         $this->site_id = $data['site_id'];
         $config = (new CoreWeappConfigService())->getWeappConfig($data['site_id']);
@@ -98,6 +98,7 @@ class VersionService extends CoreCloudBaseService
         if ($compile_addon->isEmpty()) {
             dir_copy($editUniapp, $uni_dir, exclude_dirs: ['node_modules', 'unpackage', 'dist']);
             $this->handleUniapp($uni_dir);
+            $this->handelPageJson($uni_dir.'/src/pages.json');
             // 替换env文件
             $this->weappEnvReplace($uni_dir . DIRECTORY_SEPARATOR . '.env.production');
         } else {
@@ -107,11 +108,9 @@ class VersionService extends CoreCloudBaseService
             $this->weappCompileReplace($uni_dir);
         }
         file_put_contents($package_dir . 'private.key', file_get_contents($config['upload_private_key']));
-
         // 将临时目录下文件生成压缩包
         $zip_file = $temp_dir . DIRECTORY_SEPARATOR . 'weapp.zip';
         (new CoreAddonDevelopDownloadService(''))->compressToZip($package_dir, $zip_file);
-
         $query = [
             'compile' => $compile_addon->isEmpty() ? 0 : 1,
             'authorize_code' => $this->auth_code,
@@ -137,7 +136,154 @@ class VersionService extends CoreCloudBaseService
         if (isset($response['code']) && $response['code'] == 0) throw new CommonException($response['msg']);
         return ['key' => $query['timestamp']];
     }
+    public function handelPageJson($path)
+    {
+        $jsonArr = $this->uniappPageJsonToArr($path);
+        $subPackages = $jsonArr['subPackages'];
 
+        $newSubPackages = [
+            [
+                "root" => "cpsmeishi",
+                "pages" => [
+                    [
+                        "path" => "pages/index",
+                        "style" => [
+                            "navigationBarTitleText" => "CPS联盟"
+                        ]
+                    ]
+                ],
+                "plugins" => [
+                    "meishi" => [
+                        "version" => "latest",
+                        "provider" => "wx5c787b48e6a02a51"
+                    ]
+                ]
+            ],
+            [
+                "root" => "cpsdc",
+                "pages" => [
+                    [
+                        "path" => "pages/index",
+                        "style" => [
+                            "navigationBarTitleText" => "CPS联盟"
+                        ]
+                    ]
+                ],
+                "plugins" => [
+                    "jtkDc" => [
+                        "version" => "latest",
+                        "provider" => "wx6c999744b6d125ef"
+                    ]
+                ]
+            ],
+            [
+                "root" => "cpsmovie",
+                "pages" => [
+                    [
+                        "path" => "pages/index",
+                        "style" => [
+                            "navigationBarTitleText" => "CPS联盟"
+                        ]
+                    ]
+                ],
+                "plugins" => [
+                    "jtkMovie" => [
+                        "version" => "latest",
+                        "provider" => "wx89752980e795bfde"
+                    ]
+                ]
+            ],
+            [
+                "root" => "cpsmenpiao",
+                "pages" => [
+                    [
+                        "path" => "pages/index",
+                        "style" => [
+                            "navigationBarTitleText" => "CPS联盟"
+                        ]
+                    ]
+                ],
+                "plugins" => [
+                    "menpiao-plugin" => [
+                        "version" => "latest",
+                        "provider" => "wx06aa3a687000c5d1"
+                    ]
+                ]
+            ],
+            [
+                "root" => "cpshotel",
+                "pages" => [
+                    [
+                        "path" => "pages/index",
+                        "style" => [
+                            "navigationBarTitleText" => "CPS联盟"
+                        ]
+                    ]
+                ],
+                "plugins" => [
+                    "hotel-plugin" => [
+                        "version" => "latest",
+                        "provider" => "wx3c08fc3019c05906"
+                    ]
+                ]
+            ]
+        ];
+        foreach ($newSubPackages as $newSubPackage) {
+            // 将新的分包添加到现有的分包数组中
+            $subPackages[] = $newSubPackage;
+            //进行插件申请
+            $this->addPlugin();
+        }
+        $jsonArr['subPackages'] = $subPackages;
+        $this->uniappPageJsonWrite($jsonArr, $path);
+    }
+    public function addPlugin()
+    {
+        $site_id=$this->request->siteId();
+        $plugin_appids=[
+            'meishi' => 'wx5c787b48e6a02a51',
+            'jtkDc' => 'wx6c999744b6d125ef',
+            'jtkMovie' => 'wx89752980e795bfde',
+            'menpiao-plugin' => 'wx06aa3a687000c5d1',
+            'hotel-plugin' => 'wx3c08fc3019c05906'
+        ];
+        foreach($plugin_appids as $plugin_name => $appid){
+            (new CoreWeappService())->addPlugin($site_id, $appid);
+        }
+        return true;
+    }
+    public function uniappPageJsonToArr($path)
+    {
+        $chanagew = 'changew';
+        // 读取JSON文件内容
+        $jsonString = @file_get_contents($path);
+        $jsonString = preg_replace('/\/\/.*/', '', $jsonString); // 去除 // 注释
+        $jsonString = preg_replace('!/\*.*?\*/!s', '', $jsonString); // 去除 /* 注释 */
+        $jsonString = preg_replace('/\\\\W/', $chanagew, $jsonString);
+        $jsonArray = json_decode($jsonString, true);
+        if ($jsonArray === null && json_last_error() !== JSON_ERROR_NONE) {
+            // JSON解析出错
+            throw new \Exception('JSON解析出错：' . json_last_error_msg());
+        } else {
+            // JSON解析成功
+            return $jsonArray;
+        }
+    }
+
+    public function uniappPageJsonWrite($arr, $path)
+    {
+
+        $arrToString = json_encode($arr);
+
+        $changew = 'changew';
+        $arrToString = preg_replace('/' . $changew . '/', '\\\\w', $arrToString);
+
+        $result = @file_put_contents($path, $arrToString);
+        if (!$result) {
+            throw new CommonException($path . '文件不存在或者权限不足');
+        }
+        return true;
+    }
     public function deleteFolder($folderPath)
     {
         if (is_dir($folderPath)) {

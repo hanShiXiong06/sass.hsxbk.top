@@ -30,16 +30,29 @@ class OrderService extends BaseAdminService
     }
 
     /**
+     * @Notes:更改订单状态
+     * @Interface changeStatus
+     * @param $data
+     * @return true
+     * @author: TK
+     * @Time: 2024/7/25   下午9:55
+     */
+public function changeStatus($data)
+{
+    $this->model->where([['order_id', '=', $data['order_id']], ['site_id', '=', $this->site_id]])->update($data);
+    return true;
+}
+    /**
      * 获取订单列列表
      * @param array $where
      * @return array
      */
     public function getPage(array $where = [])
     {
-        $field = 'id,site_id,member_id,order_from,order_id,order_money,order_discount_money,is_send,is_pick,order_status,refund_status,out_trade_no,remark,pay_time,create_time,close_reason,is_enable_refund,close_time,ip,update_time,delete_time,send_log';
+        $field = 'id,site_id,member_id,order_from,order_id,order_money,order_discount_money,is_send,is_pick,order_status,refund_status,out_trade_no,remark,pay_time,create_time,close_reason,is_enable_refund,close_time,ip,update_time,delete_time,send_log,remark';
         $order = 'id desc';
         $search_model = $this->model->where([['site_id', "=", $this->site_id]])
-            ->withSearch(["member_id", "order_from", "order_id", "is_send", "order_status", "refund_status", "remark", "create_time"], $where)
+            ->withSearch(["member_id", "order_from", "order_id","out_trade_no", "is_send", "order_status", "refund_status", "remark", "create_time"], $where)
             ->with('member')->field($field)->order($order);
         $list = $this->pageQuery($search_model);
         return $list;

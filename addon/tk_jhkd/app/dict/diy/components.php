@@ -12,8 +12,8 @@ return [
                 'uses' => 1, // 最大添加数量
                 'sort' => 10001,
                 'value' => [
-                    "songbackground"=>"#2979ff",
-                    "btbackground"=>"#2979ff",
+                    "songbackground"=>"#4541c7",
+                    "btbackground"=>"#4541c7",
                     "btfontcolor"=>"#ffffff",
                     "btname"=>"去下单",
                     "qsfontcolor"=>"#030307",

@@ -3,8 +3,6 @@
 namespace addon\shop;
 
 
-use app\service\admin\diy\DiyConfigService;
-use app\service\admin\diy\DiyService;
 
 /**
  * 插件安装之后单独的插件方法

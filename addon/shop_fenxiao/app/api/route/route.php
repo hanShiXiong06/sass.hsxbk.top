@@ -73,10 +73,14 @@ Route::group('shop_fenxiao', function () {
     Route::get('order/agent', 'addon\shop_fenxiao\app\api\controller\agent\Order@lists');
     //代理佣金统计
     Route::get('order/agent/stat', 'addon\shop_fenxiao\app\api\controller\agent\Order@stat');
+    //代理商配置
+    Route::get('order/agent/config', 'addon\shop_fenxiao\app\api\controller\agent\Config@getConfig');
     //团队分红订单
     Route::get('order/team', 'addon\shop_fenxiao\app\api\controller\team\Order@lists');
     //团队分红佣金统计
     Route::get('order/team/stat', 'addon\shop_fenxiao\app\api\controller\team\Order@stat');
+    //团队分红配置
+    Route::get('order/team/config', 'addon\shop_fenxiao\app\api\controller\team\Config@getConfig');
     /********************************************************** 任务奖励 *************************************************/
     //任务列表
     Route::get('task/lists', 'addon\shop_fenxiao\app\api\controller\task\Task@lists');
@@ -84,6 +88,8 @@ Route::group('shop_fenxiao', function () {
     Route::get('task/detail/:task_id', 'addon\shop_fenxiao\app\api\controller\task\Task@info');
     //任务奖励记录
     Route::get('task_reward_list/:task_id', 'addon\shop_fenxiao\app\api\controller\task\Task@getRewardList');
+    //任务配置
+    Route::get('task/config', 'addon\shop_fenxiao\app\api\controller\task\Config@getConfig');
     /********************************************************** 销售奖励 *************************************************/
     //销售周期列表
     Route::get('sale', 'addon\shop_fenxiao\app\api\controller\sale\Sale@lists');
@@ -98,6 +104,8 @@ Route::group('shop_fenxiao', function () {
 
     //最新的销售周期
     Route::get('sale_ranking_now', 'addon\shop_fenxiao\app\api\controller\sale\Sale@getNowSalePeriod');
+    //销售奖励配置
+    Route::get('sale/config', 'addon\shop_fenxiao\app\api\controller\sale\Config@getConfig');
 
 })->middleware(ApiChannel::class)
     ->middleware(ApiCheckToken::class, true) //表示验证登录

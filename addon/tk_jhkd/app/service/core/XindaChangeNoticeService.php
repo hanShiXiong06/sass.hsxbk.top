@@ -16,6 +16,7 @@ use think\Exception;
 use addon\tk_jhkd\app\dict\order\JhkdOrderAddDict;
 use addon\tk_jhkd\app\dict\order\JhkdOrderDict;
 use think\facade\Db;
+use think\facade\Log;
 use think\Response;
 use addon\tk_jhkd\app\model\shop_order\ShopOrder;
 use addon\tk_jhkd\app\service\admin\shop\OrderService;
@@ -150,17 +151,16 @@ class XindaChangeNoticeService extends BaseApiService
             if (!$shopDelivery->isEmpty()) {
                 $shopDelivery->is_pick = 1;
                 $shopDelivery->is_send = 1;
-                $shopDelivery->real_price=$total_fee;
-                $shopDelivery->order_status_name='揽收计费完成';
+                $shopDelivery->real_price = $total_fee;
+                $shopDelivery->order_status_name = '揽收计费完成';
                 $shopDelivery->save();
             }
             $deliveryInfo = $this->deliveryModel->where(['order_no' => $order_no])->findOrEmpty();
             if ($deliveryInfo->isEmpty()) {
-                return Response::create(['msg' => '推送成功', 'code' => 0,'data'=>''], 'json', 200);
+                return Response::create(['msg' => '接受成功', 'code' => 200, 'success' => true], 'json', 200);
             }
             $realInfo = $this->deliveryRealModel->where(['order_id' => $deliveryInfo['order_id']])->findOrEmpty();
-
-            $realInfo->save([
+            $realInfo->where(['order_id' => $deliveryInfo['order_id']])->update([
                 'order_id' => $deliveryInfo['order_id'],
                 'weight' => $info['realWeight'],
                 'volume' => $info['realVolume'] ?? '',
@@ -170,14 +170,12 @@ class XindaChangeNoticeService extends BaseApiService
                 'total_fee' => $total_fee,
             ]);
             $orderInfo = $this->orderModel->where(['order_id' => $deliveryInfo['order_id']])->findOrEmpty();
-            (new NoticeService())->send($orderInfo['site_id'], 'tk_jhkd_order_pick', ['order_id' =>$orderInfo['order_id']]);
             //修改订单状态
             $orderInfo->save(['order_status' => JhkdOrderDict::FINISH_PICK]);
-
             //生成补差价订单
             if ($orderInfo['order_money'] < $total_fee) {
                 $add_money = ($total_fee - $orderInfo['order_money']) * 1.2;
-                $addinfo = (new OrderAdd())->save([
+                $addinfo = (new OrderAdd())->create([
                     'site_id' => $orderInfo['site_id'],
                     'member_id' => $orderInfo['member_id'],
                     'order_no' => create_no(),
@@ -187,16 +185,15 @@ class XindaChangeNoticeService extends BaseApiService
                 ]);
                 //添加订单支付表
                 (new CorePayService())->create($orderInfo['site_id'], PayDict::MEMBER, $orderInfo['member_id'], $add_money, JhkdOrderAddDict::getOrderType()['type'], $addinfo['id'], "快递补差价付款");
-                (new NoticeService())->send($orderInfo['site_id'], 'tk_jhkd_order_add', ['order_id' =>$orderInfo['order_id']]);
+                (new NoticeService())->send($orderInfo['site_id'], 'tk_jhkd_order_add', ['order_id' => $orderInfo['order_id']]);
             }
             Db::commit();
-            return Response::create(['msg' => '推送成功', 'code' => 0,'data'=>''], 'json', 200);
+            return Response::create(['msg' => '接受成功', 'code' => 200, 'success' => true], 'json', 200);
         } catch (Exception $e) {
             Db::rollback();
-            return Response::create(['msg' => '推送成功', 'code' => 0,'data'=>''], 'json', 200);
+            Log::write('辛达回调处理-重量推送-异常' . $e->getMessage());
+            return Response::create(['msg' => '接受成功', 'code' => 200, 'success' => true], 'json', 200);
         }
-
-
     }
 
     public function doPick($data)

@@ -14,7 +14,7 @@ return [
                 },
                 'task' => function ($site_id, $config) {
                     return [
-                        'icon' => '/addon/tk_cps/rule/growth-rule-cart.png',
+                        'icon' => '/addon/tk_jhkd/rule/growth-rule-cart.png',
                         'title' => '聚合快递下单',
                         'desc' => "聚合快递订单完成后赠送{$config['point']}积分",
                         'button' => [

@@ -14,6 +14,13 @@ return [
                 'action' => 'decorate'
             ],
             [
+                'name' => 'TK_CPS_DIY_MEMBER',
+                'title' => 'CPS个人中心',
+                'url' => '/addon/tk_cps/pages/member',
+                'is_share' => 1,
+                'action' => 'decorate'
+            ],
+            [
                 'name' => 'TK_CPS_ACT_LIST',
                 'title' => '活动列表',
                 'url' => '/addon/tk_cps/pages/act',
@@ -280,13 +287,13 @@ return [
                 'is_share' => 1,
                 'action' => ''
             ],
-            [
-                'name' => 'TK_CPS_DOUYIN_UNION',
-                'title' => '抖音精选联盟',
-                'url' => '/addon/tk_cps/pages/index?type=0&act_id=56&style=embedded',
-                'is_share' => 1,
-                'action' => ''
-            ],
+//            [
+//                'name' => 'TK_CPS_DOUYIN_UNION',
+//                'title' => '抖音精选联盟',
+//                'url' => '/addon/tk_cps/pages/index?type=0&act_id=56&style=embedded',
+//                'is_share' => 1,
+//                'action' => ''
+//            ],
 
             [
                 'name' => 'TK_CPS_ZHEKOU_JUHECHONGZHI',
@@ -323,13 +330,13 @@ return [
                 'is_share' => 1,
                 'action' => 'decorate'
             ],
-            [
-                'name' => 'TK_CPS_WEAPP_DOUYINHAOWU',
-                'title' => '抖音好物',
-                'url' => '/cpsmeishi/pages/index?type=11&act_id=56',
-                'is_share' => 1,
-                'action' => 'decorate'
-            ],
+//            [
+//                'name' => 'TK_CPS_WEAPP_DOUYINHAOWU',
+//                'title' => '抖音好物',
+//                'url' => '/cpsmeishi/pages/index?type=11&act_id=56',
+//                'is_share' => 1,
+//                'action' => 'decorate'
+//            ],
             [
                 'name' => 'TK_CPS_WEAPP_JINGDONG_JINGXUAN',
                 'title' => '京东精选',
@@ -344,13 +351,20 @@ return [
                 'is_share' => 1,
                 'action' => 'decorate'
             ],
-            [
-                'name' => 'TK_CPS_WEAPP_MEITUAN_DAODIAN',
-                'title' => '美团到店',
-                'url' => '/addon/tk_cps/pages/index?type=11&act_id=9',
-                'is_share' => 1,
-                'action' => 'decorate'
-            ],
+//            [
+//                'name' => 'TK_CPS_WEAPP_MEITUAN_DAODIAN',
+//                'title' => '美团到店',
+//                'url' => '/addon/tk_cps/pages/index?type=11&act_id=9',
+//                'is_share' => 1,
+//                'action' => 'decorate'
+//            ],
+//            [
+//                'name' => 'TK_CPS_WEAPP_TUANGOU_ZHUSJOU',
+//                'title' => '团购助手',
+//                'url' => '/addon/tk_cps/pages/index?type=11&act_id=2409',
+//                'is_share' => 1,
+//                'action' => 'decorate'
+//            ],
             [
                 'name' => 'TK_CPS_WEAPP_ELE_WAIMAI',
                 'title' => '饿了么外卖',

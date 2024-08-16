@@ -24,7 +24,6 @@ use EasyWeChat\Kernel\Exceptions\InvalidArgumentException;
 class CoreWeappAuthService extends BaseCoreService
 {
 
-
     /**
      * 网页授权
      * @param int $site_id
@@ -40,8 +39,8 @@ class CoreWeappAuthService extends BaseCoreService
      */
     public function session(int $site_id, ?string $code)
     {
-        $config = (new CoreWeappConfigService())->getWeappConfig($site_id);
-        if ($config['is_authorization']) {
+        $config = ( new CoreWeappConfigService() )->getWeappConfig($site_id);
+        if ($config[ 'is_authorization' ]) {
             return CoreOplatformService::codeToSession($site_id, $code);
         } else {
             $utils = CoreWeappService::app($site_id)->getUtils();
@@ -59,24 +58,27 @@ class CoreWeappAuthService extends BaseCoreService
      * @throws DecryptException
      * @throws InvalidArgumentException
      */
-    public function decryptData(int $site_id, string $session, string $iv, string $encrypted_data){
-
+    public function decryptData(int $site_id, string $session, string $iv, string $encrypted_data)
+    {
         $utils = CoreWeappService::app($site_id)->getUtils();
         return $utils->decryptSession($session, $iv, $encrypted_data);
     }
 
     /**
-     * v
+     * 获取用户手机号
      * @param int $site_id
      * @param string $code
      * @return \EasyWeChat\Kernel\HttpClient\Response|\Symfony\Contracts\HttpClient\ResponseInterface
      * @throws InvalidArgumentException
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
-    public function getUserPhoneNumber(int $site_id,string $code){
+    public function getUserPhoneNumber(int $site_id, string $code)
+    {
         $api = CoreWeappService::appApiClient($site_id);
+        CoreWeappService::refreshToken($site_id); // 为防止多次拒绝手机号的情况，需要刷新token
         return $api->postJson('wxa/business/getuserphonenumber', [
-            'code' => (string)$code
+            'code' => (string) $code
         ]);
     }
+
 }

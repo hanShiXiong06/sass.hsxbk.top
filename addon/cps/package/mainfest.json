@@ -1,0 +1,9 @@
+{
+	"mp-weixin": {
+		"permission" : {
+			"scope.userLocation" : {
+				"desc" : "获取当前位置"
+			}
+		}
+	}
+}

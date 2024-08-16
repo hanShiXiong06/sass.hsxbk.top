@@ -22,19 +22,22 @@
                                 <span >¥{{row.price}}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column  label="使用门槛" min-width="130" >
+                        <el-table-column label="使用门槛" min-width="130" >
                             <template #default="{ row }">
                                 <span v-if="row.min_condition_money == '0.00'">无门槛</span>
                                 <span v-else >满{{ row.min_condition_money }}元可用</span>
                             </template>
                         </el-table-column>
-                        <el-table-column  label="有效期" min-width="210">
+                        <el-table-column label="有效期" min-width="210">
                             <template #default="{ row }">
-                                <span v-if="row.valid_type == 1">  领取之日起{{ row.length || '' }} 天内有效</span>
-                                <span v-else> 使用截止时间至{{ row.valid_end_time || ''}} </span>
+                                <template v-if="row.receive_type == 1">
+                                    <span v-if="row.valid_type == 1">  领取之日起{{ row.length || '' }} 天内有效</span>
+                                    <span v-else> 使用截止时间至{{ row.valid_end_time || ''}} </span>
+                                </template>
+                                <span v-else>--</span>
                             </template>
                         </el-table-column>
-                        <el-table-column  label="赠券数" min-width="130">
+                        <el-table-column label="赠券数" min-width="130">
                             <template #default="{ row }">
                                 <el-input-number
                                     v-model="formData.coupon_list['id_' + row.id]"

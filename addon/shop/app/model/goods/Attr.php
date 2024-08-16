@@ -12,9 +12,6 @@
 namespace addon\shop\app\model\goods;
 
 use core\base\BaseModel;
-use think\model\concern\SoftDelete;
-use think\model\relation\HasMany;
-use think\model\relation\HasOne;
 
 /**
  * 商品参数模型
@@ -56,8 +53,8 @@ class Attr extends BaseModel
      */
     public function searchAttrNameAttr($query, $value, $data)
     {
-        if ($value) {
-            $query->where("attr_name", 'like', '%' . $value . '%');
+        if ($value != '') {
+            $query->where("attr_name", 'like', '%' . $this->handelSpecialCharacter($value) . '%');
         }
     }
 

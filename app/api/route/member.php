@@ -91,9 +91,6 @@ Route::group('member', function () {
     //删除会员收货地址
     Route::delete('address/:id', 'member.Address/del');
 
-    /***************************************************** 会员等级 **************************************************/
-    Route::get('level', 'member.Level/lists');
-
     /***************************************************** 会员签到 **************************************************/
     //会员签到记录
     Route::get('sign', 'member.MemberSign/lists');
@@ -118,6 +115,9 @@ Route::group('member', function () {
     /***************************************************** 会员管理 ****************************************************/
     //会员日志
     Route::post('log', 'member.Member/log');
+
+    /***************************************************** 会员等级 **************************************************/
+    Route::get('level', 'member.Level/lists');
 })->middleware(ApiChannel::class)
     ->middleware(ApiCheckToken::class)
     ->middleware(ApiLog::class);

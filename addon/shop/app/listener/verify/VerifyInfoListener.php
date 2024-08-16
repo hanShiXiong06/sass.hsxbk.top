@@ -12,14 +12,7 @@
 namespace addon\shop\app\listener\verify;
 
 
-use addon\shop\app\dict\order\OrderDeliveryDict;
-use addon\shop\app\dict\order\OrderDict;
-use addon\shop\app\dict\order\OrderGoodsDict;
-use addon\shop\app\dict\order\OrderLogDict;
-use addon\shop\app\model\order\Order;
 use addon\shop\app\model\order\OrderGoods;
-use addon\shop\app\service\core\order\CoreOrderFinishService;
-use core\exception\CommonException;
 
 /**
  * 核销详情

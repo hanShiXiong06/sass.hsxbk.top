@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'DIY_CPS_INDEX' => [
+    'DIY_CPS_DIY' => [
         'cps_index' => [ // 页面标识
             "title" => "CPS联盟", // 页面名称
             'cover' => 'addon/shop/diy/template/cps-cover.png', // 页面封面图

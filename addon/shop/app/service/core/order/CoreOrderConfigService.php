@@ -18,7 +18,7 @@ use core\base\BaseCoreService;
 /**
  * 订单设置服务层
  * Class CoreOrderConfigService
- * @package addon\shopaddon\shop\app\service\core\order
+ * @package addon\shop\app\service\core\order
  */
 class CoreOrderConfigService extends BaseCoreService
 {

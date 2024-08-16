@@ -22,8 +22,7 @@
                                         class="w-[62px] h-[32px] mr-[10px] leading-[30px] text-center border-[1px] border-solid border-[var(--el-border-color)] rounded-[4px] cursor-pointer"
                                         :class="{ '!border-[var(--el-color-primary)]': item.id == formData.level_num }"
                                         @click="levelWeightChange(item.id)">{{ item.name }}</div>
-                                    <el-input style="display: none;" v-model="formData.level_num" clearable
-                                        class="input-width" />
+                                    <el-input style="display: none;" v-model="formData.level_num" clearable class="input-width" />
                                 </template>
 
                             </div>
@@ -35,7 +34,7 @@
                     </el-form-item>
                     <el-form-item :label="t('oneRate')" prop="one_rate">
                         <div>
-                            <el-input v-model="formData.one_rate" maxlength="6" show-word-limit clearable class="input-width" @keyup="filterDigit($event)">
+                            <el-input v-model="formData.one_rate" maxlength="6" clearable class="input-width" @keyup="filterDigit($event)">
                                 <template #append>%</template>
                             </el-input>
                             <p class="text-[var(--el-text-color-secondary)] text-[12px] leading-[25px]">{{ t('oneRatePlaceholder') }}</p>
@@ -43,7 +42,7 @@
                     </el-form-item>
                     <el-form-item :label="t('twoRate')" prop="two_rate">
                         <div>
-                            <el-input v-model="formData.two_rate" clearable maxlength="6" show-word-limit class="input-width" @keyup="filterDigit($event)">
+                            <el-input v-model="formData.two_rate" clearable maxlength="6" class="input-width" @keyup="filterDigit($event)">
                                 <template #append>%</template>
                             </el-input>
                             <p class="text-[var(--el-text-color-secondary)] text-[12px] leading-[25px]">{{ t('twoRatePlaceholder') }}</p>
@@ -93,10 +92,10 @@
                                     }
                                 }
                             }]" label-width="175px">
-                                <el-input v-if="item.key == 'fenxiao_order_money'" @keyup="filterDigit($event)" v-model.trim="formData[item.key]"  maxlength="7" show-word-limit clearable class="input-width mr-[10px]">
+                                <el-input v-if="item.key == 'fenxiao_order_money'" @keyup="filterDigit($event)" v-model.trim="formData[item.key]"  maxlength="7" clearable class="input-width mr-[10px]">
                                     <template #append>{{ item.unit }}</template>
                                 </el-input>
-                                <el-input v-else v-model.trim="formData[item.key]" @keyup="filterNumber($event)" maxlength="7" show-word-limit clearable class="input-width mr-[10px]">
+                                <el-input v-else v-model.trim="formData[item.key]" @keyup="filterNumber($event)" maxlength="7" clearable class="input-width mr-[10px]">
                                     <template #append>{{ item.unit }}</template>
                                 </el-input>
                                 <el-button type="primary" link @click="upgradeMethodDelete(item)">{{ t('delete') }}</el-button>
@@ -212,7 +211,6 @@ const formRules = computed(() => {
     }
 })
 const formRef = ref<FormInstance>()
-
 
 const levelWeightChange = (id: Number) => {
     formData.level_num = id

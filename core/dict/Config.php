@@ -34,8 +34,8 @@ class Config extends BaseDict
             {
                 $system_config = empty($system_config) ? $file_data : array_merge2($system_config, $file_data);
             }
-
         }
+
         return $system_config;
     }
 }

@@ -27,6 +27,7 @@ class CoreConfigService extends BaseCoreService
         parent::__construct();
         $this->model = new SysConfig();
     }
+
     /**
      * 获取配置信息
      * @param int $site_id
@@ -36,8 +37,8 @@ class CoreConfigService extends BaseCoreService
     public function getConfig(int $site_id, string $key)
     {
         $where = array(
-            ['config_key', '=', $key],
-            ['site_id', '=', $site_id]
+            [ 'config_key', '=', $key ],
+            [ 'site_id', '=', $site_id ]
         );
         return $this->model->where($where)->field('id,site_id,config_key,value,status,create_time,update_time')->findOrEmpty()->toArray();
     }
@@ -52,8 +53,8 @@ class CoreConfigService extends BaseCoreService
     public function setConfig(int $site_id, string $key, array $value)
     {
         $where = array(
-            ['config_key', '=', $key],
-            ['site_id', '=', $site_id]
+            [ 'config_key', '=', $key ],
+            [ 'site_id', '=', $site_id ]
         );
         $data = array(
             'site_id' => $site_id,
@@ -61,11 +62,11 @@ class CoreConfigService extends BaseCoreService
             'value' => $value,
         );
         $info = $this->getConfig($site_id, $key);
-        if(empty($info)){
-            $data['create_time'] = time();
+        if (empty($info)) {
+            $data[ 'create_time' ] = time();
             $res = $this->model->create($data);
-        }else{
-            $data['update_time'] = time();
+        } else {
+            $data[ 'update_time' ] = time();
             $res = $this->model->where($where)->save($data);
         }
 
@@ -82,8 +83,8 @@ class CoreConfigService extends BaseCoreService
     public function modifyStatus(int $site_id, int $status, string $key)
     {
         $where = array(
-            ['config_key', '=', $key],
-            ['site_id', '=', $site_id]
+            [ 'config_key', '=', $key ],
+            [ 'site_id', '=', $site_id ]
         );
         $data = array(
             'status' => $status,
@@ -93,16 +94,16 @@ class CoreConfigService extends BaseCoreService
 
     /**
      * 返回config信息
+     * @param int $site_id
      * @param string $key
      * @return array|mixed
      */
-    public function getConfigValue(int $site_id, string  $key)
+    public function getConfigValue(int $site_id, string $key)
     {
         $config_info = $this->getConfig($site_id, $key);
-        if(empty($config_info))
-        {
+        if (empty($config_info)) {
             return [];
         }
-        return $config_info['value'];
+        return $config_info[ 'value' ];
     }
 }

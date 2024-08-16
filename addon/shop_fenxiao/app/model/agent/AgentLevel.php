@@ -46,7 +46,7 @@ class AgentLevel extends BaseModel
      */
     public function searchNameAttr(Query $query, $value, $data)
     {
-        if ($value) {
+        if ($value != '') {
             $query->whereLike('name', "%" . $value . "%");
         }
     }
@@ -59,14 +59,14 @@ class AgentLevel extends BaseModel
      */
     public function searchCreateTimeAttr(Query $query, $value, $data)
     {
-        $start_time = empty($value[0]) ? 0 : strtotime($value[0]);
-        $end_time = empty($value[1]) ? 0 : strtotime($value[1]);
+        $start_time = empty($value[ 0 ]) ? 0 : strtotime($value[ 0 ]);
+        $end_time = empty($value[ 1 ]) ? 0 : strtotime($value[ 1 ]);
         if ($start_time > 0 && $end_time > 0) {
             $query->whereBetweenTime('create_time', $start_time, $end_time);
         } else if ($start_time > 0 && $end_time == 0) {
-            $query->where([['create_time', '>=', $start_time]]);
+            $query->where([ [ 'create_time', '>=', $start_time ] ]);
         } else if ($start_time == 0 && $end_time > 0) {
-            $query->where([['create_time', '<=', $end_time]]);
+            $query->where([ [ 'create_time', '<=', $end_time ] ]);
         }
     }
 }

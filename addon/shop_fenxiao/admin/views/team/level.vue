@@ -51,20 +51,18 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed, toRaw } from "vue";
+import { ref } from "vue";
 import { t } from "@/lang";
 import {getTeamConfig, setTeamConfig} from '@/addon/shop_fenxiao/api/team'
-import {  ElMessage, FormInstance } from 'element-plus'
+import {  ElMessage } from 'element-plus'
 import {  useRouter } from "vue-router";
 import { CollectionTag } from "@element-plus/icons-vue";
 import { filterDigit } from '@/utils/common'
 
-// const route = useRoute();
 const router = useRouter();
-// const pageName = route.meta.title;
 const loading = ref<Boolean>(false)
 
-let teamLevelData = ref({
+const teamLevelData = ref({
     is_open: "0",
     level: [],
     loading: false
@@ -99,11 +97,11 @@ const inputChange = (event, type, data)=>{
 }
 let isSaveRepetition = false;
 const save = ()=>{
-    let obj = {};
+    let obj: any = {};
     obj.is_open = teamLevelData.value.is_open;
     obj.level = [];
-    teamLevelData.value.level.forEach((item,index)=>{
-        let itemObj =  {};
+    teamLevelData.value.level.forEach((item: any,index)=>{
+        let itemObj: any = {};
         itemObj.level_id = item.level_id;
         itemObj.team_rate = item.team_rate;
         itemObj.team_flat_rate = item.team_flat_rate;

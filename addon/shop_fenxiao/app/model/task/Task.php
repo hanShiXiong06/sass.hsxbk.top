@@ -103,8 +103,8 @@ class Task extends BaseModel
      */
     public function searchNameAttr(Query $query, $value, $data)
     {
-        if ($value) {
-            $query->whereLike('name', "%" . $value . "%");
+        if ($value != '') {
+            $query->whereLike('name', "%" . $this->handelSpecialCharacter($value) . "%");
         }
     }
     /**

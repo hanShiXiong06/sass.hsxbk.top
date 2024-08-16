@@ -99,7 +99,9 @@ class GoodsService extends BaseApiService
         if (!empty($this->member_id)) {
             $member_info = $this->getMemberInfo();
             foreach ($list[ 'data' ] as $k => &$v) {
-                $v[ 'goodsSku' ][ 'member_price' ] = $this->getMemberPrice($member_info, $v[ 'member_discount' ], $v[ 'goodsSku' ][ 'member_price' ], $v[ 'goodsSku' ][ 'price' ]);
+                if (!empty($v[ 'goodsSku' ])) {
+                    $v[ 'goodsSku' ][ 'member_price' ] = $this->getMemberPrice($member_info, $v[ 'member_discount' ], $v[ 'goodsSku' ][ 'member_price' ], $v[ 'goodsSku' ][ 'price' ]);
+                }
             }
         }
         return $list;
@@ -164,7 +166,7 @@ class GoodsService extends BaseApiService
                     [ 'site_id', '=', $this->site_id ],
                     [ 'label_id', 'in', $info[ 'goods' ][ 'label_ids' ] ]
                 ])->field('label_id, label_name, memo')
-                    ->select()->toArray();
+                    ->order('sort desc,create_time desc')->select()->toArray();
             }
             if (!empty($info[ 'goods' ][ 'brand_id' ])) {
                 // 商品品牌
@@ -173,6 +175,7 @@ class GoodsService extends BaseApiService
                     [ 'site_id', '=', $this->site_id ],
                     [ 'brand_id', '=', $info[ 'goods' ][ 'brand_id' ] ]
                 ])->field('brand_id, brand_name, logo, desc')
+                    ->order('sort desc,create_time desc')
                     ->findOrEmpty()->toArray();
             }
 
@@ -188,7 +191,7 @@ class GoodsService extends BaseApiService
 
             if (!empty($this->member_id)) {
                 $goods_collect_model = new GoodsCollect();
-                $collect_info = $goods_collect_model->where([ [ 'site_id', '=', $this->site_id ], [ 'member_id', '=', $this->member_id ], [ 'goods_id', '=', $info['goods_id'] ] ])->findOrEmpty()->toArray();
+                $collect_info = $goods_collect_model->where([ [ 'site_id', '=', $this->site_id ], [ 'member_id', '=', $this->member_id ], [ 'goods_id', '=', $info[ 'goods_id' ] ] ])->findOrEmpty()->toArray();
                 if (!empty($collect_info)) {
                     $info[ 'goods' ][ 'is_collect' ] = 1;
                 } else {
@@ -291,7 +294,9 @@ class GoodsService extends BaseApiService
         if (!empty($this->member_id)) {
             $member_info = $this->getMemberInfo();
             foreach ($list as $k => &$v) {
-                $v[ 'goodsSku' ][ 'member_price' ] = $this->getMemberPrice($member_info, $v[ 'member_discount' ], $v[ 'goodsSku' ][ 'member_price' ], $v[ 'goodsSku' ][ 'price' ]);
+                if (!empty($v[ 'goodsSku' ])) {
+                    $v[ 'goodsSku' ][ 'member_price' ] = $this->getMemberPrice($member_info, $v[ 'member_discount' ], $v[ 'goodsSku' ][ 'member_price' ], $v[ 'goodsSku' ][ 'price' ]);
+                }
             }
         }
         return $list;
@@ -405,6 +410,8 @@ class GoodsService extends BaseApiService
                         && !empty($member_info[ 'memberLevelData' ][ 'level_benefits' ][ 'discount' ])
                         && !empty($member_info[ 'memberLevelData' ][ 'level_benefits' ][ 'discount' ][ 'is_use' ])) {
                         $v[ 'member_price' ] = number_format($v[ 'price' ] * $member_info[ 'memberLevelData' ][ 'level_benefits' ][ 'discount' ][ 'discount' ] / 10, 2, '.', '');
+                    } else {
+                        $v[ 'member_price' ] = $v[ 'price' ];
                     }
 
                 } elseif ($member_discount == 'fixed_price') {

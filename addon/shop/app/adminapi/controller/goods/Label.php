@@ -103,7 +103,6 @@ class Label extends BaseAdminController
         return success('DELETE_SUCCESS');
     }
 
-
     /**
      * 修改排序
      * @return \think\Response

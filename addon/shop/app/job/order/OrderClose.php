@@ -15,7 +15,6 @@ use addon\shop\app\dict\order\OrderLogDict;
 use addon\shop\app\model\order\Order;
 use addon\shop\app\service\core\order\CoreOrderCloseService;
 use core\base\BaseJob;
-use think\facade\Log;
 
 /**
  * 订单自动关闭

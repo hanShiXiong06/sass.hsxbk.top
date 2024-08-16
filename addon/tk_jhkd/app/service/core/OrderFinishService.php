@@ -66,7 +66,7 @@ class OrderFinishService extends BaseApiService
         if ($member_info['member_level'] && !empty($member_info['member_level']['level_benefits'])) {
             $level_benefits = $member_info['member_level']['level_benefits'];
             foreach ($level_benefits as $k => $v) {
-                if ($k == 'tk_cps_bwc_level' && $v['is_use'] == 1 && $v['expand'] > 0) {
+                if ($k == 'tk_jhkd_fenxiao' && $v['is_use'] == 1 && $v['expand'] > 0) {
                     (new CoreMemberAccountService())->addLog($site_id, $member_id, MemberAccountTypeDict::MONEY, $v['expand'], 'bwc_award', '霸王餐等级单单激励');
                 }
             }

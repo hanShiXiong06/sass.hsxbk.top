@@ -29,5 +29,4 @@ class App extends BaseAdminController
         return success((new AppService())->getAppList());
     }
 
-
 }

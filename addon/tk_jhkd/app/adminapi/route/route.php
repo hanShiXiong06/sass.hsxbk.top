@@ -56,6 +56,8 @@ Route::group("tk_jhkd", function () {
     Route::post('shop/order/delivery', 'addon\tk_jhkd\app\adminapi\controller\shop\Order@orderDelivery');
    //取消发货
     Route::post('shop/order/cancelorder', 'addon\tk_jhkd\app\adminapi\controller\shop\Order@cancelOrder');
+   //更改订单状态
+    Route::post('changestatus', 'addon\tk_jhkd\app\adminapi\controller\order\Order@changeStatus');
 })->middleware([
     AdminCheckToken::class,
     AdminCheckRole::class,
@@ -94,6 +96,8 @@ Route::group('tk_jhkd', function () {
     Route::get('order', 'addon\tk_jhkd\app\adminapi\controller\order\Order@lists');
     //订单列详情
     Route::get('order/:id', 'addon\tk_jhkd\app\adminapi\controller\order\Order@info');
+    //订单备注
+    Route::post('remark', 'addon\tk_jhkd\app\adminapi\controller\order\Order@remark');
     //发单
     Route::get('sendorder/:order_id', 'addon\tk_jhkd\app\adminapi\controller\order\Order@sendOrder');
     //退款取消发单

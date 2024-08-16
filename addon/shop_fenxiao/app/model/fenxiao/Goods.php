@@ -230,8 +230,8 @@ class Goods extends BaseModel
      */
     public function searchGoodsNameAttr($query, $value, $data)
     {
-        if ($value) {
-            $query->where("goods_name", "like", "%" . $value . "%");
+        if ($value != '') {
+            $query->where("goods_name", "like", "%" . $this->handelSpecialCharacter($value) . "%");
         }
     }
 
@@ -242,7 +242,7 @@ class Goods extends BaseModel
      */
     public function searchSubTitleAttr($query, $value, $data)
     {
-        if ($value) {
+        if ($value != '') {
             $query->where("sub_title", "like", "%" . $value . "%");
         }
     }

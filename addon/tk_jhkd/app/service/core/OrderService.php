@@ -289,10 +289,8 @@ class OrderService extends BaseApiService
      * @param array $pay_info
      * @return true
      */
-    public
-    function pay(array $pay_info)
+    public function pay(array $pay_info)
     {
-
         try {
             Db::startTrans();
             $trade_id = $pay_info['trade_id'] ?? 0;
@@ -318,7 +316,7 @@ class OrderService extends BaseApiService
             );
             Db::commit();
             (new NoticeService())->send($order_info['site_id'], 'tk_jhkd_order_pay', ['order_id' => $order_info['order_id']]);
-            //自动发单方式话，采取队列方式发单
+            //自动发单方式话，直接发单方式/队列发单方式
             $sendauto = $this->getConfig()['autosend'];
             if ($sendauto == 1) {
                 (new OrderService())->sendOrder($order_info['order_id']);
@@ -333,6 +331,8 @@ class OrderService extends BaseApiService
             return true;
         } catch (Exception $e) {
             Db::rollback();
+            Log::write('支付回调失败'.date('Y-m-d H:i:s'));
+            Log::write($e->getMessage());
             throw new CommonException($e->getMessage());
         }
     }
@@ -400,7 +400,7 @@ class OrderService extends BaseApiService
             $trade_type = $data['trade_type'];
             $trade_id = $data['trade_id'];
             $site_id = $data['site_id'];
-            $payInfo = $this->PayModel->where(['site_id' => $site_id, 'trade_id' => $trade_id])->where('status', '<>', -1)->findOrEmpty();
+            $payInfo = $this->PayModel->where(['site_id' => $site_id, 'trade_id' => $trade_id,'trade_type'=>JhkdOrderDict::getOrderType()['type']])->where('status', '<>', -1)->findOrEmpty();
             if ($payInfo->isEmpty()) throw new CommonException('select pay is empty');
             $payInfo->save([
                 'status' => -1,
@@ -470,11 +470,11 @@ class OrderService extends BaseApiService
             }
 
         }
-        if ($price >= ($data['originalFee'] + $data['preBjFee'])) {
-            $price = $data['originalFee'] - 0.02;
-        }
+//        if ($price >= ($data['originalFee'] + $data['preBjFee'])) {
+//            $price = $data['originalFee'] - 0.02;
+//        }
         if ($price < $data['preOrderFee']) {
-            $price = $data['preOrderFee'] + 2;
+            $price = $data['preOrderFee'] + 3;
         }
         return round($price, 2);
     }

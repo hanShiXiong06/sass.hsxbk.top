@@ -2,28 +2,16 @@
 return [
     'pages' => <<<EOT
         // PAGE_BEGIN
+				// *********************************** 炫洛cps联盟 ***********************************
         {
-            "path": "{{addon_name}}/pages/cps/index",
+            "path": "cps/pages/cps/index",
             "style": {
                 // #ifdef H5
                 "navigationStyle": "custom",
                 // #endif
-                "navigationBarTitleText": "%{{addon_name}}.pages.cps.index%"
+                "navigationBarTitleText": "%cps.pages.cps.index%"
             } 
-		}
-        ],
-		"plugins": 
-		{
-			"meishi": {
-				"version": "latest",
-				"provider": "wx5c787b48e6a02a51"
-			},
-			"jtkMovie": {
-                "version": "latest",
-                "provider": "wx89752980e795bfde"
-          }
-	}
-}
+		},
 		// PAGE_END
 EOT
 ];

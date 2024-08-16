@@ -20,11 +20,11 @@
                                     <el-image v-if="row.member && row.member.headimg" class="w-[50px] h-[50px]" :src="img(row.member.headimg)" fit="contain">
                                         <template #error>
                                             <div class="image-slot">
-                                                <img class="w-[50px] h-[50px]" src="@/app/assets/images/default_headimg.png" />
+                                                <img class="w-[50px] h-[50px] rounded-full" src="@/app/assets/images/member_head.png" alt="">
                                             </div>
                                         </template>
                                     </el-image>
-                                    <img v-else class="w-[50px] h-[50px]" src="@/app/assets/images/default_headimg.png" fit="contain" />
+                                    <img class="w-[50px] h-[50px] rounded-full" v-else src="@/app/assets/images/member_head.png" alt="">
                                 </div>
                                 <div class="ml-2">
                                     <span :title="row.member && row.member.nickname" class="multi-hidden">{{row.member && row.member.nickname || row.member && row.member.username}}</span>
@@ -91,7 +91,7 @@ const salePeriodTable = reactive({
         create_time: ''
     }
 })
-const formData = ref<Object<any>>({});
+const formData: any = ref({});
 const loading = ref<boolean>(false)
 const searchFormRef = ref<FormInstance>()
 

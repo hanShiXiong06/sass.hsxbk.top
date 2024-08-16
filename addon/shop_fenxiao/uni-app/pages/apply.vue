@@ -1,141 +1,119 @@
 <template>
-	<view class="bg-[#f6f6f6] min-h-[100vh]" :style="themeColor()" v-if="Object.values(repeatFlag).every((el) => el)">
+	<view class="bg-[var(--page-bg-color)] overflow-hidden min-h-[100vh]" :style="themeColor()" v-if="Object.values(repeatFlag).every((el) => el)">
 		<block v-if="config.is_fenxiao == '0'">
-			<view class="flex flex-col items-center pt-[100rpx]">
-				<view class="w-[300rpx] h-[200rpx]">
-					<image class="w-[300rpx] h-[200rpx]" mode="aspectFit" :src="img('addon/shop_fenxiao/unopened-fenxiao.png')"></image>
-				</view>
-				<view class="mt-[40rpx] text-[24rpx]">{{t('fenxiaoNotOpen')}}</view>
+			<view class="empty-page">
+				<image class="img" mode="aspectFit" :src="img('addon/shop_fenxiao/unopened-fenxiao.png')"></image>
+				<view class="desc">{{t('fenxiaoNotOpen')}}</view>
 			</view>
 		</block>	
 		<block v-else-if="config.apply_type == 3">
-			<view class="flex flex-col items-center pt-[100rpx]">
-				<view class="w-[300rpx] h-[200rpx]">
-					<image class="w-[300rpx] h-[200rpx]" mode="aspectFit" :src="img('addon/shop_fenxiao/unopened-fenxiao.png')"></image>
-				</view>
-				<view class="mt-[40rpx] text-[24rpx]">请联系客服成为分销商</view>
+			<view class="empty-page">
+				<image class="img" mode="aspectFit" :src="img('addon/shop_fenxiao/unopened-fenxiao.png')"></image>
+				<view class="desc">请联系客服成为分销商</view>
 			</view>
 		</block>
 		<block v-else>
 			<block v-if="info.status === 0 && Object.keys(config).length && config.apply_type != '3'">
 				<image class="w-[100vw] min-h-[100%] h-[100%]" mode="widthFix" :src="img(config.apply_head || '')"></image>
-				<view class="bg-[#fff] relative mx-[30rpx] mt-[-68rpx] rounded-[16rpx] h-[100rpx] flex justify-between items-center px-[30rpx]">
-					<text class="text-[30rpx]">{{t('referrer')}}</text>
-					<text class="text-[26rpx] text-[#666]">{{ info.bindFenxiaoMember ? info.bindFenxiaoMember.nickname : t('notHave') }}</text>
+				<view class="bg-[#fff] relative sidebar-marign mt-[-60rpx] rounded-[var(--rounded-big)] h-[100rpx] flex justify-between items-center px-[30rpx]">
+					<text class="text-[30rpx] font-500 text-[#333]">{{t('referrer')}}</text>
+					<text class="text-[28rpx]" :class="{'text-[var(--text-color-light6)]': info.bindFenxiaoMember, 'text-[var(--text-color-light9)]': !info.bindFenxiaoMember}">{{ info.bindFenxiaoMember ? info.bindFenxiaoMember.nickname : t('notHave') }}</text>
 				</view>
 				
-				<view class="bg-[#FFFFFF] z-10 rounded-[16rpx] mt-[20rpx] p-[30rpx] box-border mx-[30rpx]" v-if="['1','2','3'].indexOf(config.fenxiao_condition) > -1">
-					<block v-if="config.fenxiao_condition === '1'">
-						<view class="flex items-center">
-							<image class="w-[32rpx] h-[32rpx]" :src="img('addon/shop/apply/tiaojian.png')"></image>
-							<view class="text-[30rpx] text-[#333333] box-border relative ml-[10rpx] leading-[42rpx] font-medium	">申请条件</view>
-						</view>
-						<view class="text-[26rpx] text-[#666] pt-[20rpx] font-light">
-							累计消费<text class="price-font mx-[5rpx]">{{ config.consume_count }}</text>次
-						</view>
-						<view class="flex items-center mt-[40rpx]">
-							<image class="w-[32rpx] h-[32rpx]" :src="img('addon/shop/apply/vector.png')"></image>
-							<view class="text-[30rpx] box-border relative ml-[10rpx] pt-[4rpx]">已完成</view>
-						</view>
-						<view class="text-[26rpx] text-[#666] pt-[20rpx] font-light pb-[30rpx]">
-							累计消费<text class="text-[32rpx] text-[var(--price-text-color)] price-font mx-[5rpx]">{{ config.order_count }}</text>次
-						</view>
-					</block>
-					<block v-if="config.fenxiao_condition === '2'">
-						<view class="flex items-center">
-							<image class="w-[32rpx] h-[32rpx]" :src="img('addon/shop/apply/tiaojian.png')"></image>
-							<view class="text-[30rpx] text-[#333333] box-border relative ml-[10rpx] leading-[42rpx]">申请条件</view>
-						</view>
-						<view class="text-[26rpx] text-[#666] pt-[20rpx]">
-							累计消费<text class="price-font mx-[5rpx]">{{ config.consume_money }}</text>元
-						</view>
-						<view class="flex mt-[40rpx] items-center">
-							<image class="w-[32rpx] h-[32rpx]" :src="img('addon/shop/apply/vector.png')"></image>
-							<view class="text-[30rpx] box-border relative ml-[10rpx] pt-[4rpx]">已完成</view>
-						</view>
-						<view class="text-[26rpx] text-[#666] pt-[20rpx]">
-							累计消费<text class="text-[32rpx] text-[var(--price-text-color)] price-font mx-[5rpx]">{{config.order_sum}}</text>元
-						</view>
-					</block>
-					<block v-if="config.fenxiao_condition === '3'">
-						<view class="flex items-center justify-between">
-							<view class="flex items-center">
-								<image class="w-[32rpx] h-[32rpx]" :src="img('addon/shop/apply/tiaojian.png')"></image>
-								<view class="text-[30rpx] text-[#333333] box-border relative ml-[10rpx] pt-[6rpx]">申请条件</view>
+				<view class="apply-condition z-10 rounded-[var(--rounded-big)] mt-[var(--top-m)] pr-[10rpx] box-border sidebar-marign" v-if="['1','2','3'].indexOf(config.fenxiao_condition) > -1">	
+					<view class="apply-condition-wrap z-10 rounded-[var(--rounded-big)] pl-[10rpx] pb-[10rpx] box-border">
+						<view class="flex items-center justify-between h-[40rpx] px-[20rpx] pt-[26rpx] pb-[14rpx]">
+							<view class="text-[30rpx] font-500 text-[#fff]">申请条件</view>
+							<view class="flex items-baseline text-[26rpx] text-[#fff]" v-if="config.fenxiao_condition === '1'">
+								<text>累计消费</text>
+								<text class="text-[30rpx] price-font mx-[6rpx]">{{ config.order_count }}</text>
+								<text>次</text>
 							</view>
-							<view class="text-[24rpx] text-[#999]">
-								已购买<text class="text-[30rpx] text-[var(--price-text-color)] price-font mx-[5rpx]">{{config.goods_sum?config.goods_sum:0}}</text>个商品
+							<view class="flex items-baseline text-[26rpx] text-[#fff]" v-if="config.fenxiao_condition === '2'">
+								<text>累计消费</text>
+								<text class="text-[30rpx] price-font mx-[6rpx]">{{config.order_sum}}</text>
+								<text>元</text>
+							</view>
+							<view class="flex items-baseline text-[24rpx] text-[#fff]" v-if="config.fenxiao_condition === '3'">
+								<text>已购买</text>
+								<text class="text-[30rpx] price-font mx-[6rpx]">{{config.goods_sum?config.goods_sum:0}}</text>
+								<text>个商品</text>
 							</view>
 						</view>
-						<view class="mt-[24rpx] text-[24rpx] text-[#666] pb-[30rpx]">
-							商品任选其一购买即可成为分销商
-						</view>
-						<view class="flex" :class="{'mb-[30rpx]': (Object.keys(config.goods_list).length-1) != index}" v-for="(item, key, index) in config.goods_list" :key="index"  @click.stop="toLink(item.goods_id)">
-							<view class="w-[180rpx] h-[180rpx] overflow-hidden rounded-md">
-								<u--image width="180rpx" height="180rpx" :src="img(item.goods_cover_thumb_mid ? item.goods_cover_thumb_mid : '')" model="aspectFill">
-									<template #error>
-										<u-icon name="photo" color="#999" size="50"></u-icon>
-									</template>
-								</u--image>
-							</view>
-							<view class="flex flex-1 flex-col justify-between py-[6rpx] ml-[20rpx]">
-								<view class="multi-hidden text-[26rpx] leading-[1.3]">{{ item.goods_name }}</view>
-								<view class="flex items-end justify-between">
-									<view class="text-[var(--price-text-color)] price-font">
-										<text class="text-[24rpx] ml-[20rpx]">￥</text>
-										<text class="text-[38rpx]">{{parseFloat(moneyFormat(item.goods_sku.price)).toFixed(2).toString().split('.')[0]}}</text>
-										<text class="text-[26rpx] mr-[10rpx]">.{{parseFloat(moneyFormat(item.goods_sku.price)).toFixed(2).toString().split('.')[1]}}</text>
-									</view>
-									<text class=" nc-iconfont nc-icon-gouwucheV6xx-2 text-[#fff] text-[28rpx] bg-[#FE4C19] h-[48rpx] w-[48rpx] text-center leading-[48rpx] rounded-[50rpx]"></text>
+						<view class="bg-[#fff] px-[var(--pad-sidebar-m)] py-[var(--pad-top-m)] rounded-[var(--rounded-mid)]">
+							<view class="flex items-center" v-if="config.fenxiao_condition === '1'">
+								<image class="w-[32rpx] h-[32rpx] mr-[20rpx]" :src="img('addon/shop/apply/tiaojian.png')"></image>
+								<view class="text-[26rpx] text-[#333]">
+									累计消费<text class="price-font text-[28rpx] mx-[5rpx]">{{ config.consume_count }}</text>次可申请分销商
 								</view>
 							</view>
+							<view class="flex items-center" v-if="config.fenxiao_condition === '2'">
+								<image class="w-[32rpx] h-[32rpx] mr-[20rpx]" :src="img('addon/shop/apply/tiaojian.png')"></image>
+								<view class="text-[26rpx] text-[#333]">
+									累计消费<text class="price-font text-[28rpx] mx-[5rpx]">{{ config.consume_money }}</text>元可申请分销商
+								</view>
+							</view>
+							<block v-if="config.fenxiao_condition === '3'">
+								<view class="flex items-center pb-[10rpx]">
+									<image class="w-[32rpx] h-[32rpx] mr-[20rpx]" :src="img('addon/shop/apply/tiaojian.png')"></image>
+									<text class="text-[28rpx]">商品任选其一购买即可成为分销商</text>
+								</view>
+								<view class="flex py-[30rpx] relative fenxiao-goods-item" v-for="(item, key, index) in config.goods_list" :key="index"  @click.stop="toLink(item.goods_id)">
+									<u--image width="200rpx" height="200rpx" radius="var(--goods-rounded-big)" class="overflow-hidden" :src="img(item.goods_cover_thumb_mid ? item.goods_cover_thumb_mid : '')" model="aspectFill">
+										<template #error>
+											<image class="w-[200rpx] h-[200rpx] rounded-[var(--goods-rounded-big)] overflow-hidden" :src="img('static/resource/images/diy/shop_default.jpg')" mode="aspectFill"></image>
+										</template>
+									</u--image>
+									<view class="flex flex-1 flex-col justify-between py-[6rpx] ml-[20rpx] goods-item-content">
+										<view class="multi-hidden text-[26rpx] font-500 leading-[1.4]">{{ item.goods_name }}</view>
+										<view class="flex items-end justify-between">
+											<view class="text-[var(--price-text-color)] inline-block price-font leading-[1]">
+												<text class="text-[24rpx]">￥</text>
+												<text class="text-[40rpx]">{{parseFloat(moneyFormat(item.goods_sku.price)).toFixed(2).toString().split('.')[0]}}</text>
+												<text class="text-[24rpx]">.{{parseFloat(moneyFormat(item.goods_sku.price)).toFixed(2).toString().split('.')[1]}}</text>
+											</view>
+											<text class=" nc-iconfont nc-icon-gouwucheV6xx-2 text-[#fff] text-[28rpx] bg-[#FE4C19] h-[48rpx] w-[48rpx] text-center leading-[48rpx] rounded-[50rpx]"></text>
+										</view>
+									</view>
+								</view>
+							</block>
 						</view>
-					</block>
+					</view>
 				</view>
 				<view class="fixed btn-wrap flex justify-center flex-col bottom-[0] left-[0] right-[0] items-center bg-[#fff] py-[30rpx]">
-					<view class="w-[670rpx] h-[80rpx] text-[28rpx] rounded-[44rpx] text-center"
-						:class="{'bg-[#eee] border-[#DDD] border-solid border-[1rpx] leading-[78rpx]': !Number(config.is_allow_apply), 'bg-color text-[#fff] leading-[80rpx]': Number(config.is_allow_apply)}"
+					<view class="w-[690rpx] h-[80rpx] text-[26rpx] rounded-[100rpx] text-center leading-[80rpx]"
+						:class="{'bg-[#FFB4B1] text-[#fff]': !Number(config.is_allow_apply), 'primary-btn-bg text-[#fff]': Number(config.is_allow_apply)}"
 						:disabled="!Number(config.is_allow_apply)" @click="save">{{ Number(config.is_allow_apply) ? '申请成为分销商' : '尚未达到申请条件' }}
 					</view>
-					<view class="flex justify-center items-baseline mt-[20rpx]" v-if="config.is_show_apply === '1'">
+					<view class="flex justify-center items-baseline mt-[20rpx] -mb-[10rpx]" v-if="config.is_show_apply === '1'">
 						<u-checkbox-group>
-							<u-checkbox activeColor="var(--primary-color)" :checked="isAgree" shape="shape" size="14" @change="agreeChange" :customStyle="{ 'marginTop': '4rpx' }" />
+							<u-checkbox activeColor="var(--primary-color)" :checked="isAgree" shape="circle" size="14" @change="agreeChange" :customStyle="{ 'marginTop': '4rpx' }" />
 						</u-checkbox-group>
-						<view class="text-xs text-gray-400 flex flex-wrap">
-							我已阅读并了解
-							<view @click="redirect({ url: '/app/pages/auth/agreement?key=fenxiao_service' })">
-								<text class="text-primary">《分销申请协议》</text>
-							</view>
+						<view class="text-xs text-gray-400 flex items-center flex-wrap">
+							<text>我已阅读并了解</text>
+							<text @click="redirect({ url: '/app/pages/auth/agreement?key=fenxiao_service' })" class="text-primary">《分销申请协议》</text>
 						</view>
 					</view>
 				</view>
 				<view class="pt-[170rpx]" :class="{'h-[50rpx]': config.is_show_apply === '1'}"></view>
 			</block>
-			
 			<block v-if="info.status === 1">
-				<view class="flex flex-col items-center">
-					<view class="w-[500rpx] h-[500rpx]">
-						<u--image width="500rpx" height="500rpx" :src="img('addon/shop_fenxiao/fenxiao.png')" model="aspectFill" />
-					</view>
-					<view class="text-[24rpx]">您已提交分销商申请，等待平台审核</view>
+				<view class="empty-page">
+					<u--image class="img" width="400rpx" height="300rpx" :src="img('addon/shop_fenxiao/fenxiao.png')" model="aspectFill" />
+					<view class="desc">您已提交分销商申请，等待平台审核</view>
 				</view>
 			</block>
 			
-				
 			<block v-if="info.status === 3">
-				<view class="flex flex-col items-center">
-					<view class="w-[500rpx] h-[500rpx]">
-						<u--image width="500rpx" height="500rpx" :src="img('addon/shop_fenxiao/no-fenxiao.png')" model="aspectFill" />
-					</view>
-					<view class="mt-[40rpx] text-[24rpx] mb-[24rpx] text-[#999]">您提交的分销商申请已被拒绝</view>
-					<view class=" text-[24rpx] mb-[24rpx] text-[#666]">拒绝原因：{{ info.refuse_reason }}</view>
-					<button
-						class="w-[500rpx] h-[70rpx] text-[28rpx] leading-[68rpx] rounded-[44rpx] !p-0 text-[#fff] m-0 bg-color remove-border"
-						shape="circle" hover-class="none" @click="info.status = 0">重新申请</button>
+				<view class="empty-page h-[auto] min-h-[710rpx] pt-[100rpx] pb-[80rpx]">
+					<text class="nc-iconfont nc-icon-cuohaoV6mm !text-[120rpx] text-[red] mb-[60rpx]"></text>
+					<view class="desc !text-[34rpx] !text-[#333]">您提交的分销商申请已被拒绝</view>
+					<view class="text-[28rpx] px-[40rpx] mt-[40rpx] leading-[1.3] text-[var(--text-color-light6)]">拒绝原因：{{ info.refuse_reason }}</view>
+					<button class="primary-btn-bg mt-[140rpx] h-[80rpx] flex-center text-[26rpx] rounded-[100rpx] w-[420rpx] text-[#fff]" hover-class="none" @click="info.status = 0">重新申请</button>
 				</view>
 			</block>
 		</block>
-		<!-- <u-loading-page bg-color="rgb(248,248,248)" :loading="loading" fontSize="16" color="#303133"></u-loading-page> -->
+		<!-- <loading-page :loading="loading"></loading-page> -->
 	</view>
 </template>
 <script lang="ts" setup>
@@ -258,9 +236,6 @@
 			border: none;
 		}
 	}
-	.bg-color {
-		background-color: var(--primary-color);
-	}
 
 	.apply-message-title::before {
 		content: "";
@@ -275,6 +250,35 @@
 		background-color: var(--primary-color);
 	}
 	.btn-wrap{
-		box-shadow: 0 -2rpx 2rpx 0 rgba(191,208,217,0.26);
+		box-shadow: 0 -1rpx 2px 0 rgba(176,198,214,0.2);
+	}
+	.application_color{
+		background: linear-gradient( 91deg, #EEB2AA 0%, #EE9D9A 100%), #E99490;
+	}
+	.apply-condition{
+		background: #EF000C;
+		.apply-condition-wrap{
+			background: linear-gradient( 270deg, #FF5F67 0%, #FF424B 100%);
+		}
+	}
+	.fenxiao-goods-item{
+		.goods-item-content{
+			position: relative;
+			&::after{
+				content:'';
+				position: absolute;
+				height: 2rpx;
+				left: 0;
+				right: 0;
+				bottom: -30rpx;
+				background-color: var(--temp-bg);
+			}
+		}
+		&:last-of-type{
+			padding-bottom: 0;
+			&.goods-item-content::after{
+				height: 0;
+			}
+		}
 	}
 </style>

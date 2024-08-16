@@ -51,6 +51,15 @@ class User extends BaseAdminController
         return success($list);
     }
 
+    public function getUserSelect()
+    {
+        $data = $this->request->params([
+            ['username', '']
+        ]);
+        $list = (new UserService())->getUserSelect($data);
+        return success($list);
+    }
+
     public function checkUserIsExist() {
         $data = $this->request->params([
             ['username', ''],
@@ -75,6 +84,16 @@ class User extends BaseAdminController
         ]);
         (new UserService())->add($data);
         return success();
+    }
+
+    /**
+     * 删除用户
+     * @param $uid
+     * @return Response
+     */
+    public function del($uid) {
+        (new UserService())->del($uid);
+        return success("DELETE_SUCCESS");
     }
 
     /**

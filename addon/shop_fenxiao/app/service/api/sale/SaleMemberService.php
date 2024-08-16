@@ -42,7 +42,7 @@ class SaleMemberService extends BaseApiService
         $search_model = $this->model->where([
             ['site_id', '=', $this->site_id],
             ['member_id', '=', $this->member_id]
-        ])->withSearch(['is_settlement', 'period_id'], $where)
+        ])->withSearch(['is_settlement', 'is_send', 'period_id'], $where)
             ->field($field)
             ->append(['period_type_name'])
             ->order($order);
@@ -140,9 +140,15 @@ class SaleMemberService extends BaseApiService
             ['member_id', '=', $this->member_id],
             ['is_send', '=', 0]
         ])->sum('reward_money');
+        $sale_commission_send = $this->model->where([
+            ['site_id', '=', $this->site_id],
+            ['member_id', '=', $this->member_id],
+            ['is_send', '=', 1]
+        ])->sum('reward_money');
         return [
             'sale_commission' => $sale_commission,
             'wait_sale_commission' => $wait_sale_commission,
+            'sale_commission_send' => $sale_commission_send,
         ];
     }
 

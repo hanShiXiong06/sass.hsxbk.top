@@ -38,5 +38,4 @@ class Common extends BaseAdminController
         return success((new DateDict())->getWeek());
     }
 
-
 }

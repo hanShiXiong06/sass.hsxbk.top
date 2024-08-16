@@ -77,7 +77,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed, toRaw } from "vue";
+import { ref, reactive, computed } from "vue";
 import { t } from "@/lang";
 import { img, moneyFormat,filterDigit } from '@/utils/common';
 import { getAgentLevelList, editAgentLevel, addAgentLevel, deleteAgentLevel, setAgentConfig, getAgentConfig } from '@/addon/shop_fenxiao/api/agent'
@@ -88,28 +88,27 @@ const route = useRoute();
 const router = useRouter();
 const pageName = route.meta.title;
 
-let agentDialog= ref(false);
+const agentDialog= ref(false);
 const labelTable = reactive({
     loading: false,
     data:[]
 });
 
-const getAgentLevelFn = (page: number = 1)=>{
-    labelTable.loading=true
-    getAgentLevelList().then((res:any)=>{
+const getAgentLevelFn = ()=> {
+    labelTable.loading = true
+    getAgentLevelList().then((res: any) => {
         labelTable.data = res.data
         labelTable.loading = false
-    }).catch(()=>{
-        labelTable.loading= false
+    }).catch(() => {
+        labelTable.loading = false
     })
 }
 getAgentLevelFn()
 
-
-/********************* 添加渠道等级start **************************/ 
+/********************* 添加渠道等级start **************************/
 const levelListInfoRef = ref<FormInstance>()
-let isEditLevelDialog = ref(false);
-let levelDialogData: Record<string, any> = reactive({
+const isEditLevelDialog = ref(false);
+const levelDialogData: Record<string, any> = reactive({
     name:'',
     money: '',
     discount: ''
@@ -154,7 +153,7 @@ const formRules = computed(() => {
     }
 })
 
-let saveLoading = ref(false);
+const saveLoading = ref(false);
 const onSave = async (formEl: FormInstance | undefined) => {
     if (saveLoading.value || !formEl) return
     await formEl.validate(async (valid) => {
@@ -208,8 +207,8 @@ const deleteEvent = (id: number) => {
     })
 }
 /********************* 设置渠道配置 **************************/ 
-let agentConfig = ref({is_open: 0});
-let configLoading = ref(false);
+const agentConfig = ref({is_open: 0});
+const configLoading = ref(false);
 const getAgentConfigFn = (page: number = 1)=>{
     getAgentConfig().then((res:any)=>{
         agentConfig.value.is_open = res.data.is_open;

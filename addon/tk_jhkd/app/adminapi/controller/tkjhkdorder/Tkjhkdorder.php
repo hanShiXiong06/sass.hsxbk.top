@@ -11,6 +11,7 @@
 
 namespace addon\tk_jhkd\app\adminapi\controller\tkjhkdorder;
 
+use app\service\admin\member\MemberService;
 use core\base\BaseAdminController;
 use addon\tk_jhkd\app\service\admin\tkjhkdorder\TkjhkdorderService;
 
@@ -116,8 +117,15 @@ class Tkjhkdorder extends BaseAdminController
         return success('DELETE_SUCCESS');
     }
     public function getMemberAll(){
-        return success(( new TkjhkdorderService())->getMemberAll());
+        $data = $this->request->params([
+            ['keyword', ''],
+            ['register_type', ''],
+            ['register_channel', ''],
+            ['create_time', []],
+            ['member_label', 0],
+            ['member_level', 0],
+        ]);
+        return success((new MemberService())->getPage($data));
     }
-
 
 }

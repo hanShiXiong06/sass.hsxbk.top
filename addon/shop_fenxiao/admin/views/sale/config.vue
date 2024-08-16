@@ -107,18 +107,19 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed, toRaw } from "vue";
+import { ref, reactive, computed } from "vue";
 import { t } from "@/lang";
 import { getSaleConfig, setSaleConfig, getSalePeriodType, getSaleSendType } from '@/addon/shop_fenxiao/api/sale'
-import { ElMessage, FormInstance, ElMessageBox } from 'element-plus'
+import { ElMessage, FormInstance } from 'element-plus'
 import { useRoute, useRouter } from "vue-router";
 import { filterNumber,filterDigit } from '@/utils/common'
 import { number } from "echarts";
+import { cloneDeep } from 'lodash-es'
 
 const route = useRoute();
 const router = useRouter();
 const pageName = route.meta.title;
-let config = ref({
+const config = ref({
     is_open: '1',
     period_type: 'month',
     period: '',
@@ -132,13 +133,13 @@ let config = ref({
     }]
 });
 
-let conditionAssistObj = ref({
+const conditionAssistObj = ref({
     type: [],
     content: {order_money: 0}
 })
-let rewardAssistObj = ref({index: 0});
-let configLoading = ref(true);
-let formRef = ref<FormInstance>()
+const rewardAssistObj = ref({index: 0});
+const configLoading = ref(true);
+const formRef = ref<FormInstance>()
 
 // 销售奖励配置
 const getSaleConfigFn = ()=>{
@@ -155,7 +156,7 @@ const getSaleConfigFn = ()=>{
         config.value.condition = res.data.condition || {};
 
         conditionAssistObj.value.type = Object.keys(config.value.condition);
-        conditionAssistObj.value.content = JSON.parse(JSON.stringify(config.value.condition));
+        conditionAssistObj.value.content = cloneDeep(config.value.condition);
 
         configLoading.value = false;
     })
@@ -163,7 +164,7 @@ const getSaleConfigFn = ()=>{
 getSaleConfigFn()
 
 // 获取销售奖励结算周期类型
-let salePeriodType = ref({});
+const salePeriodType = ref({});
 const getSalePeriodTypeFn = ()=>{
     getSalePeriodType().then((res:any)=>{
         salePeriodType.value = res.data;
@@ -172,7 +173,7 @@ const getSalePeriodTypeFn = ()=>{
 getSalePeriodTypeFn()
 
 // 获取销售奖励发放方式
-let saleSendType = ref({});
+const saleSendType = ref({});
 const getSaleSendTypeFn = ()=>{
     getSaleSendType().then((res:any)=>{
         saleSendType.value = res.data;
@@ -335,8 +336,8 @@ const onSave = async (formEl: FormInstance | undefined) => {
                     obj[item] = conditionAssistObj.value.content[item];
                 }
             })
-            config.value.condition = JSON.parse(JSON.stringify(obj));
-            let data = JSON.parse(JSON.stringify(config.value));
+            config.value.condition = cloneDeep(obj);
+            let data = cloneDeep(config.value);
             setSaleConfig(data).then(res => {
                 repeat.value = false
             }).catch(() => {

@@ -63,46 +63,51 @@
     					url:res.data.url
     				});
 				}else if (res.data.web_url) {
-					webview = res.data.web_url
+				 		webview = res.data.web_url
 				}else if(res.data.path_url){
 				    uni.openEmbeddedMiniProgram({
                     	appId: res.data.appId,
-                    	path:  res.data.path_url, 
-                    	success(res) {
-                        // 打开成功
-                    	}
+                    	path:  res.data.path_url,
+                    	extraData: {},
+						success(res) {
+							console.log('半屏小程序打开');
+						},
+						fail(err) {
+							console.error('打开半屏小程序失败', err);
+						}
                     })
+                    return;
 				}
 		  	// #endif
-// 			if(res.data.type=='h5'){
-//     				uni.setNavigationBarTitle({
-//     				    title: res.data.url.act_name
-//     				})
-// 				// #ifdef H5
-// 					if (res.data.url.h5) {
-// 						webview = res.data.url.h5
-// 					}
-// 				// #endif 
+ 			if(res.data.type=='h5'){
+     				uni.setNavigationBarTitle({
+     				    title: res.data.url.act_name
+     				})
+ 				// #ifdef H5
+ 					if (res.data.url.h5) {
+ 						webview = res.data.url.h5
+ 					}
+ 				// #endif 
 				
-// 				// #ifdef MP-WEIXIN
-// 					if (res.data.url.we_app_info) { 
-// 						uni.navigateToMiniProgram({
-// 							appId: res.data.url.we_app_info.app_id,
-// 							path: res.data.url.we_app_info.page_path,
-// 							success(item) {
-// 								// 打开成功
-// 							}
-// 						})
-// 					} else if (res.data.url.h5) {
-// 						webview = res.data.url.h5
-// 					}
-// 				// #endif
+ 				// #ifdef MP-WEIXIN
+ 					if (res.data.url.we_app_info) { 
+ 						uni.navigateToMiniProgram({
+ 							appId: res.data.url.we_app_info.app_id,
+ 							path: res.data.url.we_app_info.page_path,
+ 							success(item) {
+ 								// 打开成功
+ 							}
+ 						})
+ 					} else if (res.data.url.h5) {
+ 						webview = res.data.url.h5
+ 					}
+ 				// #endif
 				
-// 			}else{
-// 				uni.redirectTo({
-// 					url:res.data.url
-// 				});
-// 			} 
+ 			}else{
+ 				uni.redirectTo({
+ 					url:res.data.url
+ 				});
+ 			} 
 		});
 	})
 </script>

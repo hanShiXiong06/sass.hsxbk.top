@@ -12,7 +12,7 @@ class AddSiteAfterListener
 {
     public function handle($params = [])
     {
-        if (in_array('tk_cps', $params[ 'site_addons' ])) {
+        if (in_array('tk_cps', $params[ 'main_app' ])) {
             $site_id = $params[ 'site_id' ];
             request()->siteId($site_id);
             $poster = new CorePosterService();

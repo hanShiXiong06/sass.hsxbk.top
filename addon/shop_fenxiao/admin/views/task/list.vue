@@ -15,17 +15,9 @@
                         <el-input v-model="table.searchParam.name" :placeholder="t('taskNamePlaceholder')" maxlength="60" />
                     </el-form-item>
                     <el-form-item :label="t('status')">
-                        <el-select
-                            v-model="table.searchParam.status"
-                            :placeholder="t('statusPlaceholder')"
-                        >
+                        <el-select v-model="table.searchParam.status" :placeholder="t('statusPlaceholder')">
                             <el-option :label="t('all')" value=""/>
-                            <el-option
-                                v-for="(item,index) in taskStatus"
-                                :key="index"
-                                :label="item"
-                                :value="index"
-                            />
+                            <el-option v-for="(item,index) in taskStatus" :key="index" :label="item" :value="index" />
                         </el-select>
                     </el-form-item>
                     <el-form-item :label="t('createTime')">
@@ -101,7 +93,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive } from 'vue'
 import { getTaskList, deleteTask, taskFinish, getTaskStatus } from '@/addon/shop_fenxiao/api/task'
 import { t } from '@/lang'
 import { img, moneyFormat } from '@/utils/common'
@@ -158,7 +150,7 @@ const getAgentListFn=(page: number = 1)=>{
 getAgentListFn();
 
 // 获取任务状态
-let taskStatus = ref({});
+const taskStatus = ref({});
 const getTaskStatusFn=()=>{
     getTaskStatus().then((res:any)=>{
         taskStatus.value = res.data;
@@ -220,7 +212,6 @@ const deleteEvent = (data: any) => {
         })
     })
 }
-
 
 /**
  * 失效任务

@@ -1,18 +1,21 @@
 <template>
     <view :style="themeColor()">
-        <view class="bg-[#f8f8f8] min-h-screen overflow-hidden" v-if="!loading">
-            <view class="bg-[#fff] mx-[30rpx] p-[20rpx] mt-[30rpx] rounded-[10rpx]" v-for="(item,index) in detail.refund_log">
-                <view class="text-sm">{{item.main_type_name}} {{item.main_name}}</view>
-                <view class="text-xs my-[6rpx] text-[#909399]">{{item.create_time}}</view>
-                <view class="text-sm">{{item.type_name || '--'}}</view>
-            </view>
-            <view class="pt-[140rpx]"></view>
-            <view class="flex tab-bar items-center bg-[#fff] fixed left-0 right-0 bottom-0 min-h-[120rpx] px-1 flex-wrap">
-                <u-button class="!text-sm" text="返回详情" type="primary" shape="circle" @click="redirect({url: '/addon/shop/pages/refund/detail', param: { order_refund_no: orderRefundNo }})"></u-button>
-            </view>
+        <view class="bg-[var(--page-bg-color)] min-h-screen overflow-hidden" v-if="!loading">
+			<view class="pt-[var(--top-m)]">
+				<view class="card-template sidebar-marign mb-[var(--top-m)]" v-for="(item,index) in detail.refund_log">
+					<view class="text-[28rpx]">{{item.type_name || '--'}}</view>
+					<view class="text-[24rpx] mt-[20rpx] mb-[10rpx] text-[var(--text-color-light9)]">{{item.main_type_name}} {{item.main_name}}</view>
+					<view class="text-[24rpx] text-[var(--text-color-light9)]">{{item.create_time}}</view>
+				</view>
+				<view class="w-full footer">
+					<view class="py-[var(--top-m)] px-[var(--sidebar-m)] footer w-full fixed bottom-0 left-0 right-0 box-border">
+						<button class="primary-btn-bg text-[#fff] h-[80rpx] leading-[80rpx] rounded-[100rpx] text-[26rpx] mx-0 flex-1 font-500" @click="redirect({url: '/addon/shop/pages/refund/detail', param: { order_refund_no: orderRefundNo }})">返回详情</button>
+					</view>
+				</view>
+			</view>
         </view>
 
-        <u-loading-page bg-color="rgb(248,248,248)" :loading="loading" loadingText="" fontSize="16" color="#303133"></u-loading-page>
+		<loading-page :loading="loading"></loading-page>
     </view>
 </template>
 
@@ -23,18 +26,18 @@ import { t } from '@/locale'
 import { img, redirect } from '@/utils/common';
 import { getRefundDetail } from '@/addon/shop/api/refund';
 
-let detail = ref<Object>({});
-let loading = ref<boolean>(true);
-let orderRefundNo = ref('')
+const detail = ref<Object>({});
+const loading = ref<boolean>(true);
+const orderRefundNo = ref('')
 
-onLoad((option) => {
+onLoad((option: any) => {
 	orderRefundNo.value = option.order_refund_no;
 	refundDetailFn(option.order_refund_no);
 });
 
-const refundDetailFn = (refundNo) => {
+const refundDetailFn = (refundNo: any) => {
 	loading.value = true;
-	getRefundDetail(refundNo).then((res) => {
+	getRefundDetail(refundNo).then((res: any) => {
 		detail.value = res.data;
 		loading.value = false;
 	}).catch(() => {
@@ -42,3 +45,9 @@ const refundDetailFn = (refundNo) => {
 	})
 }
 </script>
+<style lang="scss" scoped>
+.footer{
+	height: calc(80rpx + var(--top-m) + var(--top-m) + constant(safe-area-inset-bottom)) !important;
+	height: calc(80rpx + var(--top-m) + var(--top-m) + env(safe-area-inset-bottom)) !important;
+}
+</style>

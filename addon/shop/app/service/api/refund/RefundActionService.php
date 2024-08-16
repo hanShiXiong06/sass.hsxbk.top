@@ -126,7 +126,6 @@ class RefundActionService extends BaseApiService
         $refund_type = $data['refund_type'];
         $apply_money = $data['apply_money'];
 
-
         $order_goods_id = $order_refund_info['order_goods_id'];
         //查询订单项信息
         $order_goods_info = (new OrderGoods())->where([
@@ -354,8 +353,6 @@ class RefundActionService extends BaseApiService
             $refund_data['refund_delivery_money'] = $order['delivery_money'];
         }
         return $refund_data;
-
-
     }
 
 }

@@ -35,7 +35,7 @@
               class="w-[280px]"
               v-model="actTable.searchParam.type"
               clearable
-              :placeholder="t('isSendPlaceholder')"
+              placeholder="请选择"
             >
               <el-option label="全部" value=""></el-option>
               <el-option label="聚推客" value="0"></el-option>

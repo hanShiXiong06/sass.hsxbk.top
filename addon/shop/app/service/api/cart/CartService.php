@@ -13,8 +13,10 @@ namespace addon\shop\app\service\api\cart;
 
 use addon\shop\app\model\cart\Cart;
 use addon\shop\app\service\api\goods\GoodsService;
-use addon\shop\app\service\core\cart\CoreCartService;
+use app\dict\member\MemberDict;
+use app\service\core\member\CoreMemberService;
 use core\base\BaseApiService;
+use core\exception\CommonException;
 
 /**
  * 购物车服务层
@@ -36,6 +38,11 @@ class CartService extends BaseApiService
      */
     public function add($data)
     {
+        $member_info = ( new CoreMemberService() )->getInfoByMemberId($this->site_id, $this->member_id, 'status');
+
+        if (empty($member_info)) throw new CommonException('SHOP_ORDER_BUYER_NOT_FOUND');//无效的账号
+        if ($member_info[ 'status' ] == MemberDict::OFF) throw new CommonException('SHOP_ORDER_BUYER_LOCKED');//账号被锁定
+        
         $data[ 'member_id' ] = $this->member_id;
         $data[ 'site_id' ] = $this->site_id;
         $info = $this->model->where([
@@ -66,6 +73,11 @@ class CartService extends BaseApiService
      */
     public function edit($data)
     {
+        $member_info = ( new CoreMemberService() )->getInfoByMemberId($this->site_id, $this->member_id, 'status');
+
+        if (empty($member_info)) throw new CommonException('SHOP_ORDER_BUYER_NOT_FOUND');//无效的账号
+        if ($member_info[ 'status' ] == MemberDict::OFF) throw new CommonException('SHOP_ORDER_BUYER_LOCKED');//账号被锁定
+
         $data[ 'member_id' ] = $this->member_id;
         $data[ 'site_id' ] = $this->site_id;
         $info = $this->model->where([
@@ -141,7 +153,9 @@ class CartService extends BaseApiService
         $goods_service = new GoodsService();
         $member_info = $goods_service->getMemberInfo();
         foreach ($list as $k => &$v) {
-            $v[ 'goodsSku' ][ 'member_price' ] = $goods_service->getMemberPrice($member_info, $v[ 'goods' ][ 'member_discount' ], $v[ 'goodsSku' ][ 'member_price' ], $v[ 'goodsSku' ][ 'price' ]);
+            if (!empty($v[ 'goodsSku' ])) {
+                $v[ 'goodsSku' ][ 'member_price' ] = $goods_service->getMemberPrice($member_info, $v[ 'goods' ][ 'member_discount' ], $v[ 'goodsSku' ][ 'member_price' ], $v[ 'goodsSku' ][ 'price' ]);
+            }
         }
         return $list;
     }
@@ -173,7 +187,9 @@ class CartService extends BaseApiService
         $goods_service = new GoodsService();
         $member_info = $goods_service->getMemberInfo();
         foreach ($list as $k => &$v) {
-            $v[ 'goodsSku' ][ 'member_price' ] = $goods_service->getMemberPrice($member_info, $v[ 'goods' ][ 'member_discount' ], $v[ 'goodsSku' ][ 'member_price' ], $v[ 'goodsSku' ][ 'price' ]);
+            if (!empty($v[ 'goodsSku' ])) {
+                $v[ 'goodsSku' ][ 'member_price' ] = $goods_service->getMemberPrice($member_info, $v[ 'goods' ][ 'member_discount' ], $v[ 'goodsSku' ][ 'member_price' ], $v[ 'goodsSku' ][ 'price' ]);
+            }
         }
         return $list;
     }

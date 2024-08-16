@@ -15,7 +15,6 @@ use addon\shop\app\dict\active\ActiveDict;
 use addon\shop\app\model\goods\Goods;
 use addon\shop\app\model\goods\GoodsSku;
 use core\base\BaseModel;
-use think\db\Query;
 
 /**
  * 营销活动商品模型
@@ -39,9 +38,10 @@ class ActiveGoods extends BaseModel
     protected $type = [
 
     ];
+
     /**
      * 商品项
-     * @return \think\model\relation\HasMany
+     * @return \think\model\relation\HasOne
      */
     public function goods()
     {

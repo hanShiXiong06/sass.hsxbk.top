@@ -15,17 +15,18 @@ return [
                     'pageStartBgColor' => 'rgba(246, 246, 246, 1)',
                     'pageEndBgColor' => '',
                     'pageGradientAngle' => 'to bottom',
-                    "bgUrl" => "addon/shop_fenxiao/banner_zone.jpg",
+                    "bgUrl" => "",
                     'bgHeightScale' => 0,
-                    "imgWidth" => 750,
-                    "imgHeight" => 490,
+                    "imgWidth" => 0,
+                    "imgHeight" => 0,
                     "topStatusBar" => [
                         'isShow' => true,
-                        'bgColor' => "",
-                        'isTransparent' => true,
-                        'style' => 'style-5',
-                        'styleName' => '风格5',
-                        'textColor' => "rgba(255, 255, 255, 1)",
+                        'bgColor' => "#ffffff",
+                        'rollBgColor' => "#ffffff",
+                        'style' => 'style-1',
+                        'styleName' => '风格1',
+                        'textColor' => "#333333",
+                        'rollTextColor' => "#333333",
                         'textAlign' => 'center',
                         'inputPlaceholder' => '请输入搜索关键词',
                         'imgUrl' => '',
@@ -68,6 +69,47 @@ return [
                 ],
                 "value" => [
                     [
+                        "id" => "6uexn3bgng00",
+                        "bottomElementRounded" => 0,
+                        "bottomRounded" => 0,
+                        "componentBgAlpha" => 2,
+                        "componentBgUrl" => "",
+                        "componentEndBgColor" => "",
+                        "componentGradientAngle" => "to bottom",
+                        "componentName" => "ImageAds",
+                        "componentStartBgColor" => "",
+                        "componentTitle" => "图片广告",
+                        "elementBgColor" =>  "",
+                        "ignore" => [],
+                        "imageHeight" => 178,
+                        "list" => [
+                            [
+                                "height" => 178.6,
+                                "id" => "65b199iieuo0",
+                                "imageUrl" => "addon/shop_fenxiao/banner_zone.png",
+                                "imgHeight" => 300,
+                                "imgWidth" => 630,
+                                "link" => [
+                                    "name" => ""
+                                ],
+                                "width" => 375
+                            ]
+                        ],
+                        "margin" => [
+                            "top" => 0,
+                            "bottom" => 0,
+                            "both" => 0
+                        ],
+                        "pageEndBgColor" => "",
+                        "pageGradientAngle" => "to bottom",
+                        "pageStartBgColor" => "",
+                        "path" => "edit-image-ads",
+                        "textColor" => "#303133",
+                        "topElementRounded" => 0,
+                        "topRounded" => 0,
+                        "uses" => 0
+                    ],
+                    [
                         "id" => "1dgqkxty3gyo",
                         "componentName" => "FenxiaoGoodsList",
                         "componentTitle" => "分销商品",
@@ -81,9 +123,9 @@ return [
                         "topElementRounded" => 0,
                         "bottomElementRounded" => 0,
                         "margin" => [
-                            "top" => -30,
+                            "top" => -35,
                             "bottom" => 0,
-                            "both" => 15
+                            "both" => 0
                         ],
                         "pageStartBgColor" => "",
                         "pageEndBgColor" => "",
@@ -115,7 +157,7 @@ return [
                             "color" => "#FF4142",
                             "control" => true
                         ],
-                        "componentStartBgColor" => "rgba(255, 255, 255, 1)",
+                        "componentStartBgColor" => "",
                     ]
                 ]
             ]

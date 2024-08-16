@@ -1,13 +1,8 @@
 <template>
 	<div class="main-container">
-		<div class="detail-head">
-			<div class="left" @click="back()">
-				<span class="iconfont iconxiangzuojiantou !text-xs"></span>
-				<span class="ml-[1px]">{{ t('returnToPreviousPage') }}</span>
-			</div>
-			<span class="adorn">|</span>
-			<span class="right">{{ pageName }}</span>
-		</div>
+        <el-card class="card !border-none mb-[15px]" shadow="never">
+            <el-page-header :content="pageName" :icon="ArrowLeft" @back="back" />
+        </el-card>
 		<el-card class="box-card !border-none" shadow="never" v-loading="loading">
 			<el-form :model="formData" label-width="90px" ref="formRef" :rules="formRules" class="page-form">
 				<el-form-item :label="t('addressType')" prop="address_type">
@@ -34,7 +29,7 @@
 				<el-form-item :label="t('fullAddress')" prop="address_area">
 					<el-select v-model="formData.province_id" value-key="id" clearable class="w-[200px]"  ref="provinceRef">
 						<el-option :label="t('provincePlaceholder')" :value="0"/>
-						<el-option v-for="(item, index) in areaList.province " :key="index" :label="item.name"  :value="item.id"/>
+						<el-option v-for="(item, index) in areaList.province" :key="index" :label="item.name"  :value="item.id"/>
 					</el-select>
 					<el-select v-model="formData.city_id" value-key="id" clearable class="w-[200px] ml-3" ref="cityRef">
 						<el-option :label="t('cityPlaceholder')" :value="0"/>
@@ -329,9 +324,9 @@ watch(() => formData.district_id, (nval) => {
 const areaChange = debounce(() => {
     setTimeout(() => {
         const address = [
-            formData.province_id ? provinceRef.value.selectedLabel : '',
-            formData.city_id ? cityRef.value.selectedLabel : '',
-            formData.district_id ? districtRef.value.selectedLabel : ''
+            formData.province_id ? provinceRef.value.states.selectedLabel : '',
+            formData.city_id ? cityRef.value.states.selectedLabel : '',
+            formData.district_id ? districtRef.value.states.selectedLabel : ''
         ]
 
         addressToLatLng({ mapKey, address: address.join('') }).then(({ message, result }) => {
@@ -394,9 +389,9 @@ const onSave = async (formEl: FormInstance | undefined) => {
 
             const data = formData
             const address = [
-                data.province_id ? provinceRef.value.selectedLabel : '',
-                data.city_id ? cityRef.value.selectedLabel : '',
-                data.district_id ? districtRef.value.selectedLabel : '',
+                data.province_id ? provinceRef.value.states.selectedLabel : '',
+                data.city_id ? cityRef.value.states.selectedLabel : '',
+                data.district_id ? districtRef.value.states.selectedLabel : '',
                 data.address
             ]
             data.full_address = address.join('')

@@ -2,12 +2,14 @@
 
 namespace addon\tk_cps\app\service\core;
 
-use addon\tk_cps\app\service\admin\CpsService;
+use addon\tk_ai\app\service\core\textalk\websocket\lib\Exception;
+use addon\tk_cps\app\model\site\Site;
 use core\base\BaseAdminService;
 use app\service\core\sys\CoreConfigService;
 use addon\tk_cps\app\dict\config\ConfigDict;
 use think\facade\Cache;
 use addon\tk_cps\app\model\actitem\ActItem;
+
 /**
  * 配置信息服务层
  * Class ConfigService
@@ -74,6 +76,7 @@ class ConfigService extends BaseAdminService
         (new CoreConfigService())->setConfig($this->site_id, ConfigDict::getBwcType(), $value);
         return true;
     }
+
     /**
      * 设置配置信息
      * @param $site_id
@@ -90,28 +93,30 @@ class ConfigService extends BaseAdminService
         Cache::delete($key1);
         Cache::delete($key2);
         Cache::delete($key3);
+
+        $siteModel = new Site();
+        $siteInfo = $siteModel->where(['site_id' => $this->site_id])->findOrEmpty();
+        if ($siteInfo->isEmpty()) {
+            $siteModel->create(['site_id' => $this->site_id, 'site_key' => $value['site_key']]);
+        } else {
+            $siteModel->where(['site_id' => $this->site_id])->update(['site_id' => $this->site_id, 'site_key' => $value['site_key']]);
+        }
         (new CoreConfigService())->setConfig($this->site_id, ConfigDict::getType(), $value);
-        (new ActItem())->where(['site_id'=>$this->site_id])->delete();
+        (new ActItem())->where(['site_id' => $this->site_id])->delete();
         return true;
     }
 
     /**
      * @return mixed
      */
-    public function getPubID()
+    public function getPubID($site_id = '')
     {
-        $key = $this->site_id . '_pub_id';
-        if (!Cache::get($key)) {
-            $info = (new CoreConfigService())->getConfig($this->site_id, ConfigDict::getType());
-            if(!isset($info['value'])){
-                $info['value']=[];
-            }
-            if ($info['value']==[]) {
-                $info['value']['pub_id'] = '161325';
-            }
-            Cache::set($key, $info['value']['pub_id']);
+        if ($site_id != '') {
+            $this->site_id = $site_id;
         }
-        return Cache::get($key);
+        $info = (new CoreConfigService())->getConfig($this->site_id, ConfigDict::getType());
+        if (!isset($info['value']) || $info['value'] == []) throw new Exception('请先配置配置信息');
+        return $info['value']['pub_id'];
     }
 
     public function getMapiKey($site_id = '')
@@ -119,18 +124,9 @@ class ConfigService extends BaseAdminService
         if ($site_id != '') {
             $this->site_id = $site_id;
         }
-        $key = $this->site_id . '_mapi_key';
-        if (!Cache::get($key)) {
-            $info = (new CoreConfigService())->getConfig($this->site_id, ConfigDict::getType());
-            if(!isset($info['value'])){
-                $info['value']=[];
-            }
-            if ($info['value']==[]) {
-                $info['value']['mapi_key'] = 'ac52c63f9904d148';
-            }
-            Cache::set($key, $info['value']['mapi_key']);
-        }
-        return Cache::get($key);
+        $info = (new CoreConfigService())->getConfig($this->site_id, ConfigDict::getType());
+        if (!isset($info['value']) || $info['value'] == []) throw new Exception('请先配置配置信息');
+        return $info['value']['mapi_key'];
     }
 
     public function getSecret($site_id = '')
@@ -138,18 +134,9 @@ class ConfigService extends BaseAdminService
         if ($site_id != '') {
             $this->site_id = $site_id;
         }
-        $key = $this->site_id . '_secret';
-        if (!Cache::get($key)) {
-            $info = (new CoreConfigService())->getConfig($this->site_id, ConfigDict::getType());
-            if(!isset($info['value'])){
-                $info['value']=[];
-            }
-            if ($info['value']==[]) {
-                $info['value']['secret'] = 'f2d0fa0a36e71ebe2cd20a58af7bb65a';
-            }
-            Cache::set($key, $info['value']['secret']);
-        }
-        return Cache::get($key);
+        $info = (new CoreConfigService())->getConfig($this->site_id, ConfigDict::getType());
+        if (!isset($info['value']) || $info['value'] == []) throw new Exception('请先配置配置信息');
+        return $info['value']['secret'];
     }
 
     public function getApiKey($site_id = '')
@@ -157,18 +144,9 @@ class ConfigService extends BaseAdminService
         if ($site_id != '') {
             $this->site_id = $site_id;
         }
-        $key = $this->site_id . '_api_key';
-        if (!Cache::get($key)) {
-            $info = (new CoreConfigService())->getConfig($this->site_id, ConfigDict::getType());
-            if(!isset($info['value'])){
-                $info['value']=[];
-            }
-            if ($info['value']==[]) {
-                $info['value']['api_key'] = 'YolcXBSYbKPJjA7e7dIfkrImRPB5cSjj';
-            }
-            Cache::set($key, $info['value']['api_key']);
-        }
-        return Cache::get($key);
+        $info = (new CoreConfigService())->getConfig($this->site_id, ConfigDict::getType());
+        if (!isset($info['value']) || $info['value'] == []) throw new Exception('请先配置配置信息');
+        return $info['value']['api_key'];
     }
 
     public function getSiteKey($site_id = '')
@@ -176,17 +154,8 @@ class ConfigService extends BaseAdminService
         if ($site_id != '') {
             $this->site_id = $site_id;
         }
-        $key = $this->site_id . '_site_key';
-        if (!Cache::get($key)) {
-            $info = (new CoreConfigService())->getConfig($this->site_id, ConfigDict::getType());
-            if(!isset($info['value'])){
-                $info['value']=[];
-            }
-            if ($info['value']==[]) {
-                $info['value']['site_key'] = rand(100000,999999);
-            }
-            Cache::set($key, $info['value']['site_key']);
-        }
-        return Cache::get($key);
+        $info = (new CoreConfigService())->getConfig($this->site_id, ConfigDict::getType());
+        if (!isset($info['value']) || $info['value'] == []) throw new Exception('请先配置配置信息');
+        return $info['value']['site_key'];
     }
 }

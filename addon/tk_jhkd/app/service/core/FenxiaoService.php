@@ -59,6 +59,7 @@ class FenxiaoService extends BaseApiService
             $level_benefits = $p_member_info['member_level']['level_benefits'];
             foreach ($level_benefits as $k => $v) {
                 if ($k == 'tk_jhkd_fenxiao' && $v['is_use'] == 1) {
+                    $commission=0;
                     //比列
                     if ($v['fenxiao_type'] == 0 && $v['first_rate'] > 0) {
                         $commission = $v['first_rate'] / 100 * $orderInfo['order_money'];
@@ -92,10 +93,11 @@ class FenxiaoService extends BaseApiService
             $level_benefits = $pp_member_info['member_level']['level_benefits'];
 
             foreach ($level_benefits as $k => $v) {
-                if ($k == 'tk_cps_bwc_fenxiao' && $v['is_use'] == 1) {
+                if ($k == 'tk_jhkd_fenxiao' && $v['is_use'] == 1) {
+                    $commission=0;
                     //比列
                     if ($v['fenxiao_type'] == 0 && $v['second_rate'] > 0) {
-                        $commission = $v['second_rate'] / 100 * $orderInfo['commission'];
+                        $commission = $v['second_rate'] / 100 * $orderInfo['order_money'];
                     }
                     //固定金额
                     if ($v['fenxiao_type'] == 1 && $v['second_commission'] > 0) {
@@ -108,7 +110,7 @@ class FenxiaoService extends BaseApiService
                     ]);
 
                     (new CoreMemberAccountService())->addLog($orderInfo['site_id'], $pp_fenxiaoMemberInfo['pid'], MemberAccountTypeDict::COMMISSION, $commission, 'jhkd_award', '聚合快递二级分销激励');
-                    $fenxiaoOrderModel->where(['order_id' => $orderInfo['orderSn']])->update([
+                    $fenxiaoOrderModel->where(['order_id' => $orderInfo['order_id']])->update([
                         'status' => 1,
                         'update_time' => time()
                     ]);

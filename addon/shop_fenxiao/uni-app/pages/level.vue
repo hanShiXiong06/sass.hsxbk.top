@@ -1,77 +1,84 @@
 <template>
     <view :style="themeColor()">
-        <view class="bg-[#f8f8f8] min-h-[100vh]" v-if="!loading">
-            <view class="w-[100%] h-[40rpx] relative">
-                <image class="w-[100%] h-[300rpx] absolute" :src="img('addon/shop_fenxiao/level/level-top-bg.png')"></image>
-            </view>
-            <view class="flex items-center relative z-[20] mx-[60rpx] mb-[30rpx]">
-                <image class="w-[90rpx] h-[90rpx] rounded-[50%]" v-if="detail.member.headimg" :src="img(detail.member.headimg)" mode="aspectFill"/>
-                <image class="w-[90rpx] h-[90rpx] rounded-[50%]" v-else :src="img('addon/shop_fenxiao/index/head.png')" mode="aspectFill"/>
-                <view class="ml-[20rpx] flex items-center">
-                    <text class="text-[32rpx] text-[#fff] font-bold">{{detail.member.nickname}}</text>
-                    <text class="rounded-sm ml-[10rpx] text-[#fff] text-[20rpx] border-solid border-[2rpx] border-[#fff] p-[6rpx]">{{currLevel.level_name}}</text>
-                </view>
-            </view>
-            
-            <view class="h-[300rpx] relative flex level-card-one items-center justify-center mx-[50rpx] rounded-[16rpx]">
-                <view class="level-wrap w-[100%] h-[100%]" 
-                :style="{'background-image':'url(' + img('addon/shop_fenxiao/level/style_4_bg.png') + ')','background-size':'cover'}">
-                    <view class="text-[28rpx] text-[#fff] flex items-center" v-if="levelList[currIndex+1]">
-                        <view class="flex items-center">
-                            <text class="rounded-sm border-[2rpx] text-[24rpx] border-solid border-[#fff] px-[6rpx] py-[6rpx] mr-[6rpx]">{{levelList[currIndex+1].level_name}}</text>
-                            <text>{{t('notYetUnlocked')}}</text>
-                        </view>
-                        <text class="shop-fenxiao-icon icon-dasuozi ml-[6rpx] !text-[28rpx]"></text>
-                    </view>
-                    <view v-if="levelList[currIndex+1]" class="text-[#fff] mt-[16rpx] text-[24rpx]">
-                        {{levelList[currIndex+1].upgrade_type == 1 ? t('arbitraryCondition') : t('allConditions') }}{{t('upgradable')}}
-                    </view>
-                    <view class="flex mt-[40rpx]">
-                        <view class="flex-1 text-left" v-if="config.fenxiao_config && config.fenxiao_config.level >= 1">
-                            <view class="text-[#fff] text-[24rpx]">一级分佣比率</view>
-                            <view class="mt-[14rpx] text-[#fff] text-[38rpx] leading-[1]">{{currLevel.one_rate}}<text class="text-[24rpx] ml-[4rpx]">%</text></view>
-                        </view>
-                        <view class="flex-1 text-left" v-if="config.fenxiao_config && config.fenxiao_config.level >= 2">
-                            <view class="text-[#fff] text-[24rpx]">二级分佣比率</view>
-                            <view class="mt-[14rpx] text-[#fff] text-[38rpx] leading-[1]">{{currLevel.two_rate}}<text class="text-[24rpx] ml-[4rpx]">%</text></view>
-                        </view>
-                        <view class="flex-1 text-left" v-if="config.team_config && config.team_config.is_open == 1">
-                            <view class="text-[#fff] text-[24rpx]">团队分佣比率</view>
-                            <view class="mt-[14rpx] text-[#fff] text-[38rpx] leading-[1]">{{currLevel.team_rate}}<text class="text-[24rpx] ml-[4rpx]">%</text></view>
-                        </view>
-                    </view>
-                </view>
-            </view>
-            
-            <view class="bg-[#fff] my-[30rpx] mx-[30rpx] p-[30rpx] rounded-[10rpx]" v-if="levelInfo && levelInfo.task.length">
-                <view class="flex items-center justify-between">
-                    <text class="font-bold">快速升级技巧</text>
-                    <view class="flex items-center text-[26rpx]">
-                        <text class="text-[#e7b667]">{{ levelInfo.complete > levelInfo.task_num ? levelInfo.task_num : levelInfo.complete }}</text>
-                        <text class="text-[#bbb]">/{{ levelInfo.task_num }}</text>
-                    </view>
-                </view>
-                <scroll-view scroll-y="true" class="flex flex-col upgrade-content">
-                    <view class="flex flex-col bg-[#f7f7f7] rounded-[10rpx] mt-[30rpx] py-[20rpx] px-[30rpx]" v-for="(item, index) in levelInfo.task" :key="index">
-                        <view class="flex items-center justify-between">
-                            <text class="mr-[10rpx] text-[28rpx]">{{item.title}}</text>
-                            <text class="text-[#999] text-[28rpx]">{{ item.progress == 100 ? '已完成' : '未完成' }}</text>
-                        </view>
-                        <view class="my-[20rpx]">
-                            <progress :percent="item.progress" activeColor="var(--primary-color)" stroke-width="4" />
-                        </view>
-                        <view class="flex items-center justify-between">
-                            <text class="text-[24rpx] text-[#999]">{{item.desc}}</text>
-                            <view class="flex items-center text-[26rpx]">
-                                <text class="text-[#e7b667]">{{ item.value }}</text>
-                                <text class="text-[#bbb]">/{{ item.condition }}</text>
-                            </view>
-                        </view>
-                    </view>
-                </scroll-view>
-            </view>
+        <view class="bg-[var(--page-bg-color)] min-h-[100vh]" v-if="!loading">
+			
+			<view class="pt-[40rpx] text-[#fff] w-full" :style="headerStyle">
+				<!-- #ifdef MP-WEIXIN -->
+				<top-tabbar :data="param" :scrollBool="topTabarObj.getScrollBool()" class="top-header"/>
+				<!-- #endif -->
+				
+				<view class="flex items-center relative z-[20] mx-[30rpx] mb-[36rpx]">
+				    <image class="w-[90rpx] h-[90rpx] rounded-[50%]" v-if="detail.member.headimg" :src="img(detail.member.headimg)" mode="aspectFill"/>
+				    <image class="w-[90rpx] h-[90rpx] rounded-[50%]" v-else :src="img('addon/shop_fenxiao/index/head.png')" mode="aspectFill"/>
+					<text class="ml-[20rpx] text-[30rpx] truncate w-[300rpx] text-[#333] font-500">{{detail.member.nickname}}</text>
+				</view>
+				
+				<view class="relative level-content sidebar-marign">
+					<view class="flex items-center ml-[10rpx]">
+						<view class="flex items-baseline mr-[10rpx]">
+							<image class="w-[30rpx] h-[24rpx]" :src="img('addon/shop_fenxiao/level/level_key.png')" mode="widthFix"/>
+							<text class="text-[#333] font-500 text-[24rpx] -ml-[7rpx]">{{currIndex+1}}13</text>
+						</view>
+						<text class="ml-[6rpx] mr-[10rpx] text-[#333] font-500 text-[30rpx] truncate max-w-[200rpx]">{{currLevel.level_name}}</text>
+						<text class="rounded-[50rpx] h-[36rpx] flex-center px-[16rpx] text-[20rpx] text-[#F7D6A7] bg-[#38311F]">已解锁</text>
+						<image class="w-[230rpx] h-[200rpx] right-[40rpx] -top-[100rpx] absolute" :src="img('addon/shop_fenxiao/level/level_icon.png')" mode="aspectFill"></image>
+					</view>
+					
+					<view v-if="levelList[currIndex+1]" class="text-[var(--text-color-light9)] mt-[20rpx] flex items-center ml-[10rpx]">
+						<text class="text-[var(--text-color-light9)] text-[24rpx]">{{levelList[currIndex+1].upgrade_type == 1 ? t('arbitraryCondition') : t('allConditions') }}{{t('upgradable')}}</text>
+						<text class="text-[var(--text-color-light9)] text-[24rpx]">为{{levelList[currIndex+1].level_name}}</text>
+						<view class="flex items-center text-[24rpx] ml-[16rpx] price-font">
+						    <text class="text-[#CD6C00]">{{ levelInfo.complete > levelInfo.task_num ? levelInfo.task_num : levelInfo.complete }}</text>
+						    <text class="text-[var(--text-color-light9)]">/{{ levelInfo.task_num }}</text>
+						</view>
+					</view>
+					
+					<view class="flex my-[50rpx] ml-[10rpx]">
+					    <view class="flex-1 text-left" v-if="config.fenxiao_config && config.fenxiao_config.level >= 1">
+					        <view class="text-[var(--text-color-light9)] text-[24rpx]">一级分佣比率</view>
+					        <view class="mt-[16rpx] price-font font-500 text-[#D97E1D] text-[36rpx]">{{currLevel.one_rate}}<text class="text-[24rpx] ml-[4rpx]">%</text></view>
+					    </view>
+					    <view class="flex-1 text-left" v-if="config.fenxiao_config && config.fenxiao_config.level >= 2">
+					        <view class="text-[var(--text-color-light9)] text-[24rpx]">二级分佣比率</view>
+					        <view class="mt-[16rpx] price-font font-500 text-[#D97E1D] text-[36rpx]">{{currLevel.two_rate}}<text class="text-[24rpx] ml-[4rpx]">%</text></view>
+					    </view>
+					    <view class="flex-1 text-left" v-if="config.team_config && config.team_config.is_open == 1">
+					        <view class="text-[var(--text-color-light9)] text-[24rpx]">团队分佣比率</view>
+					        <view class="mt-[16rpx] price-font font-500 text-[#D97E1D] text-[36rpx]">{{currLevel.team_rate}}<text class="text-[24rpx] ml-[4rpx]">%</text></view>
+					    </view>
+					</view>
+					
+					<scroll-view scroll-y="true" class="flex flex-col upgrade-content bg-[#fff] rounded-[var(--rounded-mid)] px-[20rpx] py-[30rpx] box-border" v-if="levelInfo && levelInfo.task">
+					    <view class="flex items-center justify-between" :class="{'pb-[40rpx]': (index != levelInfo.task.length-1)}" v-for="(item, index) in levelInfo.task" :key="index">
+					        <view class="flex flex-col flex-1">
+								<text class="text-[28rpx] text-[#333] font-500">{{item.title}}</text>
+								<view class="mt-[10rpx] mb-[12rpx] rounded-[12rpx] overflow-hidden">
+								    <progress :percent="item.progress" activeColor="#D97E1D" backgroundColor="#FAF0E5" stroke-width="4" />
+								</view>
+								<view class="flex items-center justify-between min-h-[34rpx]">
+								    <text class="text-[22rpx] text-[var(--text-color-light9)] price-font">{{item.desc}}</text>
+								    <view class="flex items-center text-[28rpx] price-font">
+								        <text class="text-[#D97E1D]">{{ Number(item.value) }}</text>
+								        <text class="text-[#bbb]">/{{ Number(item.condition) }}</text>
+								    </view>
+								</view>
+							</view>
+							<text class="rounded-[50rpx] ml-[30rpx] w-[130rpx] h-[60rpx] flex-center text-[24rpx] text-[#F7D6A7] bg-[#38311F]">去邀请</text>
+					    </view>
+					</scroll-view>
+				</view>
+			</view>
+			<view class="mt-[60rpx] flex flex-col items-center sidebar-marign pb-[30rpx]">
+				<view class="flex items-center mb-[30rpx]" v-if="goodsList && Object.keys(goodsList).length">
+					<image class="w-[38rpx] h-[22rpx]" :src="img('addon/shop_fenxiao/level/title_left.png')" mode="aspectFill"></image>
+					<text class="text-[30rpx] mx-[18rpx] font-500 text-[#EF000C]">猜你喜欢</text>
+					<image class="w-[38rpx] h-[22rpx]" :src="img('addon/shop_fenxiao/level/title_right.png')" mode="aspectFill"></image>
+				</view>
+				<diy-goods-list @loadingFn="getGoodsListFn" :component="goodsData"/>
+			</view>
+			
         </view>
-        <u-loading-page bg-color="rgb(248,248,248)" :loading="loading" loadingText="" fontSize="16" color="#333"></u-loading-page>
+		<loading-page :loading="loading"></loading-page>
     </view>
 </template>
 
@@ -82,15 +89,55 @@
 	import { getLevelList } from '@/addon/shop_fenxiao/api/level';
 	import { getFenxiaoDetail, getConfig } from '@/addon/shop_fenxiao/api/fenxiao';
 	import {onShow } from '@dcloudio/uni-app'
+    import { topTabar } from '@/utils/topTabbar'
+	import diyGoodsList from '@/addon/shop/components/diy/goods-list/index.vue';
+	
+	/********* 自定义头部 - start ***********/
+	const topTabarObj = topTabar()
+	let param = topTabarObj.setTopTabbarParam({title:'分销商等级',topStatusBar:{textColor:'#333'}})
+	/********* 自定义头部 - end ***********/
+	
+	const headerStyle = computed(()=>{
+		return {
+			backgroundImage: 'url(' + img('addon/shop_fenxiao/level/level_top_bg.png') + ') ',
+			backgroundSize: '100% 100%',
+			backgroundRepeat: 'no-repeat'
+		}
+	})
+	
+	// 商品列表组件
+	const goodsData = ref({
+		style: 'style-2',
+		num: 4,
+		source: 'all',
+		margin: {
+			both: 10,
+			bottom: 0,
+			top: 0
+		},
+		priceStyle: {
+			mainColor: "#ff4142",
+			mainControl: true
+		},
+		goodsNameStyle:{
+			color: "#303133",
+			control: true,
+			fontWeight: "normal"
+		},
+		saleStyle: {
+			color: "#999",
+			control: true
+		}
+	});
 	
 	onShow(() => {
 		getFenxiaoDetailFn();
 		getConfigFn();
 	});
-	
-	let loading = ref<boolean>(true);
-	let levelList = ref([]);
-	let currLevel = ref({});
+
+	const loading = ref<boolean>(true);
+	const levelList = ref([]);
+	const currLevel = ref({});
 	// 等级列表
 	const getLevelListFn = ()=>{
 		getLevelList().then((res : any) => {
@@ -106,15 +153,15 @@
 	}
 	
 	// 分销系统设置
-	let config = ref({});
+	const config = ref({});
 	const getConfigFn = ()=>{
 		getConfig().then((res : any) => {
 			config.value = res.data;
 		});
 	}
-	
-	let detail = ref({});
-	let currIndex = ref(0);
+
+	const detail: any = ref({});
+	const currIndex = ref(0);
 	
 	// 分销详情
 	const getFenxiaoDetailFn = ()=>{
@@ -126,7 +173,7 @@
 	
 	const levelInfo = computed(() => {
 	    if (levelList.value.length && levelList.value[currIndex.value+1]) {
-	    	let level = levelList.value[currIndex.value+1];
+	    	let level: any = levelList.value[currIndex.value+1];
 	    	level.task = [];
 	    	level.complete = 0;
 			
@@ -155,7 +202,7 @@
 	    	if (level.fenxiao_order_money > 0) {
 	    		let task = {
 	    			title: '订单总额',
-	    			desc: '一级分销订单总额满' + moneyFormat(level.fenxiao_order_money) + '元',
+	    			desc: '分销订单总额满' + moneyFormat(level.fenxiao_order_money) + '元',
 	    			condition: moneyFormat(level.fenxiao_order_money),
 	    			value: moneyFormat(detail.value.fenxiao_total_order),
 	    			progress: parseFloat(detail.value.fenxiao_total_order) > parseFloat(level.fenxiao_order_money) ? 100 : (parseFloat(detail.value.fenxiao_total_order) / parseFloat(level.fenxiao_order_money) * 100).toFixed(2)
@@ -188,7 +235,7 @@
 	    	if (level.child_num > 0) {
 	    		let task = {
 	    			title: '下线人数',
-	    			desc: '一级下线人数达到' + level.child_num + '人',
+	    			desc: '下线人数达到' + level.child_num + '人',
 	    			condition: level.child_num,
 	    			value: detail.value.add_up_data.child_count,
 	    			progress: parseFloat(detail.value.add_up_data.child_count) > parseFloat(level.child_num) ? 100 : (parseFloat(detail.value.add_up_data.child_count) / parseFloat(level.child_num) * 100).toFixed(2)
@@ -199,7 +246,7 @@
 	    	if (level.child_fenxiao_num > 0) {
 	    		let task = {
 	    			title: '下线分销商',
-	    			desc: '一级下线分销商人数达到' + level.child_fenxiao_num + '人',
+	    			desc: '下线分销商人数达到' + level.child_fenxiao_num + '人',
 	    			condition: level.child_fenxiao_num,
 	    			value: detail.value.add_up_data.child_fenxiao_count,
 	    			progress: parseFloat(detail.value.add_up_data.child_fenxiao_count) > parseFloat(level.child_fenxiao_num) ? 100 : (parseFloat(detail.value.add_up_data.child_fenxiao_count) / parseFloat(level.child_fenxiao_num) * 100).toFixed(2)
@@ -211,10 +258,15 @@
 	    	return level;
 	    }
 	})
+	
+	// 获取分销商品数据
+	const goodsList = ref()
+	const getGoodsListFn = (data: any)=>{
+		goodsList.value = data || {}
+	}
 </script>
 
 <style lang="scss" scoped>
-@import '@/addon/shop_fenxiao/styles/iconfont.css';
 	.level-item-width{
 		width: calc(100% - 30px);
 		margin: 0 13px;
@@ -233,4 +285,11 @@
 	.upgrade-content{
 		max-height: calc(100vh - 320px);
 	}
+	
+.level-content{
+	padding: var(--pad-top-m) var(--pad-sidebar-m);
+	border: 2rpx solid #FFB948;
+	border-radius: var(--rounded-big);
+	background: linear-gradient( 49deg, #FFF2DD 0%, #FEF9F0 49%, #FFF2DD 100%), linear-gradient( 90deg, #FDF4E6 0%, #FFF9EF 50%, #FDF4E6 100%), linear-gradient( 90deg, #FFE5BF 0%, #FDF2E4 50%, #FFE5BF 100%);
+}
 </style>

@@ -10,6 +10,9 @@ use app\adminapi\middleware\AdminLog;
  */
 Route::group('tk_cps', function () {
      /***************************************************** CPS联盟 ****************************************************/
+    //Route::get('ceshi', 'addon\tk_cps\app\adminapi\controller\Ceshi@ceshi');
+    //插件添加
+    Route::get('addplugin', 'addon\tk_cps\app\adminapi\controller\config\Config@addPlugin');
     //小程序插件上传
     Route::post('upload', 'addon\tk_cps\app\adminapi\controller\config\Config@version');
     //装载uniapp
@@ -61,6 +64,8 @@ Route::group('tk_cps', function () {
     Route::get('bwc/getorderstatus', 'addon\tk_cps\app\adminapi\controller\bwcorder\BwcOrder@getOrderStatus');
     Route::get('getbwcconfig', 'addon\tk_cps\app\adminapi\controller\config\Config@getBwcConfig');
     Route::post('setbwcconfig', 'addon\tk_cps\app\adminapi\controller\config\Config@setBwcConfig');
+   //手动同步活动订单
+    Route::get('actorder/asyncorder','addon\tk_cps\app\adminapi\controller\actorder\Actorder@asyncOrder');
 })->middleware([
     AdminCheckToken::class,
     AdminCheckRole::class,
@@ -162,3 +167,25 @@ Route::group('tk_cps', function () {
     AdminLog::class
 ]);
 // USER_CODE_END -- cpsbwc_order
+
+// USER_CODE_BEGIN -- cps_act_order
+
+Route::group('tk_cps', function () {
+
+    //CPS活动订单列表
+    Route::get('actorder', 'addon\tk_cps\app\adminapi\controller\actorder\Actorder@lists');
+    //CPS活动订单详情
+    Route::get('actorder/:id', 'addon\tk_cps\app\adminapi\controller\actorder\Actorder@info');
+    //添加CPS活动订单
+    Route::post('actorder', 'addon\tk_cps\app\adminapi\controller\actorder\Actorder@add');
+    //编辑CPS活动订单
+    Route::put('actorder/:id', 'addon\tk_cps\app\adminapi\controller\actorder\Actorder@edit');
+    //删除CPS活动订单
+    Route::delete('actorder/:id', 'addon\tk_cps\app\adminapi\controller\actorder\Actorder@del');
+    
+})->middleware([
+    AdminCheckToken::class,
+    AdminCheckRole::class,
+    AdminLog::class
+]);
+// USER_CODE_END -- cps_act_order
