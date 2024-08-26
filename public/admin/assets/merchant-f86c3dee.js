@@ -1,0 +1,1 @@
+import{O as t}from"./index-37fee5a0.js";function n(e){return t.get("seafox_pay/merchant/lists",{params:e})}function r(e){return t.post("seafox_pay/merchant/delete",e)}function s(e){return t.post("seafox_pay/merchant/add",e)}function o(e){return t.post(`seafox_pay/merchant/edit/${e.id}`,e)}export{s as a,r as d,o as e,n as g};

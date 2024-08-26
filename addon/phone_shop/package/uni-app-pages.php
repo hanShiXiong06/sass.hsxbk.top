@@ -199,8 +199,9 @@ return [
 					"style": {
 						"navigationBarTitleText": "%shop.pages.point.order_list%"
 					}
-				},{
-					"path": "phone_shop/pages/operation/index",
+				},
+				{
+					"path": "phone_shop/pages/goods/operation",
 					"style": {
 						"navigationBarTitleText": "操作台"
 					}

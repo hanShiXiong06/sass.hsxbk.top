@@ -1,1 +1,0 @@
-import{bu as e}from"./index-d8a8f699.js";function s(s){return e.get("shop/goods/evaluate",s)}function o(s){return e.post("shop/goods/evaluate",s,{showSuccessMessage:!0})}function t(s){return e.get(`shop/order/evaluate/${s}`)}export{t as a,s as g,o as s};

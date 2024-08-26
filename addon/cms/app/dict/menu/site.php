@@ -6,7 +6,7 @@ return [
         'menu_short_name' => '微官网',
         'parent_key' => '',
         'menu_type' => '0',
-        'icon' => 'element-Tickets',
+        'icon' => 'iconfont-iconwenzhangguanli1',
         'api_url' => '',
         'router_path' => '',
         'view_path' => '',

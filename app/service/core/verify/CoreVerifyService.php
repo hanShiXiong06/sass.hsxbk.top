@@ -35,7 +35,7 @@ class CoreVerifyService extends BaseCoreService
     public function create(int $site_id, int $member_id, string|int $type, array $param)
     {
         if (!array_key_exists($type, VerifyDict::getType())) throw new CommonException('VERIFY_TYPE_ERROR');//核销类型错误
-        //遇到错误直接抛出即可
+        // //遇到错误直接抛出即可
         $result = array_filter(event('VerifyCreate', ['site_id' => $site_id, 'type' => $type, 'member_id' => $member_id, 'data' => $param]))[ 0 ] ?? [];
         $data = [];
         if(empty($result)){

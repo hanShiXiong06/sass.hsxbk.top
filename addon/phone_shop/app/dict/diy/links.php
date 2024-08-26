@@ -21,6 +21,13 @@ return [
                 'action' => ''
             ],
             [
+                'name' => 'PHONE_SHOP_GOODS_OPERATION',
+                'title' => get_lang('dict_diy.shop_link_operation'),
+                'url' => '/addon/phone_shop/pages/goods/operation',
+                'is_share' => 1,
+                'action' => ''
+            ],
+            [
                 'name' => 'PHONE_SHOP_GOODS_LIST',
                 'title' => get_lang('dict_diy.shop_link_goods_list'),
                 'url' => '/addon/phone_shop/pages/goods/list',
@@ -102,12 +109,6 @@ return [
                 'title' => get_lang('dict_diy.shop_link_discount_list'),
                 'url' => '/addon/phone_shop/pages/discount/list',
                 'is_share' => 1,
-                'action' => ''
-            ],[
-                'name' => 'PHONE_SHOP_GOODS_OPERATION',
-                'title' => get_lang('dict_diy.shop_link_operation'),
-                'url' => '/addon/phone_shop/pages/operation/index',
-                'is_share' => 0,
                 'action' => ''
             ],
         ]

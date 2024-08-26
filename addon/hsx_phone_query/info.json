@@ -1,0 +1,10 @@
+{
+  "title": "手机保修查询",
+  "desc": "手机保修查询",
+  "key": "hsx_phone_query",
+  "version": "0.0.1",
+  "author": "hsx",
+  "type": "addon",
+  "support_app": "phone_shop",
+  "compile":[]
+}

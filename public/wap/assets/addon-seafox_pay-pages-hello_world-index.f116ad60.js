@@ -1,0 +1,1 @@
+import{bt as a,d as s,r as e,p as t,o,c as r,w as l,y as n,z as d,u,D as p}from"./index-2882a2d8.js";const x=s({__name:"index",setup(s){let x=e("");return t((()=>{a.get("seafox_pay/hello_world").then((a=>{x.value=a.data}))})),(a,s)=>{const e=p;return o(),r(e,{class:"text-[20px]"},{default:l((()=>[n(d(u(x)),1)])),_:1})}}});export{x as default};
