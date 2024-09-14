@@ -11,7 +11,7 @@
       <el-card class="box-card !border-none" shadow="never">
         <el-descriptions title="配置说明" column="1">
           <el-descriptions-item label="价格说明"
-            >为保证订单利润，订单优惠低于成本价会自动在成本价上加3元</el-descriptions-item
+            >由于辛达接口的特殊性，续重固定加价3元/kg</el-descriptions-item
           >
           <el-descriptions-item label="充值说明"
             >对接后台账户余额大于100元才能下单</el-descriptions-item
@@ -25,8 +25,8 @@
         </el-descriptions>
         <el-card class="!border-none" shadow="never" style="width: 640px">
           <el-alert
-            type="warning"
-            title="使用前请先完成基本设置"
+            type="info"
+            title="使用前请先完成快递配置，设置一个对接厂商渠道，然后设置好下面的对接参数"
             :closable="false"
             show-icon
           />
@@ -97,7 +97,7 @@
             style="width: 200px"
             :placeholder="t('floatAmountPlaceholder')"
           />
-          <span class="ml-[4px]">元</span>
+          <span class="ml-[4px]">元 首重和续重均会加价</span>
         </el-form-item>
 
         <el-form-item
@@ -110,16 +110,16 @@
             style="width: 200px"
             :placeholder="t('floatRatePlaceholder')"
           />
-          <span class="ml-[4px]">%</span>
+          <span class="ml-[4px]">%，首重续重就会按照此比进行计算</span>
         </el-form-item>
         <el-form-item v-if="formData.floatWay == 'floatWayBetwn'">
-          <span class="ml-[4px] mr-2">首重降价</span>
+          <span class="ml-[4px] mr-2">首重加价</span>
           <el-input
             v-model="formData.firstAmount"
             style="width: 80px"
             :placeholder="t('floatRatePlaceholder')"
           />
-          <span class="ml-[4px] mr-2 ml-6">续重降价</span>
+          <span class="ml-[4px] mr-2 ml-6">续重加价</span>
           <el-input
             v-model="formData.secondAmount"
             style="width: 80px"

@@ -1,4 +1,10 @@
 import request from '@/utils/request'
+export function sendNotice(id) {
+    return request.get(`tk_jhkd/addorder/sendnotice/${id}`, { showSuccessMessage: true, showErrorMessage: true })
+}
+export function remarkAddOrder(params: Record<string, any>) {
+    return request.post(`tk_jhkd/remarkadd`, params, { showErrorMessage: true, showSuccessMessage: true })
+}
 export function remarkOrder(params: Record<string, any>) {
     return request.post(`tk_jhkd/remark`, params, { showErrorMessage: true, showSuccessMessage: true })
 }

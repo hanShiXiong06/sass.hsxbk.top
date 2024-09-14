@@ -446,7 +446,7 @@ return [
                 'menu_key' => 'tk_jhkd_tkjhkd_help_help_help_list',
                 'menu_short_name' => '帮助',
                 'menu_type' => '1',
-                'icon' => 'iconfont-iconwodezhandian',
+                'icon' => 'nc-iconfont nc-icon-bianjiV6xx',
                 'api_url' => 'tk_jhkd/help/get/get/get/get',
                 'router_path' => 'tk_jhkd/help',
                 'view_path' => 'help/help',

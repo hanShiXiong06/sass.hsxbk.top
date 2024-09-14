@@ -6,6 +6,17 @@ page {
 		--page-bg-color: #f7f7f7;
 		--price-text-color: #e1251b;
 	}
+	.line-box {
+		background-color: #00F5BC;
+		height: 6rpx;
+		width: 100%;
+	}
+	
+	.line-box1 {
+		background-color: #e3e3e3;
+		height: 2rpx;
+		width: 100%;
+	}
 .remove-border{
 	&::after{
 		border: none;
@@ -99,7 +110,7 @@ page {
 	margin: 24rpx;
 	border-radius: 12rpx;
 	padding: 24rpx;
-	bbbox-shadow: 0 1px 1px 0 rgba(234, 234, 234, 0.2), 0 2px 2px 0 rgba(231, 231, 231, 0.2);
+	box-shadow: 0 1px 1px 0 rgba(234, 234, 234, 0.2), 0 2px 2px 0 rgba(231, 231, 231, 0.2);
 	}
 .tk-bottom{
 	    position: fixed;

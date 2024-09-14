@@ -1,56 +1,50 @@
 <template>
-	<view class="tk-card">
-		<u-row gutter="12" class="flex item-center">
-			<u-col span="2">
-				<view class="">
-					<text class="tag">寄</text>
-				</view>
+	<view class="tk-card !bg-[#f4f4f4]">
 
-				<view class="mt-[4rpx] mb-[4rpx]">
-					<u-line color="#4541c7" direction="col" length="98rpx" border-style="dotted"></u-line>
-				</view>
-				<view class="">
-					<text class="tag" style="background: #4541c7; color: #ffffff">收</text>
-				</view>
-			</u-col>
-			<u-col span="10">
-				<view class="fb flex item-center">
-					<view class="w-[380rpx]">
-						<text v-if="form.startAddress == []" class="font-bold">从哪里寄？</text>
-						<text v-if="form.startAddress == []" class="tk-sltext">请选择寄件地址</text>
 
-						<text v-if="form.startAddress" class="font-bold tk-sltext text-sm">
-							{{ form.startAddress.name }}
-							<text class="font-light text-xs">
-								{{ form.startAddress.mobile }}
-							</text>
-						</text>
-						<text v-if="form.startAddress" class="text-xs">{{ form.startAddress.address
-              }}{{ form.startAddress.full_address }}</text>
-					</view>
-					<view class="">
-						<text class="bt text-sm" @click="toSelectAddress('startaddress')">地址簿</text>
-					</view>
-				</view>
-				<view class="fb fb flex item-center mt-[28rpx]">
-					<view class="w-[380rpx]">
-						<view v-if="form.endAddress == []" class="font-bold">收件人信息？</view>
-						<text v-if="form.endAddress == []" class="tk-sltext">请选择收件地址</text>
-						<text v-if="form.endAddress" class="font-bold tk-sltext text-sm">
-							{{ form.endAddress.name }}
-							<text class="font-light text-xs">
-								{{ form.endAddress.mobile }}
-							</text>
-						</text>
-						<text v-if="form.endAddress" class="text-xs">{{ form.endAddress.address
-              }}{{ form.endAddress.full_address }}</text>
-					</view>
-					<view class="">
-						<text class="bt text-sm" @click="toSelectAddress('endaddress')">地址簿</text>
-					</view>
-				</view>
-			</u-col>
-		</u-row>
+		<view class="fb flex item-center">
+			<view class="">
+				<text class="tag">寄</text>
+			</view>
+			<view class="w-[380rpx]">
+				<text v-if="form.startAddress == []" class="font-bold">从哪里寄？</text>
+				<text v-if="form.startAddress == []" class="tk-sltext">请选择寄件地址</text>
+
+				<text v-if="form.startAddress" class="font-bold tk-sltext text-sm">
+					{{ form.startAddress.name }}
+					<text class="font-bold text-xs text-slate-600">
+						{{ form.startAddress.mobile }}
+					</text>
+				</text>
+				<text v-if="form.startAddress" class="text-xs font-bold">{{ form.startAddress.address
+              }}</text>
+			</view>
+			<view class="">
+				<text class="bt text-sm" @click="toSelectAddress('startaddress')">地址簿</text>
+			</view>
+		</view>
+		<view class="line-box1 mt-2"></view>
+		<view class="fb fb flex item-center mt-2">
+			<view class="">
+				<text class="tag" style="background: #4541c7; color: #ffffff">收</text>
+			</view>
+			<view class="w-[380rpx]">
+				<view v-if="form.endAddress == []" class="font-bold">收件人信息？</view>
+				<text v-if="form.endAddress == []" class="tk-sltext">请选择收件地址</text>
+				<text v-if="form.endAddress" class="font-bold tk-sltext text-sm">
+					{{ form.endAddress.name }}
+					<text class="font-bold text-xs text-slate-600">
+						{{ form.endAddress.mobile }}
+					</text>
+				</text>
+				<text v-if="form.endAddress" class="text-xs font-bold">{{ form.endAddress.address
+              }}</text>
+			</view>
+			<view class="">
+				<text class="bt text-sm" @click="toSelectAddress('endaddress')">地址簿</text>
+			</view>
+		</view>
+
 		<view class="text-sm mt-2 text-[#686868] font-bold">
 			请认真核实地址,填写实际重量再下单！
 		</view>
@@ -68,23 +62,44 @@
 	<view class="pl-2 pr-2">
 		<u-alert :title="tip.title" type="info" :closable="tip.closable" :description="tip.description"></u-alert>
 	</view>
-	<view v-if="preData" class="tk-card mt-[40rpx] overflow-y-auto">
+	<view v-if="preData" class="mt-[40rpx] overflow-y-auto">
 		<block v-for="(item, index) in preData" :key="index">
-			<view class="fb p-[12rpx]" :class="[
+			<view class="fb p-[12rpx] tk-card1" :class="[
 		
 		   { 'selectitemclass': currentIndex == index },
 		 ]" @click="selectPre(index)" v-if="item.onlinePay == 'Y'">
 				<view class="fl">
-					<image style="width: 68rpx; height: 68rpx; border-radius: 8rpx" :src="img(item.logo)" mode="">
-					</image>
-					<view class="ml-[18rpx] w-[340rpx]">
-						<view class="font-weight text-xs w-[440rpx]">{{
-              item.channelName
-            }}</view>
-						<view class="text-xs text-[#272822]">限重:{{ item.limitWeight }}kg</view>
+					<view>
+						<image style="width: 68rpx; height: 68rpx; border-radius: 8rpx" :src="img(item.logo)" mode="">
+						</image>
+					</view>
+
+					<view class="ml-[18rpx]" style="width:100% !import">
+						<view class="flex items-center justify-between w-[580rpx]">
+							<view class="flex items-center">
+								<view class="font-weight text-xs text-sltext w-[260rpx]">{{
+								  item.channelName
+								}}</view>
+								<view class="text-xs text-[#272822] ml-4  w-[160rpx]">限重:{{ item.limitWeight }}kg</view>
+							</view>
+
+							<view class="font-weight text-sm w-[160rpx]">{{ item.showPrice }}元 </view>
+						</view>
+						<view class="line-box1 mt-1"></view>
+						<view v-if="item.price_rule.add" class="flex text-xs  mt-1 font-bold">
+							<view
+								class="text-[24rpx] text-center p-1 bg-[#cbe3e0] rounded-lg text-slate-600 bg-opacity-50">
+								首重:{{item.price_rule.first}}元/{{item.price_rule.start}}kg</view>
+							<view
+								class="text-[24rpx]  text-center ml-2  p-1 bg-[#cbe3e0] rounded-lg text-slate-600 bg-opacity-50">
+								续重:{{item.price_rule.add}}元/kg
+							</view>
+
+						</view>
+
 					</view>
 				</view>
-				<view class="font-weight text-sm">{{ item.showPrice }}元 </view>
+
 			</view>
 		</block>
 	</view>
@@ -135,6 +150,7 @@
 					v-model="form.weight"></u-number-box>
 				<text class="ml-4 text-[#a3a3a3]">kg</text>
 			</view>
+			<view class="font-bold text-xs text-red">请填写打包完成后包裹的重量，超重需按照快递原价补差价，将不会享受寄件折扣</view>
 			<view class="flex items-center mt-[24rpx]">
 				<view class="senddetail"> 包裹数量 </view>
 				<u-number-box button-size="24" color="#0000ff" bgColor="#e6e6e6" iconStyle="color: #0000ff" integer
@@ -190,15 +206,34 @@
 	<view class="mt-[98rpx]"></view>
 
 	<view class="b-tabbar safe-area-inset-bottom">
-		<view class="b-tabbar-back fb items-center p-2">
-			<view class="">
-				<view class="text-sm tk-sltext w-[400rpx]">快递：{{ selectData ? selectData.channelName : "请选择快递" }}</view>
-				<view class="text-sm font-weight">快递费：{{
-            selectData ? selectData.showPrice : "请先选择快递"
-          }}</view>
+
+		<view class="b-tabbar-back">
+			<view v-if="selectData&&selectData.price_rule.add>0"
+				class="flex text-xs font-bold p-2 text-[24rpx] bg-[#e5fffb] rounded-lg text-[#ff557f] bg-opacity-50">
+				<view>首重:{{selectData.price_rule.first}}元/{{selectData.price_rule.start}}kg</view>
+				<view class="ml-2">续重:{{selectData.price_rule.add}}元/kg</view>
+			</view>
+			<view class=" fb items-center pl-2 pr-2 pb-2 pt-2">
+				<view class="">
+					<view class="flex">
+						<view class="text-xs">
+							快递：
+						</view>
+						<view class="text-xs font-bold tk-sltext">{{ selectData ? selectData.channelName : "请选择快递" }}
+						</view>
+					</view>
+
+					<view class="flex items-center">
+						<view class="text-xs">快递费：</view>
+						<view class="font-bold">{{
+						  selectData ? selectData.showPrice+'元' : "请先选择快递"
+						}}</view>
+					</view>
+
+				</view>
+				<text class="tt-bbut text-center" @click="submitOrder()">立即下单</text>
 			</view>
 
-			<text class="tt-bbut text-center" @click="submitOrder()">立即下单</text>
 		</view>
 		<u-safe-bottom></u-safe-bottom>
 	</view>
@@ -221,6 +256,7 @@
 		getAgreement,
 		checkFenxiao,
 	} from "@/addon/tk_jhkd/api/tkjhkd";
+
 	import { redirect, img, handleOnloadParams } from "@/utils/common";
 	import { getAddressInfo } from "@/app/api/member";
 	import { useSubscribeMessage } from "@/hooks/useSubscribeMessage";
@@ -229,6 +265,8 @@
 	const memberStore = useMemberStore();
 	const userInfo = computed(() => memberStore.info);
 	import { getToken, isWeixinBrowser, getSiteId } from "@/utils/common";
+	import { checkAddPayEvent } from "@/addon/tk_jhkd/utils/ts/common"
+	checkAddPayEvent()
 	const list = ref([""]);
 	const startaddress = ref(null);
 	const endaddress = ref(null);
@@ -324,9 +362,12 @@
 		delivery_info: [],
 		key: "",
 		delivery_index: "",
+		price_rule: [],
+		original_rule: []
 	});
 	const close = () => {
 		goodshow.value = false;
+		bjshow.value = false
 	};
 	const goodshow = ref(false);
 	const goodstype = ref(["0000", "15222"]);
@@ -465,6 +506,8 @@
 		form.showPrice = selectData.value.showPrice;
 		form.delivery_info = selectData.value;
 		form.delivery_index = e;
+		form.price_rule = selectData.value.price_rule
+		form.original_rule = selectData.value.original_rule
 	};
 	const jhkdservice = ref();
 	const checkServiceAgreement = async () => {
@@ -530,6 +573,14 @@
 	@import "@/addon/tk_jhkd/utils/styles/common.scss";
 
 	:root,
+	.tk-card1 {
+		background-color: rgba(181, 213, 214, 0.3);
+		margin: 24rpx;
+		border-radius: 12rpx;
+		padding: 12rpx;
+		box-shadow: 0 1px 1px 0 rgba(234, 234, 234, 0.2), 0 2px 2px 0 rgba(231, 231, 231, 0.2);
+	}
+
 	page {
 		--primary-color: #4541c7;
 		--primary-color-dark: #f26f3e;
@@ -601,13 +652,14 @@
 	}
 
 	.senddetail {
-		background: #4541c7;
+		background: #dee6ff;
 		margin: 8rpx 0rpx;
 		margin-right: 14rpx;
 		padding: 8rpx 16rpx;
 		border-radius: 12rpx;
 		font-size: 24rpx;
-		color: #ffffff;
+		color: #4541c7;
+		border: 1px solid #4541c7;
 	}
 
 	.tt-bbut {

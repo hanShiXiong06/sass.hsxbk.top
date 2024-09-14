@@ -179,12 +179,12 @@
             :show-overflow-tooltip="true"
           />
 
-          <el-table-column
+          <!-- <el-table-column
             prop="order_discount_money"
             label="优惠金额"
             min-width="120"
             :show-overflow-tooltip="true"
-          />
+          /> -->
           <el-table-column
             prop="out_trade_no"
             label="支付单号"
@@ -208,7 +208,7 @@
 
           <el-table-column
             :label="t('orderStatus')"
-            min-width="80"
+            min-width="120"
             align="center"
             :show-overflow-tooltip="true"
           >
@@ -228,6 +228,13 @@
                   >{{ item.name }}</el-tag
                 >
               </div>
+              <el-tag
+                class="mt-1"
+                v-if="row.addorderInfo && row.addorderInfo.order_status == 0"
+                type="error"
+              >
+                需补差价</el-tag
+              >
             </template>
           </el-table-column>
 
@@ -245,7 +252,17 @@
               </div>
             </template>
           </el-table-column>
-
+          <el-table-column
+            label="关闭原因"
+            prop="close_reason"
+            min-width="120"
+            align="center"
+            :show-overflow-tooltip="true"
+          >
+            <template #default="{ row }">
+              <div class="text-red">{{ row.close_reason }}</div>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="remark"
             :label="t('remark')"

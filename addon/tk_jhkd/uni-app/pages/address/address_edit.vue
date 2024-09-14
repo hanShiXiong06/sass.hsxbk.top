@@ -35,7 +35,7 @@
 			</view>
 			<view class="tk-card1 p-2 mt-4 mb-4">
 				<u-textarea clearable border="none" v-model="addressInfo" height="40" placeholder="在此处输入粘贴地址可以快速自动识别"
-					maxlength="500" @keydown.enter="handleEnter" @keydown.shift.enter="handleShiftEnter"
+					maxlength="240" @keydown.enter="handleEnter" @keydown.shift.enter="handleShiftEnter"
 					@paste="handlePaste" autoHeight />
 				<view class="flex justify-end
 				 tk-tag w-48px text-xs mt-1 ml-2" @click="fanyiAddressEvent()">地址识别</view>

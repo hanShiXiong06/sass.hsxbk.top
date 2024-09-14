@@ -16,6 +16,10 @@ use think\Response;
 
 class Order extends BaseController
 {
+    public function checkAddPay()
+    {
+        return success((new OrderService())->checkAddPay());
+    }
     /**
      *生成系统订单
      */
@@ -40,9 +44,13 @@ class Order extends BaseController
             ["pay_method", 10],
             ["key", ''],
             ["delivery_index", ''],
+            ["price_rule", []],
+            ["original_rule", []],
         ]);
         $data['startAddress'] = json_encode($data['startAddress']);
         $data['endAddress'] = json_encode($data['endAddress']);
+        $data['price_rule'] = json_encode($data['price_rule']);
+        $data['original_rule'] = json_encode($data['original_rule']);
         return success((new OrderService())->createOrder($data));
     }
 
@@ -163,6 +171,8 @@ class Order extends BaseController
             ['courierPhone', ''],//揽件电话
             ['courierName', ''],//揽件员
             ['volume',''],//实际体积
+            ['freightHaocai',0],//耗材
+            ['freightInsured',0],//保价费
         ]);
         $params = [
             'orderNo' => $data['shopbill'],
@@ -178,8 +188,18 @@ class Order extends BaseController
                     [
                         "fee" => $data['totalFreight'],
                         "type" => '0',
-                        "name" => '总费用'
-                    ]
+                        "name" => '重量费用'
+                    ],
+                    [
+                        "fee" => $data['freightHaocai'],
+                        "type" => '1',
+                        "name" => '耗材费'
+                    ],
+                    [
+                        "fee" => $data['freightInsured'],
+                        "type" => '2',
+                        "name" => '保价费用'
+                    ],
                 ],
                 "businessTypeNew"=>'',
                 "deliveryIdNew"=>''
@@ -206,6 +226,8 @@ class Order extends BaseController
             ['courierPhone', ''],//揽件电话
             ['courierName', ''],//揽件员
             ['feeOver',''],//扣费状态
+            ['consumables_money',''],//包装费
+            ['change_bill_freight','']
         ]);
         $params = [
             'orderNo' => $data['xin_dabill'],
@@ -222,7 +244,12 @@ class Order extends BaseController
                         "fee" => $data['total_freight'],
                         "type" => '0',
                         "name" => '总费用'
-                    ]
+                    ],
+                    [
+                        "fee" => $data['consumables_money'],
+                        "type" => '1',
+                        "name" => '耗材费'
+                    ],
                 ],
                 "businessTypeNew"=>'',
                 "deliveryIdNew"=>''

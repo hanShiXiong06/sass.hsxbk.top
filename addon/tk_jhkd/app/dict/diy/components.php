@@ -6,7 +6,7 @@ return [
         'list' => [
             'Jhkd' => [
                 'title' => '下单组件',
-                'icon' => 'tk_jhkd-jhkd-kuaidi1',
+                'icon' => 'tk_jhkd jhkd-kuaidi1',
                 'path' => 'edit-jhkd', // 编辑组件属性名称
                 'support_page' => [], // 支持页面
                 'uses' => 1, // 最大添加数量
@@ -23,7 +23,7 @@ return [
             ],
             'Brand' => [
                 'title' => '快递列表',
-                'icon' => 'tk_jhkd-jhkd-kuaidi2',
+                'icon' => 'tk_jhkd jhkd-kuaidi2',
                 'path' => 'edit-jhkdbrand', // 编辑组件属性名称
                 'support_page' => [], // 支持页面
                 'uses' => 0, // 最大添加数量

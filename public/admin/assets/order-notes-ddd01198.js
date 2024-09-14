@@ -1,0 +1,1 @@
+import{_ as o}from"./order-notes.vue_vue_type_style_index_0_lang-e253dfc1.js";import"./index-a3bdc7eb.js";/* empty css                   *//* empty css                  *//* empty css                   *//* empty css                  *//* empty css                */import"./el-form-item-4ed993c7.js";/* empty css                 */import"./shop-d5b18a6e.js";export{o as default};

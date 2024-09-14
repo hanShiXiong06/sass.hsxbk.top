@@ -1,4 +1,4 @@
-<template>
+deliveryInfo<template>
   <el-dialog
     v-model="showDialog"
     title="订单详情"
@@ -74,7 +74,59 @@
           {{ detailData.payInfo.pay_time }}
         </div>
       </div>
+      <div
+        v-if="detailData.orderInfo.price_rule"
+        class="mt-4 flex items-center"
+      >
+        <div class="mr-4">计价规则</div>
+        <el-tag class="mr-2">
+          首重：
+          {{ detailData.orderInfo.price_rule.start }}kg;价格:{{
+            detailData.orderInfo.price_rule.first
+          }}元
+        </el-tag>
+        <el-tag class="mr-2">
+          续重：
+          {{ detailData.orderInfo.price_rule.add }}元/kg
+        </el-tag>
+      </div>
+      <div v-if="detailData.addorderInfo" class="mt-4 flex items-center">
+        <div class="mr-4">补差详情</div>
+        <el-tag class="mr-2">
+          通知次数:
+          {{ detailData.orderInfo.notice_num }}次
+        </el-tag>
+        <el-tag class="mr-2">
+          下单重量:
+          {{ detailData.orderInfo.weight }}kg
+        </el-tag>
 
+        <div class="flex mr-2" v-if="detailData.addorderInfo">
+          <div>
+            超重:
+            {{
+              Math.ceil(
+                detailData.deliveryRealInfo.fee_weight -
+                  detailData.orderInfo.weight
+              )
+            }}kg;￥{{
+              Math.ceil(
+                detailData.deliveryRealInfo.fee_weight -
+                  detailData.orderInfo.weight
+              ) * detailData.orderInfo.price_rule.add ?? 3
+            }};
+          </div>
+          <block
+            v-for="(item, index) in detailData.deliveryRealInfo.fee_blockList"
+          >
+            <div>{{ item.name }}:{{ item.fee }}元;</div>
+          </block>
+          <el-tag class="mr-2" type="error">
+            需补金额：
+            {{ detailData.addorderInfo.order_money }}元
+          </el-tag>
+        </div>
+      </div>
       <div class="mt-4 flex items-center">
         <div class="mr-4">订单状态</div>
         <el-tag class="mr-2">
@@ -124,11 +176,24 @@
       <div class="mt-2">
         <div class="flex items-center mb-4">
           <el-avatar
-            v-if="detailData && detailData.orderInfo.delivery_arry.logo"
+            v-if="
+              detailData &&
+              detailData.orderInfo &&
+              detailData.orderInfo.delivery_arry &&
+              detailData.orderInfo.delivery_arry.logo
+            "
             :src="img(detailData.orderInfo.delivery_arry.logo)"
           />
           <div class="ml-1 p-2">
-            <div>{{ detailData.orderInfo.delivery_arry.name }}</div>
+            <div
+              v-if="
+                detailData &&
+                detailData.orderInfo &&
+                detailData.orderInfo.delivery_arry
+              "
+            >
+              {{ detailData.orderInfo.delivery_arry.name }}
+            </div>
             <div class="font-bold">{{ detailData.orderInfo.delivery_id }}</div>
           </div>
           <div class="ml-8" v-if="pickInfo">
@@ -162,13 +227,13 @@
   </el-dialog>
   <el-dialog v-model="changestatusDialog" title="更改状态" width="400">
     <div class="mb-2">
-              <el-alert
-                type="info"
-                title="这里更改状态仅更新订单状态，不会有额外操作，请谨慎修改"
-                :closable="false"
-                show-icon
-              />
-            </div>
+      <el-alert
+        type="info"
+        title="这里更改状态仅更新订单状态，不会有额外操作，请谨慎修改"
+        :closable="false"
+        show-icon
+      />
+    </div>
     <div class="w-[320px]">
       <el-select v-model="orderstatus" placeholder="请选择订单状态">
         <el-option

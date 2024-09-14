@@ -65,11 +65,15 @@ class Xinda extends BaseDelivery
                 "deliveryType" => $v['tagType'],
                 "limitWeight" => $v['limitWeight'] ?? '',
                 "lightGoods" => $v['paozhong'],
-                "calcFeeType" => '',
+                "calcFeeType" => 'profit',
                 "logo" => XindaBrandDict::getBrand($v['tagType'])['logo'],
                 "price" => [
-                    "perAdd" => $v['orderFee'] ?? '',
-                    "discount" => ''
+                    [
+                        "add" => 0,
+                        "end" => 0,
+                        "first" => $v['originalPrice'],
+                        "start" => 1
+                    ]
                 ],
                 "originalPrice" => [
                     [
@@ -127,6 +131,7 @@ class Xinda extends BaseDelivery
         $resInfo = $this->execute('COURIER_PLACE_ORDER', $data);
         if ($resInfo['code'] != 0) {
             Log::write('XINDA_error--' . $resInfo['msg']);
+            return [];
         }
         $res = [
             'orderNo' => $resInfo['data']['XinDabill'],

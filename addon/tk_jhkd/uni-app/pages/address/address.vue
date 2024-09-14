@@ -10,7 +10,7 @@
 				<view class="p-[12rpx]" v-show="current == 0">
 					<u-swipe-action-item :options="addressOptions" @click="swipeClick" v-for="item in addressList">
 						<view
-							class="border-0 !border-b !border-[#f5f5f5] border-solid pb-[30rpx] flex items-center p-2">
+							class="border-2 !border-b !border-[#f5f5f5] border-solid pb-[30rpx] flex items-center p-2">
 							<view class="flex-1 line-feed" @click="selectAddress(item)">
 								<view class="font-bold my-[10rpx] text-sm line-feed">{{ item.full_address }}</view>
 								<view class="text-sm flex items-center">
@@ -26,7 +26,7 @@
 						</view>
 					</u-swipe-action-item>
 					<view v-if="!addressList.length" class="pt-[20vh]">
-						<mescroll-empty :option="{tip : '暂无收货地址'}"></mescroll-empty>
+						<mescroll-empty :option="{tip : '暂无地址'}"></mescroll-empty>
 					</view>
 				</view>
 				<view class="p-[30rpx]" v-show="current == 1">
@@ -48,13 +48,13 @@
 						</view>
 					</u-swipe-action-item>
 					<view v-if="!locationAddressList.length" class="pt-[20vh]">
-						<mescroll-empty :option="{tip : '暂无收货地址'}"></mescroll-empty>
+						<mescroll-empty :option="{tip : '暂无地址'}"></mescroll-empty>
 					</view>
 				</view>
 			</u-swipe-action>
 			<u-tabbar :fixed="true" :safeAreaInsetBottom="true" :border="false" zIndex="99">
 				<view class="p-[24rpx] pt-0 w-full">
-					<u-button type="primary" shape="circle" :text="t('createAddress')" @click="addAddress"></u-button>
+					<u-button type="primary" shape="circle" text="新增地址" @click="addAddress"></u-button>
 				</view>
 			</u-tabbar>
 		</scroll-view>

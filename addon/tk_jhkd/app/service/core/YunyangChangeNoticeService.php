@@ -172,19 +172,34 @@ class YunyangChangeNoticeService extends BaseApiService
             $orderInfo = $this->orderModel->where(['order_id' => $deliveryInfo['order_id']])->findOrEmpty();
             //修改订单状态
             $orderInfo->save(['order_status' => JhkdOrderDict::FINISH_PICK]);
+
             //生成补差价订单
-            if ($orderInfo['order_money'] < $total_fee) {
-                $add_money = ($total_fee - $orderInfo['order_money']) * 1.2;
+            $add=3;   //初始续费add
+            if(isset($deliveryInfo['price_rule'])&&$deliveryInfo['price_rule']!=''){
+                $price_rule = json_decode($deliveryInfo['price_rule'], true);
+                $add=$price_rule['add'];
+            }
+            $price_add = 0;
+            if ($info['calcFeeWeight'] > $deliveryInfo['weight']) {
+                $calc_weight = $info['calcFeeWeight'] - $deliveryInfo['weight'];
+                $price_add = ceil($calc_weight) * $add;
+            }
+            foreach ($info['feeBlockList'] as $k => $v) {
+                if ($v['type'] != 0) {
+                    $price_add += $v['fee'];
+                }
+            }
+            if($price_add>0){
                 $addinfo = (new OrderAdd())->create([
                     'site_id' => $orderInfo['site_id'],
                     'member_id' => $orderInfo['member_id'],
                     'order_no' => create_no(),
                     'order_id' => $orderInfo['order_id'],
-                    'order_money' => $add_money,
+                    'order_money' => $price_add,
                     'ip' => request()->ip() ?? '',
                 ]);
                 //添加订单支付表
-                (new CorePayService())->create($orderInfo['site_id'], PayDict::MEMBER, $orderInfo['member_id'], $add_money, JhkdOrderAddDict::getOrderType()['type'], $addinfo['id'], "快递补差价付款");
+                // (new CorePayService())->create($orderInfo['site_id'], PayDict::MEMBER, $orderInfo['member_id'], $price_add, JhkdOrderAddDict::getOrderType()['type'], $addinfo['id'], "快递补差价付款");
                 (new NoticeService())->send($orderInfo['site_id'], 'tk_jhkd_order_add', ['order_id' => $orderInfo['order_id']]);
             }
             Db::commit();

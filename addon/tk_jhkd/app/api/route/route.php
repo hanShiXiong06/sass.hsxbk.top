@@ -74,6 +74,8 @@ Route::group("tk_jhkd", function () {
     //关闭订单
     Route::get('closeorder/:id', 'addon\tk_jhkd\app\api\controller\Order@closeOrder');
     Route::post('checkfenxiao', 'addon\tk_jhkd\app\api\controller\Fenxiao@checkFenxiao');
+    //检查未支付订单
+    Route::get('checkaddpay', 'addon\tk_jhkd\app\api\controller\Order@checkAddPay');
 })->middleware(ApiChannel::class)
     ->middleware(ApiCheckToken::class, true)
     ->middleware(ApiLog::class);

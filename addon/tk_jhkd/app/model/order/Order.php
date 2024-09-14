@@ -157,7 +157,10 @@ class Order extends BaseModel
         return (new CommonService())->getDictName('jhkd_is_send', $data['is_send']);
     }
 
-
+    public function deliveryRealInfo()
+    {
+        return $this->hasOne(\addon\tk_jhkd\app\model\OrderDeliveryReal::class, 'order_id', 'order_id');
+    }
     public function payInfo()
     {
         return $this->hasOne(Pay::class, 'trade_id', 'id');
@@ -172,4 +175,9 @@ class Order extends BaseModel
     {
         return $this->hasOne(OrderDelivery::class, 'order_id', 'order_id');
     }
+    public function addorderInfo()
+    {
+        return $this->hasOne(OrderAdd::class, 'order_id', 'order_id');
+    }
+
 }

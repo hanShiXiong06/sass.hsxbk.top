@@ -40,6 +40,9 @@ Route::group('phone_shop', function() {
     // 获取商品分类列表
     Route::get('goods/category/list', 'addon\phone_shop\app\api\controller\goods\GoodsCategory@lists');
 
+    // 获取商品详情
+    Route::get('goods/category/:id', 'addon\phone_shop\app\api\controller\goods\GoodsCategory@getInfo');
+
     // 获取商品列表供组件调用
     Route::get('goods/components', 'addon\phone_shop\app\api\controller\goods\Goods@components');
 

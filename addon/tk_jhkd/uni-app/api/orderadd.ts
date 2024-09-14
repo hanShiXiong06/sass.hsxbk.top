@@ -19,3 +19,6 @@ export function getOrderStatus() {
 export function deleteOrder(id : number) {
 	return request.delete(`tk_jhkd/deleteorderadd/${id}`, { showSuccessMessage: true, showErrorMessage: true })
 }
+export function checkAddPay() {
+	return request.get('tk_jhkd/checkaddpay')
+}

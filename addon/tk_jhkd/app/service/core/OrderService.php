@@ -5,10 +5,11 @@ namespace addon\tk_jhkd\app\service\core;
 use addon\tk_jhkd\app\dict\order\JhkdOrderAddDict;
 use addon\tk_jhkd\app\dict\order\JhkdOrderDict;
 use addon\tk_jhkd\app\job\notice\Webhook;
-use addon\tk_jhkd\app\job\order\SendOrder;
+use addon\tk_jhkd\app\model\order\OrderAdd;
+use addon\tk_jhkd\app\model\orderdelivery\OrderDelivery;
+use addon\tk_jhkd\app\model\OrderDeliveryReal;
 use addon\tk_jhkd\app\model\TkjhkdBrand;
 use addon\tk_jhkd\app\model\tkjhkdorder\Tkjhkdorder;
-use addon\tk_jhkd\app\model\order\OrderAdd;
 use app\dict\pay\PayDict;
 use app\model\pay\Pay;
 use app\model\pay\Refund;
@@ -17,13 +18,11 @@ use app\service\core\pay\CorePayService;
 use app\service\core\sys\CoreConfigService;
 use core\base\BaseApiService;
 use core\exception\CommonException;
-use addon\tk_jhkd\app\model\orderdelivery\OrderDelivery;
-use addon\tk_jhkd\app\model\OrderDeliveryReal;
+use core\util\Snowflake;
 use Exception;
 use think\facade\Cache;
 use think\facade\Db;
 use think\facade\Log;
-use core\util\Snowflake;
 
 /**
  * 聚合快递订单服务层
@@ -42,6 +41,17 @@ class OrderService extends BaseApiService
         if (!$this->config) throw new CommonException('基础配置未完成，请联系管理员');
     }
 
+    public function checkAddPay()
+    {
+        $orderModel = new OrderAdd();
+        $res = $orderModel->where([['order_status', '=', JhkdOrderAddDict::WAIT_PAY]])->findOrEmpty();
+        if ($res->isEmpty()) {
+            return ['type' => 'success', 'page' => ''];
+        } else {
+            return ['type' => 'redirect', 'page' => '/addon/tk_jhkd/pages/orderaddlist'];
+        }
+    }
+
     /**
      * $order_id
      * 快递渠道发单，三方下单
@@ -54,7 +64,7 @@ class OrderService extends BaseApiService
             $order_info = $order_model->where([['order_id', '=', $order_id]])->findOrEmpty();
             if (empty($order_info))
                 throw new CommonException('ORDER_NOT_EXIST');
-            if($order_info['is_send']==1) throw new CommonException('已经发单');
+            if ($order_info['is_send'] == 1) throw new CommonException('已经发单');
             $ordeDeliveryInfo = (new OrderDelivery())->where(['order_id' => $order_id])->findOrEmpty();
             if ($ordeDeliveryInfo->isEmpty()) throw new Exception('未找到运单数据');
             $params = $ordeDeliveryInfo;
@@ -96,7 +106,23 @@ class OrderService extends BaseApiService
             ];
             $submitInfo = event('DeliverySendOrder', ['site_id' => $this->site_id, 'data' => $data]);
             $submitInfo = $submitInfo [0];
-            $order_no = $submitInfo['orderNo'];
+            if ($submitInfo == []) {
+                //下单失败主动发起退款
+                $data = [
+                    'id' => $order_info['id'],
+                    'close_reason' => '三方平台下单失败，请重新下单'
+                ];
+                (new OrderLogService())->writeOrderLog(
+                    $order_info['site_id'],
+                    $order_info['order_id'],
+                    JhkdOrderDict::REFUNDING,
+                    '三方平台下单失败，发起退款'
+                );
+                event('CancelOrder', $data);
+                Db::commit();
+                return false;
+            }
+            $order_no = $submitInfo['orderNo'] ?? '';
             $delivery_id = $submitInfo['deliveryId'] ?? '';
             $orderDeliveryInfo = $this->deliveryModel->where(['order_id' => $order_id])->findOrEmpty();
             if ($orderDeliveryInfo->isEmpty()) {
@@ -123,8 +149,7 @@ class OrderService extends BaseApiService
         }
     }
 
-    public
-    function create_no(string $prefix = '', string $tag = '')
+    public function create_no(string $prefix = '', string $tag = '')
     {
 
         $data_center_id = 1;
@@ -188,16 +213,22 @@ class OrderService extends BaseApiService
             if (!$brand->isEmpty()) {
                 $v1['logo'] = $url . '/' . $brand['logo'];
             }
-            $v1['showPrice'] = $this->showPrice($v1);
-            $keysToRemove = ['preDeliveryFee', 'preOrderFee', 'price', 'originalFee', 'originalPrice'];
-            $v1 = array_diff_key($v1, array_flip($keysToRemove));
-            $dataInfo[] = $v1;
+            //$v1['showPrice'] = $this->showPrice($v1);
+            $newPrice = $this->newPriceAndRule($v1, $params['weight']);
+            $v1['showPrice'] = $newPrice['price'];
+            $v1['price_rule'] = $newPrice['price_rule'];
+            $v1['original_rule'] = $newPrice['original_rule'];
+            if ($v1['showPrice'] > $v1['preOrderFee']) {
+                $keysToRemove = ['preDeliveryFee', 'preOrderFee', 'price', 'originalFee', 'originalPrice'];
+                $v1 = array_diff_key($v1, array_flip($keysToRemove));
+                $dataInfo[] = $v1;
+            }
         }
         //增加验证key
         $key = md5(create_no() . time());
 
-        usort($dataInfo, function($a, $b) {
-            return $a['showPrice'] <=>$b['showPrice'];
+        usort($dataInfo, function ($a, $b) {
+            return $a['showPrice'] <=> $b['showPrice'];
         });
         Cache::set($key, $dataInfo, 180);
         $data = [
@@ -258,13 +289,19 @@ class OrderService extends BaseApiService
                 "customer_type" => $params['customerType'],
                 "pay_method" => $params['pay_method'],
                 "remark" => $params['remark'],
-                "channel_id" => $params['delivery_info']['channelId']
+                "channel_id" => $params['delivery_info']['channelId'],
+                "price_rule" => $params['price_rule'] ?? '',
+                "original_rule" => $params['original_rule'] ?? '',
             ];
             (new OrderDelivery())->create($deliveryData);
             $info = $this->model->create($orderData);
             //添加订单支付表
             (new CorePayService())->create($orderData['site_id'], PayDict::MEMBER, $orderData['member_id'], $orderData['order_money'], JhkdOrderDict::getOrderType()['type'], $info['id'], "快递下单付款");
-            (new OrderDeliveryReal())->create(['order_id' => $info['order_id']]);
+            //同步创建计费
+            (new OrderDeliveryReal())->create([
+                'order_id' => $info['order_id'],
+                "weight" => $params['weight'],
+            ]);
             (new OrderLogService())->writeOrderLog(
                 $orderData['site_id'],
                 $orderData['order_id'],
@@ -325,13 +362,13 @@ class OrderService extends BaseApiService
 //                    Log::write('发单队列加入失败'.date('Y-m-d H:i:s'));
 //                }
             }
-            $config=(new CommonService())->getConfig($order_info['site_id']);
-            $text = '订单号：'. $order_info['order_id'].',已经支付成功，订单金额：'. $order_info['order_money'].'元，请及时关注是否存在超重补差价';
+            $config = (new CommonService())->getConfig($order_info['site_id']);
+            $text = '订单号：' . $order_info['order_id'] . ',已经支付成功，订单金额：' . $order_info['order_money'] . '元，请及时关注是否存在超重补差价';
             Webhook::dispatch(['config' => $config, 'text' => $text]);
             return true;
         } catch (Exception $e) {
             Db::rollback();
-            Log::write('支付回调失败'.date('Y-m-d H:i:s'));
+            Log::write('支付回调失败' . date('Y-m-d H:i:s'));
             Log::write($e->getMessage());
             throw new CommonException($e->getMessage());
         }
@@ -400,7 +437,7 @@ class OrderService extends BaseApiService
             $trade_type = $data['trade_type'];
             $trade_id = $data['trade_id'];
             $site_id = $data['site_id'];
-            $payInfo = $this->PayModel->where(['site_id' => $site_id, 'trade_id' => $trade_id,'trade_type'=>JhkdOrderDict::getOrderType()['type']])->where('status', '<>', -1)->findOrEmpty();
+            $payInfo = $this->PayModel->where(['site_id' => $site_id, 'trade_id' => $trade_id, 'trade_type' => JhkdOrderDict::getOrderType()['type']])->where('status', '<>', -1)->findOrEmpty();
             if ($payInfo->isEmpty()) throw new CommonException('select pay is empty');
             $payInfo->save([
                 'status' => -1,
@@ -443,6 +480,130 @@ class OrderService extends BaseApiService
             Db::rollback();
             throw new CommonException($e->getMessage());
         }
+    }
+
+    /**
+     * @Notes:重新计算价格和规则
+     * @Interface newPriceAndRule
+     * @param $data
+     * @author: TK
+     * @Time: 2024/9/8   下午10:56
+     */
+    public function newPriceAndRule($data, $weight)
+    {
+        $price = $data['preOrderFee'];
+        // 易达通票计算价格
+        if ($data['calcFeeType'] == 'profit') {
+            if (is_array($data['price'])) {
+                $pricerules = $data['price'];
+            } else {
+                $pricerules = json_decode($data['price'], true);
+            }
+            if (is_array($data['originalPrice'])) {
+                $original_price = $data['originalPrice'];
+            } else {
+                $original_price = json_decode($data['originalPrice'], true);
+            }
+            $selectedRule = null;
+            $index = 0;
+            // 遍历所有规则，找到适用于当前重量的规则
+            foreach ($pricerules as $k => $rule) {
+                if ($weight >= $rule['start'] && ($weight <= $rule['end'] || $rule['end'] == 0)) {
+                    $selectedRule = $rule;
+                    $index = $k;
+                    break;
+                }
+            }
+            if (!$selectedRule) {
+                $firstRule = reset($pricerules);
+                if ($weight < $firstRule['start']) {
+                    $selectedRule = $firstRule;
+                    $index = key($pricerules);
+                }
+            }
+            if ($this->config['floatWay'] == 'floatWayFixed') {
+                $selectedRule['first'] += $this->config['floatAmount'];
+                if($selectedRule['add']>0){
+                    $selectedRule['add'] += $this->config['floatAmount'];
+                }else{
+                    $selectedRule['add']=3;
+                }
+
+            }
+            if ($this->config['floatWay'] == 'floatWayRate') {
+                $selectedRule['first'] = $selectedRule['first'] * (1 + $this->config['floatRate'] / 100);
+                if($selectedRule['add']>0){
+                    $selectedRule['add'] = $selectedRule['add'] * (1 + $this->config['floatRate'] / 100);
+                }else{
+                    $selectedRule['add']=3;
+                }
+            }
+            if ($this->config['floatWay'] == 'floatWayBetwn') {
+                $selectedRule['first'] = $selectedRule['first'] + $this->config['firstAmount'];
+                if($selectedRule['add']>0){
+                    $selectedRule['add'] = $selectedRule['add'] + $this->config['secondAmount'];
+                }else{
+                    $selectedRule['add']=3;
+                }
+
+            }
+            $selectedRule['perAdd'] = 0;   // 单笔加收
+            $selectedRule['discount'] = 1;    // 折扣
+
+        } else {
+            if (is_array($data['price'])) {
+                $pricerules = $data['price'];
+            } else {
+                $pricerules = json_decode($data['price'], true);
+            }
+            if (is_array($data['originalPrice'])) {
+                $original_price = $data['originalPrice'];
+            } else {
+                $original_price = json_decode($data['originalPrice'], true);
+            }
+            $selectedRule = null;
+            $index = 0;
+            // 遍历所有规则，找到适用于当前重量的规则
+            foreach ($original_price as $k => $rule) {
+                if ($weight >= $rule['start'] && ($weight <= $rule['end'] || $rule['end'] == 0)) {
+                    $selectedRule = $rule;
+                    $index = $k;
+                    break;
+                }
+            }
+            if (!$selectedRule) {
+                $firstRule = reset($original_price);
+                if ($weight < $firstRule['start']) {
+                    $selectedRule = $firstRule;
+                    $index = key($original_price);
+                }
+            }
+            if ($this->config['floatWay'] == 'floatWayFixed') {
+                $selectedRule['first'] = $selectedRule['first'] * $pricerules['discount'] + $pricerules['perAdd'] + $this->config['floatAmount'];
+                $selectedRule['add'] = $selectedRule['add'] * $pricerules['discount'] + $this->config['floatAmount'];
+            }
+            if ($this->config['floatWay'] == 'floatWayRate') {
+                $selectedRule['first'] = ($selectedRule['first'] * $pricerules['discount'] + $pricerules['perAdd']) * (1 + $this->config['floatRate'] / 100);
+                $selectedRule['add'] = $selectedRule['add'] * $pricerules['discount'] * (1 + $this->config['floatRate'] / 100);
+            }
+            if ($this->config['floatWay'] == 'floatWayFixed') {
+                $selectedRule['first'] = $selectedRule['first'] * $pricerules['discount'] + $pricerules['perAdd'] + $this->config['firstAmount'];
+                $selectedRule['add'] = $selectedRule['add'] * $pricerules['discount'] + $this->config['secondAmount'];
+            }
+            $selectedRule['perAdd'] = $pricerules['perAdd'];   // 单笔加收
+            $selectedRule['discount'] = $pricerules['discount'];    // 折扣
+        }
+        $selectedRule['first'] = round($selectedRule['first'], 2);
+        $selectedRule['add'] = round($selectedRule['add'], 2);
+//        $selectedRule['first']=ceil($selectedRule['first']);
+//        $selectedRule['add']=ceil($selectedRule['add']);
+        $weight_num = $weight - $selectedRule['start'];
+        if ($weight_num < 0) {
+            $weight_num = 0;
+        }
+        $price = $selectedRule['first'] + $weight_num * $selectedRule['add'];
+        $price = round($price, 2);
+        return ['price' => $price, 'price_rule' => $selectedRule, 'original_rule' => $original_price[$index]];
     }
 
     /**

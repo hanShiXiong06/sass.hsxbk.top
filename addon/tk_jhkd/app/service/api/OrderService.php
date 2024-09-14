@@ -2,18 +2,18 @@
 
 namespace addon\tk_jhkd\app\service\api;
 
+use addon\tk_jhkd\app\dict\order\JhkdOrderDict;
+use addon\tk_jhkd\app\dict\order\OrderRefundLogDict;
 use addon\tk_jhkd\app\model\tkjhkdorder\Tkjhkdorder;
 use addon\tk_jhkd\app\service\core\OrderLogService;
 use app\dict\pay\RefundDict;
+use app\model\pay\Refund;
+use app\service\core\pay\CoreRefundService;
 use app\service\core\sys\CoreConfigService;
 use core\base\BaseApiService;
-use addon\tk_jhkd\app\dict\order\JhkdOrderDict;
 use core\exception\CommonException;
 use Exception;
 use think\facade\Db;
-use app\model\pay\Refund;
-use app\service\core\pay\CoreRefundService;
-use addon\tk_jhkd\app\dict\order\OrderRefundLogDict;
 use think\facade\Log;
 
 /**
@@ -34,7 +34,7 @@ class OrderService extends BaseApiService
         $min = intval($min);
         $orderInfo = $this->model->where(['id' => $data['id']])->findOrEmpty();
 
-        if ((time() - $orderInfo['pay_time']) <=60) throw new Exception('请等一分钟后再取消订单');
+        if ((time() - $orderInfo['pay_time']) <= 60) throw new Exception('请等一分钟后再取消订单');
         if (($orderInfo['pay_time'] + $min * 60) < time() && $min != 0) {
             throw new Exception('超过自主取消时间，请联系客服取消订单');
         }
@@ -67,20 +67,42 @@ class OrderService extends BaseApiService
             ->field($field)
             ->with(
                 [
-                    'orderInfo' => function ($query) {
-                        $query->field('start_address,end_address,order_id,goods,long,width,height,delivery_id,weight');
-                    },
+                    'orderInfo',
                     'payInfo' => function ($query) {
                         $query->field('trade_id,status,pay_time,cancel_time,fail_reason,type,trade_type')
-                            ->where(['trade_type'=>JhkdOrderDict::getOrderType()['type']])
+                            ->where(['trade_type' => JhkdOrderDict::getOrderType()['type']])
                             ->append(['status_name', 'type_name']);
                     },
+                    'deliveryRealInfo',
+                    'addorderInfo'
                 ]
             )->order($order)->append(['is_send_name', 'order_status_arr']);
         $order_status_list = JhkdOrderDict::getStatus();
         $list = $this->pageQuery($search_model, function ($item, $key) use ($order_status_list) {
             $item['order_status_data'] = $order_status_list[$item['order_status']] ?? [];
         });
+        $list['data'] = array_map(function ($item) {
+            $item['order_status'] = strval($item['order_status']);
+            $item['orderInfo']['price_rule'] = json_decode($item['orderInfo']['price_rule'], true);
+            $item['orderInfo']['original_rule'] = json_decode($item['orderInfo']['original_rule'], true);
+            $item['orderInfo']['courier_context'] = json_decode($item['orderInfo']['courier_context'], true);
+            $fee_list=json_decode($item['deliveryRealInfo']['fee_blockList'],true);
+            $new_fee_list=[];
+            if($fee_list!=''){
+                foreach ($fee_list as $fee){
+                    if($fee['type']!=0){
+                        $new_fee_list[]=[
+                            'fee'=>$fee['fee'],
+                            'type'=>$fee['type'],
+                            'name'=>$fee['name']
+                        ];
+                    }
+                }
+            }
+
+            $item['deliveryRealInfo']['fee_blockList']=$new_fee_list;
+            return $item;
+        }, $list['data']);
         return $list;
     }
 
@@ -97,15 +119,35 @@ class OrderService extends BaseApiService
             ->where([['id', '=', $id], ['site_id', '=', $this->site_id]])
             ->with(
                 [
-                    'orderInfo' => function ($query) {
-                        $query->field('start_address,end_address,order_id,goods,long,width,height,delivery_id,delivery_type,weight,courier_context,order_status_desc,order_status')->append(['delivery_arry']);
-                    },
+                    'orderInfo',
                     'payInfo' => function ($query) {
-                        $query->field('trade_id,status,pay_time,cancel_time,fail_reason,type,trade_type')->append(['status_name', 'type_name']);
+                        $query->field('trade_id,status,pay_time,cancel_time,fail_reason,type,trade_type')
+                            ->where(['trade_type' => JhkdOrderDict::getOrderType()['type']])
+                            ->append(['status_name', 'type_name']);
                     },
+                    'deliveryRealInfo',
+                    'addorderInfo'
                 ]
-            )->findOrEmpty()->append(['order_status_arr'])->toArray();
-        return $info;
+            )
+            ->findOrEmpty()->append(['order_status_arr'])->toArray();
+        $item=$info;
+        $item['orderInfo']['price_rule'] = json_decode($item['orderInfo']['price_rule'], true);
+        $item['orderInfo']['original_rule'] = json_decode($item['orderInfo']['original_rule'], true);
+        $fee_list=json_decode($item['deliveryRealInfo']['fee_blockList'],true);
+        $new_fee_list=[];
+        if($fee_list!=''){
+            foreach ($fee_list as $fee){
+                if($fee['type']!=0){
+                    $new_fee_list[]=[
+                        'fee'=>$fee['fee'],
+                        'type'=>$fee['type'],
+                        'name'=>$fee['name']
+                    ];
+                }
+            }
+        }
+        $item['deliveryRealInfo']['fee_blockList']=$new_fee_list;
+        return $item;
     }
 
     /**
@@ -123,7 +165,7 @@ class OrderService extends BaseApiService
                         },
                         'payInfo' => function ($query) {
                             $query->field('trade_id,status,pay_time,cancel_time,fail_reason,type,trade_type,out_trade_no,money')
-                                ->where(['trade_type'=>JhkdOrderDict::getOrderType()['type'],'status'=>2])
+                                ->where(['trade_type' => JhkdOrderDict::getOrderType()['type'], 'status' => 2])
                                 ->append(['status_name', 'type_name']);
                         },
                     ]
@@ -141,7 +183,7 @@ class OrderService extends BaseApiService
             return true;
         } catch (Exception $e) {
             Db::rollback();
-            Log::write('退款操作失败'.date('Y-m-d H:i:s'));
+            Log::write('退款操作失败' . date('Y-m-d H:i:s'));
             Log::write($e->getMessage());
             throw new CommonException($e->getMessage());
         }

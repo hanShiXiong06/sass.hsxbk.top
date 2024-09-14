@@ -58,8 +58,27 @@ class GoodsService extends BaseApiService
         }
 
         if (!empty($where[ 'keyword' ])) {
-            $sku_where[] = [ 'goods_name|sub_title', 'like', '%' . $where[ 'keyword' ] . '%' ];
+            // 如果 keyword中 开头是 # 则说明要通过sku_no 进行查询否则模糊查询
+            if (strpos($where[ 'keyword' ], '#') === 0) {
+                $sku_where[] = [ 'goodsSku.sku_no', 'like', '%' . substr($where[ 'keyword' ], 1) . '%' ];
+            } else {
+                $sku_where[] = [ 'goods_name|sub_title', 'like', '%' . $where[ 'keyword' ]. '%' ];
+            }
         }
+        
+
+        // 如果 $where 中有 create_time 则 通过 这个添加查询 近 24小时内上传的商品
+        if (!empty($where['create_time'])) {
+              // 获取当前的时间戳
+            $current_time = time();
+
+            // 计算24小时前的时间戳
+            $twenty_four_hours_ago = $current_time - 86400;
+            // 这里不需要再使用 $where['create_time']，因为我们已经计算了24小时前的时间戳
+            $sku_where[] = ['goods.create_time', 'between', [$twenty_four_hours_ago, $current_time]];
+        }
+        
+
 
         if (!empty($where[ 'start_price' ]) && !empty($where[ 'end_price' ])) {
             $money = [ $where[ 'start_price' ], $where[ 'end_price' ] ];

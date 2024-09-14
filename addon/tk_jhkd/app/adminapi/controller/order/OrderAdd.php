@@ -11,9 +11,10 @@
 
 namespace addon\tk_jhkd\app\adminapi\controller\order;
 
+use addon\tk_jhkd\app\service\admin\order\OrderAddService;
+use addon\tk_jhkd\app\service\admin\order\OrderService;
 use app\service\admin\member\MemberService;
 use core\base\BaseAdminController;
-use addon\tk_jhkd\app\service\admin\order\OrderAddService;
 
 
 /**
@@ -23,16 +24,22 @@ use addon\tk_jhkd\app\service\admin\order\OrderAddService;
  */
 class OrderAdd extends BaseAdminController
 {
-   /**
-    * 获取订单列列表
-    * @return \think\Response
-    */
-    public function lists(){
+    public function sendNotice($id)
+    {
+        return success((new OrderAddService())->sendNotice($id));
+    }
+
+    /**
+     * 获取订单列列表
+     * @return \think\Response
+     */
+    public function lists()
+    {
         $data = $this->request->params([
-             ["member_id",""],
-             ["order_id",""],
-             ["order_status",""],
-             ["create_time",["",""]]
+            ["member_id", ""],
+            ["order_id", ""],
+            ["order_status", ""],
+            ["create_time", ["", ""]]
         ]);
         return success((new OrderAddService())->getPage($data));
     }
@@ -42,7 +49,8 @@ class OrderAdd extends BaseAdminController
      * @param int $id
      * @return \think\Response
      */
-    public function info(int $id){
+    public function info(int $id)
+    {
         return success((new OrderAddService())->getInfo($id));
     }
 
@@ -50,10 +58,12 @@ class OrderAdd extends BaseAdminController
      * 添加订单列
      * @return \think\Response
      */
-    public function add(){
+    public function add()
+    {
         $data = $this->request->params([
-             ["member_id",0],
-             ["order_id",""],
+            ["member_id", 0],
+            ["order_id", ""],
+            ["remark", ""],
 
         ]);
         $this->validate($data, 'addon\tk_jhkd\app\validate\order\OrderAdd.add');
@@ -66,29 +76,39 @@ class OrderAdd extends BaseAdminController
      * @param $id  订单列id
      * @return \think\Response
      */
-    public function edit(int $id){
+    public function edit(int $id)
+    {
         $data = $this->request->params([
-             ["member_id",0],
-             ["order_id",""],
-
+            ["member_id", 0],
+            ["order_id", ""],
+            ["remark", ""]
         ]);
         $this->validate($data, 'addon\tk_jhkd\app\validate\order\OrderAdd.edit');
         (new OrderAddService())->edit($id, $data);
         return success('EDIT_SUCCESS');
     }
-
+    public function remark(int $id){
+        $data = $this->request->params([
+            ["id",""],
+            ["remark",""],
+        ]);
+        (new OrderAddService())->edit($data['id'], $data);
+        return success('EDIT_SUCCESS');
+    }
     /**
      * 订单列删除
      * @param $id  订单列id
      * @return \think\Response
      */
-    public function del(int $id){
+    public function del(int $id)
+    {
         (new OrderAddService())->del($id);
         return success('DELETE_SUCCESS');
     }
 
 
-    public function getMemberAll(){
+    public function getMemberAll()
+    {
         $data = $this->request->params([
             ['keyword', ''],
             ['register_type', ''],

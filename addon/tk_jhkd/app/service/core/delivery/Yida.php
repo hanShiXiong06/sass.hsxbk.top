@@ -38,9 +38,13 @@ class Yida extends BaseDelivery
     {
         $resInfo = $this->execute('SUBMIT_ORDER_V2', $params);
         if ($resInfo['code'] != 200) {
-            Log::write($resInfo['msg']);
+            Log::write("===易达发单ERROR===".date('Y-m-d H:i:s'));
+            Log::write($resInfo);
+            return [];
         }
-        return $resInfo['data'] ?? '';
+        Log::write("===易达发单数据===".date('Y-m-d H:i:s'));
+        Log::write($resInfo);
+        return $resInfo['data'] ?? [];
     }
 
     public function callbackOrder($data)

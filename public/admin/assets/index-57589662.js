@@ -1,0 +1,1 @@
+import{d as t,r as o,h as s,c as a,t as n}from"./index-a3bdc7eb.js";const r={class:"text-[20px]"},d=t({__name:"index",setup(l){const e=o("hello world");return(c,_)=>(s(),a("span",r,n(e.value),1))}});export{d as default};

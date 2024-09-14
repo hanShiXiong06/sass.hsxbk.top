@@ -126,6 +126,8 @@ CREATE TABLE `{{prefix}}tkjhkd_order_add`
     `ip`           varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '会员ip',
     `update_time`  int(13) NULL DEFAULT NULL COMMENT '更新时间',
     `delete_time`  int(13) NULL DEFAULT 0 COMMENT '删除时间',
+    `notice_num` int(11) DEFAULT NULL COMMENT '通知次数',
+    `remark` varchar(255) DEFAULT NULL COMMENT '备注',
     PRIMARY KEY (`id`) USING BTREE,
     INDEX          `id`(`id`, `order_id`, `order_status`, `create_time`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '订单列表' ROW_FORMAT = DYNAMIC;
@@ -166,6 +168,8 @@ CREATE TABLE `{{prefix}}tkjhkd_order_delivery`
     `update_time`       int(13) NULL DEFAULT NULL COMMENT '更新时间',
     `delete_time`       int(13) NULL DEFAULT NULL COMMENT '删除时间',
     `channel_id`        varchar(255) COMMENT '渠道id',
+    `price_rule` longtext COMMENT '计价规则',
+    `original_rule` longtext COMMENT '原价计价规则',
     PRIMARY KEY (`order_id`(15)) USING BTREE,
     INDEX               `order_id`(`order_id`, `member_id`, `order_no`, `delivery_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '订单快递信息表' ROW_FORMAT = DYNAMIC;

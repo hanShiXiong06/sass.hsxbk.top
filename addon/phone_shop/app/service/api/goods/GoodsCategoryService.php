@@ -58,4 +58,24 @@ class GoodsCategoryService extends BaseApiService
         return $this->model->where([ [ 'site_id', 'in', "{$this->site_id},100005" ] , [ 'is_show', '=', 1 ] ])->withSearch([ "category_name", 'level', 'category_id', 'pid' ], $where)->field($field)->order($order)->select()->toArray();
     }
 
+    /* 获取分类详情 */
+    function getInfo(int $id){
+        $field = 'category_id,site_id,category_name,image,level,pid,category_full_name,is_show,sort';
+        
+
+
+        $info = $this->model->field($field)->where([ [ 'category_id', '=', $id ], [ 'site_id', 'in', "{$this->site_id},100005" ]  ])->findOrEmpty()->toArray();
+        // 如果id不属于当前站点 则提示 无权限
+        // if( $info['site_id'] !== $this->site_id) {
+        //     throw new AdminException('SHOP_GOODS_CATEGORY_NOT_POWER');
+        // } 
+
+        if (!empty($info)) {
+            $info[ 'child_count' ] = 0;
+            if ($info[ 'level' ] == 1) {
+                $info[ 'child_count' ] = $this->model->where([ [ 'pid', '=', $info[ 'category_id' ] ] ])->count();
+            }
+        }
+        return $info;
+    }
 }

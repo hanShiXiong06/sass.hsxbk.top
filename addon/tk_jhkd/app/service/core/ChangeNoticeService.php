@@ -2,24 +2,23 @@
 
 namespace addon\tk_jhkd\app\service\core;
 
+use addon\tk_jhkd\app\dict\order\JhkdOrderAddDict;
+use addon\tk_jhkd\app\dict\order\JhkdOrderDict;
+use addon\tk_jhkd\app\model\order\OrderAdd;
+use addon\tk_jhkd\app\model\orderdelivery\OrderDelivery;
+use addon\tk_jhkd\app\model\OrderDeliveryReal;
+use addon\tk_jhkd\app\model\shop_order\ShopOrder;
+use addon\tk_jhkd\app\model\tkjhkdorder\Tkjhkdorder;
+use addon\tk_jhkd\app\service\admin\shop\OrderService;
 use addon\tk_jhkd\app\service\api\OrderService as ApiOrderService;
 use app\dict\pay\PayDict;
 use app\service\core\notice\NoticeService;
 use app\service\core\pay\CorePayService;
 use core\base\BaseApiService;
-use addon\tk_jhkd\app\model\tkjhkdorder\Tkjhkdorder;
-use addon\tk_jhkd\app\model\orderdelivery\OrderDelivery;
-use addon\tk_jhkd\app\model\OrderDeliveryReal;
-use addon\tk_jhkd\app\model\order\OrderAdd;
-use core\exception\CommonException;
 use think\Exception;
-use addon\tk_jhkd\app\dict\order\JhkdOrderAddDict;
-use addon\tk_jhkd\app\dict\order\JhkdOrderDict;
 use think\facade\Db;
 use think\facade\Log;
 use think\Response;
-use addon\tk_jhkd\app\model\shop_order\ShopOrder;
-use addon\tk_jhkd\app\service\admin\shop\OrderService;
 
 /**
  * 易达接口对接
@@ -137,10 +136,10 @@ class ChangeNoticeService extends BaseApiService
             $realInfo = $this->deliveryRealModel->where(['order_id' => $deliveryInfo['order_id']])->findOrEmpty();
             $realInfo->where(['order_id' => $deliveryInfo['order_id']])->update([
                 'order_id' => $deliveryInfo['order_id'],
-                'weight' => $info['realWeight']??1,
-                'volume' => $info['realVolume'] ??1,
-                'fee_weight' => $info['calcFeeWeight']??1,
-                'package_count' => $info['packageCount']??1,
+                'weight' => $info['realWeight'] ?? 1,
+                'volume' => $info['realVolume'] ?? 1,
+                'fee_weight' => $info['calcFeeWeight'] ?? 1,
+                'package_count' => $info['packageCount'] ?? 1,
                 'fee_blockList' => json_encode($info['feeBlockList']),
                 'total_fee' => $total_fee,
             ]);
@@ -148,18 +147,32 @@ class ChangeNoticeService extends BaseApiService
             //修改订单状态
             $orderInfo->save(['order_status' => JhkdOrderDict::FINISH_PICK]);
             //生成补差价订单
-            if ($orderInfo['order_money'] < $total_fee) {
-                $add_money = ($total_fee - $orderInfo['order_money']) * 1.2;
+            $add=3;   //初始续费add
+            if(isset($deliveryInfo['price_rule'])&&$deliveryInfo['price_rule']!=''){
+                $price_rule = json_decode($deliveryInfo['price_rule'], true);
+                $add=$price_rule['add'];
+            }
+            $price_add = 0;
+            if ($info['calcFeeWeight'] > $deliveryInfo['weight']) {
+                $calc_weight = $info['calcFeeWeight'] - $deliveryInfo['weight'];
+                $price_add = ceil($calc_weight) * $add;
+            }
+            foreach ($info['feeBlockList'] as $k => $v) {
+                if ($v['type'] != 0) {
+                    $price_add += $v['fee'];
+                }
+            }
+            if($price_add>0){
                 $addinfo = (new OrderAdd())->create([
                     'site_id' => $orderInfo['site_id'],
                     'member_id' => $orderInfo['member_id'],
                     'order_no' => create_no(),
                     'order_id' => $orderInfo['order_id'],
-                    'order_money' => $add_money,
+                    'order_money' => $price_add,
                     'ip' => request()->ip() ?? '',
                 ]);
                 //添加订单支付表
-                (new CorePayService())->create($orderInfo['site_id'], PayDict::MEMBER, $orderInfo['member_id'], $add_money, JhkdOrderAddDict::getOrderType()['type'], $addinfo['id'], "快递补差价付款");
+               // (new CorePayService())->create($orderInfo['site_id'], PayDict::MEMBER, $orderInfo['member_id'], $price_add, JhkdOrderAddDict::getOrderType()['type'], $addinfo['id'], "快递补差价付款");
                 (new NoticeService())->send($orderInfo['site_id'], 'tk_jhkd_order_add', ['order_id' => $orderInfo['order_id']]);
             }
             Db::commit();
@@ -169,7 +182,6 @@ class ChangeNoticeService extends BaseApiService
             Log::write('易达回调处理-重量推送-异常' . $e->getMessage());
             return Response::create(['msg' => '接受成功', 'code' => 200, 'success' => true], 'json', 200);
         }
-
 
     }
 

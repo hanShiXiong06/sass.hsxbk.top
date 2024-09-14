@@ -2,6 +2,7 @@
 
 namespace addon\tk_jhkd\app\model\tkjhkdorder;
 
+use addon\tk_jhkd\app\model\order\OrderAdd;
 use addon\tk_jhkd\app\service\core\CommonService;
 use core\base\BaseModel;
 use think\model\concern\SoftDelete;
@@ -187,5 +188,14 @@ class Tkjhkdorder extends BaseModel
     public function orderInfo()
     {
         return $this->hasOne(\addon\tk_jhkd\app\model\orderdelivery\OrderDelivery::class, 'order_id', 'order_id');
+    }
+
+    public function deliveryRealInfo()
+    {
+        return $this->hasOne(\addon\tk_jhkd\app\model\OrderDeliveryReal::class, 'order_id', 'order_id');
+    }
+    public function addorderInfo()
+    {
+        return $this->hasOne(OrderAdd::class, 'order_id', 'order_id');
     }
 }

@@ -54,10 +54,14 @@ Route::group("tk_jhkd", function () {
     Route::get('shop/order/detail', 'addon\tk_jhkd\app\adminapi\controller\shop\Order@detail');
     //订单发货
     Route::post('shop/order/delivery', 'addon\tk_jhkd\app\adminapi\controller\shop\Order@orderDelivery');
-   //取消发货
+    //取消发货
     Route::post('shop/order/cancelorder', 'addon\tk_jhkd\app\adminapi\controller\shop\Order@cancelOrder');
-   //更改订单状态
+    //更改订单状态
     Route::post('changestatus', 'addon\tk_jhkd\app\adminapi\controller\order\Order@changeStatus');
+    //手动发送补差价通知
+    Route::get('addorder/sendnotice/:id', 'addon\tk_jhkd\app\adminapi\controller\order\OrderAdd@sendNotice');
+    //订单备注
+    Route::post('remarkadd', 'addon\tk_jhkd\app\adminapi\controller\order\OrderAdd@remark');
 })->middleware([
     AdminCheckToken::class,
     AdminCheckRole::class,
@@ -186,7 +190,7 @@ Route::group('tk_jhkd', function () {
     Route::put('shop_order/:id', 'addon\tk_jhkd\app\adminapi\controller\shop_order\ShopOrder@edit');
     //删除商城发单
     Route::delete('shop_order/:id', 'addon\tk_jhkd\app\adminapi\controller\shop_order\ShopOrder@del');
-    
+
 })->middleware([
     AdminCheckToken::class,
     AdminCheckRole::class,

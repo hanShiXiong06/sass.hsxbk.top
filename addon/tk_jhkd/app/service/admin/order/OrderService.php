@@ -2,6 +2,7 @@
 
 namespace addon\tk_jhkd\app\service\admin\order;
 
+use addon\tk_jhkd\app\dict\order\JhkdOrderDict;
 use addon\tk_jhkd\app\model\order\Order;
 use addon\tk_jhkd\app\service\core\OrderLogService;
 use app\model\member\Member;
@@ -53,7 +54,18 @@ public function changeStatus($data)
         $order = 'id desc';
         $search_model = $this->model->where([['site_id', "=", $this->site_id]])
             ->withSearch(["member_id", "order_from", "order_id","out_trade_no", "is_send", "order_status", "refund_status", "remark", "create_time"], $where)
-            ->with('member')->field($field)->order($order);
+            ->with(
+                [
+                    'orderInfo',
+                    'payInfo' => function ($query) {
+                        $query->field('trade_id,status,pay_time,cancel_time,fail_reason,type,trade_type')
+                            ->where(['trade_type' => JhkdOrderDict::getOrderType()['type']])
+                            ->append(['status_name', 'type_name']);
+                    },
+                    'deliveryRealInfo',
+                    'addorderInfo','member'
+                ]
+            )->field($field)->order($order);
         $list = $this->pageQuery($search_model);
         return $list;
     }
@@ -76,9 +88,7 @@ public function changeStatus($data)
             ->where([['id', "=", $id]])
             ->with(
                 [
-                    'orderInfo' => function ($query) {
-                        $query->field('bj_price,start_address,end_address,order_id,goods,long,width,height,delivery_id,delivery_type,weight,courier_context,order_status_desc,order_status')->append(['delivery_arry']);
-                    },
+                    'orderInfo','addorderInfo','deliveryRealInfo',
                     'payInfo' => function ($query) {
                         $query->field('trade_id,status,pay_time,cancel_time,fail_reason,type,trade_type')->append(['status_name', 'type_name']);
                     },
@@ -89,6 +99,23 @@ public function changeStatus($data)
             ->findOrEmpty()->append(['order_status_arr'])->toArray();
         $info['is_send'] = strval($info['is_send']);
         $info['is_pick'] = strval($info['is_pick']);
+        $info['orderInfo']['price_rule'] = json_decode($info['orderInfo']['price_rule'], true);
+        $info['orderInfo']['original_rule'] = json_decode($info['orderInfo']['original_rule'], true);
+        $fee_list=json_decode($info['deliveryRealInfo']['fee_blockList'],true);
+        $new_fee_list=[];
+        if($fee_list!=''){
+            foreach ($fee_list as $fee){
+                if($fee['type']!=0){
+                    $new_fee_list[]=[
+                        'fee'=>$fee['fee'],
+                        'type'=>$fee['type'],
+                        'name'=>$fee['name']
+                    ];
+                }
+            }
+        }
+
+        $info['deliveryRealInfo']['fee_blockList']=$new_fee_list;
         return $info;
     }
 

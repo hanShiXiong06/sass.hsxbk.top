@@ -1,1 +1,0 @@
-import{d as e,r as t,p as a,o as r,c as s,D as d}from"./index-2882a2d8.js";const n=e({__name:"index",setup(e){const n=t({trade_type:"",trade_id:""});return a((e=>{console.log(e,e.paySign,"query"),n.value.trade_type=e.trade_type||"",n.value.trade_id=e.trade_id})),(e,t)=>{const a=d;return r(),s(a,{class:"text-[20px]"})}}});export{n as default};

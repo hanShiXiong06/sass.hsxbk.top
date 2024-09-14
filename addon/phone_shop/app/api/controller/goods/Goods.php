@@ -39,7 +39,8 @@ class Goods extends BaseApiController
             [ 'sort', 'desc' ], // 升序：asc，降序：desc
             [ 'coupon_id', '' ], // 优惠券id
             [ 'sku_no' , ''],
-            [ 'status' , '']
+            [ 'status' , ''],
+            [ 'create_time','' ]
         ]);
 
         return success(( new GoodsService() )->getPage($data));

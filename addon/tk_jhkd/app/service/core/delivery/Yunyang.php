@@ -68,8 +68,12 @@ class Yunyang extends BaseDelivery
                 "calcFeeType" => $v['chargeType'] == 2 ? 'profit' : 'discount',
                 "logo" => $v['channelLogoUrl'],
                 "price" => [
-                    "perAdd" => $v['price']['priceOne'] ?? '',
-                    "discount" => $v['price']['priceMore'] ?? ''
+                    [
+                        "add" => $v['price']['priceMore'] ?? '',
+                        "end" => 0,
+                        "first" => $v['originalPrice'],
+                        "start" => 1
+                    ]
                 ],
                 "originalPrice" => [
                     [
@@ -87,8 +91,33 @@ class Yunyang extends BaseDelivery
                 "expReturn" => null,
                 "deliveryBusiness" => $v['tagCode']
             ];
+            if($v['chargeType'] == 2 ){
+                $newdata['price'] = [
+                    [
+                        "add" => $v['priceMore'] ?? '',
+                        "end" => 0,
+                        "first" =>$v['priceOne'],
+                        "start" => 1
+                    ]
+                ];
+
+            }else{
+                $newdata['price'] = [
+                       'perAdd'=>$v['discountMore'],
+                       'discount'=>$v['discount']
+                ];
+                $newdata['originalPrice'] = [
+                    [
+                        "add" =>$v['discountPriceMore']/$v['discount'],
+                        "end" => 0,
+                        "first" => $v['discountPriceOne']/$v['discount'],
+                        "start" => 1
+                    ]
+                ];
+            }
             $callbackData[] = $newdata;
         }
+
         return $callbackData;
     }
 
@@ -127,6 +156,7 @@ class Yunyang extends BaseDelivery
         $resInfo = $this->execute('ADD_BILL_INTELLECT', $data);
         if ($resInfo['code'] != 1) {
             Log::write('提交运单失败：yunyang_error--' . $resInfo['message']);
+            return [];
         }
 
         $res = [
@@ -166,17 +196,17 @@ class Yunyang extends BaseDelivery
             throw new Exception($resInfo['message']);
         }
         $tranceData = [];
-        if($resInfo['result']!=[]){
+        if ($resInfo['result'] != []) {
             foreach ($resInfo['result'] as $k => $v) {
                 if (isset($v['comments'])) {
-                    $tranceData[]=[
-                        'time'=>'',
-                        'desc'=>$v['comments']??'',
-                    ];
-                }else{
                     $tranceData[] = [
-                        'time' => $v['time']??'',
-                        'desc' => $v['desc']??''
+                        'time' => '',
+                        'desc' => $v['comments'] ?? '',
+                    ];
+                } else {
+                    $tranceData[] = [
+                        'time' => $v['time'] ?? '',
+                        'desc' => $v['desc'] ?? ''
                     ];
                 }
             }

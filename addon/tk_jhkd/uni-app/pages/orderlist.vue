@@ -34,45 +34,101 @@
             item.order_status_data.name
           }}</view>
 				</view>
-				<view class="flex items-center">
-					<view class="mr-4">
-						<text class="qu-tag text-sm p-2 rounded-xl">寄</text>
-					</view>
-					<view class="">
-						<view class="tk-sltext text-xs text-[#4b4b4b] font-bold">
-							{{ JSON.parse(item.orderInfo.start_address).name }}
+				<view class="flex justify-center mt-3">
+					<view class="flex items-center">
+						<view class="mr-2">
+							<text class="qu-tag text-sm p-2 rounded-xl">寄</text>
 						</view>
-						<view class="text-xs flex">
-							<view class="w-3/4">{{ JSON.parse(item.orderInfo.start_address).address }}
-								{{ JSON.parse(item.orderInfo.start_address).full_address }}
+						<view class="flex flex-col items-center">
+							<view class="text-sm font-bold flex">
+								<view class="">{{ JSON.parse(item.orderInfo.start_address).address.split('-')[0] }}
+								</view>
+							</view>
+							<view class="tk-sltext text-xs text-[#4b4b4b]">
+								{{ JSON.parse(item.orderInfo.start_address).name }}
+							</view>
+
+						</view>
+					</view>
+					<view class="flex items-center ml-4 mr-4">
+						<view class="flex">
+
+							<view>
+								<up-icon name="more-dot-fill" color="#63625f" size="28"></up-icon>
+							</view>
+							<view>
+								<up-icon name="more-dot-fill" color="#63625f" size="28"></up-icon>
+							</view>
+							<view>
+								<up-icon name="arrow-right" color="#63625f" size="28"></up-icon>
+							</view>
+						</view>
+
+					</view>
+					<view class="flex items-center">
+						<view class="mr-4">
+							<text class="song-tag text-sm p-2 rounded-xl">收</text>
+						</view>
+						<view class="">
+
+							<view class="flex flex-col items-center">
+								<view class="text-sm font-bold flex">
+									<view class="">{{ JSON.parse(item.orderInfo.end_address).address.split('-')[0] }}
+									</view>
+								</view>
+								<view class="tk-sltext text-xs text-[#4b4b4b]">
+									{{ JSON.parse(item.orderInfo.end_address).name }}
+								</view>
+
 							</view>
 						</view>
 					</view>
 				</view>
-				<view class="flex mt-2 items-center">
-					<view class="mr-4">
-						<text class="song-tag text-sm p-2 rounded-xl">收</text>
-					</view>
-					<view class="">
-						<view class="tk-sltext text-xs text-[#4b4b4b] font-bold">
-							{{ JSON.parse(item.orderInfo.end_address).name }}
-						</view>
-						<view class="text-xs flex">
-							<view class="w-3/4">
-								{{ JSON.parse(item.orderInfo.end_address).address
-                }}{{ JSON.parse(item.orderInfo.end_address).full_address }}
-							</view>
-						</view>
-					</view>
+				<view class="flex mt-4 items-center justify-between">
+					<view class="text-xs text-slate-600">下单时间:{{item.create_time}}</view>
+					<view class="text-red font-bold text-[32rpx]">￥{{item.order_money}}</view>
 				</view>
-				<view class="detail-tag mt-1 text-sm font-weight p-1 text-[#555]">物品:{{ item.orderInfo.goods }}
-					重量:{{ item.orderInfo.weight }}kg
-					{{ item.orderInfo.long }}x{{ item.orderInfo.width }}x{{
-            item.orderInfo.height
-          }}cm
-				</view>
-				<view class="text-[16rpx] pl-1 text-[#7e7e7e]">
+				<view class="text-[16rpx] pl-1 mt-1 text-[#7e7e7e]">
 					注意：下单 1 分钟后才能取消订单哦</view>
+				<view class="line-box1"></view>
+
+				<view
+					v-if="item.addorderInfo&&item.deliveryRealInfo.fee_weight>0&&(item.deliveryRealInfo.fee_weight-item.orderInfo.weight)>0&&item.addorderInfo.order_status==0">
+
+					<view
+						class="flex items-center mt-1 mb-2 flex text-xs font-bold p-2 text-[24rpx] bg-[#e5fffb] rounded-lg text-red bg-opacity-50">
+						<view v-if="item.deliveryRealInfo.fee_weight>item.orderInfo.weight" class="">
+							超重:
+							{{Math.ceil(item.deliveryRealInfo.fee_weight-item.orderInfo.weight)}}kg;￥{{Math.ceil(item.deliveryRealInfo.fee_weight-item.orderInfo.weight)*item.orderInfo.price_rule.add??3}};
+						</view>
+						<block v-if="item.deliveryRealInfo.fee_blockList"
+							v-for="(item1,index1) in item.deliveryRealInfo.fee_blockList">
+							<view class="">
+								{{item1.name}}:￥{{item1.fee}}
+							</view>
+						</block>
+					</view>
+					<view class='flex justify-end mt-1 items-center'>
+
+
+
+						<view class='font-bold text-red text-[28rpx]'>
+							需补差价:￥{{item.addorderInfo.order_money}}</view>
+					</view>
+
+				</view>
+				<view v-else>
+					<view class="flex">
+
+						<view v-if="item.addorderInfo&&item.addorderInfo.order_status==1"
+							class="flex text-xs font-bold ml-2 p-2 text-[24rpx] bg-[#e5fffb] rounded-lg text-red bg-opacity-50">
+							已补差价：￥
+							{{item.addorderInfo.order_money}}
+						</view>
+					</view>
+				</view>
+				<view class="line-box1"></view>
+
 				<view class="flex mt-2 items-center justify-between">
 					<view class="flex">
 						<block v-if="item.order_status_arr"
@@ -82,7 +138,12 @@
               }}</view>
 						</block>
 					</view>
-					<view class="tk-tag" @click="goto('/addon/tk_jhkd/pages/orderdetail?id=' + item.id)">查看详情</view>
+					<view class="flex">
+						<view class="tk-tag" @click="goto('/addon/tk_jhkd/pages/orderdetail?id=' + item.id)">查看详情</view>
+						<view v-if="item.addorderInfo&&item.addorderInfo.order_status==0"
+							@click="payAdd(item.addorderInfo.id)" class="tk-tag1 ml-2">补差价</view>
+					</view>
+
 				</view>
 			</view>
 
@@ -114,7 +175,16 @@
 	import { onLoad, onPageScroll, onReachBottom } from "@dcloudio/uni-app";
 	import { goto } from "@/addon/tk_jhkd/utils/ts/goto";
 	import { confirm } from "@/addon/tk_jhkd/utils/ts/alert";
-
+	// import { checkAddPayEvent } from "@/addon/tk_jhkd/utils/ts/common"
+	// checkAddPayEvent()
+	const payAdd = (e) => {
+		payLoading.value = true;
+		payRef.value?.open(
+			"jhkdOrderAddPay",
+			e,
+			"/addon/tk_jhkd/pages/orderlist"
+		);
+	};
 	interface Order {
 		id : string;
 		order_id : string;
@@ -241,7 +311,16 @@
 	};
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+	//@import "@/addon/tk_jhkd/utils/styles/common.scss";
+	.line-box1 {
+		background-color: #e3e3e3;
+		height: 2rpx;
+		width: 100%;
+		margin-top: 12rpx;
+		margin-bottom: 12rpx;
+	}
+
 	page {
 		--primary-color: #4541c7;
 		--primary-color-dark: #f26f3e;
@@ -277,6 +356,15 @@
 		background: #fff;
 		box-shadow: 0rpx 1rpx 4rpx rgba(0, 0, 0, 0.1);
 		margin-bottom: 10rpx;
+	}
+
+	.tk-tag1 {
+		background: #4541c7;
+		color: #ffffff;
+		border: 1rpx solid #4541c7;
+		font-size: 22rpx;
+		padding: 5rpx 20rpx;
+		border-radius: 10rpx;
 	}
 
 	.tk-tag {

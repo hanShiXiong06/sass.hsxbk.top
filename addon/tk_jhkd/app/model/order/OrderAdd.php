@@ -11,12 +11,10 @@
 
 namespace addon\tk_jhkd\app\model\order;
 
-use core\base\BaseModel;
-use think\model\concern\SoftDelete;
-use think\model\relation\HasMany;
-use think\model\relation\HasOne;
-
+use addon\tk_jhkd\app\model\orderdelivery\OrderDelivery;
 use app\model\member\Member;
+use app\model\pay\Pay;
+use core\base\BaseModel;
 
 /**
  * 订单列模型
@@ -97,18 +95,26 @@ class OrderAdd extends BaseModel
 
     public function orderInfo()
     {
-        return $this->hasOne(\addon\tk_jhkd\app\model\order\Order::class, 'order_id', 'order_id');
+        return $this->hasOne(Order::class, 'order_id', 'order_id');
     }
 
+    public function deliveryRealInfo()
+    {
+        return $this->hasOne(\addon\tk_jhkd\app\model\OrderDeliveryReal::class, 'order_id', 'order_id');
+    }
     public function memberInfo()
     {
         return $this->hasOne(\app\model\member\Member::class, 'member_id', 'member_id');
     }
 
-
+    public function deliveryInfo()
+    {
+        return $this->hasOne(OrderDelivery::class, 'order_id', 'order_id');
+    }
     public function member()
     {
         return $this->hasOne(Member::class, 'member_id', 'member_id')->joinType('left')->withField('nickname,member_id')->bind(['member_id_name' => 'nickname']);
     }
+
 
 }

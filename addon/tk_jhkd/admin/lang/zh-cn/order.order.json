@@ -1,7 +1,7 @@
 {
       "siteId": "站点id",
       "siteIdPlaceholder": "请输入站点id",
-      "memberId": "会员id",
+      "memberId": "会员",
       "memberIdPlaceholder": "全部",
       "orderFrom": "订单来源",
       "orderFromPlaceholder": "请输入订单来源",
