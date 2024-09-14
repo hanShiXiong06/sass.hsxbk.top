@@ -81,7 +81,7 @@
                         </view>
                     </view>
                     <view class="mt-[30rpx]" v-if="verifyDetail.verify_time == 0">
-                        <u-button :text="t('confirmVerify')" type="primary" shape="circle" @click="handleVerify"></u-button>
+                        <button class="bg-[var(--primary-color)] text-[#fff] h-[80rpx] leading-[80rpx] rounded-[100rpx] text-[28rpx]" @click="handleVerify">{{t('confirmVerify')}}</button>
                     </view>
                     <view class="mt-[30rpx]">
                         <u-button :text="t('verifyOther')" type="primary" shape="circle" @click="verifyDetail = null" :plain="true"></u-button>
@@ -98,7 +98,7 @@
                             <!-- #endif -->
                         </u-input>
                     </view>
-                    <u-button :text="t('search')" type="primary" shape="circle" :disabled="!verifyCode" @click="search"></u-button>
+                    <button class="!bg-[var(--primary-color)] !text-[#fff] h-[80rpx] leading-[80rpx] rounded-[100rpx] text-[28rpx]" :class="{'opacity-50': !verifyCode}" @click="search" :disabled="!verifyCode">{{t('search')}}</button>
                 </view>
                 <view class="text-center mt-[20rpx]">
                     <view @click="redirect({ url: '/addon/tourism/pages/verify/record' })">
@@ -110,7 +110,7 @@
                 <u-empty :icon="img('static/resource/images/order_empty.png')" :text="t('notIsVerifier')" />
             </view>
         </block>
-        <u-loading-page :loading="loading" loading-text="" loadingColor="var(--primary-color)" iconSize="35"></u-loading-page>
+		<loading-page :loading="loading"></loading-page>
     </view>
 </template>
 

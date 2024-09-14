@@ -139,13 +139,7 @@
                 <el-button type="primary" link @click="editEvent(row.key)">{{
                   t("edit")
                 }}</el-button>
-                <!-- <el-button
-                  v-if="Object.keys(row.install_info).length"
-                  type="primary"
-                  link
-                  @click="addonDevelopBuildFn(row)"
-                  >{{ t("step4") }}</el-button
-                > -->
+   
                 <el-button
                   v-if="!Object.keys(row.install_info).length"
                   type="primary"

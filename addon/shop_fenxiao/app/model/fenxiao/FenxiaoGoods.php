@@ -37,6 +37,7 @@ class FenxiaoGoods extends BaseModel
 
     // 设置JSON数据返回数组
     protected $jsonAssoc = true;
+
     /**
      * 关联商品规格列表
      * @return \think\model\relation\HasMany
@@ -45,6 +46,6 @@ class FenxiaoGoods extends BaseModel
     {
         return $this->hasMany(GoodsSku::class, 'goods_id', 'goods_id')
             ->withField('sku_id,sku_name,price,cost_price')
-            ->bind(['sku_id', 'sku_name', 'price','cost_price']);
+            ->bind([ 'sku_id', 'sku_name', 'price', 'cost_price' ]);
     }
 }

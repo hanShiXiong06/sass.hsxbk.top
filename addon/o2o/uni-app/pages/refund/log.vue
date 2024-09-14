@@ -8,11 +8,11 @@
             </view>
             <view class="pt-[140rpx]"></view>
             <view class="flex tab-bar items-center bg-[#fff] fixed left-0 right-0 bottom-0 min-h-[120rpx] px-1 flex-wrap">
-                <u-button :text="t('detail')" class="!text-sm" type="primary" shape="circle" @click="redirect({url: '/addon/o2o/pages/refund/detail', param: { refund_no: refundNo }})"></u-button>
+                <button class="bg-[var(--primary-color)] text-[#fff] h-[80rpx] leading-[80rpx] rounded-[100rpx] !text-[28rpx]" @click="redirect({url: '/addon/o2o/pages/refund/detail', param: { refund_no: refundNo }})">{{t('detail')}}</button>
             </view>
         </view>
 
-        <u-loading-page bg-color="rgb(248,248,248)" :loading="loading" fontSize="16" color="#333"></u-loading-page>
+		<loading-page :loading="loading"></loading-page>
     </view>
 </template>
 
@@ -23,11 +23,11 @@ import { t } from '@/locale'
 import { img, redirect } from '@/utils/common';
 import { getRefundDetail } from '@/addon/o2o/api/order';
 
-let detail = ref<Object>({});
-let loading = ref<boolean>(true);
-let refundNo = ref('')
+const detail = ref<Object>({});
+const loading = ref<boolean>(true);
+const refundNo = ref('')
 
-onLoad((option) => {
+onLoad((option: any) => {
 	refundNo.value = option.refund_no;
 	refundDetailFn(option.refund_no);
 });

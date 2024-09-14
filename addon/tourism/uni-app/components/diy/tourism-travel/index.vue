@@ -47,7 +47,6 @@
     import { ref,computed, watch, onMounted, nextTick,getCurrentInstance } from 'vue';
     import {redirect, img, getToken} from '@/utils/common';
     import useDiyStore from '@/app/stores/diy';
-    import {onLoad} from '@dcloudio/uni-app';
     import {getWayRecommend} from '@/addon/tourism/api/tourism';
     import {t} from '@/locale'
 
@@ -103,8 +102,8 @@
         redirect({url: '/addon/tourism/pages/way/detail', param: {way_id: data.way_id, goods_id: data.goods.goods_id}})
     }
 
-    let list = ref([]);
-    let loading = ref(false);
+    const list = ref([]);
+    const loading = ref(false);
     const getWayRecommendFn = () => {
         let data: object = {
 			goods_ids: diyComponent.value.source == 'custom' ? diyComponent.value.way_id : '',

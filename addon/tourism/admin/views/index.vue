@@ -393,7 +393,7 @@ const statDayInfo = ref<StatDayInfoType| AnyObject>([])
 const statHourInfo = ref<StatDayInfoType| AnyObject>([])
 const statTotal = ref<StatInfoType| AnyObject>([])
 const statOrder = ref([])
-const getStatInfoFn = async (id: number = 0) => {
+const getStatInfoFn = async () => {
     statYesterdayInfo.value = await (await statYesterday()).data
     statTodayInfo.value = await (await statToday()).data
     statDayInfo.value = await (await statDay({})).data

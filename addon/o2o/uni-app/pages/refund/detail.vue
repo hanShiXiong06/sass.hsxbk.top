@@ -92,7 +92,7 @@
                         <view>{{t('record')}}</view>
                         <view class="flex items-center" @click="redirect({url: '/addon/o2o/pages/refund/log', param: { refund_no: detail.refund_no}})">
                             <text>{{t('check')}}</text>
-                            <text class="nc-iconfont nc-icon-youV6xx text-[26rpx] text-[#666]"></text>
+                            <text class="nc-iconfont nc-icon-youV6xx text-[26rpx] text-[var(--text-color-light6)]"></text>
                         </view>
                     </view>
                 </view>
@@ -108,11 +108,11 @@
                 </view>
             </view>
             <!-- 取消退款 -->
-            <u-modal :show="cancelRefundshow" :content="t('cancelRefundContent')" :showCancelButton="true" :closeOnClickOverlay="true" @cancel="refundCancel" @confirm="refundConfirm"></u-modal>
+            <u-modal :show="cancelRefundshow" confirmColor="var(--primary-color)" :content="t('cancelRefundContent')" :showCancelButton="true" :closeOnClickOverlay="true" @cancel="refundCancel" @confirm="refundConfirm"></u-modal>
 
         </view>
 
-        <u-loading-page bg-color="rgb(248,248,248)" :loading="loading" fontSize="16" color="#333"></u-loading-page>
+		<loading-page :loading="loading"></loading-page>
     </view>
 </template>
 
@@ -123,9 +123,9 @@ import { t } from '@/locale'
 import { img, redirect, copy } from '@/utils/common';
 import { getRefundDetail, cancelRefund } from '@/addon/o2o/api/order';
 
-let detail = ref<Object>({});
-let loading = ref<boolean>(true);
-let refundNo = ref('');
+const detail = ref<Object>({});
+const loading = ref<boolean>(true);
+const refundNo = ref('');
 onLoad((option) => {
 	refundNo.value = option.refund_no;
 	refundDetailFn(refundNo.value);
@@ -151,7 +151,7 @@ const goodsEvent = (id: number) => {
 }
 
 // 取消退款
-let cancelRefundshow = ref(false);
+const cancelRefundshow = ref(false);
 let currRefundId = "";
 let curOrderId = '';
 const cancelRefundFn = (data) => {

@@ -9,7 +9,7 @@
 					</view>
 					<text class="mx-[14rpx] text-[#D8D8D8]">|</text> -->
 					<u--input :placeholder="t('searchScenicName')" class="text-sm" placeholderClass="text-sm" border="none" v-model="search_name"></u--input>
-					<text class="nc-iconfont nc-icon-sousuoV6xx text-[#666] text-[32rpx]" @click="searchNameFn"></text>
+					<text class="nc-iconfont nc-icon-sousuoV6xx text-[var(--text-color-light6)] text-[32rpx]" @click="searchNameFn"></text>
 				</view>
 			</view>
 			<!-- <view class="flex items-center px-[24rpx] border-0 border-b-1 border-solid border-[#F0F0F0] text-sm pb-[16rpx]">
@@ -34,16 +34,16 @@
 			<!-- :scroll-top="scrollTop" @scrolltoupper="upper" @scrolltolower="lower" @scroll="scroll" -->
 			<!-- <scroll-view scroll-x="true" class="scroll-Y  border-0 border-b-1 border-solid border-[#F0F0F0] p-[24rpx] box-border">
 				<view class="flex whitespace-nowrap">
-					<view class="bg-[#F2F5F6] text-[#666] text-[26rpx] px-[24rpx] py-[14rpx] mr-[12rpx] rounded">4.3分以上</view>
-					<view class="bg-[#F2F5F6] text-[#666] text-[26rpx] px-[24rpx] py-[14rpx] mr-[12rpx] rounded">停车场</view>
-					<view class="bg-[#F2F5F6] text-[#666] text-[26rpx] px-[24rpx] py-[14rpx] mr-[12rpx] rounded">含早餐</view>
-					<view class="bg-[#F2F5F6] text-[#666] text-[26rpx] px-[24rpx] py-[14rpx] mr-[12rpx] rounded">网红酒店</view>
-					<view class="bg-[#F2F5F6] text-[#666] text-[26rpx] px-[24rpx] py-[14rpx] mr-[12rpx] rounded">民宿</view>
+					<view class="bg-[#F2F5F6] text-[var(--text-color-light6)] text-[26rpx] px-[24rpx] py-[14rpx] mr-[12rpx] rounded">4.3分以上</view>
+					<view class="bg-[#F2F5F6] text-[var(--text-color-light6)] text-[26rpx] px-[24rpx] py-[14rpx] mr-[12rpx] rounded">停车场</view>
+					<view class="bg-[#F2F5F6] text-[var(--text-color-light6)] text-[26rpx] px-[24rpx] py-[14rpx] mr-[12rpx] rounded">含早餐</view>
+					<view class="bg-[#F2F5F6] text-[var(--text-color-light6)] text-[26rpx] px-[24rpx] py-[14rpx] mr-[12rpx] rounded">网红酒店</view>
+					<view class="bg-[#F2F5F6] text-[var(--text-color-light6)] text-[26rpx] px-[24rpx] py-[14rpx] mr-[12rpx] rounded">民宿</view>
 				</view>
 			</scroll-view> -->
 		</view>
 
-		<mescroll-body ref="mescrollRef" top="114rpx" @init="mescrollInit" @down="downCallback" @up="getScenicListFn">
+		<mescroll-body ref="mescrollRef" top="114rpx" @init="mescrollInit" :down="{ use: false }" @up="getScenicListFn">
 			<view class="px-[24rpx] mt-3">
 				<view class="flex mb-[30rpx]" v-for="(item,index) in list"  :key="item.scenic_id" @click="toLink(item.scenic_id)">
 					<image class="w-[238rpx] h-[238rpx] mr-[20rpx] rounded-md" :src="img(item.cover_thumb_mid)" mode="aspectFill"></image>

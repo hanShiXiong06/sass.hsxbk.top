@@ -243,7 +243,7 @@
         })
     }
 
-    const toLink = (data) => {
+    const toLink = (data: any) => {
         if (diyStore.mode == 'decorate') return false;
         redirect({url: '/addon/o2o/pages/goods/detail', param: {sku_id: data.goodsSku.sku_id}})
     }

@@ -41,13 +41,13 @@
 
         <!-- #ifdef MP-WEIXIN -->
         <!-- 小程序隐私协议 -->
-        <wx-privacy-popup ref="wxPrivacyPopup"></wx-privacy-popup>
+        <wx-privacy-popup ref="wxPrivacyPopupRef"></wx-privacy-popup>
         <!-- #endif -->
     </view>
 </template>
 
 <script setup lang="ts">
-    import { ref, computed } from 'vue'
+    import { ref, computed,nextTick } from 'vue'
     import { onLoad } from '@dcloudio/uni-app'
     import { redirect } from '@/utils/common'
     import { t } from '@/locale'
@@ -70,6 +70,8 @@
         type: 'location_address'
     })
     const btnDisabled = ref(false)
+
+    const wxPrivacyPopupRef:any = ref(null)
     
     onLoad((data) => {
         if (data.id) {
@@ -89,9 +91,14 @@
             formData.value.lat = tempArr[0];
             formData.value.lng = tempArr[1];
         }
+        // #ifdef MP
+        nextTick(()=>{
+            if(wxPrivacyPopupRef.value) wxPrivacyPopupRef.value.proactive();
+        })
+        // #endif
     })
     
-    const formRef = ref(null)
+    const formRef: any = ref(null)
     
     const rules = computed(() => {
         return {

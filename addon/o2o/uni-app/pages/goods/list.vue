@@ -6,7 +6,7 @@
 					<input class="uni-input text-[24rpx] flex-1" maxlength="50" v-model="goods_name" @confirm="searchTypeFn('all')" :placeholder="t('searchPlaceholder')" />
 					<text class="nc-iconfont nc-icon-sousuoV6xx text-[30rpx] mr-[18rpx]" @click="searchTypeFn('all')"></text>
 				</view>
-				<text :class="['nc-iconfont text-[44rpx]', listType ? 'nc-icon-yingyongzhongxinV6xx' : 'nc-icon-yingyongliebiaoV6xx']" @click="listIconBtn"></text>
+				<text :class="['iconfont text-[44rpx]', listType ? 'icona-yingyongzhongxinV6xx-32' : 'icona-yingyongliebiaoV6xx-32']" @click="listIconBtn"></text>
 			</view>
 			<view class="pb-3 pt-1 flex items-center justify-between">
 				<text :class="['text-sm', { 'text-color': searchType == 'all' }]" @click="searchTypeFn('all')">{{ t('synthesis') }}</text>
@@ -36,7 +36,7 @@
 			</view>
 		</u-popup>
 
-		<mescroll-body ref="mescrollRef" top="196rpx" bottom="50px" @init="mescrollInit" @down="downCallback" @up="getAllAppListFn">
+		<mescroll-body ref="mescrollRef" top="196rpx" bottom="50px" @init="mescrollInit" :down="{ use: false }" @up="getAllAppListFn">
 			<view :class="['p-[24rpx] !pb-0', !listType ? 'flex justify-between flex-wrap' : '']">
 				<template v-for="(item, index) in articleList">
 					<template v-if="listType" :key="item.app_id">
@@ -57,7 +57,7 @@
 											<image v-if="priceType(item) == 'member_price'" class="h-[24rpx] ml-[4rpx] w-[60rpx]" :src="img('addon/o2o/VIP.png')" mode="heightFix" />
 										</text>
 									</view>
-									<text class="text--[24rpx] text-[#666]">已售{{ item.sale_num }}</text>
+									<text class="text--[24rpx] text-[var(--text-color-light6)]">已售{{ item.sale_num }}</text>
 								</view>
 							</view>
 						</view>
@@ -79,7 +79,7 @@
 										<image  v-if="priceType(item) == 'member_price'" class="h-[24rpx] ml-[4rpx] w-[60rpx]" :src="img('addon/o2o/VIP.png')" mode="heightFix" />
 									</text>
 								</view>
-								<text class="text--[24rpx] text-[#666] leading-[31rpx]">{{t('soldOut')}}{{ item.sale_num }}</text>
+								<text class="text--[24rpx] text-[var(--text-color-light6)] leading-[31rpx]">{{t('soldOut')}}{{ item.sale_num }}</text>
 							</view>
 						</view>
 					</template>
@@ -103,20 +103,20 @@ import { onLoad,onShow, onPageScroll, onReachBottom } from '@dcloudio/uni-app';
 
 const { mescrollInit, downCallback, getMescroll } = useMescroll(onPageScroll, onReachBottom);
 
-let categoryList = ref<Array<Object>>([]);
-let articleList = ref<Array<any>>([]);
-let coupon_id = ref<number | string>('');
-let currGoodsCategory = ref<number | string>('');
-let mescrollRef = ref(null);
-let loading = ref<boolean>(false);
+const categoryList = ref<Array<Object>>([]);
+const articleList = ref<Array<any>>([]);
+const coupon_id = ref<number | string>('');
+const currGoodsCategory = ref<number | string>('');
+const mescrollRef = ref(null);
+const loading = ref<boolean>(false);
 // 标签
-let labelPopup = ref(false);
-let goods_name = ref("");
-let price = ref("asc");
-let sale_num = ref("asc");
-let searchType = ref('all');
+const labelPopup = ref(false);
+const goods_name = ref("");
+const price = ref("asc");
+const sale_num = ref("asc");
+const searchType = ref('all');
 //列表类型
-let listType = ref(true)
+const listType = ref(true)
 onLoad(async (option) => {
 	currGoodsCategory.value = option.curr_goods_category || ''
 	goods_name.value = option.goods_name || ''
@@ -202,7 +202,7 @@ onMounted(() => {
 });
 
 // 价格类型
-let priceType = (data:any) =>{
+const priceType = (data:any) =>{
 	let type = "";
 	if(data.member_discount && getToken()){
 		type = 'member_price' // 会员价
@@ -212,7 +212,7 @@ let priceType = (data:any) =>{
 	return type;
 }
 // 商品价格
-let goodsPrice = (data:any) =>{
+const goodsPrice = (data:any) =>{
 	let price = "0.00";
 	if(data.member_discount && getToken()){
 		price = data.goods_sku.member_price || '0.00' // 会员价

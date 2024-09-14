@@ -52,6 +52,7 @@ return [
             'addon\o2o\app\listener\refund\O2oOrderRefundExportDataListener',
 
         ],
+        'WapIndex' => [ 'addon\o2o\app\listener\WapIndexListener' ],
     ],
 
     'subscribe' => [

@@ -58,8 +58,9 @@ class Technician extends BaseModel
      * @param $value
      * @param $data
      */
-    public function getStatusNameAttr($value, $data){
-        return $data['status'] ? TechnicianDict::getTechnicianStatus()[$data['status']] : '';
+    public function getStatusNameAttr($value, $data)
+    {
+        return $data[ 'status' ] ? TechnicianDict::getTechnicianStatus()[ $data[ 'status' ] ] : '';
     }
 
     /**
@@ -67,51 +68,58 @@ class Technician extends BaseModel
      * @param $value
      * @param $data
      */
-    public function getHeadimgMidAttr($value, $data){
+    public function getHeadimgMidAttr($value, $data)
+    {
         $thumb = '';
-        if($data['headimg'] != ''){
-            $thumb = get_thumb_images($data['site_id'], $data['headimg'], FileDict::MID);
+        if ($data[ 'headimg' ] != '') {
+            $thumb = get_thumb_images($data[ 'site_id' ], $data[ 'headimg' ], FileDict::MID);
         }
         return $thumb;
     }
+
     /**
      * 头像
      * @param $value
      * @param $data
      */
-    public function getHeadimgBigAttr($value, $data){
+    public function getHeadimgBigAttr($value, $data)
+    {
         $thumb = '';
-        if($data['headimg'] != ''){
-            $thumb = get_thumb_images($data['site_id'], $data['headimg'], FileDict::BIG);
+        if ($data[ 'headimg' ] != '') {
+            $thumb = get_thumb_images($data[ 'site_id' ], $data[ 'headimg' ], FileDict::BIG);
         }
         return $thumb;
     }
+
     /**
      * 图片
      * @param $value
      * @param $data
      */
-    public function getImagesMidAttr($value, $data){
+    public function getImagesMidAttr($value, $data)
+    {
         $thumb_arr = [];
-        if($data['images'] != ''){
-            $img_arr = explode(",", $data['images']);
-            foreach ($img_arr as $item){
-                $thumb_arr[] = get_thumb_images($data['site_id'], $item, FileDict::MID);
+        if ($data[ 'images' ] != '') {
+            $img_arr = explode(",", $data[ 'images' ]);
+            foreach ($img_arr as $item) {
+                $thumb_arr[] = get_thumb_images($data[ 'site_id' ], $item, FileDict::MID);
             }
         }
         return $thumb_arr;
     }
+
     /**
      * 图片
      * @param $value
      * @param $data
      */
-    public function getImagesBigAttr($value, $data){
+    public function getImagesBigAttr($value, $data)
+    {
         $thumb_arr = [];
-        if($data['images'] != ''){
-            $img_arr = explode(",", $data['images']);
-            foreach ($img_arr as $item){
-                $thumb_arr[] = get_thumb_images($data['site_id'], $item, FileDict::BIG);
+        if ($data[ 'images' ] != '') {
+            $img_arr = explode(",", $data[ 'images' ]);
+            foreach ($img_arr as $item) {
+                $thumb_arr[] = get_thumb_images($data[ 'site_id' ], $item, FileDict::BIG);
             }
         }
         return $thumb_arr;
@@ -134,7 +142,7 @@ class Technician extends BaseModel
     {
         return $this->hasOne(Member::class, 'member_id', 'member_id')->joinType('left')
             ->withField('member_id,member_no, username, mobile, nickname, headimg')
-            ->bind(['username', 'nickname', 'headimg']);
+            ->bind([ 'username', 'nickname', 'headimg' ]);
     }
 
     /**
@@ -169,10 +177,11 @@ class Technician extends BaseModel
      */
     public function searchMobileAttr($query, $value, $data)
     {
-        if ($value) {
+        if ($value != '') {
             $query->where('technician.mobile', 'like', '%' . $value . '%');
         }
     }
+
     /**
      * 状态搜索器
      * @param $value
@@ -180,7 +189,7 @@ class Technician extends BaseModel
     public function searchStatusAttr($query, $value, $data)
     {
         if ($value) {
-            $query->where('technician.status', '=',  $value );
+            $query->where('technician.status', '=', $value);
         }
     }
 

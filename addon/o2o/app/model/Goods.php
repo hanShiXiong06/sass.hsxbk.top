@@ -65,7 +65,7 @@ class Goods extends BaseModel
      */
     public function category()
     {
-        return $this->hasOne( GoodsCategory::class, 'category_id', 'goods_category')->joinType('left')->withField('category_id, category_name')->bind(['category_name' => 'category_name']);
+        return $this->hasOne(GoodsCategory::class, 'category_id', 'goods_category')->joinType('left')->withField('category_id, category_name')->bind([ 'category_name' => 'category_name' ]);
     }
 
     /**
@@ -75,9 +75,8 @@ class Goods extends BaseModel
      */
     public function getStatusNameAttr($value, $data)
     {
-        if(isset($data['status']))
-        {
-            return GoodsDict::getStatus()[$data['status']]['name'] ?? '';
+        if (isset($data[ 'status' ])) {
+            return GoodsDict::getStatus()[ $data[ 'status' ] ][ 'name' ] ?? '';
         }
     }
 
@@ -88,9 +87,8 @@ class Goods extends BaseModel
      */
     public function getBuyTypeNameAttr($value, $data)
     {
-        if(isset($data['buy_type']))
-        {
-            return GoodsDict::getBuyType($data['buy_type'])['name'] ?? '';
+        if (isset($data[ 'buy_type' ])) {
+            return GoodsDict::getBuyType($data[ 'buy_type' ])[ 'name' ] ?? '';
         }
     }
 
@@ -101,21 +99,21 @@ class Goods extends BaseModel
      */
     public function getPriceListAttr($value, $data)
     {
-        if(isset($data['price_list']))
-        {
-            return json_decode($data['price_list'], true) ?? [];
+        if (isset($data[ 'price_list' ])) {
+            return json_decode($data[ 'price_list' ], true) ?? [];
         }
     }
 
     /**
      * 获取图片缩略图
      */
-    public function getGoodsImageThumbAttr($value, $data){
+    public function getGoodsImageThumbAttr($value, $data)
+    {
         $thumb_arr = [];
-        if($data['goods_image'] != ''){
-            $img_arr = explode(",", $data['goods_image']);
-            foreach ($img_arr as $item){
-                $thumb_arr[] = get_thumb_images($data['site_id'], $item);
+        if ($data[ 'goods_image' ] != '') {
+            $img_arr = explode(",", $data[ 'goods_image' ]);
+            foreach ($img_arr as $item) {
+                $thumb_arr[] = get_thumb_images($data[ 'site_id' ], $item);
             }
         }
         return $thumb_arr;
@@ -124,12 +122,13 @@ class Goods extends BaseModel
     /**
      * 获取图片缩略图（大）
      */
-    public function getGoodsImageThumbBigAttr($value, $data){
+    public function getGoodsImageThumbBigAttr($value, $data)
+    {
         $thumb_arr = [];
-        if($data['goods_image'] != ''){
-            $img_arr = explode(",", $data['goods_image']);
-            foreach ($img_arr as $item){
-                $thumb_arr[] = get_thumb_images($data['site_id'], $item, FileDict::BIG);
+        if ($data[ 'goods_image' ] != '') {
+            $img_arr = explode(",", $data[ 'goods_image' ]);
+            foreach ($img_arr as $item) {
+                $thumb_arr[] = get_thumb_images($data[ 'site_id' ], $item, FileDict::BIG);
             }
         }
         return $thumb_arr;
@@ -138,12 +137,13 @@ class Goods extends BaseModel
     /**
      * 获取图片缩略图（中）
      */
-    public function getGoodsImageThumbMidAttr($value, $data){
+    public function getGoodsImageThumbMidAttr($value, $data)
+    {
         $thumb_arr = [];
-        if($data['goods_image'] != ''){
-            $img_arr = explode(",", $data['goods_image']);
-            foreach ($img_arr as $item){
-                $thumb_arr[] = get_thumb_images($data['site_id'], $item, FileDict::MID);
+        if ($data[ 'goods_image' ] != '') {
+            $img_arr = explode(",", $data[ 'goods_image' ]);
+            foreach ($img_arr as $item) {
+                $thumb_arr[] = get_thumb_images($data[ 'site_id' ], $item, FileDict::MID);
             }
         }
         return $thumb_arr;
@@ -152,12 +152,13 @@ class Goods extends BaseModel
     /**
      * 获取图片缩略图（小）
      */
-    public function getGoodsImageThumbSmallAttr($value, $data){
+    public function getGoodsImageThumbSmallAttr($value, $data)
+    {
         $thumb_arr = [];
-        if($data['goods_image'] != ''){
-            $img_arr = explode(",", $data['goods_image']);
-            foreach ($img_arr as $item){
-                $thumb_arr[] = get_thumb_images($data['site_id'], $item, FileDict::SMALL);
+        if ($data[ 'goods_image' ] != '') {
+            $img_arr = explode(",", $data[ 'goods_image' ]);
+            foreach ($img_arr as $item) {
+                $thumb_arr[] = get_thumb_images($data[ 'site_id' ], $item, FileDict::SMALL);
             }
         }
         return $thumb_arr;
@@ -166,9 +167,10 @@ class Goods extends BaseModel
     /**
      * 获取封面缩略图
      */
-    public function getCoverThumbAttr($value, $data){
-        if($data['goods_cover'] != ''){
-            return get_thumb_images($data['site_id'], $data[ 'goods_cover']);
+    public function getCoverThumbAttr($value, $data)
+    {
+        if ($data[ 'goods_cover' ] != '') {
+            return get_thumb_images($data[ 'site_id' ], $data[ 'goods_cover' ]);
         }
         return '';
     }
@@ -176,9 +178,10 @@ class Goods extends BaseModel
     /**
      * 获取封面缩略图（大）
      */
-    public function getCoverThumbBigAttr($value, $data){
-        if($data['goods_cover'] != ''){
-            return get_thumb_images($data['site_id'], $data[ 'goods_cover'], FileDict::BIG);
+    public function getCoverThumbBigAttr($value, $data)
+    {
+        if ($data[ 'goods_cover' ] != '') {
+            return get_thumb_images($data[ 'site_id' ], $data[ 'goods_cover' ], FileDict::BIG);
         }
         return '';
     }
@@ -186,9 +189,10 @@ class Goods extends BaseModel
     /**
      * 获取封面缩略图（中）
      */
-    public function getCoverThumbMidAttr($value, $data){
-        if($data['goods_cover'] != ''){
-            return get_thumb_images($data['site_id'], $data[ 'goods_cover'], FileDict::MID);
+    public function getCoverThumbMidAttr($value, $data)
+    {
+        if ($data[ 'goods_cover' ] != '') {
+            return get_thumb_images($data[ 'site_id' ], $data[ 'goods_cover' ], FileDict::MID);
         }
         return '';
     }
@@ -196,9 +200,10 @@ class Goods extends BaseModel
     /**
      * 获取封面缩略图（小）
      */
-    public function getCoverThumbSmallAttr($value, $data){
-        if($data['goods_cover'] != ''){
-            return get_thumb_images($data['site_id'], $data[ 'goods_cover'], FileDict::SMALL);
+    public function getCoverThumbSmallAttr($value, $data)
+    {
+        if ($data[ 'goods_cover' ] != '') {
+            return get_thumb_images($data[ 'site_id' ], $data[ 'goods_cover' ], FileDict::SMALL);
         }
         return '';
     }
@@ -206,11 +211,12 @@ class Goods extends BaseModel
     /**
      * 计算销量
      */
-    public function getsaleNumAttr($value, $data){
-        if(isset($data['virtually_sale']) && $data['virtually_sale'] > 0){
-            return $data['virtually_sale'] + $data['sale_num'];
-        }else{
-            return $data['sale_num'];
+    public function getsaleNumAttr($value, $data)
+    {
+        if (isset($data[ 'virtually_sale' ]) && $data[ 'virtually_sale' ] > 0) {
+            return $data[ 'virtually_sale' ] + $data[ 'sale_num' ];
+        } else {
+            return $data[ 'sale_num' ];
         }
     }
 
@@ -222,8 +228,8 @@ class Goods extends BaseModel
      */
     public function searchGoodsNameAttr($query, $value, $data)
     {
-        if ($value) {
-            $query->where("goods_name", 'like', '%'. $value . '%');
+        if ($value != '') {
+            $query->where("goods_name", 'like', '%' . $value . '%');
         }
     }
 
@@ -305,7 +311,8 @@ class Goods extends BaseModel
      *
      * @return \think\model\relation\HasMany
      */
-    public function goodsItem() {
+    public function goodsItem()
+    {
         return $this->hasMany(GoodsCardItem::class, 'main_goods_id');
     }
 }

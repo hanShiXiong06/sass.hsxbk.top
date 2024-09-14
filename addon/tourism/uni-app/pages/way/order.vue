@@ -92,7 +92,7 @@
                         <image class="w-[42rpx] h-[42rpx]" :src="img('addon/tourism/tourism/way/discount_coupon.png')" mode="widthFix"></image>
                         <text class="ml-1 text-xs">抵用券</text>
                     </view>
-                    <text class="text-[#999] text-xs flex items-center">查看<text class="nc-iconfont nc-icon-youV6xx text-[26rpx]"></text></text>
+                    <text class="text-[var(--text-color-light9)] text-xs flex items-center">查看<text class="nc-iconfont nc-icon-youV6xx text-[26rpx]"></text></text>
                 </view>
             </view> -->
 
@@ -144,10 +144,10 @@
         <view class="w-screen h-screen flex flex-col justify-center items-center" v-if="error">
             <u-empty :icon="img('static/resource/images/order_empty.png')" :text="error" />
             <view class="w-[240rpx] mt-[40rpx]">
-                <u-button type="primary" text="返回上一页" shape="circle" @click="back"></u-button>
+                <button class="bg-[var(--primary-color)] text-[#fff] h-[80rpx] leading-[80rpx] rounded-[100rpx] text-[28rpx]" @click="back">返回上一页</button>
             </view>
         </view>
-        <u-loading-page :loading="loading" loading-text="" bg-color="none" loadingColor="var(--primary-color)" iconSize="35"></u-loading-page>
+		<loading-page :loading="loading"></loading-page>
     </view>
 </template>
 
@@ -292,7 +292,16 @@
     }
 
 	const back = () => {
-	    uni.navigateBack()
+	    if(getCurrentPages().length > 1){
+            uni.navigateBack({
+                delta: 1
+            });
+        }else{
+            redirect({
+                url: '/addon/tourism/pages/index',
+                mode: 'reLaunch'
+            });
+        }
 	}
 </script>
 
@@ -307,7 +316,7 @@
 					@apply font-bold;
 				}
 				// &:last-of-type{
-				// 	@apply text-xs text-[#999];
+				// 	@apply text-xs text-[var(--text-color-light9)];
 				// }
 				.iconfont{
 					@apply inline-block;

@@ -59,10 +59,10 @@
     })
     
     const areaRef = ref()
-    const formRef = ref(null)
+    const formRef: any = ref(null)
     const btnDisabled = ref(false)
     
-    onLoad((data) => {
+    onLoad((data: any) => {
         if (data.id) {
             getAddressInfo(data.id).then(({data}) => {
                 data && Object.assign(formData.value, data)

@@ -6,13 +6,13 @@
 				<text class="nc-iconfont nc-icon-sousuoV6xx  !text-[28rpx]  leading-[70px]" @click="searchNameFn"></text>
 			</view>
 		</view>
-		<mescroll-body ref="mescrollRef" top="90rpx" @init="mescrollInit" @down="downCallback" @up="getTechnicianListFn">
+		<mescroll-body ref="mescrollRef" top="90rpx" @init="mescrollInit" :down="{ use: false }" @up="getTechnicianListFn">
 			<block v-for="(item,index) in technicianList" :key="index">
 				<view class="bg-[#fff] mx-3 mt-3  p-3 rounded" @click="toLink(item.id)">
 					<view class="flex">
 						<view class="w-[110rpx] h-[110rpx] flex justify-center">
-							<u-avatar :src="img(item.headimg_mid)" shape="circle" size="55" v-if="item.headimg_mid"></u-avatar>
-							<u-avatar src="" size="55" v-else></u-avatar>
+							<u-avatar :default-url="img('static/resource/images/default_headimg.png')" :src="img(item.headimg_mid)" shape="circle" size="55" v-if="item.headimg_mid" />
+							<u-avatar :src="img('static/resource/images/default_headimg.png')" size="55" v-else />
 						</view>
 						<view class="flex-1 flex flex-col  justify-between  ml-[20rpx] pb-[15rpx] border-0 border-solid border-b-[2rpx] border-[#ebeef5] ">
 							<view class="flex justify-between items-center">
@@ -68,9 +68,9 @@
 
 	const { mescrollInit, downCallback, getMescroll } = useMescroll(onPageScroll, onReachBottom);
 
-	let technicianList = ref<Array<Object>>([]);
-	let searchName = ref("");
-	let loading = ref<boolean>(false);
+	const technicianList = ref<Array<Object>>([]);
+	const searchName = ref("");
+	const loading = ref<boolean>(false);
 	const getTechnicianListFn = (mescroll) => {
 		loading.value = false;
 		let data : object = {
@@ -94,7 +94,7 @@
 	}
 	// 跳转详情页
 	const toLink = (id:any) => {
-		redirect({ url: '/addon/o2o/pages/technician/detail',param:{id:id}})
+		redirect({ url: '/addon/o2o/pages/technician/detail',param:{ id }})
 	}
 	// 搜索技师
 	const searchNameFn = () => {

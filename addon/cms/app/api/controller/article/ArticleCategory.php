@@ -44,5 +44,4 @@ class ArticleCategory extends BaseApiController
         return success(( new ArticleCategoryService() )->getInfo($id));
     }
 
-
 }

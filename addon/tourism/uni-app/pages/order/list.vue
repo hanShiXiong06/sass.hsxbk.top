@@ -8,7 +8,7 @@
 			</scroll-view>
 		</view>
 
-		<mescroll-body ref="mescrollRef" top="104rpx" @init="mescrollInit" @down="downCallback" @up="getMemberOrderListFn">
+		<mescroll-body ref="mescrollRef" top="104rpx" @init="mescrollInit" :down="{ use: false }" @up="getMemberOrderListFn">
 			<view class="goods-wrap">
 				<block v-for="(item,index) in list"	:key="item.order_id">
 					<view class="goods-item" v-if="item.order_type == 'hotel'" @click="toLink(item)">
@@ -51,7 +51,7 @@
 								<view class="desc">{{item.goods_name}}</view>
 								<view class="desc">{{item.num}}张 {{dateFormat(item.start_time, 'monthDay')}}（出游）</view>
 								<!-- <view class="time-wrap">
-									<text class="nc-iconfont nc-icon-shijianV6xx"></text>
+									<text class="nc-iconfont nc-icon-a-shijianV6xx-36"></text>
 									<text>剩余支付时间：</text>
 									<text>29分钟</text>
 								</view> -->
@@ -98,13 +98,12 @@
 
 <script setup lang="ts">
 	import { ref } from 'vue';
-	import { onLoad } from '@dcloudio/uni-app'
 	import { img, redirect } from '@/utils/common';
 	import { getMemberOrderStatus, getMemberOrderList, cancelOrder, deleteOrder } from '@/addon/tourism/api/tourism';
 	import MescrollBody from '@/components/mescroll/mescroll-body/mescroll-body.vue';
 	import MescrollEmpty from '@/components/mescroll/mescroll-empty/mescroll-empty.vue';
 	import useMescroll from '@/components/mescroll/hooks/useMescroll.js';
-	import { onPageScroll, onReachBottom } from '@dcloudio/uni-app';
+	import { onLoad,onPageScroll, onReachBottom } from '@dcloudio/uni-app';
 
 	const { mescrollInit, downCallback, getMescroll } = useMescroll(onPageScroll, onReachBottom);
 	let list = ref<Array<Object>>([]);
@@ -113,7 +112,7 @@
 	let orderState = ref('')
 	let orderStateList = ref([]);
 
-	onLoad((option) => {
+	onLoad((option: any) => {
 		orderState.value = option.status || "";
 		getMemberOrderStatusFn();
 	});

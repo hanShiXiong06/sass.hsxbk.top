@@ -31,7 +31,7 @@
                         <view class="flex-1 text-right">
                             <view class="text-xs text-gray-subtitle truncate w-[460rpx]">{{ formData.reason || t('placeholder') }}</view>
                         </view>
-                        <text class="nc-iconfont nc-icon-youV6xx text-[26rpx] text-[#666]"></text>
+                        <text class="nc-iconfont nc-icon-youV6xx text-[26rpx] text-[var(--text-color-light6)]"></text>
                     </view>
                 </view>
             </view>
@@ -41,7 +41,7 @@
                     <view class="flex-1 text-right">
                         <view class="flex justify-end items-center">
                             <text class="font-bold text-sm leading-none">￥</text>
-                            <input type="number" v-model.number="formData.apply_money" class="font-bold text-sm leading-none" :style="{ width: inputWidth(formData.apply_money) }">
+                            <input type="digit" v-model.number="formData.apply_money" class="font-bold text-sm leading-none" :style="{ width: inputWidth(formData.apply_money) }">
                         </view>
                         <view class="text-xs text-gray-subtitle mt-[10rpx]">{{t('moreInputMoney')}}{{ applyMoney }}</view>
                     </view>
@@ -69,7 +69,7 @@
                 </view>
             </view>
             <view class="mt-[40rpx] m-[24rpx]">
-                <u-button type="primary" shape="circle" :text="t('submit')" @click="save" :loading="operateLoading"></u-button>
+                <button class="bg-[var(--primary-color)] text-[#fff] h-[80rpx] leading-[80rpx] rounded-[100rpx] text-[28rpx]" @click="save" :loading="operateLoading">{{t('submit')}}</button>
             </view>
 
             <!-- 退款原因 -->
@@ -85,7 +85,7 @@
 							</u-radio>
 						</u-radio-group>
 					</scroll-view>
-                    <u-button type="primary" :text="t('confirm')" class="mt-[40rpx]" shape="circle" @click="refundCausePopupFn"></u-button>
+                    <button class="mt-[40rpx] bg-[var(--primary-color)] text-[#fff] h-[80rpx] leading-[80rpx] rounded-[100rpx] text-[28rpx]" @click="refundCausePopupFn">{{t('confirm')}}</button>
                 </view>
             </u-popup>
         </view>
@@ -103,7 +103,7 @@ import { uploadImage } from '@/app/api/system'
 const detail = ref(null)
 const orderDetail = ref({})
 const orderItemId = ref(0)
-let refundCausePopup = ref(false)
+const refundCausePopup = ref(false)
 const formData = ref({
     order_id: detail.value?.order_id,
     order_item_id: orderItemId.value,
@@ -115,9 +115,10 @@ const formData = ref({
 const reason = ref<string[]>([])
 const currReasonName = ref('')
 getRefundReason().then(({ data }) => {
-        reason.value = data
-		if(reason.value && reason.value.length) currReasonName.value = reason.value[0];
-    }).catch()
+    reason.value = data
+    if (reason.value && reason.value.length) currReasonName.value = reason.value[0];
+})
+
 onLoad((data) => {
     orderItemId.value = data.order_item_id || 0
     formData.value.order_item_id = orderItemId.value

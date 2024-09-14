@@ -38,7 +38,7 @@ class Order extends BaseModel
      * @var int
      */
     protected $defaultSoftDelete = 0;
-    
+
 
     /**
      * 数据表主键
@@ -68,9 +68,8 @@ class Order extends BaseModel
      */
     public function getOrderFromNameAttr($value, $data)
     {
-        if(isset($data['order_from']))
-        {
-            return ChannelDict::getType()[$data['order_from']] ?? '';
+        if (isset($data[ 'order_from' ])) {
+            return ChannelDict::getType()[ $data[ 'order_from' ] ] ?? '';
         }
     }
 
@@ -86,6 +85,7 @@ class Order extends BaseModel
             $query->where('order_status', '=', $value);
         }
     }
+
     /**
      * 订单状态
      * @param $query
@@ -95,7 +95,7 @@ class Order extends BaseModel
     public function searchOrderNameAttr($query, $value, $data)
     {
         if ($value != '') {
-            $query->where('order_name', 'like', '%'.$value.'%');
+            $query->where('order_name', 'like', '%' . $value . '%');
         }
     }
 
@@ -120,8 +120,8 @@ class Order extends BaseModel
      */
     public function searchOrderNoAttr($query, $value, $data)
     {
-        if ($value) {
-            $query->where('order_no', 'like', '%'.$value.'%');
+        if ($value != '') {
+            $query->where('order_no', 'like', '%' . $value . '%');
         }
     }
 
@@ -144,14 +144,14 @@ class Order extends BaseModel
      */
     public function searchCreateTimeAttr($query, $value, $data)
     {
-        $start_time = empty($value[0]) ? 0 : strtotime($value[0]) ;
-        $end_time = empty($value[1]) ? 0 : strtotime($value[1]) ;
-        if($start_time > 0 && $end_time > 0){
+        $start_time = empty($value[ 0 ]) ? 0 : strtotime($value[ 0 ]);
+        $end_time = empty($value[ 1 ]) ? 0 : strtotime($value[ 1 ]);
+        if ($start_time > 0 && $end_time > 0) {
             $query->whereBetweenTime('create_time', $start_time, $end_time);
-        }else if($start_time > 0 && $end_time == 0){
-            $query->where([['create_time', '>=', $start_time]]);
-        }else if($start_time == 0 && $end_time > 0){
-            $query->where([['create_time', '<=', $end_time]]);
+        } else if ($start_time > 0 && $end_time == 0) {
+            $query->where([ [ 'create_time', '>=', $start_time ] ]);
+        } else if ($start_time == 0 && $end_time > 0) {
+            $query->where([ [ 'create_time', '<=', $end_time ] ]);
         }
     }
 
@@ -164,14 +164,14 @@ class Order extends BaseModel
      */
     public function searchPayTimeAttr($query, $value, $data)
     {
-        $start_time = empty($value[0]) ? 0 : strtotime($value[0]) ;
-        $end_time = empty($value[1]) ? 0 : strtotime($value[1]) ;
-        if($start_time > 0 && $end_time > 0){
+        $start_time = empty($value[ 0 ]) ? 0 : strtotime($value[ 0 ]);
+        $end_time = empty($value[ 1 ]) ? 0 : strtotime($value[ 1 ]);
+        if ($start_time > 0 && $end_time > 0) {
             $query->whereBetweenTime('pay_time', $start_time, $end_time);
-        }else if($start_time > 0 && $end_time == 0){
-            $query->where([['pay_time', '>=', $start_time]]);
-        }else if($start_time == 0 && $end_time > 0){
-            $query->where([['pay_time', '<=', $end_time]]);
+        } else if ($start_time > 0 && $end_time == 0) {
+            $query->where([ [ 'pay_time', '>=', $start_time ] ]);
+        } else if ($start_time == 0 && $end_time > 0) {
+            $query->where([ [ 'pay_time', '<=', $end_time ] ]);
         }
     }
 
@@ -185,7 +185,7 @@ class Order extends BaseModel
     public function searchMemberSearchTextAttr($query, $value, $data)
     {
         if ($value) {
-            $member_ids = (new Member)->where([['username|member_no|nickname|mobile', 'like', '%' . $value . '%'], ['site_id', '=', $data['site_id']]])->column('member_id');
+            $member_ids = ( new Member )->where([ [ 'username|member_no|nickname|mobile', 'like', '%' . $value . '%' ], [ 'site_id', '=', $data[ 'site_id' ] ] ])->column('member_id');
             if ($member_ids) $query->where('member_id', 'in', $member_ids);
         }
     }
@@ -200,10 +200,10 @@ class Order extends BaseModel
     public function searchTechnicianSearchTextAttr($query, $value, $data)
     {
         if ($value) {
-            $ids = (new Technician())->where([['name|mobile', 'like', '%' . $value . '%'], ['site_id', '=', $data['site_id']]])->column('id');
+            $ids = ( new Technician() )->where([ [ 'name|mobile', 'like', '%' . $value . '%' ], [ 'site_id', '=', $data[ 'site_id' ] ] ])->column('id');
             if ($ids) {
                 $query->where('technician_id', 'in', $ids);
-            }else{
+            } else {
                 $query->where('technician_id', 'in', '-1');
             }
         }
@@ -215,21 +215,25 @@ class Order extends BaseModel
      * @return mixed|void
      * @throws \Exception
      */
-    public function getOrderStatusInfoAttr($value, $data) {
-        if (isset($data['order_status'])) {
-            return OrderDict::getStatus($data['order_status']);
+    public function getOrderStatusInfoAttr($value, $data)
+    {
+        if (isset($data[ 'order_status' ])) {
+            return OrderDict::getStatus($data[ 'order_status' ]);
         }
     }
-     
-    public function item() {
 
-        return $this->hasMany(OrderItem::class, 'order_id', 'order_id')->append(['item_image_thumb_small', 'refund_status_name']);
+    public function item()
+    {
+
+        return $this->hasMany(OrderItem::class, 'order_id', 'order_id')->append([ 'item_image_thumb_small', 'refund_status_name' ]);
     }
+
     /**
      * 关联会员
      * @return \think\model\relation\HasOne
      */
-    public function member() {
+    public function member()
+    {
         return $this->hasOne(Member::class, 'member_id', 'member_id');
     }
 
@@ -237,27 +241,31 @@ class Order extends BaseModel
      * 订单日志
      * @return \think\model\relation\HasMany
      */
-    public function orderlog() {
-        return $this->hasMany(OrderLog::class,'order_id', 'order_id');
+    public function orderlog()
+    {
+        return $this->hasMany(OrderLog::class, 'order_id', 'order_id');
     }
 
     /**
      * 技师
      * @return \think\model\relation\HasMany
      */
-    public function technicianInfo() {
-        return $this->hasOne(Technician::class,'id', 'technician_id');
+    public function technicianInfo()
+    {
+        return $this->hasOne(Technician::class, 'id', 'technician_id');
     }
 
     /**
      * 支付记录
      * @return \think\model\relation\HasOne
      */
-    public function pay() {
-        return $this->hasOne(Pay::class,'out_trade_no', 'out_trade_no')->bind(['pay_type_name' => 'type_name']);
+    public function pay()
+    {
+        return $this->hasOne(Pay::class, 'out_trade_no', 'out_trade_no')->bind([ 'pay_type_name' => 'type_name' ]);
     }
 
-    public function refund() {
-        return $this->hasOne(OrderRefund::class,'refund_no', 'refund_no')->bind(['refund_id' => 'refund_id']);
+    public function refund()
+    {
+        return $this->hasOne(OrderRefund::class, 'refund_no', 'refund_no')->bind([ 'refund_id' => 'refund_id' ]);
     }
 }

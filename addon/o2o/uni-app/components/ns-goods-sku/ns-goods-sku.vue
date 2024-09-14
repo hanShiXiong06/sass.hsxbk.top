@@ -8,7 +8,7 @@
 					<view class="rounded-[8rpx] overflow-hidden">
 						<u--image width="204rpx" height="204rpx" :src="img(goodsDetail.detail.sku_image)" model="aspectFill">
 							<template #error>
-								<u-icon name="photo" color="#999" size="50"></u-icon>
+                                <image class="w-[204rpx] h-[204rpx]" :src="img('static/resource/images/diy/shop_default.jpg')" mode="aspectFill"></image>
 							</template>
 						</u--image>
 					</view>
@@ -20,7 +20,7 @@
 							</view>
 						</view>
 						<view class="w-[100%]"  style="max-height: calc(204rpx - 92rpx);" >
-							<text class="text-[24rpx] leading-[38rpx] text-[#666] multi-hidden ">已选规格：{{goodsDetail.detail.sku_name}}</text>
+							<text class="text-[24rpx] leading-[38rpx] text-[var(--text-color-light6)] multi-hidden ">已选规格：{{goodsDetail.detail.sku_name}}</text>
 						</view>
 					</view>
 				</view>
@@ -62,16 +62,17 @@ import { ref,  computed } from 'vue';
 import { img, redirect, getToken } from '@/utils/common'
 import { useLogin } from '@/hooks/useLogin'
 import useMemberStore from '@/stores/member'
+import { cloneDeep } from 'lodash-es'
 
 const props = defineProps(['goodsDetail']);
 
-let goodsSkuPop = ref(false);
-let callback:any = ref(null);
-let currSpec = ref({
+const goodsSkuPop = ref(false);
+const callback:any = ref(null);
+const currSpec = ref({
 	sku_id: '',
 	name: ''
 })
-let buyNum = ref(1)
+const buyNum = ref(1)
 // 会员信息
 const memberStore = useMemberStore()
 const userInfo = computed(() => memberStore.info)
@@ -85,7 +86,7 @@ const closeFn = ()=>{
 }
 
 const goodsDetail = computed(() => {
-	let data = JSON.parse(JSON.stringify(props.goodsDetail));
+	let data = cloneDeep(props.goodsDetail);
 
 	// 重组数据结构
 	if(Object.keys(data).length){
@@ -159,7 +160,7 @@ const confirm = ()=>{
 	})
 	
 	// 商品价格
-	let goodsPrice = computed(() =>{
+	const goodsPrice = computed(() =>{
 		let price = "0.00";
 		if(Object.keys(goodsDetail.value).length && Object.keys(goodsDetail.value.goods).length && goodsDetail.value.goods.member_discount && getToken()){
 			price = goodsDetail.value.member_price // 会员价

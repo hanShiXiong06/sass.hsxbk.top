@@ -107,7 +107,7 @@
 	})
 
 	// 验证是否是技师
-	let isTechnician = ref(false)
+    const isTechnician = ref(false)
 	const checkTechnicianFn = () =>{
 		if (diyStore.mode == 'decorate') {
 			return isTechnician.value = true

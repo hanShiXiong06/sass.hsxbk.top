@@ -55,7 +55,7 @@
             <u-popup :show="detailPopupShow" @close="detailPopupShow = false">
                 <view class="text-base font-bold flex justify-center items-center h-[96rpx] px-[26rpx] bg-[#fff] relative">
                     <text class="text-[30rpx]">费用明细</text>
-                    <text class="nc-iconfont nc-icon-guanbiV6xx text-[#666] absolute text-[32rpx] right-[26rpx]"  @click="detailPopupShow = false"></text>
+                    <text class="nc-iconfont nc-icon-guanbiV6xx text-[var(--text-color-light6)] absolute text-[32rpx] right-[26rpx]"  @click="detailPopupShow = false"></text>
                 </view>
                 <scroll-view scroll-y="true" class="max-h-[40vh]">
                     <view class="flex px-[30rpx] mt-[20rpx]">
@@ -103,7 +103,7 @@
                 <view class="flex flex-col rounded-t-3xl bg-[#f8f8f8] overflow-hidden relative z-10">
                     <view class="text-base font-bold flex justify-between items-center h-[96rpx] px-[26rpx] bg-[#fff]">
                         <text class="text-[30rpx]">{{roomData.goods_name}}</text>
-                        <text class="nc-iconfont nc-icon-guanbiV6xx text-[32rpx] text-[#666]"  @click="hotelType = false"></text>
+                        <text class="nc-iconfont nc-icon-guanbiV6xx text-[32rpx] text-[var(--text-color-light6)]"  @click="hotelType = false"></text>
                     </view>
                     <scroll-view class="max-h-[60vh]" :scroll-y="true">
                         <image :src="img(roomData.goods_cover)" class="w-[750rpx] h-[218]" mode="aspectFill"></image>
@@ -153,10 +153,10 @@
         <view class="w-screen h-screen flex flex-col justify-center items-center" v-if="error">
             <u-empty :icon="img('static/resource/images/order_empty.png')" :text="error" />
             <view class="w-[240rpx] mt-[40rpx]">
-                <u-button type="primary" text="返回上一页" shape="circle" @click="back"></u-button>
+                <button class="bg-[var(--primary-color)] text-[#fff] h-[80rpx] leading-[80rpx] rounded-[100rpx] text-[28rpx]" @click="back">返回上一页</button>
             </view>
         </view>
-        <u-loading-page :loading="loading" loading-text="" bg-color="none" loadingColor="var(--primary-color)" iconSize="35"></u-loading-page>
+		<loading-page :loading="loading"></loading-page>
     </view>
 </template>
 
@@ -306,7 +306,16 @@
 	}
 
     const back = () => {
-        uni.navigateBack()
+        if(getCurrentPages().length > 1){
+            uni.navigateBack({
+                delta: 1
+            });
+        }else{
+            redirect({
+                url: '/addon/tourism/pages/index',
+                mode: 'reLaunch'
+            });
+        }
     }
 </script>
 

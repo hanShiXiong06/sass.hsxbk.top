@@ -3,7 +3,7 @@
 		<view class="pt-[34rpx] member-info">
 			<view v-if="info" class="flex ml-[32rpx] mr-[52rpx]  items-center relative">
 				<!-- 唤起获取微信 -->
-				<u-avatar :src="img(info.headimg)" size="55" leftIcon="none" @click="clickAvatar"></u-avatar>
+				<u-avatar :src="img(info.headimg)" size="55" :default-url="img('static/resource/images/default_headimg.png')" leftIcon="none" @click="clickAvatar"></u-avatar>
 				<view class="ml-[22rpx]">
 					<view class="text-[#222222] truncate w-[430rpx] font-bold text-lg" :style="{ color : diyComponent.textColor }">{{ info.nickname }}</view>
 					<view class="text-[#696B70] text-[24rpx] mt-[10rpx]" :style="{ color : diyComponent.textColor }">UID：{{ info.member_no }}</view>
@@ -15,7 +15,7 @@
 				</view>
 			</view>
 			<view v-else class="flex ml-[32rpx] mr-[52rpx]  items-center relative" @click="toLogin">
-				<u-avatar src="" size="55"></u-avatar>
+				<u-avatar :src="img('static/resource/images/default_headimg.png')" size="55" />
 				<view class="ml-[22rpx]">
 					<view class="text-[#222222] font-bold text-lg" :style="{ color : diyComponent.textColor }">
 						{{ t('login') }}/{{ t('register') }}
@@ -52,6 +52,7 @@
 		<!-- #ifdef MP-WEIXIN -->
 		<information-filling ref="infoFill"></information-filling>
 		<!-- #endif -->
+
 	</view>
 </template>
 
@@ -149,7 +150,7 @@
 
 		// #ifdef H5
 		if (isWeixinBrowser()) {
-			useLogin().getAuthCode('snsapi_userinfo')
+			useLogin().getAuthCode({ scopes : 'snsapi_userinfo' })
 		} else {
 			redirect({ url: '/app/pages/member/personal' })
 		}

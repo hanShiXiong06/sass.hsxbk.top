@@ -6,7 +6,7 @@ return [
         'list' => [
             'Article' => [
                 'title' => '文章',
-                'icon' => 'iconfont-iconwenzhang',
+                'icon' => 'iconfont iconwenzhangpc',
                 'path' => 'edit-article',
                 'support_page' => [],
                 'uses' => 0,

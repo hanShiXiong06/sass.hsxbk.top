@@ -36,8 +36,8 @@ class Position extends BaseModel
 
     public function searchNameAttr($query, $value, $data)
     {
-        if (!empty($value)) {
-            $query->where([ [ 'name', 'like', '%'.$value.'%' ] ]);
+        if ($value != '') {
+            $query->where([ [ 'name', 'like', '%' . $value . '%' ] ]);
         }
     }
 }

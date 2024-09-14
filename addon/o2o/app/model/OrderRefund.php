@@ -59,8 +59,8 @@ class OrderRefund extends BaseModel
 
     public function searchRefundNoAttr($query, $value, $data)
     {
-        if (!empty($value)) {
-            $query->where([ [ 'refund_no', 'like', '%'.$value.'%' ] ]);
+        if ($value != '') {
+            $query->where([ [ 'refund_no', 'like', '%' . $value . '%' ] ]);
         }
     }
 
@@ -70,14 +70,14 @@ class OrderRefund extends BaseModel
      */
     public function searchCreateTimeAttr($query, $value, $data)
     {
-        $start_time = empty($value[0]) ? 0 : strtotime($value[0]) ;
-        $end_time = empty($value[1]) ? 0 : strtotime($value[1]) ;
-        if($start_time > 0 && $end_time > 0){
+        $start_time = empty($value[ 0 ]) ? 0 : strtotime($value[ 0 ]);
+        $end_time = empty($value[ 1 ]) ? 0 : strtotime($value[ 1 ]);
+        if ($start_time > 0 && $end_time > 0) {
             $query->whereBetweenTime('create_time', $start_time, $end_time);
-        }else if($start_time > 0 && $end_time == 0){
-            $query->where([['create_time', '>=', $start_time]]);
-        }else if($start_time == 0 && $end_time > 0){
-            $query->where([['create_time', '<=', $end_time]]);
+        } else if ($start_time > 0 && $end_time == 0) {
+            $query->where([ [ 'create_time', '>=', $start_time ] ]);
+        } else if ($start_time == 0 && $end_time > 0) {
+            $query->where([ [ 'create_time', '<=', $end_time ] ]);
         }
     }
 
@@ -87,15 +87,17 @@ class OrderRefund extends BaseModel
      * @param $data
      * @return array|mixed|string
      */
-    public function getStatusNameAttr($value, $data) {
-        return RefundDict::getRefundStatus($data['status'])['name'] ?? '';
+    public function getStatusNameAttr($value, $data)
+    {
+        return RefundDict::getRefundStatus($data[ 'status' ])[ 'name' ] ?? '';
     }
 
     /**
      * 关联订单项表
      * @return void
      */
-    public function orderItem() {
+    public function orderItem()
+    {
         return $this->hasOne(OrderItem::class, 'order_item_id', 'order_item_id');
     }
 
@@ -103,7 +105,8 @@ class OrderRefund extends BaseModel
      * 关联会员
      * @return \think\model\relation\HasOne
      */
-    public function member() {
+    public function member()
+    {
         return $this->hasOne(Member::class, 'member_id', 'member_id');
     }
 
@@ -111,7 +114,8 @@ class OrderRefund extends BaseModel
      * 关联退款日志表
      * @return void
      */
-    public function refundLog() {
+    public function refundLog()
+    {
         return $this->hasMany(OrderRefundLog::class, 'refund_id', 'refund_id');
     }
 }

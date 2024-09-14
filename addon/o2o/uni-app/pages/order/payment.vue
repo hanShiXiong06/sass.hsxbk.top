@@ -15,12 +15,12 @@
                         {{ t('addHomeAddress') }}
                     </view>
                 </view>
-                <text class="nc-iconfont nc-icon-youV6xx text-[26rpx] text-[#666]"></text>
+                <text class="nc-iconfont nc-icon-youV6xx text-[26rpx] text-[var(--text-color-light6)]"></text>
             </view>
             <view class="outline-border" v-for="(item, index) in orderData.goods_data">
                 <u--image width="168rpx" height="168rpx" :src="img(item.sku_image)" model="aspectFill">
                     <template #error>
-                        <u-icon name="photo" color="#999" size="50"></u-icon>
+                        <image class="w-[168rpx] h-[168rpx]" :src="img('static/resource/images/diy/shop_default.jpg')" mode="aspectFill"></image>
                     </template>
                 </u--image>
                 <view class="flex flex-col py-1 flex-1 ml-[10rpx]">
@@ -46,7 +46,7 @@
                     </view>
                     <view class="flex-align text-[#63676D]" @click="userShow = true">
                         <view class="text-[28rpx] ml-2 text-right">{{ createData.technician_name ? createData.technician_name : t('selectiveTechnician') }}</view>
-                        <text class=" text-[26rpx] text-[#666] nc-iconfont nc-icon-youV6xx"></text>
+                        <text class=" text-[26rpx] text-[var(--text-color-light6)] nc-iconfont nc-icon-youV6xx"></text>
                     </view>
                 </view>
 
@@ -55,12 +55,12 @@
                 <!-- 预约时间 -->
                 <view class="flex justify-between items-center box-border py-[24rpx]">
                     <view class="flex-align">
-                        <text class="text-[28rpx] text-[#4D4D4D] font-bold nc-iconfont nc-icon-shijianV6xx"></text>
+                        <text class="text-[28rpx] text-[#4D4D4D] font-bold nc-iconfont nc-icon-a-shijianV6xx-36"></text>
                         <text class="text-[28rpx] ml-2">{{ t('addHomeTime') }}</text>
                     </view>
                     <view class="flex-align text-[#63676D]" @click="handleTime">
                         <view class="text-[28rpx] ml-2 text-right">{{createData.reserve_service_time ? createData.reserve_service_time : t('selectAddTimePlaceholder')  }}</view>
-                        <text class=" text-[26rpx] text-[#666] nc-iconfont nc-icon-youV6xx"></text>
+                        <text class=" text-[26rpx] text-[var(--text-color-light6)] nc-iconfont nc-icon-youV6xx"></text>
                     </view>
                 </view>
                 <ns-select-time ref="selectTime"  :rules="service_time" :isQuantum="true"  @change="getTime"  @getStamp="getStamp" v-if="Object.keys(service_time).length"></ns-select-time>
@@ -95,7 +95,7 @@
 
             <pay ref="payRef" @close="payClose"></pay>
         </view>
-        <u-loading-page bg-color="rgb(248,248,248)" :loading="loading" fontSize="16" color="#333"></u-loading-page>
+		<loading-page :loading="loading"></loading-page>
     </view>
 </template>
 
@@ -113,14 +113,14 @@ import { cloneDeep } from 'lodash-es'
 import nsSelectTime from '@/addon/o2o/components/ns-select-time'
 import { wechatSync } from '@/app/api/system'
 
-let loading = ref<boolean>(false);
-let userList = ref([[]]); // 技师
-let userShow = ref(false); // 控制技师列表
-let service_time = ref({})//获取配置时间
-let orderData = ref(null)
+const loading = ref<boolean>(false);
+const userList = ref([[]]); // 技师
+const userShow = ref(false); // 控制技师列表
+const service_time = ref({})//获取配置时间
+const orderData = ref(null)
 const createLoading = ref(false)
 // 向订单计算提交
-let createData = ref({
+const createData = ref({
 	order_key:'',
 	technician_id:'',
 	technician_name: '默认分配',
@@ -132,7 +132,7 @@ let createData = ref({
 	}
 })
 uni.getStorageSync('o2oCreateData') && Object.assign(createData.value, uni.getStorageSync('o2oCreateData'))
-let goodsId = ref('')
+const goodsId = ref('')
 onLoad((option) => {
 	goodsId.value = option.id
 	getTechnicianGoodsFn(option.id)
@@ -247,7 +247,7 @@ const create = () => {
         })
 }
 
-let selectTime = ref(null)
+const selectTime = ref(null)
 const handleTime = () =>{
 	selectTime.value.show = true
 }

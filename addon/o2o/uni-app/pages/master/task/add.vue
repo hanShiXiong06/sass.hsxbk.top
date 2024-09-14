@@ -9,7 +9,7 @@
 					<u-input v-model.trim="formData.item_name" border="surround" clearable :placeholder="t('serviceItemPlaceholder')" maxlength="50" ></u-input>
 				</u-form-item>
                 <u-form-item :label="t('price')" prop="price" required>
-					<u-input v-model="formData.price" border="surround" clearable :placeholder="t('pricePlaceholder')" type="number" maxlength="6">
+					<u-input v-model="formData.price" border="surround" clearable :placeholder="t('pricePlaceholder')" type="digit" maxlength="6">
                         <template #suffix>
                             <text>{{ t('yuan') }}</text>
                         </template>
@@ -25,7 +25,7 @@
 				</u-form-item>
 			</u-form>
 		</view>
-		<u-loading-page bg-color="rgb(248,248,248)" :loading="loading" fontSize="14" color="#333" :loadingText="t('loading')"></u-loading-page>
+		<loading-page :loading="loading"></loading-page>
 	</view>
 </template>
 
@@ -36,6 +36,7 @@
 	import { img, redirect } from '@/utils/common';
 	import { addService,editService } from '@/addon/o2o/api/o2o'
 	import  uploadImg from '@/addon/o2o/pages/master/task/components/upload-img.vue'
+	import { cloneDeep } from 'lodash-es'
 
 	const loading = ref(false)
 	const formData = ref<AnyObject>({
@@ -86,7 +87,7 @@
 		serviceRef.value.validate().then(() => {
 		    if (loading.value) return
 		    loading.value = true
-		    const data =  JSON.parse(JSON.stringify( formData.value))
+		    const data =  cloneDeep(formData.value)
             data.item_images = data.images.toString()
 			let api = formData.value.order_item_id ? editService : addService
 		    api(data).then(res => {

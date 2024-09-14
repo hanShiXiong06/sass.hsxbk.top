@@ -3,17 +3,20 @@
 		<view :style="maskLayer"></view>
 		<view class="diy-active relative">
 			<view v-for="(item,index) in articleList" :key="item.id"
-				:class="['item flex align-center p-[20rpx]',{'border-solid border-t-0 border-l-0 border-r-0 border-b border-gray-200 mb-[20rpx]': articleList.length-1 !== index}] "
+				class="item flex align-center px-[var(--pad-sidebar-m)] py-[var(--pad-top-m)]"
 				@click="toLink(item.id)" :style="itemCss">
-				<u--image width="260rpx" height="200rpx" :src="img(item.image)" v-if="item.image" model="aspectFill">
-					<template #error>
-						<u-icon name="photo" color="#999" size="50"></u-icon>
-					</template>
-				</u--image>
-				<view class="flex-1 flex flex-col justify-between ml-[20rpx]">
-					<view class="text-[32rpx] leading-[1.3] multi-hidden mt-[4rpx]" :style="{ color: diyComponent.textColor }">{{item.title}}</view>
-					<view class="text-[28rpx] using-hidden mb-[auto] mt-[20rpx] text-gray-500">{{item.summary}}</view>
-					<view class="text-[24rpx] text-gray-400 flex justify-between mt-[10rpx]">
+				<view class="w-[260rpx] h-[210rpx] rounded-[var(--goods-rounded-big)] overflow-hidden">
+					<u--image width="260rpx" height="210rpx" :radius="'var(--goods-rounded-big)'" :src="img(item.image)" v-if="item.image" model="aspectFill">
+						<template #error>
+							<u-icon name="photo" color="var(--text-color-light9)" size="50"></u-icon>
+						</template>
+					</u--image>
+				</view>
+				<view class="flex-1 flex flex-col justify-between ml-[20rpx] py-[4rpx]">
+					<view class="text-[28rpx] leading-[36rpx] text-[#333] multi-hidden" :style="{ color: diyComponent.textColor }">{{item.title}}</view>
+					<view class="text-[24rpx] using-hidden mb-[auto] mt-[14rpx] text-[#999]">{{item.summary}}</view>
+					<view class="text-[22rpx] text-[#999] flex items-center mt-[10rpx]">
+						<text class="nc-iconfont nc-icon-a-shijianV6xx-36 mr-[6rpx] font-500 -mb-[4rpx] !text-[20rpx]"></text>
 						<text>{{item.create_time}}</text>
 					</view>
 				</view>

@@ -37,7 +37,7 @@ class O2oPoster
                 ];
                 $return_data = [
                     'nickname' => '会员昵称',
-                    'headimg' => 'static/resource/images/default_headimg.jpg',
+                    'headimg' => 'static/resource/images/default_headimg.png',
                     'goods_name' => '项目名称',
                     'goods_price' => '￥369.00',
                     'goods_img' => 'addon/o2o/goods_template.png',
@@ -88,7 +88,7 @@ class O2oPoster
 
                 if (!empty($member_info)) {
                     if (empty($member_info[ 'headimg' ]) || !is_file($member_info[ 'headimg' ])) {
-                        $member_info[ 'headimg' ] = 'static/resource/images/default_headimg.jpg';
+                        $member_info[ 'headimg' ] = 'static/resource/images/default_headimg.png';
                     }
                 }
             }

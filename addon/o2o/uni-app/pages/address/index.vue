@@ -13,7 +13,7 @@
                                     <view class="bg-primary text-white text-xs px-[10rpx] leading-none flex items-center h-[32rpx] ml-[10rpx] rounded min-w-[100rpx]" v-if="item.is_default == 1">{{ t('default') }}</view>
                                 </view>
                             </view>
-                            <text class="iconfont iconVector-77 mr-[24rpx] shrink-0" @click="editAddress(item.id)"></text>
+                            <text class="nc-iconfont nc-icon-xiugaiV6xx mr-[24rpx] shrink-0" @click="editAddress(item.id)"></text>
                         </view>
                     </u-swipe-action-item>
                     <view v-if="!addressList.length" class="pt-[15vh]">
@@ -23,7 +23,7 @@
             </u-swipe-action>
             <u-tabbar :fixed="true" :safeAreaInsetBottom="true" :border="false">
                 <view class="p-[24rpx] pt-0 w-full">
-                    <u-button type="primary" shape="circle" :text="t('addHomeAddress')" @click="addAddress"></u-button>
+                    <button class="bg-[var(--primary-color)] text-[#fff] h-[80rpx] leading-[80rpx] rounded-[100rpx] text-[28rpx]" @click="addAddress">{{t('addHomeAddress')}}</button>
                 </view>
             </u-tabbar>
         </scroll-view>
@@ -32,7 +32,6 @@
 
 <script setup lang="ts">
     import { ref, reactive, computed, watch } from 'vue'
-    import { onLoad } from '@dcloudio/uni-app'
     import { redirect, img, mobileHide } from '@/utils/common'
     import { getAddressList, deleteAddress } from '@/app/api/member'
     import { t } from '@/locale'

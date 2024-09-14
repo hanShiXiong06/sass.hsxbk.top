@@ -8,7 +8,7 @@
 					</view>
 					<text class="mx-[14rpx] text-[#D8D8D8]">|</text> -->
 				<u--input :placeholder="t('searchWayName')" class="text-sm" placeholderClass="text-sm" border="none" v-model="search_name"></u--input>
-				<text class="nc-iconfont nc-icon-sousuoV6xx text-[#666] text-[32rpx]" @click="searchNameFn"></text>
+				<text class="nc-iconfont nc-icon-sousuoV6xx text-[var(--text-color-light6)] text-[32rpx]" @click="searchNameFn"></text>
 			</view>
 
 			<!-- :scroll-top="scrollTop" @scrolltoupper="upper" @scrolltolower="lower" @scroll="scroll" -->
@@ -24,7 +24,7 @@
 		</view>
 
 
-		<mescroll-body ref="mescrollRef" top="114rpx" @init="mescrollInit" @down="downCallback" @up="getWayListFn">
+		<mescroll-body ref="mescrollRef" top="114rpx" @init="mescrollInit" :down="{ use: false }" @up="getWayListFn">
 			<view class="goods-wrap px-[30rpx] mt-3">
 				<view class="goods-item" v-for="(item,index) in list" :key="item.goods.goods_id" @click="toLink(item)">
 					<image :src="img(item.goods.cover_thumb_mid)" mode="aspectFill"></image>

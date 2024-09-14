@@ -47,7 +47,7 @@ class CoreOrderPayService extends BaseCoreService
         if ($order->isEmpty())
             throw new CommonException('O2O_ORDER_NOT_FOUND');//订单不存在
 
-        //todo 状态判断
+        // 状态判断
         if (!in_array($order->order_status, [OrderDict::WAIT_PAY, OrderDict::CLOSE])) throw new CommonException('O2O_ORDER_IS_PAY_FINISH');//订单支付
         $out_trade_no = $data['out_trade_no'] ?? '';
         $is_enable_refund = (new CoreOrderService())->checkOrderIsEnableRefund($order_id, 1);

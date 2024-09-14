@@ -88,8 +88,8 @@
 		}
 	})
 
-	const toLink = (url) => {
-		redirect({ url: url})
+	const toLink = (url: any) => {
+		redirect({ url })
 	}
 </script>
 <style lang="scss" scoped>

@@ -407,7 +407,7 @@ class UpgradeService extends BaseAdminService
         }elseif($version1 > $version2){
             return 1;
         }else{
-            return 0;
+            return -1;
         }
 
     }

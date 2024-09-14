@@ -9,9 +9,9 @@
 		<view class="pt-[88rpx]"></view>
 		<scroll-view scroll-y="true" v-if="!loading">
 			<view class="pt-[var(--top-m)]" v-if="list[tabIndex].length">
-				<view class="flex items-center sidebar-marign mb-[var(--top-m)] card-template" v-for="(item,index) in list[tabIndex]" :key="index">
-					<image class="w-[90rpx] h-[90rpx] mr-[20rpx] rounded-full" v-if="item.headimg" :src="img(item.headimg)" mode="widthFix"></image>
-					<image class="w-[90rpx] h-[90rpx] mr-[20rpx] rounded-full" v-else :src="img('addon/shop_fenxiao/index/head.png')" mode="widthFix"></image>
+				<view class="flex items-center sidebar-margin mb-[var(--top-m)] card-template" v-for="(item,index) in list[tabIndex]" :key="index">
+					<image class="w-[90rpx] h-[90rpx] mr-[20rpx] rounded-full" v-if="item.headimg" :src="img(item.headimg)" mode="aspectFill"></image>
+					<image class="w-[90rpx] h-[90rpx] mr-[20rpx] rounded-full" v-else :src="img('addon/shop_fenxiao/index/head.png')" mode="aspectFill"></image>
 					<view class="flex flex-col">
 						<view class="flex items-center">
 							<view class="mr-[10rpx] flex items-center">

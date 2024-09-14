@@ -6,7 +6,7 @@ return [
         'list' => [
             'O2oGoodsList' => [
                 'title' => '项目列表',
-                'icon' => 'iconfont iconshangpinliebiao',
+                'icon' => 'iconfont iconzuoyoutuwenpc',
                 'path' => 'edit-o2o-goods-list',
                 'support_page' => [],
                 'uses' => 0,
@@ -36,7 +36,7 @@ return [
             ],
             'O2oTechnician' => [
                 'title' => '技师中心',
-                'icon' => 'iconfont iconhuiyuan2',
+                'icon' => 'iconfont iconjishizhongxinpc',
                 'path' => 'edit-o2o-technician',
                 'support_page' => [],
                 'uses' => 0,
@@ -48,7 +48,7 @@ return [
             ],
             'O2oSearch' => [
                 'title' => '搜索',
-                'icon' => 'iconfont iconsousuo',
+                'icon' => 'iconfont iconsousuopc-1',
                 'path' => 'edit-o2o-search',
                 'support_page' => [],
                 'uses' => 1,
@@ -65,7 +65,7 @@ return [
             ],
             'O2oMemberInfo' => [
                 'title' => '会员信息',
-                'icon' => 'iconfont iconhuiyuanzhongxin',
+                'icon' => 'iconfont iconhuiyuanqiandaopc',
                 'path' => 'edit-o2o-member-info',
                 'support_page' => [ 'DIY_O2O_MEMBER_INDEX' ],
                 'uses' => 1,

@@ -79,7 +79,7 @@
             </view>
         </view>
 
-        <u-loading-page bg-color="rgb(248,248,248)" :loading="loading" fontSize="16" color="#333"></u-loading-page>
+		<loading-page :loading="loading"></loading-page>
     </view>
 </template>
 
@@ -90,9 +90,9 @@ import { t } from '@/locale'
 import { img, redirect, copy } from '@/utils/common';
 import { getOrderRefundDetail } from '@/addon/o2o/api/order';
 
-let detail = ref<Object>({});
-let loading = ref<boolean>(true);
-let refundNo = ref('');
+const detail = ref<Object>({});
+const loading = ref<boolean>(true);
+const refundNo = ref('');
 onLoad((option) => {
 	refundNo.value = option.refund_no;
 	refundDetailFn(refundNo.value);

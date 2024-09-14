@@ -1,13 +1,9 @@
 <template>
     <div class="main-container">
-        <div class="detail-head">
-            <div class="left" @click="router.push({ path: '/cms/article/list' })">
-                <span class="iconfont iconxiangzuojiantou !text-xs"></span>
-                <span class="ml-[1px]">{{t('returnToPreviousPage')}}</span>
-            </div>
-            <span class="adorn">|</span>
-            <span class="right">{{ pageName }}</span>
-        </div>
+        <el-card class="card !border-none mb-[15px]" shadow="never">
+            <el-page-header :content="pageName" :icon="ArrowLeft" @back="router.push({ path: '/cms/article/list' })" />
+        </el-card>
+        
         <el-card class="box-card !border-none" shadow="never">
             <el-form :model="formData" label-width="90px" ref="formRef" :rules="formRules" class="page-form" v-loading="loading">
                 <el-form-item :label="t('title')" prop="title">
@@ -171,4 +167,9 @@ const back = () => {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.edui-default .edui-editor {
+    border: none!important;
+    z-index: 1!important;
+}
+</style>

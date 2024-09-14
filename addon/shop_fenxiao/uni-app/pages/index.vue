@@ -33,7 +33,7 @@
                     </view>
                 </view>
 
-                <view class="commission-bg sidebar-marign my-[var(--top-m)] rounded-[var(--rounded-big)] pb-[30rpx]">
+                <view class="commission-bg sidebar-margin my-[var(--top-m)] rounded-[var(--rounded-big)] pb-[30rpx]">
                     <view class="flex justify-between py-[30rpx] px-[24rpx] items-center border-0 border-b-[2rpx] border-[var(--temp-bg)] border-solid">
                         <text class="text-[30rpx] font-500">{{ t('billingInformation') }}</text>
                         <view class="text-[var(--text-color-light6)] text-[26rpx]" @click="cashOutList">
@@ -63,7 +63,7 @@
                 </view>
 
                 <view class="flex">
-                    <view class="flex px-[30rpx] rounded-[var(--rounded-big)] items-center flex-1 sidebar-marign h-[150rpx] team-bg" @click.stop="redirect({ url: '/addon/shop_fenxiao/pages/team' })">
+                    <view class="flex px-[30rpx] rounded-[var(--rounded-big)] items-center flex-1 sidebar-margin h-[150rpx] team-bg" @click.stop="redirect({ url: '/addon/shop_fenxiao/pages/team' })">
                         <image class="w-[80rpx] h-[80rpx] mr-[20rpx]" :src="img('addon/shop_fenxiao/index/team1.png')" mode="widthFix"/>
                         <view class="flex flex-col">
                             <text class="text-[28rpx]">我的团队</text>
@@ -79,7 +79,7 @@
                     </view>
                 </view>
 
-                <view class="commission-bg pb-[35rpx] sidebar-marign my-[var(--top-m)] rounded-[var(--rounded-big)]">
+                <view class="commission-bg pb-[35rpx] sidebar-margin my-[var(--top-m)] rounded-[var(--rounded-big)]">
                     <view class="py-[30rpx] px-[24rpx] border-0 border-b-[2rpx] border-solid border-[#f6f6f6] text-[30rpx] font-500">常用功能</view>
                     <view class="flex flex-wrap common-module pt-[7rpx]">
                         <view class="flex items-center flex-col w-[33.3%] py-[23rpx]" @click="redirect({ url: '/addon/shop_fenxiao/pages/promote' })">

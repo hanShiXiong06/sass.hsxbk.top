@@ -118,7 +118,7 @@ const orderStatusColor = ref({
     finish: '#10c610',
     close: '#fa1414'
 })
-const getOrderStatusFn = async (id: number = 0) => {
+const getOrderStatusFn = async () => {
     const data = await (await getOrderStatus()).data
     orderStatus.value = data
 }

@@ -1,20 +1,13 @@
 <template>
     <div class="main-container">
+        <el-card class="card !border-none mb-[15px] relative" shadow="never">
+            <el-page-header :content="pageName" :icon="ArrowLeft" @back="router.push({ path: '/tourism/product/scenic/scenic' })" />
+            <el-button type="primary" class="w-[100px] absolute right-[20px] top-[15px]" @click="addEvent">
+                {{ t('addTicket') }}
+            </el-button>
+        </el-card>
+        
         <el-card class="box-card !border-none" shadow="never">
-
-            <div class="flex justify-between items-center">
-                <div class="detail-head">
-                    <div class="left" @click="router.push({ path: '/tourism/product/scenic/scenic' })">
-                        <span class="iconfont iconxiangzuojiantou !text-xs"></span>
-                        <span class="ml-[1px]">{{ t('returnToPreviousPage') }}</span>
-                        <span class="adorn">|</span>
-                        <span class="right">{{ pageName }}</span>
-                    </div>
-                </div>
-                <el-button type="primary" class="w-[100px]" @click="addEvent">
-                    {{ t('addTicket') }}
-                </el-button>
-            </div>
             <el-card class="box-card !border-none my-[10px] table-search-wrap" shadow="never">
                 <el-form :inline="true" :model="tourismScenicTable.searchParam" ref="searchFormRef">
                     <el-form-item :label="t('ticketName')" prop="goods_name">

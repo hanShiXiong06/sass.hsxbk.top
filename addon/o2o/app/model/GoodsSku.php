@@ -41,7 +41,7 @@ class GoodsSku extends BaseModel
     public function getSkuImageThumbSmallAttr($value, $data)
     {
         if (isset($data[ 'sku_image' ]) && $data[ 'sku_image' ] != '') {
-            return get_thumb_images($data['site_id'], $data[ 'sku_image' ], FileDict::SMALL);
+            return get_thumb_images($data[ 'site_id' ], $data[ 'sku_image' ], FileDict::SMALL);
         }
         return [];
     }
@@ -52,7 +52,7 @@ class GoodsSku extends BaseModel
     public function getSkuImageThumbMidAttr($value, $data)
     {
         if (isset($data[ 'sku_image' ]) && $data[ 'sku_image' ] != '') {
-            return get_thumb_images($data['site_id'], $data[ 'sku_image' ], FileDict::MID);
+            return get_thumb_images($data[ 'site_id' ], $data[ 'sku_image' ], FileDict::MID);
         }
         return [];
     }
@@ -63,7 +63,7 @@ class GoodsSku extends BaseModel
     public function getSkuImageThumbBigAttr($value, $data)
     {
         if (isset($data[ 'sku_image' ]) && $data[ 'sku_image' ] != '') {
-            return get_thumb_images($data['site_id'], $data[ 'sku_image' ], FileDict::BIG);
+            return get_thumb_images($data[ 'site_id' ], $data[ 'sku_image' ], FileDict::BIG);
         }
         return [];
     }
@@ -87,7 +87,7 @@ class GoodsSku extends BaseModel
      */
     public function searchSkuNameAttr($query, $value, $data)
     {
-        if ($value) {
+        if ($value != '') {
             $query->where("sku_name", "like", "%" . $value . "%");
         }
     }
@@ -99,7 +99,7 @@ class GoodsSku extends BaseModel
      */
     public function searchSkuNoAttr($query, $value, $data)
     {
-        if ($value) {
+        if ($value != '') {
             $query->where("sku_no", "like", "%" . $value . "%");
         }
     }
@@ -174,7 +174,7 @@ class GoodsSku extends BaseModel
         return $this->hasOne(Goods::class, 'goods_id', 'goods_id')
             ->joinType('left')
             ->withField('goods_id, poster_id, member_discount, site_id, goods_name, goods_cover, goods_image, sale_num + virtually_sale as sale_num, status, goods_category,after_sales,buy_type,price_list,goods_content,buy_info')
-            ->append([ 'goods_image_thumb_big','goods_cover_thumb_small', 'goods_cover_thumb_mid', 'goods_cover_thumb_big', 'goods_image_thumb_small', 'goods_image_thumb_mid', 'goods_image_thumb_big' ]);
+            ->append([ 'goods_image_thumb_big', 'goods_cover_thumb_small', 'goods_cover_thumb_mid', 'goods_cover_thumb_big', 'goods_image_thumb_small', 'goods_image_thumb_mid', 'goods_image_thumb_big' ]);
     }
 
     /**

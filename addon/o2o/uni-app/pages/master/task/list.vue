@@ -9,7 +9,7 @@
                 </scroll-view>
             </view>
 
-            <mescroll-body ref="mescrollRef" top="104rpx" @init="mescrollInit" @down="downCallback" @up="getTechnicianOrderListFn">
+            <mescroll-body ref="mescrollRef" top="104rpx" @init="mescrollInit" :down="{ use: false }" @up="getTechnicianOrderListFn">
                 <view class="goods-wrap">
                     <block v-for="(item,index) in list" :key="index">
                         <view class="mb-[30rpx] bg-[#fff] rounded-md">
@@ -58,7 +58,7 @@
                     v-if="!list.length && loading"></mescroll-empty>
             </mescroll-body>
         </view>
-        <u-modal :show="showService"  showCancelButton="true" @cancel="showService = false" @confirm="beginServiceFn"  width="500rpx" >
+        <u-modal :show="showService"  showCancelButton="true" @cancel="showService = false" @confirm="beginServiceFn"  width="500rpx" confirmColor="var(--primary-color)">
             <template #default>
                 <u--form labelPosition="left" class="!w-[100%]" labelWidth="100rpx"  :labelStyle="{fontSize:'24rpx'}">
                     <u-form-item :label="t('checkCode')">
@@ -73,21 +73,21 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { t } from '@/locale'
-import { onLoad } from '@dcloudio/uni-app'
 import { img, redirect } from '@/utils/common';
 import { getTechnicianStatus, getTechnicianOrder, beginService, finishService, TransferOrder } from '@/addon/o2o/api/o2o';
 import { checkTechnician } from '@/addon/o2o/api/technician';
 import MescrollBody from '@/components/mescroll/mescroll-body/mescroll-body.vue';
 import MescrollEmpty from '@/components/mescroll/mescroll-empty/mescroll-empty.vue';
 import useMescroll from '@/components/mescroll/hooks/useMescroll.js';
-import { onPageScroll, onReachBottom } from '@dcloudio/uni-app';
+import { onLoad,onPageScroll, onReachBottom } from '@dcloudio/uni-app';
+import useConfigStore from "@/stores/config";
 
 const { mescrollInit, downCallback, getMescroll } = useMescroll(onPageScroll, onReachBottom);
-let list = ref<Array<Object>>([]);
-let loading = ref<boolean>(false);
-let statusLoading = ref<boolean>(false);
-let orderState = ref('')
-let orderStateList = ref([])
+const list = ref<Array<Object>>([]);
+const loading = ref<boolean>(false);
+const statusLoading = ref<boolean>(false);
+const orderState = ref('')
+const orderStateList = ref([])
 
 onLoad((option) => {
 	orderState.value = option.order_status || ""
@@ -149,8 +149,8 @@ const getTechnicianOrderListFn = (mescroll) => {
 
 
 // 跳转详情页
-const toLink = (id:any) => {
-	redirect({ url: '/addon/o2o/pages/master/task/detail',param:{order_id:id}})
+const toLink = (order_id:any) => {
+	redirect({ url: '/addon/o2o/pages/master/task/detail',param:{ order_id }})
 }
 // 联系
 const callPhoto = (tel) => {
@@ -178,6 +178,7 @@ const transferOrderFn = (val:any) =>{
 	uni.showModal({
 		title: '提示',
 		content: '您确定要转单吗？',
+        confirmColor: useConfigStore().themeColor['--primary-color'],
 		success: res => {
 			if (res.confirm) {
 				TransferOrder({order_id: val.order_id}).then(res =>{

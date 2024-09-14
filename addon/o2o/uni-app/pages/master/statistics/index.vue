@@ -18,7 +18,7 @@
                                 <block v-for="(item,index) in technicianInfo.label" :key="index">
                                     <view class="flex items-center bg-[#fff]  py-[4rpx] pl-[7rpx] pr-[17rpx] rounded-full border-[1rpx] border-solid border-[#E18547] mr-[10px]" >
                                         <image style="width: 16rpx; height: 16rpx;" mode="aspectFill" :src="img('addon/o2o/technician/label.png')"></image>
-                                        <text class="text-[16rpx] text-[#666] leading-[16rpx] ml-[5rpx]">{{ item }}</text>
+                                        <text class="text-[16rpx] text-[var(--text-color-light6)] leading-[16rpx] ml-[5rpx]">{{ item }}</text>
                                     </view>
                                 </block>
                             </view>
@@ -28,7 +28,7 @@
                         <view class="flex items-center justify-between py-[20rpx] pl-[30rpx] pr-[24rpx] flex-1">
                             <view>
                                 <view class="text-[36rpx] font-bold text-[#333] leading-[42rpx]" >{{ technicianStat.status.all.num }}</view>
-                                <view class="m-[6rpx] text-[24rpx] text-[#666] leading-[28rpx]">{{ t('orderNum') }}</view>
+                                <view class="m-[6rpx] text-[24rpx] text-[var(--text-color-light6)] leading-[28rpx]">{{ t('orderNum') }}</view>
                             </view>
                             <image style="width: 84rpx; height: 84rpx;" mode="aspectFill" :src="img('addon/o2o/technician/ordernum.png')"></image>
                         </view>
@@ -36,7 +36,7 @@
                         <view class="flex items-center justify-between py-[20rpx] pl-[30rpx]  pr-[24rpx] flex-1">
                             <view>
                                 <view class="text-[36rpx] font-bold text-[#333] leading-[42rpx]">{{ technicianStat.order }}</view>
-                                <view class="m-[6rpx] text-[24rpx] text-[#666] leading-[28rpx]">{{ t('orderAmount') }}</view>
+                                <view class="m-[6rpx] text-[24rpx] text-[var(--text-color-light6)] leading-[28rpx]">{{ t('orderAmount') }}</view>
                             </view>
                             <image style="width: 84rpx; height: 84rpx;" mode="aspectFill" :src="img('addon/o2o/technician/ordermoney.png')"></image>
                         </view>
@@ -46,7 +46,7 @@
                     <view class="flex items-center justify-between mb-[30rpx]">
                         <text class="text-[32rpx] font-bold text-[#333] leading-[38rpx]">{{ t('orderManagement') }}</text>
                         <view class="flex items-center" @click="redirect({url:'/addon/o2o/pages/master/task/list'})">
-                            <text class="text-[#999] text-[24rpx]">{{ t('viewMore') }}</text>
+                            <text class="text-[var(--text-color-light9)] text-[24rpx]">{{ t('viewMore') }}</text>
                             <u-icon name="arrow-right" color="#999" size="24rpx"></u-icon>
                         </view>
                     </view>
@@ -84,7 +84,7 @@
             </view>
         </scroll-view>
         
-        <u-loading-page bg-color="rgb(248,248,248)" :loading="loading" fontSize="16" color="#333" :loadingText="t('loadingText')"></u-loading-page>
+		<loading-page :loading="loading"></loading-page>
     </view>
 </template>
 
@@ -137,8 +137,8 @@ const checkTechnicianFn = () =>{
 }
 checkTechnicianFn()
 // 跳转商品详情
-const toLink = (id) => {
-	redirect({url:'/addon/o2o/pages/goods/detail',param:{goods_id:id}})
+const toLink = (goods_id: any) => {
+	redirect({url:'/addon/o2o/pages/goods/detail',param:{ goods_id }})
 }
 </script>
 

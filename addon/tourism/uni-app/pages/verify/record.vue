@@ -1,6 +1,6 @@
 <template>
     <view class="bg-[#f8f8f8] min-h-screen overflow-hidden" :style="themeColor()">
-        <mescroll-body ref="mescrollRef" top="20rpx" @init="mescrollInit" @down="downCallback" @up="geVerifyRecordFn">
+        <mescroll-body ref="mescrollRef" top="20rpx" @init="mescrollInit" :down="{ use: false }" @up="geVerifyRecordFn">
         	<view class="goods-wrap">
         		<block v-for="(item,index) in list"	:key="item.order_id">
         			<view class="goods-item" v-if="item.order_type == 'hotel'" @click="toLink(item)">
@@ -56,7 +56,6 @@
 
 <script setup lang="ts">
     import { ref, reactive, computed } from 'vue'
-    import { onLoad } from '@dcloudio/uni-app'
     import MescrollBody from '@/components/mescroll/mescroll-body/mescroll-body.vue'
     import MescrollEmpty from '@/components/mescroll/mescroll-empty/mescroll-empty.vue'
     import useMescroll from '@/components/mescroll/hooks/useMescroll.js'

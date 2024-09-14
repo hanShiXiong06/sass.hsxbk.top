@@ -1,14 +1,9 @@
 <template>
     <div class="main-container">
-        <div class="detail-head">
-            <div class="left" @click="back()">
-                <span class="iconfont iconxiangzuojiantou !text-xs"></span>
-                <span class="ml-[1px]">{{t('returnToPreviousPage')}}</span>
-            </div>
-            <span class="adorn">|</span>
-            <span class="right" v-if="id">{{ t('editGoods') }}</span>
-			<span class="right" v-else>{{ t('addGoods') }}</span>
-        </div>
+        <el-card class="card !border-none mb-[15px]" shadow="never">
+            <el-page-header :content="id ? t('editGoods') : t('addGoods')" :icon="ArrowLeft" @back="back" />
+        </el-card>
+        
         <el-card class="box-card !border-none" shadow="never">
             <el-tabs v-model="activeName">
                 <el-tab-pane :label="t('basicInfoTab')" name="basic">

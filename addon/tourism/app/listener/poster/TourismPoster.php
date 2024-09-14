@@ -41,7 +41,7 @@ class TourismPoster
                     ];
                     $return_data = [
                         'nickname' => '会员昵称',
-                        'headimg' => 'static/resource/images/default_headimg.jpg',
+                        'headimg' => 'static/resource/images/default_headimg.png',
                         'goods_name' => '酒店名称',
                         'price' => '￥369.00',
                         'goods_cover' => 'addon/tourism/goods_template.png',
@@ -82,7 +82,7 @@ class TourismPoster
 
                     if (!empty($member_info)) {
                         if (empty($member_info[ 'headimg' ]) || !is_file($member_info[ 'headimg' ])) {
-                            $member_info[ 'headimg' ] = 'static/resource/images/default_headimg.jpg';
+                            $member_info[ 'headimg' ] = 'static/resource/images/default_headimg.png';
                         }
                     }
                 }
@@ -123,7 +123,7 @@ class TourismPoster
                     ];
                     $return_data = [
                         'nickname' => '会员昵称',
-                        'headimg' => 'static/resource/images/default_headimg.jpg',
+                        'headimg' => 'static/resource/images/default_headimg.png',
                         'goods_name' => '景点名称',
                         'price' => '￥369.00',
                         'goods_cover' => 'addon/tourism/goods_template.png',
@@ -164,7 +164,7 @@ class TourismPoster
 
                     if (!empty($member_info)) {
                         if (empty($member_info[ 'headimg' ]) || !is_file($member_info[ 'headimg' ])) {
-                            $member_info[ 'headimg' ] = 'static/resource/images/default_headimg.jpg';
+                            $member_info[ 'headimg' ] = 'static/resource/images/default_headimg.png';
                         }
                     }
                 }
@@ -206,7 +206,7 @@ class TourismPoster
                     ];
                     $return_data = [
                         'nickname' => '会员昵称',
-                        'headimg' => 'static/resource/images/default_headimg.jpg',
+                        'headimg' => 'static/resource/images/default_headimg.png',
                         'goods_name' => '线路名称',
                         'price' => '￥369.00',
                         'goods_cover' => 'addon/tourism/goods_template.png',
@@ -243,7 +243,7 @@ class TourismPoster
 
                     if (!empty($member_info)) {
                         if (empty($member_info[ 'headimg' ]) || !is_file($member_info[ 'headimg' ])) {
-                            $member_info[ 'headimg' ] = 'static/resource/images/default_headimg.jpg';
+                            $member_info[ 'headimg' ] = 'static/resource/images/default_headimg.png';
                         }
                     }
                 }

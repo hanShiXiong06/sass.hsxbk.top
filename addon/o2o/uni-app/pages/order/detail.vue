@@ -4,7 +4,7 @@
             <view v-if="detail" class="bg-[#f7f7f7] min-h-screen overflow-hidden">
                 <view class="bg-linear h-[480rpx] text-white px-3 pt-5">
                     <view class="text-[42rpx] flex items-baseline text-[#fff]">
-                        <text class="nc-iconfont nc-icon-shijianV6xx text-[42rpx] mr-1"></text>
+                        <text class="nc-iconfont nc-icon-a-shijianV6xx-36 text-[42rpx] mr-1"></text>
                         <text class="font-bold">{{t('order')}}{{detail?.order_status_info?.name}}</text>
                     </view>
                 </view>
@@ -78,18 +78,18 @@
                         <view v-if="detail.technician_id"
                             class="flex justify-between text-[28rpx] border-top-[2rpx] border-[solid] border-[#f1f1f1]">
                             <view>{{ t('servicePersonal') }}</view>
-                            <view class="text-[#999]"  @click="redirect({url:'/addon/o2o/pages/technician/detail',param:{id:detail.technician_id}})">{{ detail.technician_id ? detail.technician_info.name : t('orderToBeSent') }}</view>
+                            <view class="text-[var(--text-color-light9)]"  @click="redirect({url:'/addon/o2o/pages/technician/detail',param:{id:detail.technician_id}})">{{ detail.technician_id ? detail.technician_info.name : t('orderToBeSent') }}</view>
                         </view>
                         <view v-if="detail.technician_id"
                             class="flex justify-between text-[28rpx] border-top-[2rpx] border-[solid] border-[#f1f1f1] mt-[30rpx]">
                             <view>{{ t('contactNumber') }}</view>
-                            <view class="text-[#999]" @click="callPhoto(detail.technician_info.mobile)">{{ detail.technician_info.mobile }}</view>
+                            <view class="text-[var(--text-color-light9)]" @click="callPhoto(detail.technician_info.mobile)">{{ detail.technician_info.mobile }}</view>
                         </view>
                         <view class="flex justify-between text-[28rpx] mt-[30rpx]">
                             <text>{{ t('serviceCode') }}</text>
-                            <text class="text-[#999]">{{ detail.check_code }}</text>
+                            <text class="text-[var(--text-color-light9)]">{{ detail.check_code }}</text>
                         </view>
-                        <view class="text-[20rpx] mt-[20rpx] text-[#999]">{{ t('explain') }}</view>
+                        <view class="text-[20rpx] mt-[20rpx] text-[var(--text-color-light9)]">{{ t('explain') }}</view>
                     </view>
                     <view class="bg-[#fff] mx-[30rpx] p-[30rpx] mt-[30rpx] rounded-[10rpx]">
                         <view
@@ -164,7 +164,7 @@
             </view>
         </block>
         <pay ref="payRef"></pay>
-        <u-loading-page :loading="loading" loading-text="" bg-color="none" loadingColor="var(--primary-color)" iconSize="35"></u-loading-page>
+		<loading-page :loading="loading"></loading-page>
     </view>
 </template>
 
@@ -175,12 +175,13 @@
     import { getOrderDetail, cancelOrder, deleteOrder } from '@/addon/o2o/api/order'
     import { t } from '@/locale'
     import { useSubscribeMessage } from '@/hooks/useSubscribeMessage'
+    import useConfigStore from "@/stores/config";
     
     let orderId = 0
     const detail = ref<AnyObject | null>(null)
     const loading = ref(false)
 
-    onLoad((option) => {
+    onLoad((option: any) => {
     	orderId = option.order_id || 0
     	getOrderDetailFu()
     });
@@ -231,6 +232,7 @@ const cancel = (item: any) => {
 	uni.showModal({
 		title: '提示',
 		content: '您确定要取消该订单吗？',
+        confirmColor: useConfigStore().themeColor['--primary-color'],
 		success: res => {
 			if (res.confirm) {
 				cancelOrder(item.order_id).then((res) => {
@@ -245,6 +247,7 @@ const deleteFn = (data: any) =>{
     uni.showModal({
 		title: '提示',
 		content: '您确定要删除该订单吗？',
+        confirmColor: useConfigStore().themeColor['--primary-color'],
 		success: res => {
 			if (res.confirm) {
 				deleteOrder(data.order_id).then((res) => {
@@ -295,7 +298,7 @@ function dataTurnTime(timeStamp) {
 	}
 }
 // 判断当前步骤条的状态
-let current = ref(0)
+    const current = ref(0)
 function getStatus(){
 	if(detail.value.order_status_info.status == 'dispatch'){
 		return current.value = 0
@@ -309,7 +312,7 @@ function getStatus(){
 }
 
 // 跳转项目详情
-const toLink = (data)=>{
+const toLink = (data: any)=>{
     if(data.item_type == 'reservation'|| data.item_type == 'buy'){
         redirect({
 			url: `/addon/o2o/pages/goods/detail`,

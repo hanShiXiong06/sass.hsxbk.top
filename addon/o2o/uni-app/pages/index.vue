@@ -1,7 +1,6 @@
 <template>
 	<view :style="themeColor()">
-
-		<u-loading-page :loading="diy.getLoading()" loadingText="" bg-color="#f7f7f7" />
+		<loading-page :loading="diy.getLoading()"></loading-page>
 
 		<view v-show="!diy.getLoading()">
 
@@ -23,17 +22,17 @@
 
 		<!-- #ifdef MP-WEIXIN -->
 		<!-- 小程序隐私协议 -->
-		<wx-privacy-popup ref="wxPrivacyPopup"></wx-privacy-popup>
+		<wx-privacy-popup ref="wxPrivacyPopupRef"></wx-privacy-popup>
 		<!-- #endif -->
 
 	</view>
 </template>
 
 <script setup lang="ts">
-    import {ref} from 'vue';
+    import { ref,nextTick } from 'vue';
     import {useDiy} from '@/hooks/useDiy'
     import diyGroup from '@/addon/components/diy/group/index.vue'
-    import fixedGroup from '@/addon/components/fixed/group/index.vue'
+    import fixedGroup from '@/addon/components/fixed/group/index.vue' 
 
     const diy = useDiy({
         name: 'DIY_O2O_INDEX'
@@ -41,13 +40,26 @@
 
     const diyGroupRef = ref(null)
 
+    const wxPrivacyPopupRef:any = ref(null)
+
     // 监听页面加载
     diy.onLoad();
 
     // 监听页面显示
     diy.onShow((data: any) => {
         diyGroupRef.value?.refresh();
+	    // #ifdef MP
+	    nextTick(()=>{
+		    if(wxPrivacyPopupRef.value) wxPrivacyPopupRef.value.proactive();
+	    })
+	    // #endif
     });
+
+    // 监听页面隐藏
+    diy.onHide();
+	
+	// 监听页面卸载
+	diy.onUnload();
 
     // 监听下拉刷新事件
     diy.onPullDownRefresh()

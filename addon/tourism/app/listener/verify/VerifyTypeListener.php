@@ -11,9 +11,6 @@
 
 namespace addon\tourism\app\listener\verify;
 
-use app\service\core\addon\CoreAddonService;
-use app\service\core\site\CoreSiteService;
-
 /**
  * 核销类型注册
  */

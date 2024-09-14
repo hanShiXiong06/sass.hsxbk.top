@@ -134,7 +134,7 @@ class CoreOrderCreateService extends BaseCoreService
         $order_money = $this->moneyFormat($goods_money - $discount_money);
         $this->basic['discount_money'] = $discount_money;
         $this->basic['goods_money'] = $goods_money;
-        //todo 校验控制,不能小于0
+        // 校验控制,不能小于0
         $order_money = $order_money < 0 ? 0 : $order_money;
         $this->basic['order_money'] = $order_money;
         $this->basic['pay_money'] = $order_money;
@@ -204,7 +204,7 @@ class CoreOrderCreateService extends BaseCoreService
         //默认金额填充
         $sku_info['discount_money'] = 0;
         $sku_info['num'] = $num;
-        $sku_info['price'] = $this->getMemberPrice($sku_info);;
+        $sku_info['price'] = $this->getMemberPrice($sku_info);
 
         $price = $sku_info['price'];
         $sku_info['goods_money'] = $price * $num;//小计

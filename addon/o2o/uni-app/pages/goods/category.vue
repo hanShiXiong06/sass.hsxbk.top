@@ -1,7 +1,7 @@
 <template>
 	<view class="min-h-screen  category" :style="themeColor()">
 		<view class="mescroll-box bg-[#f8f8f8]" v-if="tabsData.length">
-			<mescroll-body ref="mescrollRef" :top="tabsData[tabActive]?.children ? '187rpx' :'105rpx'" :down="{ use: false }"  @init="mescrollInit" @down="downCallback" @up="getListFn">
+			<mescroll-body ref="mescrollRef" :top="tabsData[tabActive]?.children ? '187rpx' :'105rpx'" :down="{ use: false }"  @init="mescrollInit" @up="getListFn">
 				<!-- 头部搜索 -->
 				<view class="search-box z-10 bg-[#fff] fixed top-0 left-0 right-0">
 					<input class="search-ipt text-sm" type="text" v-model="searchName" :placeholder="t('searchKeywordPlaceholder')">
@@ -12,7 +12,7 @@
 				<!-- 左侧切换 -->
 				<view class="tabs-box z-10 fixed left-0 bg-[#fff] bottom-[100rpx] top-[105rpx] pb-ios ">
 					<scroll-view :scroll-y="true" class="h-[100%]">
-						<view class="tab-item" :class="{'tab-item-active': index == tabActive }" v-for="(item,index) in tabsData" :key="item.site_id" @click="firstLevelClick(index, item)">
+						<view class="tab-item" :class="{'tab-item-active': index == tabActive }" v-for="(item,index) in tabsData" :key="index" @click="firstLevelClick(index, item)">
 							<view class="text-box">
 								{{item.category_name}}
 							</view>
@@ -78,32 +78,29 @@
 					</view>
 			</mescroll-body>
 		</view>
-		<view class="flex justify-center w-[100%]" v-if="!tabsData.length && !loading">
-			<mescroll-empty :option="{ 'icon': img('static/resource/images/empty.png'),'tip':t('nothingMore')  }"></mescroll-empty>
-		</view>
-		<u-loading-page bg-color="rgb(248,248,248)" :loading="loading" loading-text="加载中..." fontSize="14" color="#333"></u-loading-page>
+        <mescroll-empty  v-if="!tabsData.length && !loading" :option="{ 'icon': img('static/resource/images/empty.png'),'tip':t('nothingMore')  }"></mescroll-empty>
+		<loading-page :loading="loading"></loading-page>
 		<tabbar />
 	</view>
 </template>
 
 <script setup lang="ts">
 	import { ref, } from 'vue';
-	import { onLoad } from '@dcloudio/uni-app';
 	import { img, redirect, getToken } from '@/utils/common';
 	import { getGoodsList, getCategory } from '@/addon/o2o/api/goods';
 	import MescrollBody from '@/components/mescroll/mescroll-body/mescroll-body.vue';
 	import MescrollEmpty from '@/components/mescroll/mescroll-empty/mescroll-empty.vue';
 	import useMescroll from '@/components/mescroll/hooks/useMescroll.js';
 	import { t } from '@/locale';
-	import { onPageScroll, onReachBottom } from '@dcloudio/uni-app';
+	import { onLoad,onPageScroll, onReachBottom } from '@dcloudio/uni-app';
 
 	const { mescrollInit, downCallback, getMescroll } = useMescroll(onPageScroll, onReachBottom);
-	let list = ref<Array<Object>>([]);
-	let searchName = ref("");
-	let category_id = ref("");
-	let loading = ref<boolean>(true);//页面加载动画
-	let listLoading = ref<boolean>(false);//列表加载动画
-	let labelPopup = ref<boolean>(false)
+	const list = ref<Array<Object>>([]);
+	const searchName = ref("");
+	const category_id = ref("");
+	const loading = ref<boolean>(true);//页面加载动画
+	const listLoading = ref<boolean>(false);//列表加载动画
+	const labelPopup = ref<boolean>(false)
 	interface acceptingDataStructure {
 		data : acceptingDataItemStructure,
 		msg : string,

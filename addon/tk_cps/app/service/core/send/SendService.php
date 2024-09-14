@@ -103,7 +103,7 @@ class SendService extends BaseApiService
     public static function sendPoint(int $site_id, int $member_id, string $key, array $param = [])
     {
         $config = (new CoreMemberConfigService())->getPointRuleConfig($site_id)['grant'] ?? [];
-        if (!isset($config[$key]) || !$config[$key]['is_use']) return true;
+        if (!isset($config[$key]) || empty($config[$key]) || (isset($config[$key]['is_use'])&&!$config[$key]['is_use'])) return true;
 
         $config = $config[$key];
 
@@ -141,7 +141,7 @@ class SendService extends BaseApiService
     public static function sendGrowth(int $site_id, int $member_id, string $key, array $param = [])
     {
         $config = (new CoreMemberConfigService())->getGrowthRuleConfig($site_id);
-        if (!isset($config[$key]) || !$config[$key]['is_use']) return true;
+        if (!isset($config[$key]) || empty($config[$key]) || (isset($config[$key]['is_use'])&&!$config[$key]['is_use'])) return true;
 
         $config = $config[$key];
 

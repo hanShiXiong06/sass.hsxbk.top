@@ -2,7 +2,7 @@
 	<view class="bg-[#f8f8f8] min-h-screen overflow-hidden" :style="themeColor()">
 		<view class="bg-linear h-[480rpx] text-white px-4 pt-5">
 			<view class="text-[42rpx] flex items-baseline">
-				<text class="nc-iconfont nc-icon-shijianV6xx text-[42rpx] mr-1"></text>
+				<text class="nc-iconfont nc-icon-a-shijianV6xx-36 text-[42rpx] mr-1"></text>
 				<text class="font-bold">订单待使用</text>
 			</view>
 			<view class="text-xs mt-3">您的订单已生成，请尽快使用！</view>
@@ -27,7 +27,7 @@
 				<view class="flex flex-col items-center pb-4">
 					<image class="w-[326rpx] h-[326rpx] mt-4 mb-4" :src="img('addon/tourism/tourism/index/goods_04.png')"></image>
 					<image class="w-[524rpx] h-[128rpx] mb-3" :src="img('addon/tourism/tourism/index/goods_04.png')"></image>
-					<view class="text-[#666] text-xs">未消费前请不要将券码提供给商家</view>
+					<view class="text-[var(--text-color-light6)] text-xs">未消费前请不要将券码提供给商家</view>
 				</view>
 			</view>
 			<view>

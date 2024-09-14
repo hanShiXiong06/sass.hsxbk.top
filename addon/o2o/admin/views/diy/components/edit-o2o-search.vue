@@ -5,11 +5,11 @@
 			<h3 class="mb-[10px]">{{ t('selectStyle') }}</h3>
 			<div class="flex items-center mb-[18px] rounded overflow-hidden">
 		        <span
-				        class="o2o o2o-icon-sousuo11 border-[1px] border-solid border-[#eee] cursor-pointer flex-1 flex items-center justify-center py-[5px]"
+				        class="iconfont iconsousuopc1 border-[1px] border-solid border-[#eee] cursor-pointer flex-1 flex items-center justify-center py-[5px]"
 				        :class="{ 'border-[var(--el-color-primary)] text-[var(--el-color-primary)]': diyStore.editComponent.style == 'style1' }"
 				        @click="diyStore.editComponent.style = 'style1'"></span>
 				<span
-						class="o2o o2o-icon-sousuo12 border-[1px] border-solid border-[#eee] cursor-pointer flex-1 flex items-center justify-center py-[5px]"
+						class="iconfont iconsousuokuangpc border-[1px] border-solid border-[#eee] cursor-pointer flex-1 flex items-center justify-center py-[5px]"
 						:class="{ 'border-[var(--el-color-primary)] text-[var(--el-color-primary)]': diyStore.editComponent.style == 'style2' }"
 						@click="diyStore.editComponent.style = 'style2'"></span>
 			</div>

@@ -4,8 +4,8 @@
             <view class="bg-linear h-[480rpx] pt-3">
                 <view class="bg-[#fff] rounded-lg  mx-3  p-3 flex items-center">
                     <view class="w-[80rpx] h-[80rpx]">
-                        <u-avatar :src="img(technicianDetail.headimg)" shape="circle" v-if="technicianDetail.headimg"  class="w-[80rpx] h-[80rpx]"></u-avatar>
-                        <u-avatar src="" shape="circle" v-else  class="w-[80rpx] h-[80rpx]"></u-avatar>
+                        <u-avatar :src="img(technicianDetail.headimg)" shape="circle" v-if="technicianDetail.headimg"  :default-url="img('static/resource/images/default_headimg.png')" class="w-[80rpx] h-[80rpx]" />
+                        <u-avatar :src="img('static/resource/images/default_headimg.png')" shape="circle" v-else  class="w-[80rpx] h-[80rpx]" />
                     </view>
                     <view class="flex-1 ml-2">
                         <view>
@@ -21,19 +21,19 @@
                     <u-row justify="space-between">
                         <u-col span="3">
                             <view class="text-[28rpx] text-center">{{ technicianDetail.order_num }}</view>
-                            <view class="text-[24rpx] text-center text-[#999] mt-[10rpx]">{{ t('orderNum') }}</view>
+                            <view class="text-[24rpx] text-center text-[var(--text-color-light9)] mt-[10rpx]">{{ t('orderNum') }}</view>
                         </u-col>
                         <u-col span="3">
                             <view class="text-[28rpx] text-center">{{ technicianDetail.working_age }}{{ t('year') }}</view>
-                            <view class="text-[24rpx] text-center text-[#999] mt-[10rpx]">{{ t('workingAge') }}</view>
+                            <view class="text-[24rpx] text-center text-[var(--text-color-light9)] mt-[10rpx]">{{ t('workingAge') }}</view>
                         </u-col>
                         <u-col span="3">
                             <view class="text-[28rpx] text-center">{{ technicianDetail.age}}{{ t('annum') }}</view>
-                            <view class="text-[24rpx] text-center text-[#999] mt-[10rpx]">{{ t('age') }}</view>
+                            <view class="text-[24rpx] text-center text-[var(--text-color-light9)] mt-[10rpx]">{{ t('age') }}</view>
                         </u-col>
                         <u-col span="3">
                             <view class="text-[28rpx] text-center">{{technicianDetail.position_name ? technicianDetail.position_name : '无'  }}</view>
-                            <view class="text-[24rpx] text-center text-[#999] mt-[10rpx]">{{ t('position') }}</view>
+                            <view class="text-[24rpx] text-center text-[var(--text-color-light9)] mt-[10rpx]">{{ t('position') }}</view>
                         </u-col>
                     </u-row>
                 </view>
@@ -72,7 +72,7 @@
                 </block>
             </view>
         </view>
-        <u-loading-page bg-color="rgb(248,248,248)" :loading="loading" fontSize="16" color="#333"></u-loading-page>
+		<loading-page :loading="loading"></loading-page>
     </view>
 </template>
 
@@ -83,8 +83,8 @@ import { img, redirect, getToken } from '@/utils/common';
 import { getTechnicianDetail } from '@/addon/o2o/api/technician'
 import { onLoad, onShow } from '@dcloudio/uni-app'
 
-let loading = ref<boolean>(true);
-let technicianDetail = ref({})
+const loading = ref<boolean>(true);
+const technicianDetail = ref({})
 let id = 0
 onLoad((option: any) => {
 	id = option.id || 0
@@ -107,12 +107,12 @@ const callPhoto = (tel) => {
 	});
 }
 // 跳转商品详情
-const toLink = (id) => {
-	redirect({url:'/addon/o2o/pages/goods/detail',param:{goods_id:id}})
+const toLink = (goods_id: any) => {
+	redirect({url:'/addon/o2o/pages/goods/detail',param:{ goods_id }})
 }
 
 // 价格类型
-let priceType = (data:any) =>{
+const priceType = (data:any) =>{
 	let type = "";
 	if(data.member_discount && getToken()){
 		type = 'member_price' // 会员价
@@ -122,7 +122,7 @@ let priceType = (data:any) =>{
 	return type;
 }
 // 商品价格
-let goodsPrice = (data:any) =>{
+const goodsPrice = (data:any) =>{
 	let price = "0.00";
 	if(data.member_discount && getToken()){
 		price = data.goodsSku.member_price // 会员价

@@ -40,7 +40,7 @@
 				</block>
 			</view>
 			<view class="pt-1 w-screen justify-center flex items-center" @click="toLinkList()">
-				<text class="text-xs mr-1 text-[#666]">{{t('seeMore')}}</text>
+				<text class="text-xs mr-1 text-[var(--text-color-light6)]">{{t('seeMore')}}</text>
 				<u-icon name="arrow-right" color="#666" size="14"></u-icon>
 			</view>
 		</view>
@@ -111,8 +111,8 @@
         redirect({url: '/addon/tourism/pages/scenic/list'})
     }
 
-    let list = ref([]);
-    let loading = ref(false);
+    const list = ref([]);
+    const loading = ref(false);
     const getScenicRecommendFn = () => {
         let data: object = {
 			goods_ids: diyComponent.value.source == 'custom' ? diyComponent.value.scenic_id : '',
@@ -247,7 +247,7 @@
 			}
 
 			.desc {
-				@apply text-[#999] text-xs pt-1 pb-4 px-2;
+				@apply text-[var(--text-color-light9)] text-xs pt-1 pb-4 px-2;
 			}
 		}
 	}

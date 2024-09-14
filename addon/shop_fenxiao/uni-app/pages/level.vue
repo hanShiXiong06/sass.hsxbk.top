@@ -13,7 +13,7 @@
 					<text class="ml-[20rpx] text-[30rpx] truncate w-[300rpx] text-[#333] font-500">{{detail.member.nickname}}</text>
 				</view>
 				
-				<view class="relative level-content sidebar-marign">
+				<view class="relative level-content sidebar-margin">
 					<view class="flex items-center ml-[10rpx]">
 						<view class="flex items-baseline mr-[10rpx]">
 							<image class="w-[30rpx] h-[24rpx]" :src="img('addon/shop_fenxiao/level/level_key.png')" mode="widthFix"/>
@@ -68,7 +68,7 @@
 					</scroll-view>
 				</view>
 			</view>
-			<view class="mt-[60rpx] flex flex-col items-center sidebar-marign pb-[30rpx]">
+			<view class="mt-[60rpx] flex flex-col items-center sidebar-margin pb-[30rpx]">
 				<view class="flex items-center mb-[30rpx]" v-if="goodsList && Object.keys(goodsList).length">
 					<image class="w-[38rpx] h-[22rpx]" :src="img('addon/shop_fenxiao/level/title_left.png')" mode="aspectFill"></image>
 					<text class="text-[30rpx] mx-[18rpx] font-500 text-[#EF000C]">猜你喜欢</text>

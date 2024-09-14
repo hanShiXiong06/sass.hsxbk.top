@@ -2,9 +2,10 @@
   "title": "123云盘存储",
   "desc": "123云盘存储空间",
   "key": "tk_pan",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "author": "TK",
   "type": "addon",
   "support_app": "",
+  "support_version":"0.5.2",
   "compile":[]
 }

@@ -22,10 +22,11 @@ return [
                     "topStatusBar" => [
                         'isShow' => true,
                         'bgColor' => "#ffffff",
-                        'isTransparent' => false,
+                        'rollBgColor' => "#ffffff",
                         'style' => 'style-1',
                         'styleName' => '风格1',
                         'textColor' => "#333333",
+                        'rollTextColor' => "#333333",
                         'textAlign' => 'center',
                         'inputPlaceholder' => '请输入搜索关键词',
                         'imgUrl' => '',
@@ -350,10 +351,11 @@ return [
                     "topStatusBar" => [
                         'isShow' => true,
                         'bgColor' => "#ffffff",
-                        'isTransparent' => false,
+                        'rollBgColor' => "#ffffff",
                         'style' => 'style-1',
                         'styleName' => '风格1',
                         'textColor' => "#333333",
+                        'rollTextColor' => "#333333",
                         'textAlign' => 'center',
                         'inputPlaceholder' => '请输入搜索关键词',
                         'imgUrl' => '',
@@ -789,7 +791,11 @@ return [
                             [
                                 "title" => "联系客服",
                                 "link" => [
-                                    "name" => ""
+                                    "name" => "MEMBER_CONTACT",
+                                    "parent" => "MEMBER_LINK",
+                                    "title" => "客服",
+                                    "url" => "/app/pages/member/contact",
+                                    "action" => ""
                                 ],
                                 "imageUrl" => "static/resource/images/diy/vert_m_service.png",
                                 "label" => [

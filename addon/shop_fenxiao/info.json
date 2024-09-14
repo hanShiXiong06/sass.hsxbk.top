@@ -2,9 +2,10 @@
   "title": "分销",
   "desc": "商城分销插件",
   "key": "shop_fenxiao",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "author": "niucloud",
   "type": "addon",
   "support_app": "shop",
-  "compile":[]
+  "compile":[],
+  "support_version": "0.5.2"
 }

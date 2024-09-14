@@ -3,11 +3,11 @@
         <view class="fixed left-0 top-0 right-0 z-10">
     		<scroll-view scroll-x="true" class="scroll-Y box-border px-[24rpx] bg-white">
     			<view class="flex whitespace-nowrap justify-around">
-    				<view :class="['text-sm leading-[90rpx]',{'class-select': refundState === item.status}]" @click="refundStateFn(item.status)" v-for="(item,index) in refundtateList">{{item.name}}</view>
+    				<view :class="['text-sm leading-[90rpx]',{'class-select': refundState === item.status}]" @click="refundStateFn(item.status)" v-for="(item,index) in refundStateList">{{item.name}}</view>
     			</view>
     		</scroll-view>
     	</view>
-		<mescroll-body ref="mescrollRef" top="114rpx" @init="mescrollInit" @down="downCallback" @up="getRefundListFn">
+		<mescroll-body ref="mescrollRef" top="114rpx" @init="mescrollInit" :down="{ use: false }" @up="getRefundListFn">
 			<view class="goods-wrap mx-[24rpx]">
 				<view class="mb-[30rpx] bg-[#fff] p-[24rpx] rounded" v-for="(item,index) in list" :key="index">
 					<view @click="toLink(item)">
@@ -50,7 +50,7 @@
 			</view>
 			<mescroll-empty :option="{'icon': img('static/resource/images/empty.png'),'tip': t('nothingMore')}" v-if="!list.length && loading"></mescroll-empty>
 		</mescroll-body>
-		<u-modal :show="cancelRefundshow" :content="t('cancelRefundContent')" :showCancelButton="true" :closeOnClickOverlay="true" @cancel="refundCancel" @confirm="refundConfirm"></u-modal>
+		<u-modal :show="cancelRefundshow" confirmColor="var(--primary-color)" :content="t('cancelRefundContent')" :showCancelButton="true" :closeOnClickOverlay="true" @cancel="refundCancel" @confirm="refundConfirm"></u-modal>
 	</view>
 </template>
 
@@ -65,24 +65,24 @@
 	import { onLoad, onPageScroll, onReachBottom } from '@dcloudio/uni-app';
 
 	const { mescrollInit, downCallback, getMescroll } = useMescroll(onPageScroll, onReachBottom);
-	let list = ref<Array<Object>>([]);
-	let loading = ref<boolean>(false);
-	let cancelRefundshow = ref(false);
+	const list = ref<Array<Object>>([]);
+	const loading = ref<boolean>(false);
+	const cancelRefundshow = ref(false);
     onLoad((option) => {
     	refundState.value = option.status || "";
     	getRefundStatusFn();
     });
     // 获取订单状态
     const refundState = ref('')
-    const refundtateList = ref([]);
+    const refundStateList = ref([]);
     const getRefundStatusFn = () => {
-    	refundtateList.value = [];
+    	refundStateList.value = [];
     	let obj = {name: '全部',status: ''};
-    	refundtateList.value.push(obj);
+    	refundStateList.value.push(obj);
     	getRefundStatus().then((res) => {
     		Object.values(res.data).forEach((item,index)=>{
 				if(item.status != 'cancel'){
-					refundtateList.value.push(item)
+					refundStateList.value.push(item)
 				}
     		});
     	}).catch(() => {

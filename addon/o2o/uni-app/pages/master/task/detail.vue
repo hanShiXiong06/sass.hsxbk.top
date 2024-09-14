@@ -25,7 +25,7 @@
                 </u-steps>
             </view>
             <view class="bg-white py-4 px-3 rounded-md box-border mx-3 mt-[20rpx]">
-                    <view class="flex justify-between items-center pb-3 border-0 border-b-1 border-solid border-[#F0F0F0] mb-3 text-[26rpx] text-[#666]">
+                    <view class="flex justify-between items-center pb-3 border-0 border-b-1 border-solid border-[#F0F0F0] mb-3 text-[26rpx] text-[var(--text-color-light6)]">
                         <text>{{t('serviceDate')}}{{ detail.reserve_service_time }}</text>
                         <text class="text-[var(--primary-color)]">{{ detail.order_status_info.name }}</text>
                     </view>
@@ -61,7 +61,7 @@
                     </block>
             </view>
             <view class="bg-white py-4 px-3 rounded-md box-border mx-3 mt-[20rpx]" v-if="detail.item.length > 1">
-                <view class="pb-3 border-0 border-b-1 border-solid border-[#F0F0F0] mb-3 text-[26rpx] text-[#666]">
+                <view class="pb-3 border-0 border-b-1 border-solid border-[#F0F0F0] mb-3 text-[26rpx] text-[var(--text-color-light6)]">
                     <text>{{ t('addServiceItem') }}</text>
                 </view>
                 <block v-for="(subItem, subIndex) in detail.item" :key="subIndex">
@@ -147,7 +147,7 @@
                 <text class="text-[22rpx] mt-[6rpx]">{{ t('refresh') }}</text>
             </view>
         </view>
-        <u-modal :show="showService" showCancelButton="true" @cancel="showService = false" @confirm="beginServiceFn" width="500rpx">
+        <u-modal :show="showService" showCancelButton="true" @cancel="showService = false" @confirm="beginServiceFn" width="500rpx" confirmColor="var(--primary-color)">
             <template #default>
                 <u--form labelPosition="left" class="!w-[100%]" labelWidth="100rpx">
                     <u-form-item :label="t('checkCode')">
@@ -156,7 +156,7 @@
                 </u--form>
             </template>
         </u-modal>
-        <u-loading-page bg-color="rgb(248,248,248)" :loading="loading" fontSize="16" color="#333"></u-loading-page>
+		<loading-page :loading="loading"></loading-page>
     </view>
 </template>
 
@@ -167,10 +167,11 @@ import { onLoad } from '@dcloudio/uni-app'
 import { img, redirect, copy, timeStampTurnTime } from '@/utils/common';
 import { getTechnicianOrderDetail, beginService, finishService, TransferOrder, deleteService } from '@/addon/o2o/api/o2o'
 import { checkTechnician } from '@/addon/o2o/api/technician';
+import useConfigStore from "@/stores/config";
 
-let detail = ref({});
-let loading = ref<boolean>(false);
-let orderId = ref('')
+const detail = ref({});
+const loading = ref<boolean>(false);
+const orderId = ref('')
 onLoad((option) => {
 	orderId.value = option.order_id;
 	checkTechnicianFn()
@@ -242,6 +243,7 @@ const transferOrderFn = (val: any) => {
 	uni.showModal({
 		title: '提示',
 		content: '您确定要转单吗？',
+        confirmColor: useConfigStore().themeColor['--primary-color'],
 		success: res => {
 			if (res.confirm) {
 				TransferOrder({ order_id: val.order_id }).then(res => {
@@ -296,6 +298,7 @@ const deleteServiceFn = (data) => {
 	uni.showModal({
 		title: '提示',
 		content: '您确定要删除该服务项吗？',
+        confirmColor: useConfigStore().themeColor['--primary-color'],
 		success: res => {
 			if (res.confirm) {
 				deleteService(data.order_item_id).then(res => {
@@ -327,7 +330,7 @@ function dataTurnTime(timeStamp) {
 	}
 }
 // 判断当前步骤条的状态
-let current = ref(0)
+const current = ref(0)
 function getStatus() {
 	if (detail.value.order_status_info.status == 'dispatch') {
 		return current.value = 0

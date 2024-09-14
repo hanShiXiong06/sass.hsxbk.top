@@ -53,6 +53,7 @@ import { setReserveConfig, getReserveConfig } from '@/addon/o2o/api/reserve'
 import { FormInstance } from 'element-plus'
 import { useRoute } from 'vue-router'
 import { filterNumber } from '@/utils/common'
+import { cloneDeep } from 'lodash-es'
 
 const route = useRoute()
 const pageName = route.meta.title
@@ -66,7 +67,7 @@ const formData = reactive<Record<string, string | Array>>({
     advance: ''
 })
 
-const getFormData = async (id: number = 0) => {
+const getFormData = async () => {
     loading.value = true
     const data = await (await getReserveConfig()).data
     Object.keys(formData).forEach((key: string) => {
@@ -84,7 +85,7 @@ const onSave = async (formEl: FormInstance | undefined) => {
     await formEl.validate(async (valid) => {
         if (valid) {
             loading.value = true
-            const data = JSON.parse(JSON.stringify(formData))
+            const data = cloneDeep(formData)
             data.week = data.week.join(',')
             data.start = timeTransition(data.start)
             data.end = timeTransition(data.end)

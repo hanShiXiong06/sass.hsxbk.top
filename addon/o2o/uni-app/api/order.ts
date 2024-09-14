@@ -97,18 +97,16 @@ export function cancelRefund(refundId: number) {
 }
 /**
  * 获取退款原因
- * @param refundId
  * @returns
  */
-export function getRefundReason(refundId: number) {
+export function getRefundReason() {
     return request.get(`o2o/refund/reason`)
 }
 /**
  * 获取退款状态
- * @param refundId
  * @returns
  */
-export function getRefundStatus(refundId: number) {
+export function getRefundStatus() {
     return request.get(`o2o/refund/status`)
 }
 /**

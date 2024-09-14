@@ -86,7 +86,7 @@
                 <u-empty :icon="img('static/resource/images/order_empty.png')" :text="t('verifyDetailEmpty')" />
             </view>
         </block>
-        <u-loading-page :loading="loading" loading-text="" loadingColor="var(--primary-color)" iconSize="35"></u-loading-page>
+		<loading-page :loading="loading"></loading-page>
     </view>
 </template>
 
@@ -99,7 +99,7 @@
     const loading = ref(true)
     const verifyDetail = ref<AnyObject | null>(null)
 
-    onLoad((data)=> {
+    onLoad((data: any)=> {
         getVerifyDetail(data.code).then(res => {
             if (res.data.order_id) verifyDetail.value = res.data
             loading.value = false

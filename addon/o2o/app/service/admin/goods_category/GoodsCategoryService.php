@@ -35,7 +35,7 @@ class GoodsCategoryService extends BaseAdminService
     public function getPage(array $where = [])
     {
         $field = 'category_name,image,category_id,site_id';
-        $order = 'sort asc';
+        $order = 'sort desc';
 
         $search_model = $this->model->where([['site_id', '=', $this->site_id]])->withSearch(["category_name","create_time"], $where)->field($field)->order($order)->append(['image_thumb_small']);
         $list = $this->pageQuery($search_model);

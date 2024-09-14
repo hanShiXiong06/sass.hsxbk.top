@@ -38,14 +38,14 @@ return [
                 'name' => 'O2O_ORDER_LIST',
                 'title' => get_lang('dict_diy.o2o_link_order_list'),
                 'url' => '/addon/o2o/pages/order/list',
-                'is_share' => 1,
+                'is_share' => 0,
                 'action' => ''
             ],
             [
                 'name' => 'O2O_REFUND_LIST',
                 'title' => get_lang('dict_diy.o2o_link_order_refund_list'),
                 'url' => '/addon/o2o/pages/refund/list',
-                'is_share' => 1,
+                'is_share' => 0,
                 'action' => ''
             ],
 //            [
@@ -59,14 +59,14 @@ return [
                 'name' => 'O2O_REFUND_LIST',
                 'title' => get_lang('dict_diy.o2o_link_order_refund_list'),
                 'url' => '/addon/o2o/pages/refund/list',
-                'is_share' => 1,
+                'is_share' => 0,
                 'action' => ''
             ],
             [
                 'name' => 'O2O_ADDRESS_LIST',
                 'title' => get_lang('dict_diy.o2o_link_address_list'),
                 'url' => '/addon/o2o/pages/address/index',
-                'is_share' => 1,
+                'is_share' => 0,
                 'action' => ''
             ],
         ]

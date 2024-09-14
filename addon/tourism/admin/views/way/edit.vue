@@ -1,14 +1,9 @@
 <template>
     <div class="main-container" v-loading="loading">
-        <div class="detail-head">
-            <div class="left" @click="router.push({ path: '/tourism/product/way/way' })">
-                <span class="iconfont iconxiangzuojiantou !text-xs"></span>
-                <span class="ml-[1px]">{{ t('returnToPreviousPage') }}</span>
-                <span class="adorn">|</span>
-                <span class="right" v-if="id">{{ t('editWay') }}</span>
-                <span class="right" v-else>{{ t('addWay') }}</span>
-            </div>
-        </div>
+        <el-card class="card !border-none mb-[15px]" shadow="never">
+            <el-page-header :content="id ? t('editWay') : t('addWay')" :icon="ArrowLeft" @back="router.push({ path: '/tourism/product/way/way' })" />
+        </el-card>
+
         <el-card class="box-card !border-none" shadow="never">
             <el-tabs v-model="activeName" class="demo-tabs">
                 <el-tab-pane :label="t('basicData')" name="first"></el-tab-pane>

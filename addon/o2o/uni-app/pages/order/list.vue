@@ -8,7 +8,7 @@
     		</scroll-view>
     	</view>
         
-        <mescroll-body ref="mescrollRef" top="114rpx" @init="mescrollInit" @down="downCallback" @up="getOrderListFn">
+        <mescroll-body ref="mescrollRef" top="114rpx" @init="mescrollInit" :down="{ use: false }" @up="getOrderListFn">
             <block v-for="(item, index) in list" :key="item.order_id">
                 <view class="mx-3 mb-3 bg-white p-3 rounded">
                     <view class="flex justify-between items-center text-sm text-gray-500 pb-3 border-0 border-b border-slate-200 border-solid">
@@ -38,7 +38,7 @@
 						</view>
 					</view>
                     <!-- <view class="flex items-center justify-between  text-[28rpx]  mt-[40rpx]">
-                        <text class="text-[#999]">{{ item.create_time }}</text>
+                        <text class="text-[var(--text-color-light9)]">{{ item.create_time }}</text>
 					</view> -->
                     <view class="flex items-center justify-end  mt-[30rpx]">
                         <view>
@@ -64,14 +64,14 @@
 
 <script setup lang="ts">
     import { ref } from 'vue'
-    import { onLoad } from '@dcloudio/uni-app'
     import { img, redirect } from '@/utils/common'
     import { getOrderStatus, getOrderList, cancelOrder, deleteOrder } from '@/addon/o2o/api/order'
     import MescrollBody from '@/components/mescroll/mescroll-body/mescroll-body.vue'
     import MescrollEmpty from '@/components/mescroll/mescroll-empty/mescroll-empty.vue'
     import useMescroll from '@/components/mescroll/hooks/useMescroll.js'
-    import { onPageScroll, onReachBottom } from '@dcloudio/uni-app'
+    import { onLoad,onPageScroll, onReachBottom } from '@dcloudio/uni-app'
     import { t } from '@/locale'
+    import useConfigStore from "@/stores/config";
     
     const { mescrollInit, downCallback, getMescroll } = useMescroll(onPageScroll, onReachBottom)
     const list = ref<Array<Object>>([]);
@@ -81,9 +81,10 @@
     const orderStateList = ref([]);
     
     onLoad((option) => {
-    	orderState.value = option.order_status || "";
-    	getOrderStatusFn();
+        orderState.value = option.order_status || "";
+        getOrderStatusFn();
     });
+
     // 获取订单状态
     const getOrderStatusFn = () => {
     	statusLoading.value = false;
@@ -150,6 +151,7 @@
         uni.showModal({
             title: '提示',
             content: '您确定要删除该订单吗？',
+            confirmColor: useConfigStore().themeColor['--primary-color'],
             success: res => {
                 if (res.confirm) {
                     cancelOrder(data.order_id).then((res) => {
@@ -166,6 +168,7 @@
         uni.showModal({
             title: '提示',
             content: '您确定要删除该订单吗？',
+            confirmColor: useConfigStore().themeColor['--primary-color'],
             success: res => {
                 if (res.confirm) {
                     deleteOrder(data.order_id).then((res) => {

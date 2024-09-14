@@ -1,0 +1,1 @@
+ALTER TABLE `member_sign_in_logs` ADD `site_id` int(11) NOT NULL DEFAULT '0' COMMENT '站点id' AFTER `member_id`;

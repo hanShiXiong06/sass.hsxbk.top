@@ -24,7 +24,7 @@
 				</u-form-item>
 			</u-form>
 		</view>
-		<u-loading-page bg-color="rgb(248,248,248)" :loading="loading" fontSize="14" color="#333" :loadingText="t('loading')"></u-loading-page>
+		<loading-page :loading="loading"></loading-page>
 	</view>
 </template>
 
@@ -33,7 +33,6 @@
     import { onLoad,onUnload } from '@dcloudio/uni-app'
 	import { ref, reactive } from 'vue';
 	import { img, redirect } from '@/utils/common';
-	import { addService,editService } from '@/addon/o2o/api/o2o'
 	import  uploadImg from '@/addon/o2o/pages/master/task/components/upload-img.vue'
 
 	const loading = ref(false)
@@ -45,7 +44,8 @@
         images:[],
         item_images:''
 	})
-    onLoad((option) => {
+
+    onLoad((option: any) => {
 		Object.keys(formData.value).forEach((key: string) => {
 			if (option[key] != undefined) formData.value[key] = option[key]
 			if(key == 'images'){

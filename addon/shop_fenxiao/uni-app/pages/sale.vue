@@ -6,7 +6,7 @@
 					<!-- #ifdef MP-WEIXIN -->
 					<top-tabbar :data="param" :scrollBool="topTabarObj.getScrollBool()" class="top-header"/>
 					<!-- #endif -->
-					<view class="card-template sidebar-marign mt-[312rpx]">
+					<view class="card-template sidebar-margin mt-[312rpx]">
 						<view class="flex flex-col  mb-[56rpx]"  @click="applyCashOut">
 							<text class="text-[30rpx] h-[36rpx] leading-[36rpx] text-[#333] mb-[16rpx]">销售奖励（元）</text>
 							<text class="text-[48rpx] price-font text-[var(--price-text-color)] min-h-[58rpx]">{{moneyFormat(saleCommission.sale_commission)||0.00}}</text>
@@ -32,7 +32,7 @@
 			</view>
 			<mescroll-body ref="mescrollRef" :down="{ use: false }" @init="mescrollInit" @up="getSaleMemberFn" :top="mescrollTop">
 				<block v-if="info.length && !infoLoading && !loading">
-					<view v-for="(item,index) in info" :keys="index" class="flex justify-between items-center card-template mt-[var(--top-m)] sidebar-marign" @click="toDetail(item.period_id)">
+					<view v-for="(item,index) in info" :keys="index" class="flex justify-between items-center card-template mt-[var(--top-m)] sidebar-margin" @click="toDetail(item.period_id)">
 						<view class="flex flex-col">
 							<view v-if="item.is_settlement" class="text-[#333] text-[28rpx] flex items-center">
 								<text class="text-[28rpx] mr-[6rpx]">结算时间</text>

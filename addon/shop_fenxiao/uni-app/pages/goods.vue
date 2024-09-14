@@ -2,11 +2,11 @@
 	<view class="bg-[var(--page-bg-color)] min-h-[100vh]" :style="themeColor()">
 		<mescroll-body ref="mescrollRef" @init="mescrollInit" @up="getData" :down="{ use: false }">
 			<view class="w-[100%] h-[340rpx]" :style="{ backgroundImage: 'url(' + img('addon/shop_fenxiao/fenxiao_goods_bg.png') + ')','background-size': 'cover' }"></view>
-			<view class="bg-white flex card-template sidebar-marign rounded-[var(--rounded-big)] overflow-hidden mt-[var(--top-m)]"  v-for='(item,index) in list' :key="index" :class="{ 'mb-[20rpx]': (index+1) == list.length}" @click="toLink(item)">
-				<view class="w-[190rpx] h-[190rpx] rounded-[var(--goods-rounded-big)] overflow-hidden">
-					<u--image width="190rpx" height="190rpx" :src="img(item.goods_cover_thumb_mid ? item.goods_cover_thumb_mid : '')" model="aspectFill">
+			<view class="bg-white flex card-template sidebar-margin rounded-[var(--rounded-big)] overflow-hidden mt-[var(--top-m)]"  v-for='(item,index) in list' :key="index" :class="{ 'mb-[20rpx]': (index+1) == list.length}" @click="toLink(item)">
+				<view class="w-[190rpx] h-[190rpx]">
+					<u--image width="190rpx" height="190rpx" radius="var(--goods-rounded-big)" :src="img(item.goods_cover_thumb_mid ? item.goods_cover_thumb_mid : '')" model="aspectFill">
 						<template #error>
-							<image class=" w-[190rpx] h-[190rpx]" :src="img('static/resource/images/diy/shop_default.jpg')" mode="aspectFill"></image>
+							<image class="w-[190rpx] h-[190rpx] rounded-[var(--goods-rounded-big)] overflow-hidden" :src="img('static/resource/images/diy/shop_default.jpg')" mode="aspectFill"></image>
 						</template>
 					</u--image>
 				</view>
@@ -99,7 +99,7 @@
 	let posterParam: any = {};
 	// 分享海报链接
 	const copyUrlFn = (data: any)=>{
-		copyUrl.value = '/wap/addon/shop/pages/goods/detail';
+		copyUrl.value = '/addon/shop/pages/goods/detail';
 		copyUrlParam.value = '?goods_id=' + data.goods_id;
 		if (userInfo.value && userInfo.value.member_id) copyUrlParam.value += '&mid=' + userInfo.value.member_id;
 	}

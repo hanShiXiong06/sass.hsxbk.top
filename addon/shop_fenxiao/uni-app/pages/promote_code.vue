@@ -202,10 +202,11 @@
 	.dialog-popup {
 		width: 580rpx;
 		background: #fff;
-		box-sizing: border-box;
 		border-radius: var(--rounded-small);
 		overflow: hidden;
-		height: initial;
+		height: 100%;
+		margin-bottom: -2rpx;
+		margin-right: -4rpx;
 
 		.title {
 			padding: 30rpx 30rpx 0 30rpx;
@@ -231,21 +232,27 @@
 			&>view {
 				flex: 1;
 				text-align: center;
-				line-height: 80rpx;
+				border: 0;
 
 				&:first-child {
 					border-top: 2rpx solid #eee;
 					color: var(--text-color-light6);
+					height: 80rpx;
+					display: flex;
+					justify-content: center;
+					align-items: center;
 				}
 
 				button {
 					border: none;
 					border-top: 2rpx solid transparent;
-					line-height: 80rpx;
 					padding: 0;
 					margin: 0;
 					width: 100%;
-					height: 100%;
+					height: 80rpx;
+					display: flex;
+					justify-content: center;
+					align-items: center;
 				}
 			}
 		}

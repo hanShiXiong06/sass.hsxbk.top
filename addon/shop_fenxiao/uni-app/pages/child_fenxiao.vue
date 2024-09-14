@@ -2,7 +2,7 @@
 	<view class="bg-[#f8f8f8] min-h-[100vh]" :style="themeColor()">
 		<scroll-view scroll-y="true" v-if="!loading">
 			<view class="pt-[var(--top-m)]" v-if="list.length">
-				<view class="flex items-center sidebar-marign mb-[var(--top-m)] h-[180rpx] card-template" v-for="(item,index) in list" :key="index">
+				<view class="flex items-center sidebar-margin mb-[var(--top-m)] h-[180rpx] card-template" v-for="(item,index) in list" :key="index">
 					<image v-if="item.member.headimg" class="w-[100rpx] h-[100rpx] mr-[20rpx] rounded-full" :src="img(item.member.headimg)" mode="widthFix"></image>
 					<image v-else class="w-[100rpx] h-[100rpx] mr-[20rpx] rounded-full" :src="img('addon/shop_fenxiao/index/head.png')" mode="widthFix"></image>
 					<view class="flex flex-col">

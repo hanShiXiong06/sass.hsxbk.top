@@ -3,7 +3,7 @@
         <view class="bg-[#f8f8f8] min-h-screen overflow-hidden" v-if="!loading">
             <view class="bg-linear h-[480rpx] text-white px-4 pt-5">
                 <view class="text-[42rpx] flex items-baseline" @click="orderStepsShow = true">
-                    <text class="nc-iconfont nc-icon-shijianV6xx text-[42rpx] mr-1"></text>
+                    <text class="nc-iconfont nc-icon-a-shijianV6xx-36 text-[42rpx] mr-1"></text>
                     <text class="font-bold">订单{{detail?.order_status_info?.name}}</text>
                     <view class="text-xs flex items-center ml-[20rpx]" v-if="distance > 0 &&detail.order_status_info.status == 0">
                         <text>剩余支付时间：</text>
@@ -44,7 +44,7 @@
                         <view class="flex flex-col items-center pb-4">
                             <image class="w-[326rpx] h-[326rpx] mt-4 mb-4" :src="detail.verify_code_qrcode"></image>
                             <image class="w-[524rpx] h-[128rpx] mb-3" :src="detail.verify_code_barcode"></image>
-                            <view class="text-[#666] text-xs">未消费前请不要将券码提供给商家</view>
+                            <view class="text-[var(--text-color-light6)] text-xs">未消费前请不要将券码提供给商家</view>
                         </view>
                     </view>
                     <view>
@@ -185,18 +185,18 @@
                 </view>
             </u-popup>
         </view>
-
-        <u-loading-page bg-color="rgb(248,248,248)" :loading="loading" fontSize="16" color="#333"></u-loading-page>
+        
+		<loading-page :loading="loading"></loading-page>
 
         <!-- #ifdef MP-WEIXIN -->
         <!-- 小程序隐私协议 -->
-        <wx-privacy-popup ref="wxPrivacyPopup"></wx-privacy-popup>
+        <wx-privacy-popup ref="wxPrivacyPopupRef"></wx-privacy-popup>
         <!-- #endif -->
     </view>
 </template>
 
 <script setup lang="ts">
-	import { ref, reactive, computed } from 'vue';
+	import { ref, reactive, computed,nextTick } from 'vue';
 	import { onLoad } from '@dcloudio/uni-app'
 	import { img, redirect, copy } from '@/utils/common';
 	import { getMemberOrderDetail, deleteOrder, cancelOrder, refundApply, cancelRefund, refundDetail } from '@/addon/tourism/api/tourism';
@@ -209,9 +209,17 @@
 	let orderStepsNum = ref(1)
 	let orderStepsShow = ref(false)
 	let distance = ref(0)
-	onLoad((option) => {
+
+    const wxPrivacyPopupRef:any = ref(null)
+
+	onLoad((option: any) => {
 		orderId.value = option.order_id;
 		getMemberOrderDetailFn(orderId.value);
+        // #ifdef MP
+        nextTick(()=>{
+            if(wxPrivacyPopupRef.value) wxPrivacyPopupRef.value.proactive();
+        })
+        // #endif
 	});
 
 	const getMemberOrderDetailFn = (id) => {
@@ -288,7 +296,7 @@
 	}
 
 	const payRef = ref(null)
-	const orderBtnFn = (data, type='')=>{
+	const orderBtnFn = (data: any, type='')=>{
 		if(type == 'pay')
 			payRef.value?.open(data.order_type, data.order_id,`/addon/tourism/pages/order/detail?order_id=${data.order_id}`);	
 		else if(type == 'cancel'){

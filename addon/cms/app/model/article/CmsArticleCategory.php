@@ -41,7 +41,7 @@ class CmsArticleCategory extends BaseModel
      */
     public function searchNameAttr($query, $value, $data)
     {
-        if ($value) {
+        if ($value != '') {
             $query->where([ [ 'name', 'like', "%$value%" ] ]);
         }
     }

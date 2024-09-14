@@ -18,9 +18,13 @@ use app\service\core\site\CoreSiteService;
  */
 class WapIndexListener
 {
-    public function handle()
+    public function handle($params = [])
     {
-        $site_addon = (new CoreSiteService())->getAddonKeysBySiteId(request()->siteId());
+        $site_id = request()->siteId();
+        if (!empty($params[ 'site_id' ])) {
+            $site_id = $params[ 'site_id' ];
+        }
+        $site_addon = ( new CoreSiteService() )->getAddonKeysBySiteId($site_id);
         if (!in_array('tourism', $site_addon)) return;
 
         return [
@@ -29,7 +33,7 @@ class WapIndexListener
                 "title" => get_lang("dict_wap_index.tourism"),
                 'desc' => get_lang("dict_wap_index.tourism_desc"),
                 "url" => "/addon/tourism/pages/index",
-                'icon'=>'addon/tourism/icon.png'
+                'icon' => 'addon/tourism/icon.png'
             ],
         ];
     }

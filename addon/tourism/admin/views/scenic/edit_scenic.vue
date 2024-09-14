@@ -1,14 +1,9 @@
 <template>
 	<div class="main-container">
-		<div class="detail-head">
-			<div class="left" @click="router.push({ path: '/tourism/product/scenic/scenic' })">
-				<span class="iconfont iconxiangzuojiantou !text-xs"></span>
-				<span class="ml-[1px]">{{ t('returnToPreviousPage') }}</span>
-				<span class="adorn">|</span>
-				<span class="right" v-if="id">{{ t('editScenic') }}</span>
-				<span class="right" v-else>{{ t('addScenic') }}</span>
-			</div>
-		</div>
+        <el-card class="card !border-none mb-[15px]" shadow="never">
+            <el-page-header :content="id ? t('editScenic') : t('addScenic') " :icon="ArrowLeft" @click="router.push({ path: '/tourism/product/scenic/scenic' })"/>
+        </el-card>
+
 		<el-card class="box-card !border-none" shadow="never">
 			<el-form :model="formData" label-width="90px" ref="formRef" :rules="formRules" class="page-form">
 				<el-form-item :label="t('scenicName')" prop="scenic_name">
@@ -376,6 +371,6 @@ const back = () => {
 
 <style lang="scss" scoped>
 .fixed-footer {
-	z-index: 1000 !important
+	z-index: 4 !important
 }
 </style>

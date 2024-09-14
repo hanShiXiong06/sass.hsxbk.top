@@ -25,7 +25,7 @@
 			
 			<mescroll-body ref="mescrollRef" @init="mescrollInit" :down="{ use: false }" @up="getData">
 				<view class="pt-[var(--top-m)]" v-if="list.length">
-					<view class="sidebar-marign mb-[var(--top-m)] card-template" v-for='(item,index) in list' :key="index">
+					<view class="sidebar-margin mb-[var(--top-m)] card-template" v-for='(item,index) in list' :key="index">
 						<view class="flex items-center justify-between text-[26rpx] leading-[36rpx] text-[#333]">
 							<view>
 								<text>{{ t('orderNo') }}:</text>

@@ -48,7 +48,7 @@ import { useRoute } from 'vue-router'
 const route = useRoute()
 const pageName = route.meta.title;
 
-let o2oGoodsCategoryTable = reactive({
+const o2oGoodsCategoryTable = reactive({
     loading: true,
     data: []
 })

@@ -13,13 +13,12 @@
 				</el-form-item>
 				<el-form-item :label="t('goodsNum')" v-if="diyStore.editComponent.source == 'all'">
 					<div class="flex items-center w-full ml-[5px]">
-						<el-slider class="flex-1" v-model="diyStore.editComponent.num" max="20" size="small" />
+						<el-slider class="flex-1" v-model="diyStore.editComponent.num" :min="1" max="20" size="small" />
 						<span class="ml-[15px]">{{ diyStore.editComponent.num }}</span>
 					</div>
 				</el-form-item>
 				<el-form-item :label="t('customGoods')" v-if="diyStore.editComponent.source == 'custom'">
-					<travel-select-popup ref="goodsSelectPopupRef" v-model="diyStore.editComponent.way_id" :min="1"
-									:max="99" />
+					<travel-select-popup ref="goodsSelectPopupRef" v-model="diyStore.editComponent.way_id" :min="1" :max="99" />
 				</el-form-item>
 			</el-form>
 		</div>

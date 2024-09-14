@@ -1,7 +1,7 @@
 <template>
 	<view class="min-h-[100vh] bg-[var(--page-bg-color)] overflow-hidden" :style="themeColor()">
 		<mescroll-body ref="mescrollRef" @init="mescrollInit" :down="{ use: false }" @up="getListFn" top="">
-			<view v-for="(order,index) in list" :key="order.order_id" class="sidebar-marign card-template mt-[var(--top-m)]" @click="toDetailFn(order)">
+			<view v-for="(order,index) in list" :key="order.order_id" class="sidebar-margin card-template mt-[var(--top-m)]" @click="toDetailFn(order)">
 				<view class="flex items-center justify-between  mb-[20rpx]">
 					<view class="text-[36rpx] font-500 price-font text-active">{{ order.order_money }}</view>
 					<view class="leading-[38rpx] text-[26rpx]" v-if="order.order_status_info">{{ order.order_status_info.name }}</view>

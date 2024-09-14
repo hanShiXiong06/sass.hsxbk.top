@@ -55,7 +55,7 @@
 						<text class="text-[#FA6400] text-xs" v-if="item.bottomInfo">{{item.bottomInfo}}</text>
 					</view>
 					<view class="relative flex flex-col items-center justify-center w-[130rpx] h-[142rpx] border-1 border-solid border-[#F8F8F8] text-sm rounded bg-[#F8F8F8]" @click="wayShow=true">
-						<text class="nc-iconfont nc-icon-riliV6xx text-[44rpx] text-[#707070]"></text>
+						<text class="nc-iconfont nc-icon-a-riliV6xx-36 text-[44rpx] text-[#707070]"></text>
 						<text class="text-xs text-[#9B9B9B] mt-[4rpx]">更多</text>
 					</view>
 				</view>
@@ -86,7 +86,7 @@
 				<u-button text="立即报名" color="var(--primary-color)" shape="circle" :customStyle="{lineHeight:'76rpx', margin:'0rpx', color:'#fff',width:'276rpx'}"  size="16" @click="toOrder(detail)"></u-button>
 			</view>
 		</view>
-		<u-loading-page bg-color="rgb(248,248,248)" :loading="loading" fontSize="16" color="#333"></u-loading-page>
+		<loading-page :loading="loading"></loading-page>
 		<!-- 出发日期 -->
 		<block v-if="isWayShow">
 			<u-calendar :show="wayShow"
@@ -102,7 +102,7 @@
 
 		<!-- #ifdef MP-WEIXIN -->
 		<!-- 小程序隐私协议 -->
-		<wx-privacy-popup ref="wxPrivacyPopup"></wx-privacy-popup>
+		<wx-privacy-popup ref="wxPrivacyPopupRef"></wx-privacy-popup>
 		<!-- #endif -->
 		
 		<share-poster ref="sharePosterRef" posterType="tourism_way" :posterId="detail.poster_id" :posterParam="posterParam" :copyUrlParam="copyUrlParam" />
@@ -110,7 +110,7 @@
 </template>
 
 <script setup lang="ts">
-	import { ref, reactive, computed } from 'vue';
+	import { ref, reactive, computed,nextTick } from 'vue';
 	import { onLoad } from '@dcloudio/uni-app'
 	import { img, timeStampTurnTime, redirect, getToken, copy, handleOnloadParams } from '@/utils/common';
 	import { getWayInfo, getWayGoodsDay } from '@/addon/tourism/api/tourism';
@@ -140,7 +140,9 @@
 	let departureDate = ref([]);
 	let departureDateSelect = ref(0);
 
-	onLoad((option) => {
+	const wxPrivacyPopupRef:any = ref(null)
+
+	onLoad((option: any) => {
 		// #ifdef MP-WEIXIN
 		// 处理小程序场景值参数
 		option = handleOnloadParams(option);
@@ -182,6 +184,11 @@
 		}).catch(() => {
 			loading.value = false;
 		});
+		// #ifdef MP
+		nextTick(()=>{
+			if(wxPrivacyPopupRef.value) wxPrivacyPopupRef.value.proactive();
+		})
+		// #endif
 	})
 
 	// 价格日历
@@ -349,7 +356,7 @@
 					@apply font-bold;
 				}
 				&:last-of-type{
-					@apply text-xs text-[#999];
+					@apply text-xs text-[var(--text-color-light9)];
 				}
 				.iconfont{
 					@apply inline-block;

@@ -65,7 +65,7 @@
 
 <script lang="ts" setup>
 import { UserFilled } from '@element-plus/icons-vue'
-import { computed, reactive, ref, onMounted, watch } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { FormInstance, FormRules, ElNotification } from 'element-plus'
 import useUserStore from '@/stores/modules/user'
@@ -95,10 +95,10 @@ const getUserInfoFn = ()=>{
     userInfoEditRef.value?.open()
 }
 // 修改密码 --- start
-let changePasswordDialog = ref(false)
+const changePasswordDialog = ref(false)
 const formRef = ref<FormInstance>();
 // 提交信息
-let saveInfo = reactive({
+const saveInfo = reactive({
     original_password: '',
     password: '',
     password_copy: ''

@@ -1,14 +1,9 @@
 <template>
 	<div class="main-container">
-		<div class="detail-head">
-			<div class="left" @click="router.push(`/tourism/product/hotel/room?id=${hotel_id}`)">
-				<span class="iconfont iconxiangzuojiantou !text-xs"></span>
-				<span class="ml-[1px]">{{ t('returnToPreviousPage') }}</span>
-			</div>
-			<span class="adorn">|</span>
-			<span class="right" v-if="id">{{ t('editRoom') }}</span>
-			<span class="right" v-else>{{ t('addRoom') }}</span>
-		</div>
+        <el-card class="card !border-none mb-[15px]" shadow="never">
+            <el-page-header :content="id ? t('editRoom') : t('addRoom')" :icon="ArrowLeft" @back="router.push(`/tourism/product/hotel/room?id=${hotel_id}`)" />
+        </el-card>
+
 		<el-card class="box-card !border-none" shadow="never">
 			<el-tabs v-model="activeName" class="demo-tabs">
 				<el-tab-pane :label="t('basicData')" name="first"></el-tab-pane>

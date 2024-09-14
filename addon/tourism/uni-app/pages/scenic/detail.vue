@@ -106,7 +106,7 @@
 				<view class="chunk-head">
 					<text>联系电话</text>
 				</view>
-				<view class="text-sm py-3 px-1 text-[#666] flex items-center">
+				<view class="text-sm py-3 px-1 text-[var(--text-color-light6)] flex items-center">
 					<text class="iconfont icondianhua-xianxingyuankuang font-bold mr-2 text-lg"></text>
 					<text>{{detail.telephone}}</text>
 				</view>
@@ -132,11 +132,11 @@
 				</view>
 			</view>
 		</view>
-		<u-loading-page bg-color="rgb(248,248,248)" :loading="loading" fontSize="16" color="#333"></u-loading-page>
+		<loading-page :loading="loading"></loading-page>
 
 		<!-- #ifdef MP-WEIXIN -->
 		<!-- 小程序隐私协议 -->
-		<wx-privacy-popup ref="wxPrivacyPopup"></wx-privacy-popup>
+		<wx-privacy-popup ref="wxPrivacyPopupRef"></wx-privacy-popup>
 		<!-- #endif -->
 		
 		<share-poster ref="sharePosterRef" posterType="tourism_scenic" :posterId="detail.poster_id" :posterParam="posterParam" :copyUrlParam="copyUrlParam" />
@@ -144,7 +144,7 @@
 </template>
 
 <script setup lang="ts">
-	import { ref, reactive, computed } from 'vue';
+	import { ref, reactive, computed,nextTick } from 'vue';
 	import { img, redirect, getToken, copy,handleOnloadParams } from '@/utils/common';
 	import { onLoad } from '@dcloudio/uni-app'
 	import { getScenicInfo } from '@/addon/tourism/api/tourism';
@@ -166,8 +166,10 @@
 
 	// 会员信息
 	const userInfo = computed(() => memberStore.info)
+
+	const wxPrivacyPopupRef:any = ref(null)
 	
-	onLoad((option) => {
+	onLoad((option: any) => {
 		
 		// #ifdef MP-WEIXIN
 		// 处理小程序场景值参数
@@ -197,6 +199,11 @@
 		}).catch(() => {
 			loading.value = false;
 		});
+		// #ifdef MP
+		nextTick(()=>{
+			if(wxPrivacyPopupRef.value) wxPrivacyPopupRef.value.proactive();
+		})
+		// #endif
 	})
 
 	const getSpecificDate = (day,dateVal="")=> {
@@ -296,7 +303,7 @@
 					@apply font-bold;
 				}
 				&:nth-child(2){
-					@apply text-xs text-[#999];
+					@apply text-xs text-[var(--text-color-light9)];
 				}
 				.iconfont{
 					@apply inline-block;

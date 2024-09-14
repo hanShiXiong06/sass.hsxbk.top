@@ -23,7 +23,7 @@
 			</view>
 			
 			<mescroll-body ref="mescrollRef" bottom="100rpx" @init="mescrollInit" :down="{ use: false }" @up="getData">
-				<view class="sidebar-marign pt-[var(--top-m)]" v-if="list.length">
+				<view class="sidebar-margin pt-[var(--top-m)]" v-if="list.length">
 					<view class="card-template mb-[var(--top-m)]" v-for='(item,index) in list' :key="index">
 						<view class="flex items-center justify-between text-[26rpx] leading-[36rpx] text-[#333]">
 							<view>

@@ -1,4 +1,4 @@
-ALTER TABLE `o2o_order` ADD COLUMN `poster_id` int NOT NULL DEFAULT 0 COMMENT '海报id';
+ALTER TABLE `o2o_goods` ADD COLUMN `poster_id` int NOT NULL DEFAULT 0 COMMENT '海报id';
 
 ALTER TABLE `o2o_goods` ADD COLUMN `member_discount` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '会员等级折扣，不参与：空，会员折扣：discount，指定会员价：fixed_price';
 

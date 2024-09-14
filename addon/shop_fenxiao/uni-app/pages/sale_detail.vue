@@ -6,7 +6,7 @@
                     <u--image width="341rpx" height="63rpx" :src="img('addon/shop_fenxiao/sale-detail-title.png')" model="aspectFill" />
                 </view>
                 <view class="side-tab" @click="toRanking">
-                    <text class="nc-iconfont nc-icon-paihangbangV6xx icon"></text>
+                    <text class="iconfont iconpaihangbangV6xx1 icon"></text>
                     <text class="desc">排行榜</text>
                 </view>
             </view>

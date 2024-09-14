@@ -95,10 +95,10 @@ const getUserInfoFn = ()=>{
     userInfoEditRef.value?.open()
 }
 // 修改密码 --- start
-let changePasswordDialog = ref(false)
+const changePasswordDialog = ref(false)
 const formRef = ref<FormInstance>();
 // 提交信息
-let saveInfo = reactive({
+const saveInfo = reactive({
     original_password: '',
     password: '',
     password_copy: ''

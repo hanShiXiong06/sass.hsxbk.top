@@ -125,8 +125,8 @@
         redirect({url: '/addon/tourism/pages/hotel/detail', param: {id}})
     }
 
-    let list = ref([]);
-    let loading = ref(false);
+    const list = ref([]);
+    const loading = ref(false);
     const getHotelRecommendFn = () => {
         let data: object = {
 			goods_ids: diyComponent.value.source == 'custom' ? diyComponent.value.hotel_id : '',

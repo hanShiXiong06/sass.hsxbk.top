@@ -29,17 +29,17 @@
                     </view>
                 </view>
                 <view @click="buyFn" v-if="detail.skuList && detail.skuList.length>1" class="flex items-center h-[88rpx] px-[20rpx] bg-[#fff] rounded-lg mb-[20rpx]">
-                    <text class="text-[#999] text-[30rpx] leading-[42rpx] font-500 mr-[20rpx]">{{ t('selected') }}</text>
+                    <text class="text-[var(--text-color-light9)] text-[30rpx] leading-[42rpx] font-500 mr-[20rpx]">{{ t('selected') }}</text>
                     <view class="flex-1 text-[#343434] text-sm leading-[42rpx] font-500">
                         {{ detail.sku_name }}
                     </view>
-                    <text class="nc-iconfont nc-icon-youV6xx text-[26rpx] text-[#666]"></text>
+                    <text class="nc-iconfont nc-icon-youV6xx text-[26rpx] text-[var(--text-color-light6)]"></text>
                 </view>
                 <view class="chunk-wrap pt-[34rpx] pb-[24rpx] scheduling rounded-lg">
                     <view class="flex items-center">
-                        <text :class="['text-[30rpx] text-center leading-[80rpx] flex-1 text-[#666]',{'class-select': goodsState == 'goods_content'}]" @click="changeGoodStatus('goods_content')" >项目介绍</text>
-                        <text :class="['text-[30rpx] text-center leading-[80rpx] flex-1 text-[#666]',{'class-select': goodsState == 'buy_info'}]" @click="changeGoodStatus('buy_info')" >购买须知</text>
-                        <text :class="['text-[30rpx] text-center leading-[80rpx] flex-1 text-[#666]',{'class-select': goodsState == 'price_list'}]" @click="changeGoodStatus('price_list')" v-if="detail.goods.buy_type == 'reservation'" >价目表</text>
+                        <text :class="['text-[30rpx] text-center leading-[80rpx] flex-1 text-[var(--text-color-light6)]',{'class-select': goodsState == 'goods_content'}]" @click="changeGoodStatus('goods_content')" >项目介绍</text>
+                        <text :class="['text-[30rpx] text-center leading-[80rpx] flex-1 text-[var(--text-color-light6)]',{'class-select': goodsState == 'buy_info'}]" @click="changeGoodStatus('buy_info')" >购买须知</text>
+                        <text :class="['text-[30rpx] text-center leading-[80rpx] flex-1 text-[var(--text-color-light6)]',{'class-select': goodsState == 'price_list'}]" @click="changeGoodStatus('price_list')" v-if="detail.goods.buy_type == 'reservation'" >价目表</text>
                     </view>
                     <view class="mt-[24rpx]">
                         <view class="scheduling-content mt-2" v-if="goodsState == 'goods_content'">
@@ -119,7 +119,7 @@
 			
         </view>
         <ns-goods-sku ref="goodsSkuRef" :goods-detail="detail" @change="specSelectFn"></ns-goods-sku>
-        <u-loading-page bg-color="rgb(248,248,248)" :loading="loading" fontSize="16" color="#333"></u-loading-page>
+		<loading-page :loading="loading"></loading-page>
     </view>
 </template>
 
@@ -138,22 +138,22 @@ import uniTh from '@/addon/o2o/components/uni-table/components/uni-th/uni-th.vue
 import uniTd from '@/addon/o2o/components/uni-table/components/uni-td/uni-td.vue'
 import sharePoster from '@/components/share-poster/share-poster.vue'
 
-let detail = ref<Array<any>>([]);
-let loading = ref<boolean>(true);
+const detail = ref<Array<any>>([]);
+const loading = ref<boolean>(true);
 const memberStore = useMemberStore()
 const goodsSkuRef = ref(null)
 
 // 会员信息
 const userInfo = computed(() => memberStore.info)
 
-let goodsState = ref('goods_content')
+const goodsState = ref('goods_content')
 
 // 切换状态
 const changeGoodStatus = (status:any) => {
 	goodsState.value = status
 }
 
-let goods = ref({
+const goods = ref({
 	sku_id:'',
 	goods_id: ''
 });
@@ -221,8 +221,8 @@ const specSelectFn = (id) => {
 }
 
 /************* 分享海报-start **************/
-let sharePosterRef = ref(null);
-let copyUrlParam = ref('');
+const sharePosterRef = ref(null);
+const copyUrlParam = ref('');
 let posterParam = {};
 
 // 分享海报链接
@@ -241,10 +241,10 @@ const openShareFn = ()=>{
 /************* 分享海报-end **************/
 
 // 价格类型
-let priceType = ref('') //''=>原价，discount_price=>折扣价，member_price=>会员价
+const priceType = ref('') //''=>原价，discount_price=>折扣价，member_price=>会员价
 
 // 商品价格
-let goodsPrice = computed(() =>{
+const goodsPrice = computed(() =>{
 	let price = "0.00";
 	if(Object.keys(detail.value).length && Object.keys(detail.value.goods).length && detail.value.goods.member_discount && getToken()){
 		// 会员价
@@ -273,7 +273,7 @@ let goodsPrice = computed(() =>{
 			}
 
 			&:last-of-type {
-				@apply text-[24rpx] text-[#999];
+				@apply text-[24rpx] text-[var(--text-color-light9)];
 			}
 
 			.iconfont {

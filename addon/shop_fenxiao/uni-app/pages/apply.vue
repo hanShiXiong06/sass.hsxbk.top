@@ -15,13 +15,13 @@
 		<block v-else>
 			<block v-if="info.status === 0 && Object.keys(config).length && config.apply_type != '3'">
 				<image class="w-[100vw] min-h-[100%] h-[100%]" mode="widthFix" :src="img(config.apply_head || '')"></image>
-				<view class="bg-[#fff] relative sidebar-marign mt-[-60rpx] rounded-[var(--rounded-big)] h-[100rpx] flex justify-between items-center px-[30rpx]">
+				<view class="bg-[#fff] relative sidebar-margin mt-[-60rpx] rounded-[var(--rounded-big)] h-[100rpx] flex justify-between items-center px-[30rpx]">
 					<text class="text-[30rpx] font-500 text-[#333]">{{t('referrer')}}</text>
 					<text class="text-[28rpx]" :class="{'text-[var(--text-color-light6)]': info.bindFenxiaoMember, 'text-[var(--text-color-light9)]': !info.bindFenxiaoMember}">{{ info.bindFenxiaoMember ? info.bindFenxiaoMember.nickname : t('notHave') }}</text>
 				</view>
 				
-				<view class="apply-condition z-10 rounded-[var(--rounded-big)] mt-[var(--top-m)] pr-[10rpx] box-border sidebar-marign" v-if="['1','2','3'].indexOf(config.fenxiao_condition) > -1">	
-					<view class="apply-condition-wrap z-10 rounded-[var(--rounded-big)] pl-[10rpx] pb-[10rpx] box-border">
+				<view class="apply-condition z-10 rounded-[var(--rounded-big)] mt-[var(--top-m)] box-border sidebar-margin" v-if="['1','2','3'].indexOf(config.fenxiao_condition) > -1">
+					<view class="apply-condition-wrap z-10 rounded-[var(--rounded-big)] px-[10rpx] pb-[10rpx] box-border">
 						<view class="flex items-center justify-between h-[40rpx] px-[20rpx] pt-[26rpx] pb-[14rpx]">
 							<view class="text-[30rpx] font-500 text-[#fff]">申请条件</view>
 							<view class="flex items-baseline text-[26rpx] text-[#fff]" v-if="config.fenxiao_condition === '1'">
@@ -106,7 +106,7 @@
 			
 			<block v-if="info.status === 3">
 				<view class="empty-page h-[auto] min-h-[710rpx] pt-[100rpx] pb-[80rpx]">
-					<text class="nc-iconfont nc-icon-cuohaoV6mm !text-[120rpx] text-[red] mb-[60rpx]"></text>
+					<text class="iconfont icona-guanbi-34V6mm !text-[120rpx] text-[red] mb-[60rpx]"></text>
 					<view class="desc !text-[34rpx] !text-[#333]">您提交的分销商申请已被拒绝</view>
 					<view class="text-[28rpx] px-[40rpx] mt-[40rpx] leading-[1.3] text-[var(--text-color-light6)]">拒绝原因：{{ info.refuse_reason }}</view>
 					<button class="primary-btn-bg mt-[140rpx] h-[80rpx] flex-center text-[26rpx] rounded-[100rpx] w-[420rpx] text-[#fff]" hover-class="none" @click="info.status = 0">重新申请</button>
@@ -256,10 +256,7 @@
 		background: linear-gradient( 91deg, #EEB2AA 0%, #EE9D9A 100%), #E99490;
 	}
 	.apply-condition{
-		background: #EF000C;
-		.apply-condition-wrap{
-			background: linear-gradient( 270deg, #FF5F67 0%, #FF424B 100%);
-		}
+		background: linear-gradient( 270deg, #FF5F67 0%, #FF424B 100%);
 	}
 	.fenxiao-goods-item{
 		.goods-item-content{

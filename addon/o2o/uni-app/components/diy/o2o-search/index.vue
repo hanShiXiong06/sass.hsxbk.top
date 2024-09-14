@@ -9,7 +9,7 @@
 						color:diyComponent.text_color}">
 					<u--input v-model="searchName" border="none" :placeholder="diyComponent.search_text"  :color="diyComponent.text_color"
 					:placeholderStyle='{color:diyComponent.text_color}' fontSize="24rpx"></u--input>
-					<text class="nc-iconfont nc-icon-sousuoV6xx" @click="toLink"></text>
+					<text class="nc-iconfont nc-icon-sousuo-duanV6xx1" @click="toLink"></text>
 				</view>
 			</block>
 			<block v-if="diyComponent.style == 'style2'">
@@ -17,7 +17,7 @@
 						borderRadius: diyComponent.border_radius == 'square' ? '0rpx' : '84rpx',
 						backgroundColor: diyComponent.bg_color,
 						color:diyComponent.text_color}">
-					<text class="nc-iconfont nc-icon-sousuoV6xx mr-[13rpx] text-[28rpx]"></text>
+					<text class="nc-iconfont nc-icon-sousuo-duanV6xx1 mr-[13rpx] text-[28rpx]"></text>
 					<u--input v-model="searchName" border="none" :placeholder="diyComponent.search_text"
 					:placeholderStyle='{color:diyComponent.text_color}' :color="diyComponent.text_color" fontSize="24rpx"></u--input>
 					<text class="text-[24rpx] normal ml-[60rpx]" @click="toLink">搜索</text>
@@ -116,7 +116,7 @@
         })
     }
 
-	const toLink = (url)=>{
+	const toLink = ()=>{
 		if (diyStore.mode == 'decorate') return false;
 		redirect({ url: '/addon/o2o/pages/goods/list',param:{goods_name:searchName.value}})
 	}

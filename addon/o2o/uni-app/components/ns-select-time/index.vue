@@ -35,6 +35,7 @@
 
 <script >
 import {initData,initTime,currentTime,timestampTransition,timeTransition} from './date.js'
+import { cloneDeep } from 'lodash-es'
 
 export default {
 		name: 'times',
@@ -79,7 +80,7 @@ export default {
 				this.dateArr = []
 				dateObj.forEach((item, index) =>{
 					if(this.rules.week.indexOf(item.dayNum) != -1){
-						item.children = JSON.parse(JSON.stringify(this.timeArr))
+						item.children = cloneDeep(this.timeArr)
 						item.children.forEach((el,key)=>{
 							if (item.mdTime == this.nowDate && time > `${timeTransition(el.begin+':00')}`) {
 								delete item.children[key];

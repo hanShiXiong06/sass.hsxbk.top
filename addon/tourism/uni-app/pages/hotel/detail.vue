@@ -35,7 +35,7 @@
 					<view class="flex flex-col p-3 rounded-t-3xl">
 						<view class="text-base font-bold flex justify-between items-center">
 							<text>{{t('hotelTab')}}</text>
-							<text class="nc-iconfont nc-icon-guanbiV6xx text-[#666]"  @click="hotelTab = false"></text>
+							<text class="nc-iconfont nc-icon-guanbiV6xx text-[var(--text-color-light6)]"  @click="hotelTab = false"></text>
 						</view>
 						<view class="mt-2 flex flex-col">
 							<view v-if="detail.hotel_tag">
@@ -96,7 +96,7 @@
 					</view>
 					<view class="text-sm flex items-center">
 						<text class="text-color">{{t('common')}}{{timeShow.day}}{{t('lateness')}}</text>
-						<text class="nc-iconfont nc-icon-youV6xx text-[26rpx] text-[#666]"></text>
+						<text class="nc-iconfont nc-icon-youV6xx text-[26rpx] text-[var(--text-color-light6)]"></text>
 					</view>
 				</view>
 
@@ -119,7 +119,7 @@
 							</view>
 							<view v-else class="flex flex-col border-[2rpx] border-solid border-[#999] border-md absolute right-0 bottom-[4rpx] rounded w-[90rpx]" @click.stop="toOrder(item,'empty')">
 								<text class="bg-[#999] font-bold text-white font-bold text-[34rpx] text-center py-[8rpx]">{{t('rob')}}</text>
-								<text class="text-xs text-scale py-[2rpx] text-center text-[#999]">{{t('onlinePayment')}}</text>
+								<text class="text-xs text-scale py-[2rpx] text-center text-[var(--text-color-light9)]">{{t('onlinePayment')}}</text>
 							</view>
 						</view>
 					</view>
@@ -130,7 +130,7 @@
 					<view class="h-[1000rpx] relative rounded-t-3xl bg-[#f8f8f8] overflow-hidden">
 						<view class="text-base font-bold flex justify-between items-center h-[96rpx] px-[26rpx] bg-[#fff] absolute top-0 left-0 right-0 z-10">
 							<text class="text-[30rpx]">{{roomData.goods_name}}</text>
-							<text class="nc-iconfont nc-icon-guanbiV6xx text-[32rpx] text-[#666]"  @click="hotelType = false"></text>
+							<text class="nc-iconfont nc-icon-guanbiV6xx text-[32rpx] text-[var(--text-color-light6)]"  @click="hotelType = false"></text>
 						</view>
 						<scroll-view scroll-y="true" class="flex h-[1000rpx] flex-col bg-[#f8f8f8] !rounded-none">
 							<view class="pt-[96rpx]"></view>
@@ -195,7 +195,7 @@
 				</view>
 			</view>
 		</view>
-		<u-loading-page bg-color="rgb(248,248,248)" :loading="loading" fontSize="16" color="#333"></u-loading-page>
+		<loading-page :loading="loading"></loading-page>
 
 		<block v-if="isCalendarShow">
 			<u-calendar :show="calendarShow"
@@ -289,7 +289,7 @@
 	}
 	let hotelId = ref("");
 	let covers = ref([])
-	onLoad((option) => {
+	onLoad((option: any) => {
 		// #ifdef MP-WEIXIN
 		// 处理小程序场景值参数
 		option = handleOnloadParams(option);
@@ -481,7 +481,7 @@ let goodsPrice = (data:any) =>{
 					@apply font-bold;
 				}
 				&:last-of-type{
-					@apply text-xs text-[#999];
+					@apply text-xs text-[var(--text-color-light9)];
 				}
 				.iconfont{
 					@apply inline-block;

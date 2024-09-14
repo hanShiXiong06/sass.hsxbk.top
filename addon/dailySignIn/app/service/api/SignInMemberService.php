@@ -58,7 +58,8 @@ class SignInMemberService extends BaseApiService{
             $response = $this->validate([
                 ['sign_in_date', '>=', $item['startTime']],
                 ['sign_in_date','<=',$item['endTime']],
-                'member_id'=>$this->member_id
+                'member_id'=>$this->member_id,
+                'site_id'=>$this->site_id??0
             ]);
             $isSignList[$key] = !$response->isEmpty();
         }
@@ -68,9 +69,11 @@ class SignInMemberService extends BaseApiService{
             'consecutiveDays'   =>$memberInfo->consecutive_days
         ];
     }
-    public function signIn($condition){
+    public function signIn($condition = []){
         $isSignIn = 0;
-        $memberInfo = $this->getMemberInfo($condition);
+        $memberInfo = $this->getMemberInfo([
+            'member_id'=>$this->member_id,
+        ]);
         if(!empty($memberInfo->last_sign_in_time)){
             $isSignIn = $memberInfo->last_sign_in_time < Utils::getCurrentTime()?0:1;
         }
@@ -80,7 +83,8 @@ class SignInMemberService extends BaseApiService{
         $checkIsExist = $this->validate([
             ['sign_in_date', '>=', Carbon::now()->startOfDay()],
             ['sign_in_date','<=',Carbon::now()->endOfDay()],
-            'member_id'=>$this->member_id
+            'member_id'=>$this->member_id,
+            'site_id'=>$this->site_id??0
         ]);
         if(!$checkIsExist->isEmpty()){
             throw new ApiException('请勿重复提交...');
@@ -88,7 +92,8 @@ class SignInMemberService extends BaseApiService{
         Db::startTrans();
         try {
             $this->model->create([
-                'member_id'         =>$condition['member_id'],
+                'member_id'         =>$this->member_id,
+                'site_id'           =>$this->site_id??0,
                 'sign_in_date'      =>Utils::getCurrentTime(),
                 'remark'            =>'会员签到',
                 'created_at'        =>Utils::getCurrentTime()
@@ -117,7 +122,10 @@ class SignInMemberService extends BaseApiService{
                 }
             }
             //执行签到奖励
-            $response = event("MemberSignIn", [ 'member_id' => $this->member_id]);
+            $response = event("MemberSignIn", [
+                'member_id' => $this->member_id,
+                'site_id'=>$this->site_id
+            ]);
             Db::commit();
         }catch (Exception $e){
             Db::rollback();
@@ -133,7 +141,8 @@ class SignInMemberService extends BaseApiService{
             ],
             ['sign_in_date','<=',Carbon::parse($memberInfo['first_sign_in_time'])
                 ->addDays($condition['day']-1)->endOfDay()],
-            'member_id'=>$this->member_id
+            'member_id'=>$this->member_id,
+            'site_id'=>$this->site_id??0
         ]);
         if(!$checkIsExist->isEmpty()){
             throw new ApiException('请勿重复提交...');
@@ -146,6 +155,7 @@ class SignInMemberService extends BaseApiService{
         try {
             $this->model->create([
                 'member_id'         =>$condition['member_id'],
+                'site_id'           =>$this->site_id??0,
                 'sign_in_date'      =>$signInDate,
                 'remark'            =>'会员签到',
                 'created_at'        =>Utils::getCurrentTime()
@@ -169,7 +179,12 @@ class SignInMemberService extends BaseApiService{
      * @throws DataNotFoundException
      * @throws DbException
      */
-    #[NoReturn] public function getMemberSignInList($condition): array{
+    #[NoReturn] public function getMemberSignInList($condition = []): array{
+        $condition = [
+            [ 'member_id', '=', $this->member_id ],
+            [ 'site_id','=',$this->site_id??0],
+            [ 'sign_in_date', '>=', Utils::getLastMonthSameDayStart(),'<=',Utils::getCurrentTime() ],
+        ];
        return $this->model->where($condition)->order('id asc')->select()->toArray();
     }
     #[ArrayShape(['status' => "mixed"])] public function getSignInOpen(): array{
@@ -237,7 +252,8 @@ class SignInMemberService extends BaseApiService{
         $condition = [
             [ 'member_id', '=', $this->member_id ],
             [ 'account_type', '=', $accountType ],
-            [ 'from_type','=',$fromType]
+            [ 'from_type','=',$fromType],
+            [ 'site_id','=',$this->site_id??0]
         ];
 
         return (new MemberAccountLog())->where($condition)->sum('account_data');

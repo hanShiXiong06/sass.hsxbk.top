@@ -333,7 +333,7 @@
 	let posterParam: any = {};
 	// 分享海报链接
 	const copyUrlFn = (data: any)=>{
-		copyUrl.value = '/wap/addon/shop/pages/goods/detail';
+		copyUrl.value = '/addon/shop/pages/goods/detail';
 		copyUrlParam.value = '?goods_id=' + data.goods_id;
 		if (userInfo.value && userInfo.value.member_id) copyUrlParam.value += '&mid=' + userInfo.value.member_id;
 	}

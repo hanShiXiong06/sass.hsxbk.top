@@ -10,7 +10,7 @@
 
 		</view>
 
-		<mescroll-body ref="mescrollRef" top="114rpx" @init="mescrollInit" @down="downCallback" @up="getHotelListFn">
+		<mescroll-body ref="mescrollRef" top="114rpx" @init="mescrollInit" :down="{ use: false }" @up="getHotelListFn">
 			<view class="mt-[2rpx]">
 				<view class="flex px-[24rpx] py-[30rpx] border-0 border-b-1 border-solid border-[#F0F0F0]" v-for="(item,index) in list" :key="item.hotel_id" @click="toLink(item.hotel_id)">
 					<image class="w-[238rpx] h-[238rpx] mr-[20rpx] rounded-md" :src="img(item.cover_thumb_mid)" mode="aspectFill"></image>

@@ -61,6 +61,7 @@
 
 <script>
 	import checkBox from '../uni-tr/table-checkbox.vue'
+	import { cloneDeep } from 'lodash-es'
 
 	const resource = {
 		"reset": "重置",
@@ -176,7 +177,7 @@
 		},
 		methods: {
 			_copyFilters() {
-				let dl = JSON.parse(JSON.stringify(this.filterData))
+				let dl = cloneDeep(this.filterData)
 				for (let i = 0; i < dl.length; i++) {
 					if (dl[i].checked === undefined) {
 						dl[i].checked = false

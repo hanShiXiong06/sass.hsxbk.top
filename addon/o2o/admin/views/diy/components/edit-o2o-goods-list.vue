@@ -5,15 +5,15 @@
 			<h3 class="mb-[10px]">{{ t('selectStyle') }}</h3>
 			<div class="flex items-center mb-[18px] rounded overflow-hidden">
 		        <span
-				        class="iconfont icontuwendaohang3 border-[1px] border-solid border-[#eee] cursor-pointer flex-1 flex items-center justify-center py-[5px]"
+				        class="iconfont iconshangxiatuwenpc border-[1px] border-solid border-[#eee] cursor-pointer flex-1 flex items-center justify-center py-[5px]"
 				        :class="{ 'border-[var(--el-color-primary)] text-[var(--el-color-primary)]': diyStore.editComponent.style == 'style1' }"
 				        @click="diyStore.editComponent.style = 'style1'"></span>
 				<span
-						class="iconfont icongudingzhanshi border-[1px] border-solid border-[#eee] cursor-pointer flex-1 flex items-center justify-center py-[5px]"
+						class="iconfont iconzuoyoutuwenpc border-[1px] border-solid border-[#eee] cursor-pointer flex-1 flex items-center justify-center py-[5px]"
 						:class="{ 'border-[var(--el-color-primary)] text-[var(--el-color-primary)]': diyStore.editComponent.style == 'style2' }"
 						@click="diyStore.editComponent.style = 'style2'"></span>
 				<span
-						class="o2o o2o-icon-danhanghuadong border-[1px] border-solid border-[#eee] cursor-pointer flex-1 flex items-center justify-center py-[5px]"
+						class="iconfont iconliebiaopc border-[1px] border-solid border-[#eee] cursor-pointer flex-1 flex items-center justify-center py-[5px]"
 						:class="{ 'border-[var(--el-color-primary)] text-[var(--el-color-primary)]': diyStore.editComponent.style == 'style3' }"
 						@click="diyStore.editComponent.style = 'style3'"></span>
 			</div>
@@ -84,7 +84,7 @@
 				</el-form-item>
 				<el-form-item :label="t('goodsNum')" v-if="diyStore.editComponent.source == 'all'">
 					<div class="flex items-center w-full ml-[5px]">
-						<el-slider class="flex-1" v-model="diyStore.editComponent.num" max="20" size="small" />
+						<el-slider class="flex-1" v-model="diyStore.editComponent.num" :min="1" max="20" size="small" />
 						<span class="ml-[15px]">{{ diyStore.editComponent.num }}</span>
 					</div>
 				</el-form-item>

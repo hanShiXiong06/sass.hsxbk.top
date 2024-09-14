@@ -8,7 +8,7 @@
 					</view>
 				</scroll-view>
             </view>
-			<view class="sidebar-marign pt-[var(--top-m)]" v-if="data.length">
+			<view class="sidebar-margin pt-[var(--top-m)]" v-if="data.length">
 				<template v-for="(item, index) in data">
 					<view class=" box-border mb-[var(--top-m)] card-template">
 						<view class="w-full flex justify-between items-center">

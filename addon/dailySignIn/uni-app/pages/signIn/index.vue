@@ -210,7 +210,6 @@ import {
   getSignState,
   signinApi,
 } from "@/addon/dailySignIn/api/signin";
-import {useLogin} from "@/hooks/useLogin";
 const signInData = ref({
   showSignDays: [{}], // 一共展示的天数
   rule: [{}],
@@ -243,21 +242,17 @@ const loading = ref(false);
 const memberInfo = computed(() => useMemberStore().info);
 
 const onLoadSignIn = () => {
-  if (!memberInfo.value) {
-    useLogin().setLoginBack({ url: '/addon/shop/pages/member/index' })
-    return
-  }
-  signInData.value.headimg = memberInfo.value.headimg;
-  getSignStateData();
+  signInData.value.headimg = signInData.value.headimg !="" ?memberInfo.value.headimg:""
   setTimeout(() => {
     if (!signInData.value.signState) {
       setTimeout(() => {
-        redirect({ url: "/addon/shop/pages/index" });
-      }, 1000);
+        redirect({ url: "/app/pages/member/index" });
+      }, 1000)
     }
-  }, 1000);
-};
+  }, 1000)
+}
 const onShowSignIn = () => {
+  getSignStateData()
   getRule();
   getSignPointData();
   getSignGrowthData();
@@ -271,7 +266,6 @@ const getSignPointData = () => {
     fromType: "dailySignIn",
   }).then((res) => {
     if (res.code == 1) {
-      console.log(res)
       signInData.value.signPoint = res.data;
     }
   });
@@ -375,7 +369,7 @@ const signIn = () => {
     uni.showToast({
       title: "签到未开启",
     });
-    return;
+    return false
   }
   if (!signInData.value.hasSign && signInData.value.signState == 1) {
     signinApi().then((res) => {
@@ -440,10 +434,8 @@ const onShareAppMessage = ()=>{
   };
 }
 onLoad(() => {
-  onLoadSignIn();
-});
-onShow(() => {
-  onShowSignIn();
+  onLoadSignIn()
+  onShowSignIn()
 });
 </script>
 <style lang="scss" scoped>
