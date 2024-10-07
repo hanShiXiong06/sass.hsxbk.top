@@ -12,18 +12,16 @@
 								</template>
 							</u--image>
 						</view>
-						<view class="flex flex-1 flex-col ml-[24rpx] py-[10rpx]">
+						<view class="flex flex-1 flex-col justify-between ml-[24rpx] py-[10rpx]">
 							<view class="w-[100%]">
 								<view class="text-[var(--price-text-color)] flex items-baseline">
 									<text class="text-[32rpx] font-bold price-font">￥</text>
 									<text class="text-[48rpx] price-font">{{ parseFloat(goodsPrice).toFixed(2).split('.')[0] }}</text>
 									<text class="text-[32rpx] mr-[6rpx] price-font">.{{ parseFloat(goodsPrice).toFixed(2).split('.')[1] }}</text>
 								</view>
-								<view class="text-[26rpx] leading-[32rpx] text-[var(--text-color-light6)] mt-[20rpx]">库存{{goodsDetail.detail.stock}}{{ goodsDetail.goods.unit }}</view>
+								<view class="text-[26rpx] leading-[32rpx] text-[var(--text-color-light6)] mt-[12rpx]">库存{{goodsDetail.detail.stock}}{{ goodsDetail.goods.unit }}</view>
 							</view>
-							<view class="w-[100%] mt-[14rpx]" v-if="goodsDetail.goodsSpec && goodsDetail.goodsSpec.length">
-								<text class="text-[26rpx] text-[var(--text-color-light6)] flex items-center">已选规格：{{goodsDetail.detail.sku_spec_format}}</text>
-							</view>
+							<view class="text-[26rpx] leading-[30rpx] text-[var(--text-color-light6)] w-[100%] max-h-[60rpx] multi-hidden" v-if="goodsDetail.goodsSpec && goodsDetail.goodsSpec.length">已选规格：{{goodsDetail.detail.sku_spec_format}}</view>
 	<!-- 						<view v-if="goodsDetail.goodsSpec && goodsDetail.goodsSpec.length">
 								<text>已选规格：{{goodsDetail.detail.sku_spec_format}}</text>
 							</view> -->
@@ -45,10 +43,10 @@
 							<view class="text-[28rpx]">购买数量</view>
 							<u-number-box :min="1" :max="goodsDetail.stock" integer :step="1" input-width="68rpx" v-model="buyNum" input-height="52rpx">
 								<template #minus>
-									<text class="text-[30rpx] nc-iconfont nc-icon-jianV6xx font-500" :class="{ '!text-[var(--text-color-light9)]': buyNum === 1 }"></text>
+									<text class="text-[30rpx] nc-iconfont nc-icon-jianV6xx font-500" :class="{ '!text-[var(--text-color-light9)]': buyNum <= 1 }"></text>
 								</template>
 								<template #input>
-									<text class="text-[#303133] text-[28rpx] mx-[10rpx] min-w-[72rpx] h-[44rpx] bg-[var(--temp-bg)] leading-[44rpx] text-center rounded-[6rpx]">{{ buyNum }}</text>
+									<input  class="text-[#303133] text-[28rpx] mx-[10rpx] w-[80rpx] h-[44rpx] bg-[var(--temp-bg)] leading-[44rpx] text-center rounded-[6rpx]" type="number" @input="goodsSkuInputFn" @blur="goodsSkuBlurFn" v-model="buyNum"  />
 								</template>
 								<template #plus>
 									<text class="text-[30rpx] nc-iconfont nc-icon-jiahaoV6xx font-500" :class="{ '!text-[var(--text-color-light9)]': buyNum >= goodsDetail.stock }"></text>
@@ -125,6 +123,24 @@
 		openType.value = type;
 		goodsSkuPop.value = true;
 		callback.value = fn;
+	}
+	
+	const goodsSkuInputFn = ()=>{
+		setTimeout(() => {
+			if(buyNum.value >= goodsDetail.value.stock){
+				buyNum.value = goodsDetail.value.stock;
+			}
+		},0)
+	}
+	const goodsSkuBlurFn = ()=>{
+		setTimeout(() => {
+			if(!buyNum.value || buyNum.value <= 0 ){
+				buyNum.value = 1;
+			}
+			if(buyNum.value >= goodsDetail.value.stock){
+				buyNum.value = goodsDetail.value.stock;
+			}
+		},0)
 	}
 
 	const closeFn = ()=>{
@@ -219,7 +235,7 @@
                 cartId = toRaw(cartList.value['goods_' + goodsDetail.value.goods_id]['sku_' + goodsDetail.value.sku_id].id)
             }
 
-            num += buyNum.value;
+            num += Number(buyNum.value);
             cartStore.increase({
                 id: cartId || '',
                 goods_id: goodsDetail.value.goods_id,

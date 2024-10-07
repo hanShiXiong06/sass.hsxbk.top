@@ -166,8 +166,7 @@
                                     <el-button v-if="row.goodsSku.sku_spec_format" type="primary" link @click="skuDiscountSettingsEvent(formData.goods_list[row.index])">
                                         {{t('skuDiscountSettings') }}
                                     </el-button>
-                                    <el-button type="primary" link @click="deleteEvent(row.index)">{{t('delete') }}
-                                    </el-button>
+                                    <el-button type="primary" link @click="deleteEvent(row.index)">{{t('delete') }}</el-button>
                                 </template>
                             </el-table-column>
                         </el-table>

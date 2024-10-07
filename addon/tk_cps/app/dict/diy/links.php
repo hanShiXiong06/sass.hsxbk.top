@@ -21,6 +21,13 @@ return [
                 'action' => 'decorate'
             ],
             [
+                'name' => 'TK_CPS_MEMBER_FENXIAO',
+                'title' => '分销中心',
+                'url' => '/addon/tk_cps/pages/fenxiao/index',
+                'is_share' => 1,
+                'action' => 'decorate'
+            ],
+            [
                 'name' => 'TK_CPS_ACT_LIST',
                 'title' => '活动列表',
                 'url' => '/addon/tk_cps/pages/act',

@@ -62,6 +62,8 @@ Route::group('tk_cps', function () {
     Route::get('getpagecode/:type', 'addon\tk_cps\app\adminapi\controller\page\Page@pageCode');
     //获取霸王餐订单状态
     Route::get('bwc/getorderstatus', 'addon\tk_cps\app\adminapi\controller\bwcorder\BwcOrder@getOrderStatus');
+    //同步站点订单
+    Route::get('bwc/asyncdayorder', 'addon\tk_cps\app\adminapi\controller\bwcorder\BwcOrder@asyncDayOrder');
     Route::get('getbwcconfig', 'addon\tk_cps\app\adminapi\controller\config\Config@getBwcConfig');
     Route::post('setbwcconfig', 'addon\tk_cps\app\adminapi\controller\config\Config@setBwcConfig');
    //手动同步活动订单

@@ -9,9 +9,9 @@
 			</view>
 
 			<view class="swiper-box">
-				<u-swiper :list="goodsDetail.goods.goods_image" :indicator="goodsDetail.goods.goods_image.length" :indicatorStyle="{'bottom': '50rpx',}" :autoplay="true" height="100vw" @click="swiperClick"></u-swiper>
+				<u-swiper :list="goodsDetail.goods.goods_image" :indicator="goodsDetail.goods.goods_image.length" :indicatorStyle="{'bottom': '68rpx',}" :autoplay="true" height="100vw" @click="swiperClick"></u-swiper>
 			</view>
-			<view class="rounded-t-[40rpx] -mt-[38rpx] relative flex items-center justify-between !bg-cover box-border pb-[26rpx] h-[136rpx] px-[30rpx]" :style="{ background: 'url(' + img('addon/shop/detail/discount_price_bg.png') + ') no-repeat'}">
+			<view class="rounded-t-[40rpx] -mt-[40rpx] relative flex items-center justify-between !bg-cover box-border pb-[26rpx] h-[136rpx] px-[30rpx]" :style="{ background: 'url(' + img('addon/shop/detail/discount_price_bg.png') + ') no-repeat'}">
 				<view class="flex items-baseline text-[#fff]">
 					<view class="flex items-center">
 						<view class="inline-block price-font" v-if="goodsDetail.point">
@@ -49,7 +49,7 @@
 						</view>
 					</view>
 				</view>
-				<view class="mt-[var(--top-m)] sidebar-marign card-template" v-if="isGoodsPropertyTemp">
+				<view class="mt-[var(--top-m)] sidebar-margin card-template" v-if="isGoodsPropertyTemp">
 					<view @click="servicesDataShow = !servicesDataShow" v-if="goodsDetail.service && goodsDetail.service.length" class="card-template-item">
 						<text class="text-[#333] text-[26rpx] leading-[30rpx] font-400 shrink-0">服务</text>
 						<view class="text-[#343434] text-[26rpx] leading-[30rpx] font-400 truncate ml-auto">
@@ -74,7 +74,7 @@
 
 				</view>
 
-				<view class="mt-[var(--top-m)] sidebar-marign card-template">
+				<view class="mt-[var(--top-m)] sidebar-margin card-template">
 					<view class="flex items-center justify-between min-h-[40rpx]" :class="{'mb-[30rpx]': evaluate && evaluate.list && evaluate.list.length}">
 						<text class="title !mb-[0]">宝贝评价({{ evaluate.count }})</text>
 						<view v-if="evaluate.count" class="h-[40rpx] flex items-center" @click="toLink(goodsDetail.goods_id)">
@@ -103,7 +103,7 @@
 					</view>
 				</view>
 
-				<view class="my-[var(--top-m)] goods-sku sidebar-marign card-template" v-if="goodsDetail.goods && goodsDetail.goods.attr_format && Object.keys(goodsDetail.goods.attr_format).length">
+				<view class="my-[var(--top-m)] goods-sku sidebar-margin card-template" v-if="goodsDetail.goods && goodsDetail.goods.attr_format && Object.keys(goodsDetail.goods.attr_format).length">
 					<view class="title mb-[30rpx]">商品属性</view>
 					<view>
 						<block v-for="(item,index) in goodsDetail.goods.attr_format" :key="index">
@@ -119,7 +119,7 @@
 					</view>
 				</view>
 
-				<view class="my-[var(--top-m)] sidebar-marign card-template px-[var(--pad-sidebar-m)]">
+				<view class="my-[var(--top-m)] sidebar-margin card-template px-[var(--pad-sidebar-m)]">
 					<view class="title">商品详情</view>
 					<view class="u-content">
 						<u-parse :content="goodsDetail.goods.goods_desc" :tagStyle="{img: 'vertical-align: top;',p:'overflow: hidden;word-break:break-word;' }"></u-parse>
@@ -606,7 +606,7 @@ onUnload(()=>{
 	height: 5rpx !important;
 }
 .datail-title{
-	background: linear-gradient(#fff , rgba(255,255,255,0));
+	background: linear-gradient(#fff 70%, #F6F6F6);
 }
 .goods-sku .value-wid{
 	width: calc(100% - 160rpx);

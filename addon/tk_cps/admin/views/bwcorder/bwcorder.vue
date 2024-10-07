@@ -1,10 +1,14 @@
 <template>
   <div class="main-container">
     <el-card class="box-card !border-none" shadow="never">
-      <div class="flex justify-between items-center">
-        <span class="text-lg">{{ pageName }}</span>
+      <div class="mb-4" style="width: 640px">
+        <el-alert
+          type="info"
+          title="同步订单需配合队列使用，队列异常将无法同步;队列执行会有延迟，请耐心等待"
+          :closable="false"
+          show-icon
+        />
       </div>
-
       <el-card
         class="box-card !border-none my-[10px] table-search-wrap"
         shadow="never"
@@ -65,6 +69,7 @@
             <el-button @click="resetForm(searchFormRef)">{{
               t("reset")
             }}</el-button>
+            <el-button @click="asyncDayOrderEvent()">同步订单</el-button>
           </el-form-item>
         </el-form>
       </el-card>
@@ -244,6 +249,7 @@ import {
   getBwcOrderList,
   deleteBwcOrder,
   getOrderStatus,
+  asyncDayOrder,
 } from "@/addon/tk_cps/api/bwcorder";
 import { img } from "@/utils/common";
 import { ElMessageBox, FormInstance } from "element-plus";
@@ -306,7 +312,17 @@ const searchFormRef = ref<FormInstance>();
 const selectData = ref<any[]>([]);
 
 // 字典数据
-
+const asyncDayOrderEvent = async () => {
+  bwcOrderTable.loading = true;
+  asyncDayOrder()
+    .then(() => {
+      bwcOrderTable.loading = false;
+      loadBwcOrderList();
+    })
+    .catch(() => {
+      bwcOrderTable.loading = false;
+    });
+};
 /**
  * 获取霸王餐订单列表
  */

@@ -1,6 +1,6 @@
 <template>
 	<view :style="warpCss">
-		<view class="px-[30rpx] pt-[30rpx] pb-[120rpx] box-border">
+		<view class="px-[30rpx] pt-[30rpx] box-border pb-[30rpx]" :class="{'!pb-[120rpx]':diyComponent.isShowAccount}">
 			<!-- #ifdef MP-WEIXIN -->
 			<view :style="navbarInnerStyle"></view>
 			<!-- #endif -->
@@ -13,16 +13,15 @@
 						<view class="text-[26rpx] font-400 leading-[28rpx] ml-[10rpx]" v-if="info.mobile">{{info.mobile.replace(info.mobile.substring(3,7), "****")}}</view>
 
 						<!-- #ifdef H5 -->
-						<view v-else-if="!info.mobile" @click="bindMobileFn" class="text-[22rpx] text-[#666] ml-[10rpx] px-[6rpx] border-[1rpx] border-solid border-[#E3E4E9] rounded-[8rpx] h-[34rpx] flex-center">{{ t('bindMobile') }}</view>
+						<view v-else-if="!info.mobile" @click="bindMobileFn" class="text-[22rpx] ml-[10rpx] px-[6rpx] border-[1rpx] border-solid border-[#E3E4E9] rounded-[8rpx] h-[34rpx] flex-center" :style="{ borderColor : diyComponent.textColor }">{{ t('bindMobile') }}</view>
 						<!-- #endif -->
 
 						<!-- #ifdef MP-WEIXIN -->
-						<button v-else-if="!info.mobile" class="text-[22rpx] text-[#666] ml-[10rpx] bg-[#fff] px-[6rpx] border-[1rpx] border-solid border-[#E3E4E9] rounded-[8rpx] h-[37rpx] flex-center mr-0" open-type="getPhoneNumber" @getphonenumber="memberStore.bindMobile">{{t('bindMobile')}}</button>
+						<button v-else-if="!info.mobile" class="text-[22rpx] ml-[10rpx] bg-[#fff] px-[6rpx] border-[1rpx] border-solid border-[#E3E4E9] rounded-[8rpx] h-[37rpx] flex-center mr-0" :style="{ borderColor : diyComponent.textColor }" open-type="getPhoneNumber" @getphonenumber="memberStore.bindMobile">{{t('bindMobile')}}</button>
 						<!-- #endif -->
 
 					</view>
-					<!-- diyComponent.textColor -->
-					<view class="text-[#ffffff] text-[24rpx] font-400 leading-[28rpx] mt-[14rpx]" :style="{ color : '#666' }">UID：{{ info.member_no }}</view>
+					<view class="text-[#666] text-[24rpx] font-400 leading-[28rpx] mt-[14rpx]" :style="{ color : diyComponent.uidTextColor }">UID：{{ info.member_no }}</view>
 				</view>
 				<text @click="redirect({ url: '/app/pages/setting/index' })" class="nc-iconfont nc-icon-shezhiV6xx1 text-[38rpx] ml-[10rpx]" :style="{ color : diyComponent.textColor }"></text>
 			</view>
@@ -37,8 +36,7 @@
 					<text class="nc-iconfont nc-icon-shezhiV6xx1 text-[38rpx] ml-[10rpx]" :style="{ color : diyComponent.textColor }"></text>
 				</view>
 			</view>
-
-			<view class="flex mt-[40rpx] items-center">
+			<view class="flex mt-[40rpx] items-center" v-if="diyComponent.isShowAccount">
 				<view class="text-center w-[33.333%] flex-shrink-0">
 					<view class="text-[36rpx] mb-[20rpx] font-500 price-font">
 						<!-- diyComponent.textColor -->
@@ -72,7 +70,7 @@
 		<!-- #endif -->
 
 		<!-- 强制绑定手机号 -->
-		<bind-mobile ref="bindMobileRef" /> 
+		<bind-mobile ref="bindMobileRef" />
 
 	</view>
 </template>

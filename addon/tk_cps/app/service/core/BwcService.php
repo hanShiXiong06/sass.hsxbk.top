@@ -288,17 +288,17 @@ class BwcService extends BaseApiService
             $rate = $config['fanxianratio'] / 100;
             $orderInfo->where(['orderSn' => $data['orderSn']])->update(
                 [
-                    'state' => $data['state'],
-                    'reason' => $data['reason'],
-                    'xgzSettleStatus' => $data['xgzSettleStatus'],
-                    'planType' => $data['planType'],
-                    'commissionType' => $data['commissionType'],
+                    'state' => $data['state']??'',
+                    'reason' => $data['reason']??'',
+                    'xgzSettleStatus' => $data['xgzSettleStatus']??'',
+                    'planType' => $data['planType']??'',
+                    'commissionType' => $data['commissionType']??'',
                     'commission' => $data['commission'] > 0 ? $data['commission'] : "",
-                    'paidAmount' => $data['paidAmount'],
-                    'ecommissionRatio' => $data['eCommissionRatio'],
-                    'ecommission' => $data['eCommission'],
-                    'userOrderSn' => $data['userOrderSn'],
-                    'finishedTime' => $data['finishedTime'],
+                    'paidAmount' => $data['paidAmount']??'',
+                    'ecommissionRatio' => $data['eCommissionRatio']??'',
+                    'ecommission' => $data['eCommission']??'',
+                    'userOrderSn' => $data['userOrderSn']??'',
+                    'finishedTime' => $data['finishedTime']??'',
                     'fanxian' => number_format($data['commission'] > 0 ? $data['commission'] * $rate : 0, 2, '.', ''),
                     'is_fanxian' => $orderInfo['state'] == 8 ? 1 : 0,
                 ]
@@ -365,10 +365,10 @@ class BwcService extends BaseApiService
      * @author: TK
      * @Time: 2024/5/20   下午5:17
      */
-    public function cronOrder()
+    public function cronOrder($site_id,$mini=30)
     {
         $pageSize = 100;
-        $startTime = date("Y-m-d H:i:s", time() - 60 * 30);
+        $startTime = date("Y-m-d H:i:s", time() - 60 * $mini);
         $endTime = date("Y-m-d H:i:s", time());
         for ($i = 1; $i <= 10; $i++) {
             $offset = ($i - 1) * $pageSize;
@@ -379,9 +379,10 @@ class BwcService extends BaseApiService
                 'offset' => $offset,
                 'pageSize' => 100
             ];
-            $result = $this->bwcOrder($param)['data'];
+            $result = $this->bwcAsyncOrder($param,$site_id)['data'];
             if (empty($result)) break;
             $list = $result['orderList'] ?? [];
+
             if (!empty($list)) {
                 foreach ($list as $item) {
                     //整合通知调用
@@ -404,6 +405,21 @@ class BwcService extends BaseApiService
         }
     }
 
+    /**
+     * @Notes:同步霸王餐订单
+     * @Interface bwcAsyncOrder
+     * @param $data
+     * @param $site_id
+     * @return mixed
+     * @throws Exception
+     * @author: TK
+     * @Time: 2024/9/21   下午2:50
+     */
+    public function bwcAsyncOrder($data,$site_id)
+    {
+        $res = $this->execute('xgzBwcOrder/union/list', $data,$site_id);
+        return $res;
+    }
     /**
      * @Notes:霸王餐订单列表
      * @Interface bwcOrder
@@ -582,6 +598,7 @@ class BwcService extends BaseApiService
         $config = $this->getSiteConfig($this->site_id);
         $rate = $config['fanxianratio'] / 100;
         $res=$this->execute('bwc/union/merchantList', $data);
+        if(isset($res['success'])&&$res['success']==false) throw new Exception($res['message']);
         $merchantList=$res['data']['merchantList'];
         foreach ($merchantList as $k => $v) {
            if($v['planList']){
@@ -632,9 +649,12 @@ class BwcService extends BaseApiService
      * @author: TK
      * @Time: 2024/5/12   上午8:20
      */
-    public function execute($path, $data)
+    public function execute($path, $data,$site_id='')
     {
-        $config = $this->getConfig();
+        if($site_id!=''){
+            $this->site_id=$site_id;
+        }
+        $config = $this->getConfig($this->site_id);
         //联盟对接信息
         $appkey = $config['appkey'];
         $appsecret = $config['appsecret'];
@@ -676,8 +696,11 @@ class BwcService extends BaseApiService
         return $info['value'];
     }
 
-    public function getConfig()
+    public function getConfig($site_id='')
     {
+        if($site_id!=''){
+            $this->site_id=$site_id;
+        }
         $info = (new CoreConfigService())->getConfig($this->site_id, ConfigDict::getBwcType());
         if (!isset($info['value'])) {
             throw new Exception('请先完成霸王餐配置');

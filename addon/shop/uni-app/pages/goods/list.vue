@@ -4,10 +4,10 @@
 			<view class="py-[14rpx] flex items-center justify-between px-[20rpx]">
 				<view class="flex-1 search-input mr-[20rpx]">
 					<text @click.stop="searchTypeFn('all')" class="nc-iconfont nc-icon-sousuo-duanV6xx1 btn"></text>
-					<input class="input" maxlength="50" type="text" v-model="goods_name" placeholder="请搜索您想要的商品" placeholderClass="text-[var(--text-color-light9)]" confirm-type="search" @confirm="searchTypeFn('all')">
+					<input class="input" maxlength="50" type="text" v-model="goods_name" placeholder="请搜索您想要的商品" placeholderClass="text-[var(--text-color-light9)] text-[24rpx]" confirm-type="search" @confirm="searchTypeFn('all')">
 					<text v-if="goods_name" class="nc-iconfont nc-icon-cuohaoV6xx1 clear" @click="goods_name=''"></text>
 				</view>
-				<view :class="['nc-iconfont text-[32rpx] text-[#333] -mb-[2rpx]', listType ? 'nc-icon-a-yingyongzhongxinV6xx-36' : 'nc-icon-a-yingyongliebiaoV6xx-36']" @click="listIconBtn"></view>
+				<view :class="['iconfont text-[32rpx] text-[#333] -mb-[2rpx]', listType ? 'icona-yingyongzhongxinV6xx-32' : 'icona-yingyongliebiaoV6xx-32']" @click="listIconBtn"></view>
 			</view>
 			<view class="flex justify-between tems-center h-[88rpx] px-[30rpx]">
 				<view class=" flex items-center justify-between text-[26rpx] flex-1">
@@ -42,7 +42,7 @@
 		</u-popup>
 
 		<mescroll-body ref="mescrollRef" top="176rpx" bottom="60px" @init="mescrollInit" :down="{ use: false }" @up="getAllAppListFn">
-			<view v-if="articleList.length" :class="['sidebar-marign', !listType ? 'flex justify-between flex-wrap' : '']">
+			<view v-if="articleList.length" :class="['sidebar-margin', !listType ? 'flex justify-between flex-wrap' : '']">
 				<template v-for="(item, index) in articleList">
 					<template v-if="listType" :key="item.app_id">	
 						<view class="bg-white flex px-[20rpx] py-[24rpx] rounded-[var(--rounded-small)] overflow-hidden top-mar" :class="{ 'mb-[20rpx]': (index+1) == articleList.length}" @click="toDetail(item.goods_id)">

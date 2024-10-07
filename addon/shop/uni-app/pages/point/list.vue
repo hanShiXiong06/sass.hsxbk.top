@@ -5,7 +5,7 @@
 			<view class="py-[14rpx] flex items-center justify-between px-[20rpx]">
 				<view class="flex-1 search-input">
 					<text @click.stop="searchTypeFn('all')" class="nc-iconfont nc-icon-sousuo-duanV6xx1 btn"></text>
-					<input class="input" maxlength="50" type="text" v-model="goods_name" placeholder="请搜索您想要的商品" placeholderClass="text-[var(--text-color-light9)]" confirm-type="search" @confirm="searchTypeFn('all')">
+					<input class="input" maxlength="50" type="text" v-model="goods_name" placeholder="请搜索您想要的商品" placeholderClass="text-[var(--text-color-light9)] text-[24rpx]" confirm-type="search" @confirm="searchTypeFn('all')">
 					<text v-if="goods_name" class="nc-iconfont nc-icon-cuohaoV6xx1 clear" @click="goods_name=''"></text>
 				</view>
 			</view>
@@ -32,7 +32,7 @@
 		</view>
 
 		<mescroll-body ref="mescrollRef" top="176rpx" bottom="60px" @init="mescrollInit" :down="{ use: false }" @up="getAllAppListFn">
-			<view v-if="goodsList.length" class="sidebar-marign flex justify-between flex-wrap">
+			<view v-if="goodsList.length" class="sidebar-margin flex justify-between flex-wrap">
 				<template v-for="(item, index) in goodsList">
 					<view class="goods-item-style-two flex flex-col bg-[#fff] box-border rounded-[var(--rounded-mid)] overflow-hidden mt-[var(--top-m)]" @click="toDetail(item.id)">
 						<!-- <u--image width="100%" height="350rpx" :src="img(item.goods_cover_thumb_mid ? item.goods_cover_thumb_mid : '')" model="aspectFill">

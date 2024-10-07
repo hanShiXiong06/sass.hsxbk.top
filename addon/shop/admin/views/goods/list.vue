@@ -247,9 +247,19 @@ const initData = () => {
         const data = res.data
         if (data) {
             const goodsCategoryTree: any = []
+            // 增加全部筛选选择
+            goodsCategoryTree.push({
+                value: '',
+                label: '全部',
+                children: []
+            })
             data.forEach((item: any) => {
                 const children: any = []
                 if (item.child_list) {
+                    children.push({
+                        value: item.category_id,
+                        label: '全部'
+                    })
                     item.child_list.forEach((childItem: any) => {
                         children.push({
                             value: childItem.category_id,

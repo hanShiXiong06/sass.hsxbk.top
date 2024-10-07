@@ -1,94 +1,96 @@
 <template>
-	<view class="flex items-center mb-[16rpx] mt-[32rpx] flex-right justify-between mr-2">
-		<view class="ml-4 font-bold text-[36rpx]">全城霸王餐</view>
-		<view class="flex items-center">
-			<view>
-				<u-icon name="map" color="#ffab45" size="18"></u-icon>
-			</view>
-			<view @click="changeAddress()" class="text-[#ffab45] text-xs tk-sltext">
-				{{ currentPosition }}
-			</view>
-			<view>
-				<u-icon name="arrow-right" color="#ffab45" size="18"></u-icon>
+	<view class="detail-box">
+		<view class="flex items-center mb-[16rpx] mt-[32rpx] flex-right justify-between mr-2">
+			<view class="ml-4 font-bold text-[36rpx]">全城霸王餐</view>
+			<view class="flex items-center">
+				<view>
+					<u-icon name="map" color="#ffab45" size="18"></u-icon>
+				</view>
+				<view @click="changeAddress()" class="text-[#ffab45] text-xs tk-sltext">
+					{{ currentPosition }}
+				</view>
+				<view>
+					<u-icon name="arrow-right" color="#ffab45" size="18"></u-icon>
+				</view>
 			</view>
 		</view>
-	</view>
-	<view class="">
-		<scroll-view scroll-x="true" class="scroll-Y box-border bg-white">
-			<view class="flex whitespace-nowrap justify-around">
-				<view :class="[
+		<view class="">
+			<scroll-view scroll-x="true" class="scroll-Y box-border bg-white">
+				<view class="flex whitespace-nowrap justify-around">
+					<view :class="[
             'text-sm leading-[90rpx]',
             { 'class-select': planSource === item.value },
           ]" @click="actStateFn(item.value)" v-for="(item, index) in actType">{{ item.name }}</view>
-			</view>
-		</scroll-view>
-	</view>
-	<view class="tk-card" v-for="(item, index) in list">
-		<view class="flex">
-			<image style="
+				</view>
+			</scroll-view>
+		</view>
+		<view class="tk-card" v-for="(item, index) in list">
+			<view class="flex">
+				<image style="
           width: 180rpx;
           height: 140rpx;
           background-color: #eeeeee;
           border-radius: 8px;
         " :src="item.logo" mode="aspectFill"></image>
-			<view class="flex flex-col ml-2 w-[100%] justify-between" style="">
-				<view class="font-bold tk-sltext">{{ item.name }}</view>
-				<view class="flex justify-between">
-					<view class="flex items-center">
-						<image style="
+				<view class="flex flex-col ml-2 w-[100%] justify-between" style="">
+					<view class="font-bold tk-sltext">{{ item.name }}</view>
+					<view class="flex justify-between">
+						<view class="flex items-center">
+							<image style="
                 width: 32rpx;
                 height: 32rpx;
                 background-color: #eeeeee;
                 border-radius: 8px;
               " :src="item.platformLogo" mode="aspectFill"></image>
-						<view class="text-xs mt-[4rpx] ml-2">{{ item.platformName }}</view>
+							<view class="text-xs mt-[4rpx] ml-2">{{ item.platformName }}</view>
+						</view>
+						<view class="text-xs">{{ item.distance }}</view>
 					</view>
-					<view class="text-xs">{{ item.distance }}</view>
-				</view>
-				<view class="flex justify-between">
-					<text class="text-xs">共{{ item.planList.length }}个活动</text>
+					<view class="flex justify-between">
+						<text class="text-xs">共{{ item.planList.length }}个活动</text>
+					</view>
 				</view>
 			</view>
-		</view>
-		<view class="" v-for="(item1, index1) in item.planList" :key="index1">
-			<view class="flex items-center mt-2 mb-2">
-				<view class="bg-slate-100 pl-2 pr-2 pt-1 pb-1 text-xs text-blue-100 rounded-lg">活动{{ index1 + 1 }}
-				</view>
-				<view class="text-xs">
-					<text>{{
+			<view class="" v-for="(item1, index1) in item.planList" :key="index1">
+				<view class="flex items-center mt-2 mb-2">
+					<view class="bg-slate-100 pl-2 pr-2 pt-1 pb-1 text-xs text-blue-100 rounded-lg">活动{{ index1 + 1 }}
+					</view>
+					<view class="text-xs">
+						<text>{{
               timeChange(item1.startTime) == "0:0"
                 ? "00:00"
                 : timeChange(item1.startTime)
             }}-</text>
-					<text>{{ timeChange(item1.endTime) }}</text>
+						<text>{{ timeChange(item1.endTime) }}</text>
+					</view>
+					<view class="line-box"></view>
 				</view>
-				<view class="line-box"></view>
-			</view>
-			<view @click="goDetail(item1)" class="flex justify-between items-center">
-				<view class="flex">
-					<view class="">
-						<u-tag :text="`最高返` + item1.commission" bgColor="#FA6400" borderColor="#FE5A49"
-							size="mini"></u-tag>
+				<view @click="goDetail(item1)" class="flex justify-between items-center">
+					<view class="flex">
+						<view class="">
+							<u-tag :text="`最高返` + item1.commission" bgColor="#FA6400" borderColor="#FE5A49"
+								size="mini"></u-tag>
+						</view>
+						<view class="ml-2">
+							<u-tag text="需要用餐评价" v-if="item1.planType == 1" type="success" plain plainFill
+								size="mini"></u-tag>
+							<u-tag text="无需评价" v-else type="error" plain plainFill size="mini" color="#FA6400"></u-tag>
+						</view>
 					</view>
-					<view class="ml-2">
-						<u-tag text="需要用餐评价" v-if="item1.planType == 1" type="success" plain plainFill
-							size="mini"></u-tag>
-						<u-tag text="无需评价" v-else type="error" plain plainFill size="mini" color="#FA6400"></u-tag>
-					</view>
-				</view>
-				<view class="flex items-center">
-					<view class="kucun">
-						<text class="text-xs">还剩{{ item1.restStock }}份</text>
-						<u-line-progress :percentage="(item1.restStock / item1.totalStock) * 100" activeColor="#FFBA00"
-							height="5" :showText="false"></u-line-progress>
-					</view>
+					<view class="flex items-center">
+						<view class="kucun">
+							<text class="text-xs">还剩{{ item1.restStock }}份</text>
+							<u-line-progress :percentage="(item1.restStock / item1.totalStock) * 100"
+								activeColor="#FFBA00" height="5" :showText="false"></u-line-progress>
+						</view>
 
-					<u-icon name="arrow-right" color="#cccccc" size="10"></u-icon>
-					<view class="ml-2">
-						<u-tag v-if="item1.restStock > 0" @click="goDetail(item1)" :text="`去报名`" bgColor="#FA6400"
-							borderColor="#FE5A49"></u-tag>
-						<u-tag v-if="item1.restStock == 0" :text="`已抢光`" bgColor="#6e6f6e"
-							borderColor="#ffffff"></u-tag>
+						<u-icon name="arrow-right" color="#cccccc" size="10"></u-icon>
+						<view class="ml-2">
+							<u-tag v-if="item1.restStock > 0" @click="goDetail(item1)" :text="`去报名`" bgColor="#FA6400"
+								borderColor="#FE5A49"></u-tag>
+							<u-tag v-if="item1.restStock == 0" :text="`已抢光`" bgColor="#6e6f6e"
+								borderColor="#ffffff"></u-tag>
+						</view>
 					</view>
 				</view>
 			</view>
@@ -138,7 +140,6 @@
 	const systemStore = useSystemStore();
 	import { getAddressByLatlng } from "@/app/api/system";
 	const currentPosition = ref(uni.getStorageSync("currentPositiontk"));
-
 	/************* 分享海报-start **************/
 	let sharePosterRef = ref(null);
 	let copyUrlParam = ref("");

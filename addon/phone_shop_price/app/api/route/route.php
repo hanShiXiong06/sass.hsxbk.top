@@ -23,6 +23,8 @@ Route::group('phone_shop_price', function() {
     Route::get('hello_world', 'addon\phone_shop_price\app\api\controller\hello_world\Index@index');
      //二手机分类列表
      Route::get('recycle_category_tree', 'addon\phone_shop_price\app\api\controller\recycle_category\RecycleCategory@tree');
+     // phone_shop_price/recycle_address_list 获取商家的回收地址
+     Route::get('address_list','addon\phone_shop_price\app\api\controller\recycle_category\RecycleCategory@address_list');
 
 })->middleware(ApiChannel::class)
     ->middleware(ApiCheckToken::class, false) //false表示不验证登录

@@ -28,8 +28,10 @@ return [
         'name' => '霸王餐订单同步',
         'desc' => '',
         'time' => [
-            'type' => 'min',
-            'min' => 1
+            'type' => 'day',//任务调度频率类型
+            'day' => 1,//每隔几日
+            'hour' => 4,//当日执行时间具体小时数
+            'min' => 40,//当日执行时间具体分钟数
         ],
         'class' => 'addon\tk_cps\app\job\BwcOrderAsync',
         'function' => ''

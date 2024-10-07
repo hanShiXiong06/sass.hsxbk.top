@@ -13,7 +13,7 @@ namespace addon\phone_shop_price\app\service\api\recycle_category;
 
 use addon\phone_shop_price\app\model\recycle_category\RecycleCategory;
 use addon\phone_shop_price\app\service\core\RecycleCategory\CoreRecycleCategoryService;
-
+use addon\phone_shop\app\model\shop_address\ShopAddress;
 use core\base\BaseAdminService;
 
 
@@ -28,6 +28,10 @@ class RecycleCategoryService extends BaseAdminService
     {
         parent::__construct();
         $this->model = new RecycleCategory();
+        $this->Address =  new ShopAddress();
+        
+    
+    
     }
 
 
@@ -40,6 +44,17 @@ class RecycleCategoryService extends BaseAdminService
     public function getTree()
     {
         return ( new CoreRecycleCategoryService() )->getTree([ [ 'site_id', 'in', "{$this->site_id}" ]  ]);
+    }
+    // address_list 获取商家的收货地址
+    public function address_list(){
+     
+        $field = 'id,contact_name,mobile,province_id,city_id,district_id,address,full_address,lat,lng,is_delivery_address,is_refund_address,is_default_delivery,is_default_refund';
+        $order = '';
+
+        $search_model = $this->Address->where([ ['site_id', '=', $this->site_id] ])->withSearch([ "mobile", "full_address" ], $where)->field($field)->order($order);
+        $list = $this->pageQuery($search_model);
+        return $list;
+    
     }
 
 }

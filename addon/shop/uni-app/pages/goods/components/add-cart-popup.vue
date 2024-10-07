@@ -3,28 +3,24 @@
 		<u-popup :show="goodsSkuPop" @close="closeFn" mode="bottom">
 			<view v-if="Object.keys(goodsDetail).length"  @touchmove.prevent.stop class="rounded-t-[20rpx] overflow-hidden bg-[#fff] py-[32rpx] relative">
 				<view class="flex mb-[58rpx] px-[32rpx]">
-					<view class="rounded-[var(--goods-rounded-big)] overflow-hidden">
-						<u--image width="180rpx" height="180rpx" :src="img(detail.sku_image)" model="aspectFill">
-							<template #error>
-                                <image class="w-[180rpx] h-[180rpx]" :src="img('static/resource/images/diy/shop_default.jpg')" mode="aspectFill"></image>
-							</template>
-						</u--image>
-					</view>
+					<u--image width="180rpx" height="180rpx" :radius="'var(--goods-rounded-big)'" :src="img(detail.sku_image)" model="aspectFill">
+						<template #error>
+							<image class="w-[180rpx] h-[180rpx] rounded-[var(--goods-rounded-big)] overflow-hidden" :src="img('static/resource/images/diy/shop_default.jpg')" mode="aspectFill"></image>
+						</template>
+					</u--image>
 
-					<view class="flex flex-1 flex-col ml-[20rpx] py-[10rpx]">
+					<view class="flex flex-1 flex-col justify-between ml-[20rpx] py-[10rpx]">
 						<view class="w-[100%]">
 							<view class=" text-[var(--price-text-color)]  flex items-baseline">
-								<text class="text-[28rpx] font-bold price-font mr-[4rpx]">￥</text>
-								<text class="text-[42rpx] font-bold price-font">{{ parseFloat(goodsPrice(detail)).toFixed(2).split('.')[0] }}</text>
-								<text class="text-[28rpx] font-bold price-font">.{{ parseFloat(goodsPrice(detail)).toFixed(2).split('.')[1] }}</text>
-								<image class="h-[24rpx] ml-[6rpx]" v-if="priceType(detail) == 'member_price'" :src="img('addon/shop/VIP.png')" mode="heightFix" />
+								<text class="text-[32rpx] font-bold price-font mr-[4rpx]">￥</text>
+								<text class="text-[48rpx] price-font">{{ parseFloat(goodsPrice(detail)).toFixed(2).split('.')[0] }}</text>
+								<text class="text-[32rpx] price-font">.{{ parseFloat(goodsPrice(detail)).toFixed(2).split('.')[1] }}</text>
+								<image class="h-[24rpx] ml-[6rpx]" :src="img('addon/shop/VIP.png')" mode="heightFix" />
 								<image class="h-[24rpx] ml-[6rpx]" v-if="priceType(detail) == 'discount_price'" :src="img('addon/shop/discount.png')" mode="heightFix" />
 							</view>
-							<view class="text-[24rpx] leading-[32rpx] text-[#303133] mt-[12rpx]">库存{{ detail.stock }}{{ goodsDetail.goods.unit }}</view>
+							<view class="text-[26rpx] leading-[32rpx] text-[#303133] mt-[12rpx]">库存{{ detail.stock }}{{ goodsDetail.goods.unit }}</view>
 						</view>
-						<view class="w-[100%] mt-auto" style="max-height: calc(204rpx - 126rpx); overflow: hidden;" v-if="goodsDetail.goodsSpec && goodsDetail.goodsSpec.length">
-							<text class="text-[24rpx] leading-[30rpx] text-[var(--text-color-light6)]">已选规格：{{ detail.sku_spec_format }}</text>
-						</view>
+						<view class="w-[100%] text-[26rpx] leading-[30rpx] text-[var(--text-color-light6)] multi-hidden max-h-[60rpx]" v-if="goodsDetail.goodsSpec && goodsDetail.goodsSpec.length">已选规格：{{ detail.sku_spec_format }}</view>
 					</view>
 				</view>
 				<scroll-view class="h-[500rpx] box-border px-[32rpx] mb-[30rpx]" scroll-y="true">
@@ -47,10 +43,10 @@
 							input-height="54rpx">
 							<template #minus>
 								
-								<text class="text-[34rpx] nc-iconfont nc-icon-jianV6xx font-500" :class="{ '!text-[var(--text-color-light9)]': buyNum === 0 }"></text>
+								<text class="text-[34rpx] nc-iconfont nc-icon-jianV6xx font-500" :class="{ '!text-[var(--text-color-light9)]': buyNum <= 0 }"></text>
 							</template>
 							<template #input>
-								<text class="text-[#303133] text-[28rpx] mx-[10rpx] min-w-[72rpx] h-[44rpx] bg-[#F1F2F5] leading-[44rpx] text-center rounded-[6rpx]">{{ buyNum }}</text>
+								<input class="text-[#303133] text-[28rpx] mx-[10rpx] w-[80rpx] h-[44rpx] bg-[var(--temp-bg)] leading-[44rpx] text-center rounded-[6rpx]" type="number" @input="goodsSkuInputFn" @blur="goodsSkuBlurFn" v-model="buyNum"  />
 							</template>
 							<template #plus>
 								<text class="text-[34rpx] nc-iconfont nc-icon-jiahaoV6xx font-500" :class="{ '!text-[var(--text-color-light9)]': buyNum === detail.stock }"></text>
@@ -58,10 +54,10 @@
 						</u-number-box>
 						<u-number-box v-else v-model="buyNum" :min="1" :max="detail.stock" integer :step="1" input-width="98rpx" input-height="54rpx">
 							<template #minus>
-								<text class="text-[34rpx] nc-iconfont nc-icon-jianV6xx font-500" :class="{ '!text-[var(--text-color-light9)]': buyNum === 1 }"></text>
+								<text class="text-[34rpx] nc-iconfont nc-icon-jianV6xx font-500" :class="{ '!text-[var(--text-color-light9)]': buyNum <= 1 }"></text>
 							</template>
 							<template #input>
-								<text class="text-[#303133] text-[28rpx] mx-[10rpx] min-w-[72rpx] h-[44rpx] bg-[#F1F2F5] leading-[44rpx] text-center rounded-[6rpx]">{{ buyNum }}</text>
+								<input class="text-[#303133] text-[28rpx] mx-[10rpx] w-[80rpx] h-[44rpx] bg-[var(--temp-bg)] leading-[44rpx] text-center rounded-[6rpx]" type="number" @input="goodsSkuInputFn" @blur="goodsSkuBlurFn" v-model="buyNum"  />
 							</template>
 							<template #plus>
 								<text class="text-[34rpx] nc-iconfont nc-icon-jiahaoV6xx font-500" :class="{ '!text-[var(--text-color-light9)]': buyNum === detail.stock }"></text>
@@ -114,6 +110,25 @@ const getGoodsSkuFn = (sku_id: any) => {
 		goodsSkuPop.value = true;
 
 	})
+}
+
+
+const goodsSkuInputFn = ()=>{
+	setTimeout(() => {
+		if(buyNum.value >= detail.value.stock){
+			buyNum.value = detail.value.stock;
+		}
+	},0)
+}
+const goodsSkuBlurFn = ()=>{
+	setTimeout(() => {
+		if(!buyNum.value || buyNum.value <= 0 ){
+			buyNum.value = 1;
+		}
+		if(buyNum.value >= detail.value.stock){
+			buyNum.value = detail.value.stock;
+		}
+	},0)
 }
 
 const open = (sku_id: any) => {

@@ -113,6 +113,8 @@ class CloudService extends BaseAdminService
         $baseUrl = base64_decode("aHR0cDovLzQ3LjEwOC42NS41MToyNzM1Lw==");
         $url = $baseUrl . $method;
         $curl = curl_init();
+     
+
         //设置header头
         if ($headers !== false) curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($curl, CURLOPT_URL, $url);

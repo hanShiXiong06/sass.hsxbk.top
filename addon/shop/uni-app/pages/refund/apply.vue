@@ -3,7 +3,7 @@
         <swiper :indicator-dots="false" :autoplay="false" :disable-touch="true" :current="step" class="h-screen" :duration="300" v-if="detail">
             <swiper-item>
                 <scroll-view scroll-y="true" class="bg-page min-h-screen overflow-hidden">
-                    <view class="m-[var(--top-m)] sidebar-marign px-[var(--pad-sidebar-m)] py-[var(--pad-top-m)] rounded-[var(--rounded-big)] bg-white">
+                    <view class="m-[var(--top-m)] sidebar-margin px-[var(--pad-sidebar-m)] py-[var(--pad-top-m)] rounded-[var(--rounded-big)] bg-white">
                         <view class="flex">
                             <view class="w-[120rpx] h-[120rpx] flex items-center justify-center">
                             	<u--image :radius="'var(--goods-rounded-small)'" width="120rpx" height="120rpx" :src="img(orderDetail.sku_image.split(',')[0])" model="aspectFill">
@@ -19,7 +19,7 @@
                         </view>
                     </view>
 
-                    <view class="my-[var(--top-m)] sidebar-marign px-[var(--pad-sidebar-m)] rounded-[var(--rounded-big)] bg-white">
+                    <view class="my-[var(--top-m)] sidebar-margin px-[var(--pad-sidebar-m)] rounded-[var(--rounded-big)] bg-white">
                         <view class="py-[var(--pad-top-m)] flex items-center" @click="selectRefundType(1)">
                             <view class="flex-1">
                                 <view class="text-[30rpx]">仅退款</view>
@@ -41,7 +41,7 @@
             </swiper-item>
             <swiper-item>
 				<scroll-view scroll-y="true" class="bg-page min-h-screen overflow-hidden">
-                    <view class="my-[var(--top-m)] sidebar-marign px-[var(--pad-sidebar-m)] rounded-[var(--rounded-big)] bg-white">
+                    <view class="my-[var(--top-m)] sidebar-margin px-[var(--pad-sidebar-m)] rounded-[var(--rounded-big)] bg-white">
                         <view class="py-[var(--pad-top-m)] flex justify-between items-center">
                             <view class="text-[28rpx]">退款原因</view>
                             <view class="flex ml-[auto] items-center h-[30rpx]" @click="refundCausePopup = true">
@@ -50,7 +50,7 @@
                             </view>
                         </view>
                     </view>
-                    <view class="my-[var(--top-m)] sidebar-marign px-[var(--pad-sidebar-m)] rounded-[var(--rounded-big)] bg-white">
+                    <view class="my-[var(--top-m)] sidebar-margin px-[var(--pad-sidebar-m)] rounded-[var(--rounded-big)] bg-white">
                         <view class="py-[var(--pad-top-m)]">
 							<view class="flex items-center justify-between">
 								<view class="text-[28rpx] font-500">退款金额</view>
@@ -66,7 +66,7 @@
 							</view>
                         </view>
                     </view>
-                    <view class="my-[var(--top-m)] sidebar-marign px-[var(--pad-sidebar-m)] rounded-[var(--rounded-big)] bg-white">
+                    <view class="my-[var(--top-m)] sidebar-margin px-[var(--pad-sidebar-m)] rounded-[var(--rounded-big)] bg-white">
                         <view class="pt-[var(--pad-top-m)] pb-[14rpx] ">
                             <view class="text-[28rpx] flex items-center">
 								<text class="font-500">上传凭证</text>
@@ -77,7 +77,7 @@
                             </view>
                         </view>
                     </view>
-                    <view class="my-[var(--top-m)] sidebar-marign px-[var(--pad-sidebar-m)] rounded-[var(--rounded-big)] bg-white">
+                    <view class="my-[var(--top-m)] sidebar-margin px-[var(--pad-sidebar-m)] rounded-[var(--rounded-big)] bg-white">
                         <view class="py-[var(--pad-top-m)]">
                             <view class="text-[28rpx] flex items-center">
 								<text class="font-500">补充描述</text>

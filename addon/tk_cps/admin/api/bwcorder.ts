@@ -1,4 +1,7 @@
 import request from '@/utils/request'
+export function asyncDayOrder() {
+    return request.get('tk_cps/bwc/asyncdayorder')
+}
 /**
  * 获取订单状态
  * @returns 

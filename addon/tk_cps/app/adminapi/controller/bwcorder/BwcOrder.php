@@ -23,6 +23,10 @@ use addon\tk_cps\app\service\admin\bwcorder\BwcOrderService;
  */
 class BwcOrder extends BaseAdminController
 {
+    public function asyncDayOrder()
+    {
+        return success('操作成功',(new BwcOrderService())->asyncDayOrder(60*24));
+    }
     /**
      * @Notes:订单状态
      * @Interface getOrderStatus

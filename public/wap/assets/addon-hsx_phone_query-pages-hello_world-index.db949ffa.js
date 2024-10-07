@@ -1,1 +1,0 @@
-import{bu as a,d as s,r as e,p as t,o as r,c as n,w as o,y as u,z as l,u as d,D as p}from"./index-9317da28.js";const x=s({__name:"index",setup(s){let x=e("");return t((()=>{a.get("hsx_phone_query/hello_world").then((a=>{x.value=a.data}))})),(a,s)=>{const e=p;return r(),n(e,{class:"text-[20px]"},{default:o((()=>[u(l(d(x)),1)])),_:1})}}});export{x as default};

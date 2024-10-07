@@ -49,11 +49,11 @@
 					<div class="input-width">{{ formData.pay_time || '' }}</div>
 				</el-form-item>
 
-				<el-form-item :label="t('remark')">
+				<el-form-item :label="t('remark')" v-if="formData.remark">
 					<div class="input-width">{{ formData.remark || '' }}</div>
 				</el-form-item>
 
-				<el-form-item :label="t('memberMessage')">
+				<el-form-item :label="t('memberMessage')" v-if="formData.member_message">
 					<div class="input-width">{{ formData.member_message || '' }}</div>
 				</el-form-item>
 

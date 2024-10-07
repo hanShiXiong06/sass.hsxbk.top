@@ -14,7 +14,10 @@
 								<text class="text-red text-[26rpx] font-normal">{{ distanceFormat(item.distance) }}</text>
 							</view>
 						</view>
-						<view class="mt-[20rpx] text-[26rpx]">门店地址：{{ item.full_address }}</view>
+						<view class="mt-[20rpx] text-[26rpx] leading-[1.4] flex">
+							<text class="flex-shrink-0">门店地址：</text>
+							<text>{{ item.full_address }}</text>
+						</view>
 						<view class="mt-[16rpx] text-[26rpx]">营业时间：{{ item.trade_time }}</view>
 					</view>
 				</view>

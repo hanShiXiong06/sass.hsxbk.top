@@ -9,7 +9,7 @@
 // | Author: Niucloud Team
 // +----------------------------------------------------------------------
 
-namespace addon\shop\app\dict\order;
+namespace addon\phone_shop\app\dict\order;
 
 
 /**

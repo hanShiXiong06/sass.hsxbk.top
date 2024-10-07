@@ -30,6 +30,7 @@ class HsxPhoneQuery extends BaseAdminController
         $data = $this->request->params([
              ["imeis",""],
              ["id",""],
+             ['payType','']
         ]);
 
         $data = (new HsxPhoneQueryService())->query($data);
@@ -38,5 +39,20 @@ class HsxPhoneQuery extends BaseAdminController
         }
         return  success( data:$data['data'] );
         
+    }
+    // lists 获取个人用户 的查询过的列表
+    public function lists(){
+        $data=$this->request->params([
+            ["pages",1],
+            ["limit",30],
+       ]);
+      return success( (new HsxPhoneQueryService())->lists($data));
+    }
+    // detail
+    public function detail(){
+        $data=$this->request->params([
+            ["id",""],
+       ]);
+      return success( (new HsxPhoneQueryService())->detail($data));
     }
 }

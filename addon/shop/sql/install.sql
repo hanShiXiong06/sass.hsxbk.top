@@ -685,7 +685,7 @@ CREATE TABLE `{{prefix}}shop_point_exchange` (
   `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   `stock` int(11) NOT NULL DEFAULT '0' COMMENT '库存',
   `total_exchange_num` int(11) NOT NULL DEFAULT '0' COMMENT '兑换数量',
-  PRIMARY KEY (`id`,`total_price_num`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci COMMENT='积分兑换表';
 
 

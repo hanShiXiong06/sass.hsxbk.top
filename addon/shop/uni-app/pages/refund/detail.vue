@@ -15,9 +15,9 @@
                         </view>
                     </view>
                 </view>
-                <view class="sidebar-marign card-template flex justify-between flex-wrap mt-[-76rpx]">
+                <view class="sidebar-margin card-template flex justify-between flex-wrap mt-[-76rpx]">
                     <view class="w-[150rpx] h-[150rpx] rounded-[var(--goods-rounded-big)] overflow-hidden" @click="goodsEvent(detail.order_goods.goods_id)">
-                        <u--image class="rounded-[var(--goods-rounded-big)] overflow-hidden" width="150rpx" height="150rpx" :src="img(detail.order_goods.goods_image_thumb_small ? detail.order_goods.goods_image_thumb_small : '')" model="aspectFill">
+                        <u--image radius="var(--goods-rounded-big)" width="150rpx" height="150rpx" :src="img(detail.order_goods.goods_image_thumb_small ? detail.order_goods.goods_image_thumb_small : '')" model="aspectFill">
                             <template #error>
                                 <image class="w-[150rpx] h-[150rpx] rounded-[var(--goods-rounded-big)] overflow-hidden" :src="img('static/resource/images/diy/shop_default.jpg')" mode="aspectFill"></image>
                             </template>
@@ -38,7 +38,7 @@
                         </view>
                     </view>
                 </view>
-                <view class="sidebar-marign mt-[var(--top-m)] card-template">
+                <view class="sidebar-margin mt-[var(--top-m)] card-template">
 					<view class="justify-between text-[28rpx] card-template-item">
 					    <view>{{t('refundMoney')}}</view>
 						<view class="price-font text-[var(--price-text-color)]">
@@ -72,7 +72,7 @@
                     </view>
                 </view>
 
-                <view class="sidebar-marign mt-[var(--top-m)] card-template">
+                <view class="sidebar-margin mt-[var(--top-m)] card-template">
                     <view class="justify-between text-[28rpx] card-template-item">
                         <view>{{t('record')}}</view>
                         <view class="flex items-center" @click="redirect({url: '/addon/shop/pages/refund/log', param: { order_refund_no: orderRefundNo }})">
@@ -85,7 +85,7 @@
                 <view class="flex tab-bar justify-between items-center bg-[#fff] fixed left-0 right-0 bottom-0 min-h-[100rpx] pl-[30rpx] pr-[20rpx] flex-wrap">
                     <view class="flex">
 						<view class="flex mr-[20rpx] flex-col justify-center items-center" @click="redirect({ url: '/addon/shop/pages/index', mode: 'reLaunch' })">
-						    <view class="nc-iconfont nc-icon-shouyeV6xx text-[36rpx]"></view>
+						    <view class="nc-iconfont nc-icon-shouyeV6xx11 text-[36rpx]"></view>
 						    <text class="text-[20rpx] mt-[10rpx]">{{t('index')}}</text>
 						</view>
 						<!-- #ifdef MP-WEIXIN -->
@@ -123,7 +123,7 @@
                         </view>
                     </view>
                 </view>
-                <view class="sidebar-marign card-template mt-[-79rpx] flex justify-between flex-wrap">
+                <view class="sidebar-margin card-template mt-[-79rpx] flex justify-between flex-wrap">
                     <view class="w-[150rpx] h-[150rpx] flex-2" @click="goodsEvent(detail.order_goods.goods_id)">
                         <u--image  radius="var(--goods-rounded-big)" width="150rpx" height="150rpx" :src="img(detail.order_goods.sku_image ? detail.order_goods.sku_image.split(',')[0] : '')" model="aspectFill">
                             <template #error>
@@ -148,7 +148,7 @@
                         </view>
                     </view>
                 </view>
-                <view class="sidebar-marign card-template top-mar">
+                <view class="sidebar-margin card-template top-mar">
                     <view class="card-template-item justify-between text-[28rpx]">
                         <view>联系人</view>
                         <view>{{ detail.refund_address.contact_name }}</view>
@@ -162,7 +162,7 @@
                         <view class="w-[460rpx] text-sm text-right" v-if="detail.refund_address">{{ detail.refund_address.full_address || '--' }}</view>
                     </view>
                 </view>
-                <view class="sidebar-marign card-template top-mar py-[var(--top-m)]">
+                <view class="sidebar-margin card-template top-mar py-[var(--top-m)]">
 					<view class="title">物流信息</view>
                     <u--form labelPosition="left" :model="formData" :rules="rules"  errorType='toast' ref="deliveryForm" labelWidth="140rpx" :labelStyle="{'fontSize': '28rpx'}">
                         <u-form-item label="物流公司" prop="express_company" :borderBottom="false">
@@ -175,7 +175,7 @@
 						</view>
 						<view class="mt-[16rpx]">
 							<u-form-item label="物流说明" :borderBottom="false">
-								<u--input border="none" placeholder="选填" v-model="formData.remark" placeholderClass="text-sm !text-[var(--text-color-light9)]" fontSize="28rpx" maxlength="200"></u--input>
+								<u--input border="none" placeholder="选填" v-model="formData.remark" placeholderClass="text-sm !text-[var(--text-color-light9)]" fontSize="28rpx" maxlength="100"></u--input>
 							</u-form-item>
 						</view>
                     </u--form>

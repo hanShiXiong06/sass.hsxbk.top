@@ -1370,6 +1370,8 @@ export function useGoodsEdit(params: any = {}) {
   };
 
   const handleBlur = (e: any) => {
+    
+
     formRefArr.detailFormRef.value?.validateField("goods_desc");
   };
 

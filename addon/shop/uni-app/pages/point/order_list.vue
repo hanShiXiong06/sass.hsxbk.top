@@ -8,7 +8,7 @@
 			</scroll-view>
 		</view>
 		<mescroll-body ref="mescrollRef" top="88rpx" @init="mescrollInit" :down="{ use: false }" @up="getShopOrderFn">
-			<view class="sidebar-marign pt-[var(--top-m)]" v-if="list.length">
+			<view class="sidebar-margin pt-[var(--top-m)]" v-if="list.length">
 				<template v-for="(item, index) in list" :key="index">
 					<view class="mb-[var(--top-m)] card-template">
 						<view @click="toLink(item)">
@@ -21,11 +21,9 @@
 								<view class="text-[#303133] text-[26rpx] leading-[34rpx]" :class="{'text-primary': item.status  == 1,'!text-[var(--text-color-light9)]' :item.status  == 5 || item.status  == -1}">{{ item.status_name.name }}</view>
 							</view>
 							<view class="flex box-border mt-[20rpx]" v-for="(subitem, index) in item.order_goods" :key="index">
-								<u--image width="150rpx" height="150rpx" :radius="'var(--goods-rounded-big)'" :src="img(subitem.goods_image_thumb_small ? subitem.goods_image_thumb_small : '')" model="aspectFill">
-									<template #error>
-										<image class="w-[150rpx] h-[150rpx] rounded-[var(--goods-rounded-big)] overflow-hidden" :src="img('static/resource/images/diy/shop_default.jpg')" mode="aspectFill"></image>
-									</template>
-								</u--image>
+								
+								<image v-if="subitem.goods_image_thumb_small" class="w-[150rpx] h-[150rpx] rounded-[var(--rounded-mid)]" :src="img(subitem.goods_image_thumb_small)" :mode="'aspectFill'" @error="subitem.goods_image_thumb_small='static/resource/images/diy/shop_default.jpg'"></image>
+								<image v-else class="w-[150rpx h-[150rpx] rounded-[var(--rounded-mid)]" :src="img('static/resource/images/diy/shop_default.jpg')" :mode="'aspectFill'"></image>
 								<view class="ml-[20rpx] flex flex-1 flex-col box-border">
 									<view class="max-w-[490rpx] text-[28rpx] leading-[40rpx] font-400 truncate text-[#303133]">{{ subitem.goods_name }}</view>
 									<view class="flex justify-between items-baseline text-[#303133] mt-[14rpx]">

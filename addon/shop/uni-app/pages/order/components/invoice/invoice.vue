@@ -1,6 +1,6 @@
 <template>
-    <u-popup :show="show" @close="show = false" mode="bottom" :round="10" :safeAreaInsetBottom="true">
-        <view @touchmove.prevent.stop class="popup-common">
+    <uni-popup ref="popupRef" type="bottom">
+        <view class="bg-[#fff] rounded-[10rpx] popup-common" @touchmove.prevent.stop>
 			<view class="title">请填写发票信息</view>
 			<scroll-view :scroll-y="true"  class="h-[50vh]">
 				<view class="px-[var(--popup-sidebar-m)] pb-[60rpx] pt-0 text-sm ">
@@ -91,14 +91,14 @@
                 <button class="primary-btn-bg btn" @click="confirm">确认</button>
 			</view>
 		</view>
-    </u-popup>
+    </uni-popup>
 </template>
 
 <script setup lang="ts">
     import { ref, computed,nextTick } from 'vue'
     import { getInvoiceConfig } from '@/addon/shop/api/config'
 
-    const show = ref(false)
+    const popupRef = ref()
     const config = ref({
         is_invoice: 2,
         invoice_content: []
@@ -161,7 +161,7 @@
     })
 
     const open = () => {
-        show.value = true
+        popupRef.value?.open()
     }
 
     const emits = defineEmits(['confirm'])
@@ -170,7 +170,7 @@
         formRef.value.validate().then(() => {
             const invoice = need.value ? formData.value : {}
             emits('confirm', invoice)
-            show.value = false
+             popupRef.value?.close()
         })
     }
 

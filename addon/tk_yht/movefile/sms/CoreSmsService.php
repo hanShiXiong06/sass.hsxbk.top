@@ -72,7 +72,6 @@ class CoreSmsService extends BaseCoreService
 
     public function makeUp($params, $content, $sms_type)
     {
-
         if ($sms_type == SmsDict::TENCENTSMS) {
             $temp_array = [];
             foreach ($params as $k => $v) {
@@ -87,7 +86,7 @@ class CoreSmsService extends BaseCoreService
                 return [];
             }
         }
-        if ($sms_type == 'yht') {
+        else {
             $temp_array = [];
             foreach ($params as $k => $v) {
                 $index = strpos($content, '{' . $k . '}');
@@ -98,9 +97,8 @@ class CoreSmsService extends BaseCoreService
             if (!empty($temp_array)) {
                 return $temp_array;
             }
-        } else {
-            return $params;
         }
+
     }
 
     /**

@@ -2,9 +2,10 @@
   "title": "每日签到",
   "desc": "在线每日签到，会员签到奖励设置",
   "key": "dailySignIn",
-  "version": "2.0.4",
+  "version": "2.0.6",
   "author": "joker",
   "type": "addon",
   "support_app": "",
+  "support_version": "0.5.2",
   "compile":[]
 }

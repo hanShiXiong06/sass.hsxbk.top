@@ -15,7 +15,7 @@
                 
                 <view class="flex-1 h-0">
                     <scroll-view class="scroll-height box-border" :scroll-y="true">
-                        <view class="py-[var(--top-m)] sidebar-marign">
+                        <view class="py-[var(--top-m)] sidebar-margin">
                             <view class="bg-[#fff] pb-[10rpx] box-border rounded-[var(--rounded-big)]" v-if="cartList.length">
                                 <view class="flex mx-[var(--rounded-big)] pt-[var(--pad-top-m)] justify-between items-center box-border font-400 text-[24rpx] mb-[24rpx] leading-[30rpx]">
                                     <view class="flex items-baseline text-[24rpx] text-[#333]">
@@ -70,7 +70,7 @@
                                                                             class="text-[24rpx] font-500 nc-iconfont nc-icon-jianV6xx"></text>
                                                                     </template>
                                                                     <template #input>
-                                                                        <text class="px-[6rpx] box-border overflow-hidden text-[#303133] text-[24rpx] mx-[10rpx] w-[72rpx] h-[44rpx] bg-[var(--temp-bg)] leading-[44rpx] text-center rounded-[6rpx]">{{ item.num }}</text>
+																		<input  class="text-[#303133] text-[28rpx] mx-[10rpx] w-[80rpx] h-[44rpx] bg-[var(--temp-bg)] leading-[44rpx] text-center rounded-[6rpx]" type="number" @input="goodsSkuInputFn(item)" @blur="goodsSkuBlurFn($event, index)" @click.stop v-model="item.num"  />
                                                                     </template>
                                                                     <template #plus>
                                                                         <text
@@ -156,10 +156,10 @@
                             ￥{{ parseFloat(total) }}
                         </text>
                     </view>
-                    <button class="w-[188rpx] h-[70rpx] font-500 text-[26rpx] leading-[70rpx] !text-[#fff] m-0 rounded-full primary-btn-bg remove-border" @click="settlement">结算</button>
+                    <button class="w-[180rpx] h-[70rpx] font-500 text-[26rpx] leading-[70rpx] !text-[#fff] m-0 rounded-full primary-btn-bg remove-border" @click="settlement">结算</button>
                 </view>
                 <view class="flex-1 flex items-center justify-end" v-else>
-                    <button class="w-[188rpx] h-[70rpx] font-500 text-[26rpx] leading-[70rpx] !text-[#fff] m-0 rounded-full primary-btn-bg remove-border" @click="deleteCartFn">删除</button>
+                    <button class="w-[180rpx] h-[70rpx] font-500 text-[26rpx] leading-[70rpx] !text-[#fff] m-0 rounded-full primary-btn-bg remove-border" @click="deleteCartFn">删除</button>
                 </view>
             </view>
         </view>
@@ -172,7 +172,7 @@
             </view>
             <view class="flex items-center">
                 <view class="flex-1 flex items-center justify-between" v-if="!isEdit">
-                    <view class="flex items-center mr-[67rpx] text-[var(--price-text-color)] leading-[45rpx]">
+                    <view class="flex items-center mr-[20rpx] text-[var(--price-text-color)] leading-[45rpx]">
                         <view class="font-400 text-[#303133] text-[28rpx]">合计：</view>
                         <text class="text-[var(--price-text-color)] price-font text-[32rpx] font-bold">
 							￥{{ parseFloat(total) }}
@@ -180,17 +180,17 @@
                     </view>
 
                     <!-- #ifdef H5 -->
-                    <button class="w-[196rpx] h-[66rpx] text-[26rpx] font-500 leading-[66rpx] !text-[#fff] m-0 rounded-full primary-btn-bg remove-border" @click="settlement">结算</button>
+                    <button class="w-[180rpx] h-[70rpx] font-500 text-[26rpx] leading-[70rpx] !text-[#fff] m-0 rounded-full primary-btn-bg remove-border" @click="settlement">结算</button>
                     <!-- #endif -->
 
                     <!-- #ifdef MP-WEIXIN -->
-                    <button v-if="isBindMobile && info && !info.mobile" class="w-[196rpx] h-[66rpx] text-[26rpx] font-500 leading-[66rpx] !text-[#fff] m-0 rounded-full primary-btn-bg remove-border" open-type="getPhoneNumber" @getphonenumber="memberStore.bindMobile">结算</button>
-                    <button v-else class="w-[196rpx] h-[66rpx] text-[26rpx] font-500 leading-[66rpx] !text-[#fff] m-0 rounded-full primary-btn-bg remove-border" @click="settlement">结算</button>
+                    <button v-if="isBindMobile && info && !info.mobile" class="w-[180rpx] h-[70rpx] font-500 text-[26rpx] leading-[70rpx] !text-[#fff] m-0 rounded-full primary-btn-bg remove-border" open-type="getPhoneNumber" @getphonenumber="memberStore.bindMobile">结算</button>
+                    <button v-else class="w-[180rpx] h-[70rpx] font-500 text-[26rpx] leading-[70rpx] !text-[#fff] m-0 rounded-full primary-btn-bg remove-border" @click="settlement">结算</button>
                     <!-- #endif -->
 
                 </view>
                 <view class="flex-1 flex items-center justify-end" v-else>
-                    <button class="w-[196rpx] h-[66rpx] text-[26rpx] font-500 leading-[66rpx] !text-[#fff] m-0 rounded-full primary-btn-bg remove-border" @click="deleteCartFn">删除</button>
+                    <button class="w-[180rpx] h-[70rpx] font-500 text-[26rpx] leading-[70rpx] !text-[#fff] m-0 rounded-full primary-btn-bg remove-border" @click="deleteCartFn">删除</button>
                 </view>
             </view>
         </view>
@@ -261,6 +261,37 @@ onShow(() => {
     cartStore.getList();
 })
 
+
+const goodsSkuInputFn = (data)=>{
+	setTimeout(() => {
+		if(data.num >= numLimit(data).max){
+			data.num = numLimit(data).max;
+		}
+	},0)
+}
+const goodsSkuBlurFn = (event, index)=>{
+	setTimeout(() => {
+		const data: any = cartList.value[index]
+		if(!data.num || data.num <= 0 ){
+			data.num = 1;
+		}
+		if(data.num >= numLimit(data).max){
+			data.num = numLimit(data).max;
+		}
+		
+		uni.$u.debounce((event: any) => {
+			cartStore.increase({
+				id: data.id,
+				goods_id: data.goods_id,
+				sku_id: data.sku_id,
+				stock: data.goodsSku.stock,
+				sale_price: data.goodsSku.sale_price,
+				num: Number(data.num)
+			}, 0);
+		}, 500)
+	},0)
+}
+
 const checkedNum = computed(() => {
 	let num = 0
 	cartList.value.forEach((item: any) => {
@@ -299,7 +330,6 @@ const toDetail = (data: any) => {
 const numChange = (event: any, index: any) => {
 	uni.$u.debounce((event: any) => {
 		const data: any = cartList.value[index]
-
 		cartStore.increase({
 			id: data.id,
 			goods_id: data.goods_id,

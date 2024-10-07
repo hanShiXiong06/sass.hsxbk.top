@@ -23,6 +23,14 @@
 						:size="diyComponent.localsize / 2"></u-icon>
 				</view>
 			</view>
+
+		</view>
+		<view v-if="diyComponent.showsearch == 1" class="fl items-center ml-4 mr-4 mb-2 bg-[#fcfcfc] rounded-[16rpx]"
+			:style="{
+		  background: diyComponent.searchcolor,
+		}">
+			<u-input clearable v-model="keyword" focus="true" placeholder="输入商家名称快速检索" @change="reload" @blur="reload"
+				suffixIcon="search" suffixIconStyle="color: #909399"></u-input>
 		</view>
 		<view v-if="diyComponent.cateshow == 1" class="">
 			<scroll-view scroll-x="true" class="scroll-X box-border px-[24rpx]">
@@ -159,6 +167,7 @@
 	const systemStore = useSystemStore();
 	let list = ref<Array<Object>>([]);
 	let loading = ref<boolean>(false);
+
 	const planSource = ref(4);
 	const actType = ref([
 		{ name: "所有活动", value: 4 },
@@ -180,18 +189,25 @@
 			url: `/addon/tk_cps/pages/bwc/detail?planId=${item1.planId}`,
 		});
 	};
-
+	const keyword = ref()
+	const reload = (e) => {
+		loading.value = true;
+		keyword.value = e
+		listData.value = []
+		page.value = 1
+		getActListFn()
+	}
 	const listData = ref([]);
 	const page = ref(1);
 	const getActListFn = () => {
 		getLocationEvent();
-
 		loading.value = true;
 		let data : object = {
 			page: page.value,
 			mapLat: locationData.value.latitude, //纬度
 			mapLon: locationData.value.longitude, //经度
 			planSource: planSource.value,
+			keyword: keyword.value
 		};
 
 		getActList(data)

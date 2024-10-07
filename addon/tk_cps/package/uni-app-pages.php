@@ -6,19 +6,13 @@ return [
 				{
 					"path": "tk_cps/pages/bwc/act",
 					"style": {
-						"navigationBarTitleText": "同城霸王餐",
-						// #ifdef H5
-						"navigationStyle": "custom"
-						// #endif
+						"navigationBarTitleText": "同城霸王餐"
 					}
 				},
 				{
 					"path": "tk_cps/pages/bwc/order",
 					"style": {
-						"navigationBarTitleText": "订单列表",
-						// #ifdef H5
-						"navigationStyle": "custom"
-						// #endif
+						"navigationBarTitleText": "订单列表"
 					},
 					"needLogin": true
 
@@ -81,6 +75,13 @@ return [
 						// #endif 
 					}
 				},
+				{
+				  "path": "tk_cps/pages/fenxiao/index",
+				  "style": {
+					"navigationBarTitleText": "分销中心"
+				   },
+				  "needLogin": true
+			    },
 				// PAGE_END
 EOT
 ];

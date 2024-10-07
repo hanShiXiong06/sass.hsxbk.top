@@ -187,7 +187,7 @@ Route::group('shop', function() {
     Route::get('goods/select', 'addon\shop\app\adminapi\controller\goods\Goods@select');
 
     // 获取商品选择分页列表带sku
-    Route::get('goods/selectgoodssku', 'addon\shop\app\adminapi\controller\goods\Goods@selectgoodssku');
+    Route::get('goods/selectgoodssku', 'addon\shop\app\adminapi\controller\goods\Goods@selectGoodsSku');
 
     // 获取商品SKU规格列表
     Route::get('goods/sku', 'addon\shop\app\adminapi\controller\goods\Goods@sku');

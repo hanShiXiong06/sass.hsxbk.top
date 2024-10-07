@@ -45,7 +45,7 @@ class OrderPayService extends BaseAdminService
             'memo'=>""
         ];
 
-        $res = (new MemberAccountService())->adjustBalance($data);
+        //  $res = (new MemberAccountService())->adjustBalance($data);
 
         $ress=  (new PayService())->pay('balancepay', 'shop', $order_id);
 

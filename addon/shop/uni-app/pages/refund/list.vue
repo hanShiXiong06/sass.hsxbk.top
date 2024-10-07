@@ -2,7 +2,7 @@
 	<view class="bg-[var(--page-bg-color)] min-h-screen overflow-hidden" :style="themeColor()">
 
 		<mescroll-body ref="mescrollRef" @init="mescrollInit" :down="{ use: false }" @up="getRefundListFn">
-			<view class="sidebar-marign pt-[var(--top-m)]" v-if="list.length">
+			<view class="sidebar-margin pt-[var(--top-m)]" v-if="list.length">
 				<view class="mb-[var(--top-m)] card-template" v-for="(item,index) in list" :key="index">
 					<view @click="toLink(item)">
 						<view class="flex justify-between items-center">

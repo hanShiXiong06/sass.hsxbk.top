@@ -127,6 +127,7 @@ class CoreOrderCloseService extends BaseCoreService
                 $data['site_id'] = $site_id;
                 (new CoreOrderFinishService())->finish($data);
             }
+            event('AfterShopOrderAllRefundFinish', $data);
         }
         return true;
     }

@@ -49,13 +49,9 @@ class CoreOrderService extends BaseCoreService
      */
     public function deliverySearch($params)
     {
+
         $config = (new CoreConfigService())->getDeliverySearchConfig($params['site_id']);
-        if($config['interface_type']==1){
-            $class = new DeliverySearchLoader("KdniaoDeliverySearch", $config);
-        }
-        if($config['interface_type']==2){
-            $class = new DeliverySearchLoader("Kd100DeliverySearch", $config);
-        }
+
         if($config['interface_type']==1001){
             $class = new DeliverySearchLoader("YhtDeliverySearch", $config);
         }else{
@@ -66,6 +62,13 @@ class CoreOrderService extends BaseCoreService
             'logistic_no' => $params['express_number'],
             'mobile' => $params['mobile'],
         ];
+        if($config['interface_type']==1001){
+            //增加顺丰单号的查询
+            if (strpos($params['express_number'], 'SF') !== false) {
+                $wh=substr($params['mobile'], -4);
+                $data['logistic_no']=$params['express_number'].':'.$wh;
+            }
+        }
         $traces = $class->search($data);
         if (!empty($traces['list'])) {
             $traces['list'] = array_reverse($traces['list']);

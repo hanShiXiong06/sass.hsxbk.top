@@ -31,6 +31,8 @@ class RecycleCategory extends BaseAdminController
     {
         return success(( new RecycleCategoryService() )->getTree());
     }
-
+    public function address_list (){
+        return success(( new RecycleCategoryService() )->address_list());
+    }
     
 }

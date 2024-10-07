@@ -52,7 +52,7 @@ onShow(() => {
 }
 /*  #endif  */
 /*  #ifndef  H5  */
-/* .category .detail .mescroll-body {
+ .category .detail .mescroll-body {
 	padding-bottom: calc(100rpx + constant(safe-area-inset-bottom)) !important;
 	padding-bottom: calc(100rpx + env(safe-area-inset-bottom)) !important;
 }
@@ -61,6 +61,7 @@ onShow(() => {
 	padding-bottom: calc(200rpx + constant(safe-area-inset-bottom)) !important;
 	padding-bottom: calc(200rpx + env(safe-area-inset-bottom)) !important;
 }
+/*
 .category .labelPopup :deep(.u-fade-enter-active) {
 	top: 92rpx !important;
 	left: 166rpx !important;
@@ -97,8 +98,6 @@ onShow(() => {
 	&:nth-child(2){
 		left: 168rpx !important;
 	}
-
-
 }
 .category .labelPopup.active :deep(.u-transition) {
 	top: 190rpx !important;

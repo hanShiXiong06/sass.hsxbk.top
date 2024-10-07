@@ -126,7 +126,7 @@
         })
     }
 
-    const getShopCouponQrocdeFn = (id) => {
+    const getShopCouponQrocdeFn = (id: any) => {
         // #ifdef H5
         QRCode.toDataURL(window.location.href, { errorCorrectionLevel: 'L', margin: 0, width: 100 }).then(url => {
             codeUrl.value = url

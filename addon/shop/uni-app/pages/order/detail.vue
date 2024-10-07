@@ -21,7 +21,7 @@
 							:src="img('addon/shop/detail/close.png')" mode="aspectFit" />
 					</view>
 				</view>
-				<view class="sidebar-marign mt-[-86rpx] card-template" v-if="detail.delivery_type != 'virtual'">
+				<view class="sidebar-margin mt-[-86rpx] card-template" v-if="detail.delivery_type != 'virtual'">
 					<view v-if="detail.delivery_type == 'express'">
 						<view class="text-[#303133] flex">
 							<text class="nc-iconfont nc-icon-dizhiguanliV6xx text-[40rpx] pt-[12rpx] mr-[20rpx]"></text>
@@ -38,20 +38,20 @@
 						</view>
 					</view>
 					<view v-if="detail.delivery_type == 'store'">
-						<view class="flex">
+						<view class="flex items-center">
 							<view>
-								<u--image class="overflow-hidden" radius="10rpx" width="100rpx" height="100rpx"
+								<u--image class="overflow-hidden" radius="var(--goods-rounded-mid)" width="100rpx" height="100rpx"
 									:src="img(detail.store.store_logo ? detail.store.store_logo : '')"
 									model="aspectFill">
 									<template #error>
-										<image class="w-[100rpx] h-[100rpx]" :src="img('addon/shop/store_default.png')" mode="aspectFill"></image>
+										<image class="w-[100rpx] h-[100rpx] rounded-[var(--goods-rounded-mid)] overflow-hidden" :src="img('addon/shop/store_default.png')" mode="aspectFill"></image>
 									</template>
 								</u--image>
 							</view>
 							<view class="flex flex-col ml-[20rpx]">
 								<text class="text-[30rpx] font-500 text-[#303133] mb-[20rpx]">{{ detail.store.store_name }}</text>
 								<text class="text-[24rpx] text-[var(--text-color-light6)] mb-[14rpx]">{{ detail.store.trade_time }}</text>
-								<text class="text-[24rpx] text-[var(--text-color-light6)]">{{ detail.store.full_address }}</text>
+								<text class="text-[24rpx] text-[var(--text-color-light6)] leading-[1.4]">{{ detail.store.full_address }}</text>
 							</view>
 						</view>
 					</view>
@@ -66,7 +66,7 @@
 						</view>
 					</view>
 				</view>
-				<view class="sidebar-marign card-template" :style="detail.delivery_type == 'virtual' ? 'margin-top: -86rpx' : 'margin-top: 20rpx'">
+				<view class="sidebar-margin card-template" :style="detail.delivery_type == 'virtual' ? 'margin-top: -86rpx' : 'margin-top: 20rpx'">
 					<view class="order-goods-item flex justify-between flex-wrap mt-[30rpx]"
 						v-for="(goodsItem, goodsIndex) in detail.order_goods" :key="goodsIndex">
 						<view class="w-[150rpx] h-[150rpx] rounded-[var(--goods-rounded-big)] overflow-hidden" @click="goodsEvent(goodsItem.goods_id)">
@@ -123,7 +123,7 @@
 						</view>
 					</view>
 				</view>
-				<view class="sidebar-marign mt-[var(--top-m)] card-template">
+				<view class="sidebar-margin mt-[var(--top-m)] card-template">
 					<view class="justify-between card-template-item">
 						<view  class="text-[28rpx]">{{ t('orderNo') }}</view>
 						<view class="flex items-center text-[28rpx]">
@@ -155,7 +155,7 @@
 				</view>
 				<!-- 核销码 -->
 				<block v-if="isShowVerify">
-					<view class="sidebar-marign  mt-[var(--top-m)] card-template" v-if="verifyInfo && verifyInfo.length">
+					<view class="sidebar-margin  mt-[var(--top-m)] card-template" v-if="verifyInfo && verifyInfo.length">
 						<swiper class="h-[450rpx]" circular indicator-dots="true" v-if="verifyInfo.length > 1">
 							<swiper-item v-for="(item,index) in verifyInfo" :key="index">
 								<view class="flex flex-col items-center justify-center">
@@ -182,7 +182,7 @@
 						</block>
 
 					</view>
-					<view class="sidebar-marign mt-[var(--top-m)] card-template">
+					<view class="sidebar-margin mt-[var(--top-m)] card-template">
 						<view class="title">核销信息</view>
 						<view class="card-template-item justify-between">
 							<view class="text-[28rpx]">核销次数</view>
@@ -198,7 +198,7 @@
 						</view>
 					</view>
 				</block>
-				<view class="sidebar-marign mt-[var(--top-m)] card-template">
+				<view class="sidebar-margin mt-[var(--top-m)] card-template">
 					<view class="card-template-item justify-between">
 						<view class="text-[28rpx]">{{ t('goodsMoney') }}</view>
 						<view class="price-font font-500">
@@ -235,15 +235,17 @@
 
 				<view class="flex z-2 justify-between items-center bg-[#fff] fixed left-0 right-0 bottom-0 min-h-[100rpx] pl-[30rpx] pr-[20rpx] flex-wrap  pb-ios">
 					<view class="flex">
-						<view class="flex  mr-[20rpx] flex-col justify-center items-center" @click="orderBtnFn('index')">
-							<view class="nc-iconfont nc-icon-shouyeV6xx text-[36rpx]"></view>
+						<view class="flex  mr-[34rpx] flex-col justify-center items-center" @click="orderBtnFn('index')">
+							<view class="nc-iconfont nc-icon-shouyeV6xx11 text-[36rpx]"></view>
 							<text class="text-[20rpx] mt-[10rpx]">{{t('index')}}</text>
 						</view>
 						<!-- #ifdef MP-WEIXIN -->
 						<view>
 							<nc-contact :send-message-title="sendMessageTitle" :send-message-path="sendMessagePath" :send-message-img="sendMessageImg">
 								<view class="flex flex-col justify-center items-center">
-									<text class="nc-iconfont nc-icon-kefuV6xx-1 text-[36rpx]"></text>
+									<view class="w-[36rpx] h-[36rpx] flex-center">
+										<text class="nc-iconfont nc-icon-kefuV6xx-1 text-[34rpx]"></text>
+									</view>
 									<text class="text-[20rpx] mt-[10rpx]">客服</text>
 								</view>
 							</nc-contact>

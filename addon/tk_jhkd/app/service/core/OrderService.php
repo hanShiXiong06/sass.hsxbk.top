@@ -353,14 +353,9 @@ class OrderService extends BaseApiService
             );
             Db::commit();
             (new NoticeService())->send($order_info['site_id'], 'tk_jhkd_order_pay', ['order_id' => $order_info['order_id']]);
-            //自动发单方式话，直接发单方式/队列发单方式
             $sendauto = $this->getConfig()['autosend'];
             if ($sendauto == 1) {
                 (new OrderService())->sendOrder($order_info['order_id']);
-//                $is_pushed= SendOrder::dispatch(['order_id'=>$order_info['order_id']]);
-//                if ($is_pushed == false) {
-//                    Log::write('发单队列加入失败'.date('Y-m-d H:i:s'));
-//                }
             }
             $config = (new CommonService())->getConfig($order_info['site_id']);
             $text = '订单号：' . $order_info['order_id'] . ',已经支付成功，订单金额：' . $order_info['order_money'] . '元，请及时关注是否存在超重补差价';

@@ -399,15 +399,15 @@ return [
                             ],
                             [
                                 "id" => "tgo5qmjawnk",
-                                "title" => "我的积分",
-                                "imageUrl" => "addon/shop/diy/index/style2/nav_my_point.png",
+                                "title" => "礼品卡",
+                                "imageUrl" => "addon/shop/diy/index/style2/nav_giftcard.png",
                                 "imgWidth" => 180,
                                 "imgHeight" => 180,
                                 "link" => [
-                                    "name" => "MEMBER_POINT",
-                                    "parent" => "MEMBER_LINK",
-                                    "title" => "我的积分",
-                                    "url" => "/app/pages/member/point",
+                                    "name" => "SHOP_GIFTCARD_INDEX",
+                                    "parent" => "SHOP_GIFTCARD_LINK",
+                                    "title" => "礼品卡",
+                                    "url" => "/addon/shop_giftcard/pages/index",
                                     "action" => ""
                                 ],
                                 "label" => [
@@ -2030,7 +2030,8 @@ return [
                         "componentGradientAngle" => "to bottom",
                         "style" => "style-1",
                         "styleName" => "风格1",
-                        "bgUrl" => ""
+                        "bgUrl" => "",
+                        "isShowAccount" => true
                     ],
                     [
                         "path" => "edit-member-level",
@@ -2440,6 +2441,27 @@ return [
                                 ]
                             ],
                             [
+                                "id" => "27kxbgr5lj3w",
+                                "title" => "礼品卡",
+                                "imageUrl" => "addon/shop/diy/member/style1/nav_giftcard.png",
+                                "imgWidth" => 92,
+                                "imgHeight" => 92,
+                                "link" => [
+                                    "name" => "SHOP_GIFTCARD_MY_CARD_LIST",
+                                    "parent" => "SHOP_GIFTCARD_LINK",
+                                    "title" => "我的卡包",
+                                    "url" => "/addon/shop_giftcard/pages/my_card_list",
+                                    "action" => ""
+                                ],
+                                "label" => [
+                                    "control" => false,
+                                    "text" => "热门",
+                                    "textColor" => "#FFFFFF",
+                                    "bgColorStart" => "#F83287",
+                                    "bgColorEnd" => "#FE3423"
+                                ]
+                            ],
+                            [
                                 "id" => "4o2q7yss59m0",
                                 "title" => "我的等级",
                                 "imageUrl" => "addon/shop/diy/member/style1/nav_my_level.png",
@@ -2598,7 +2620,8 @@ return [
                         "styleName" => "风格1",
                         "bgUrl" => "",
                         "bgColorStart" => "",
-                        "bgColorEnd" => ""
+                        "bgColorEnd" => "",
+                        "isShowAccount" => true
                     ],
                     [
                         "path" => "edit-horz-blank",

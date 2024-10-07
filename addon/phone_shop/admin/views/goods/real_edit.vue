@@ -40,12 +40,12 @@
                             </div>
                         </el-form-item>
                         <el-form-item :label="t('goodsName')" prop="goods_name">
-                            <el-input v-model.trim="goodsEdit.formData.goods_name" clearable
+                            <el-input v-model="goodsEdit.formData.goods_name" clearable
                                 :placeholder="t('goodsNamePlaceholder')" class="input-width" maxlength="60"
                                 show-word-limit />
                         </el-form-item>
                         <el-form-item :label="t('subTitle')" prop="sub_title">
-                            <el-input v-model.trim="goodsEdit.formData.sub_title" clearable
+                            <el-input v-model="goodsEdit.formData.sub_title" clearable
                                 :placeholder="t('subTitlePlaceholder')" class="input-width" maxlength="80"
                                 show-word-limit />
                         </el-form-item>
@@ -194,7 +194,13 @@
                         </el-form-item>
 
                         <template v-if="goodsEdit.formData.spec_type == 'single'">
-                            <el-form-item :label="t('price')" prop="price">
+                            <el-form-item v-if="userStore().siteInfo.site_id == 100005" label="批发售价" prop="price">
+                                <el-input v-model.trim="goodsEdit.formData.price" clearable placeholder="0.00"
+                                    class="input-width" maxlength="8" :disabled="goodsEdit.isDisabledPrice()">
+                                    <template #append>{{ t('yuan') }}</template>
+                                </el-input>
+                            </el-form-item>
+                            <el-form-item v-else :label="t('price')" prop="price">
                                 <el-input v-model.trim="goodsEdit.formData.price" clearable placeholder="0.00"
                                     class="input-width" maxlength="8" :disabled="goodsEdit.isDisabledPrice()">
                                     <template #append>{{ t('yuan') }}</template>
@@ -699,6 +705,8 @@ import { FormInstance } from 'element-plus'
 import { Rank, ArrowLeft } from '@element-plus/icons-vue'
 import { filterNumber } from '@/utils/common'
 import { useRoute, useRouter } from 'vue-router'
+import userStore from '@/stores/modules/user'
+
 import {
     addGoods,
     editGoods,
@@ -739,7 +747,9 @@ const goodsEdit = useGoodsEdit({
     addApi: addGoods,
     editApi: editGoods,
     formData: {
-        goods_type: 'real'
+        goods_type: 'real',
+        stock: 1,
+        goods_desc: "-"
     },
     // 追加表单数据
     appendFormData: {
@@ -755,13 +765,13 @@ const goodsEdit = useGoodsEdit({
     appendRefreshGoodsSkuData: {
         // 重量
         weight: {
-            value: '',
+            value: '0',
             regExp: 'special',
             message: t('weightTips')
         },
         // 体积
         volume: {
-            value: '',
+            value: '0',
             regExp: 'special',
             message: t('volumeTips')
         }
@@ -776,46 +786,46 @@ const goodsEdit = useGoodsEdit({
     // 表单验证规则
     getFormRules(formData: any, regExp: any) {
         return {
-            weight: [
-                {
-                    trigger: 'blur',
-                    validator: (rule: any, value: any, callback: any) => {
-                        if (formData.spec_type == 'single') {
-                            if (value == undefined || value == '') {
-                                callback(new Error(t('weightPlaceholder')))
-                            } else if (isNaN(value) || !regExp.special.test(value)) {
-                                callback(new Error(t('weightTips')))
-                            } else if (value < 0) {
-                                callback(new Error(t('weightNotZeroTips')))
-                            } else {
-                                callback()
-                            }
-                        } else {
-                            callback()
-                        }
-                    }
-                }
-            ],
-            volume: [
-                {
-                    trigger: 'blur',
-                    validator: (rule: any, value: any, callback: any) => {
-                        if (formData.spec_type == 'single') {
-                            if (value == undefined || value == '') {
-                                callback(new Error(t('volumePlaceholder')))
-                            } else if (isNaN(value) || !regExp.special.test(value)) {
-                                callback(new Error(t('volumeTips')))
-                            } else if (value < 0) {
-                                callback(new Error(t('volumeNotZeroTips')))
-                            } else {
-                                callback()
-                            }
-                        } else {
-                            callback()
-                        }
-                    }
-                }
-            ],
+            // weight: [
+            //     {
+            //         trigger: 'blur',
+            //         validator: (rule: any, value: any, callback: any) => {
+            //             if (formData.spec_type == 'single') {
+            //                 if (value == undefined || value == '') {
+            //                     callback(new Error(t('weightPlaceholder')))
+            //                 } else if (isNaN(value) || !regExp.special.test(value)) {
+            //                     callback(new Error(t('weightTips')))
+            //                 } else if (value < 0) {
+            //                     callback(new Error(t('weightNotZeroTips')))
+            //                 } else {
+            //                     callback()
+            //                 }
+            //             } else {
+            //                 callback()
+            //             }
+            //         }
+            //     }
+            // ],
+            // volume: [
+            //     {
+            //         trigger: 'blur',
+            //         validator: (rule: any, value: any, callback: any) => {
+            //             if (formData.spec_type == 'single') {
+            //                 if (value == undefined || value == '') {
+            //                     callback(new Error(t('volumePlaceholder')))
+            //                 } else if (isNaN(value) || !regExp.special.test(value)) {
+            //                     callback(new Error(t('volumeTips')))
+            //                 } else if (value < 0) {
+            //                     callback(new Error(t('volumeNotZeroTips')))
+            //                 } else {
+            //                     callback()
+            //                 }
+            //             } else {
+            //                 callback()
+            //             }
+            //         }
+            //     }
+            // ],
             delivery_type: [
                 { required: true, message: t('deliveryTypePlaceholder'), trigger: 'blur' }
             ],
@@ -922,6 +932,8 @@ getGoodsInit({
             goodsEdit.formData.fee_type = data.goods_info.fee_type
             goodsEdit.formData.delivery_money = data.goods_info.delivery_money
             goodsEdit.formData.delivery_template_id = data.goods_info.delivery_template_id
+        } else {
+            goodsEdit.formData.delivery_type = ['express', 'store']
         }
     }
 })

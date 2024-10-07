@@ -22,7 +22,6 @@ Route::group('spdr', function () {
 
     /***************************************************** 商品导入导出 ****************************************************/
     Route::post('goods/export', 'addon\spdr\app\adminapi\controller\spdr\Goods@export');
-    Route::post('goods/export/hsx', 'addon\spdr\app\adminapi\controller\spdr\Goods@export_hsx');
     //验证shop文件
     Route::get('checkshop', 'addon\spdr\app\adminapi\controller\spdr\Goods@checkShop');
     Route::post('goods/import','addon\spdr\app\adminapi\controller\spdr\Goods@import');

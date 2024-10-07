@@ -1,0 +1,1 @@
+import{bG as e}from"./index-71c7df08.js";function n(){return e.get("hsx_phone_query/category")}function r(n){return e.get("hsx_phone_query/query",n)}function t(){return e.get("hsx_phone_query/list")}function u(n){return e.get("hsx_phone_query/detail/"+n)}export{t as a,r as b,u as c,n as g};

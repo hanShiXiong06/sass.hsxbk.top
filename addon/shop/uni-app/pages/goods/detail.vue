@@ -8,9 +8,9 @@
 			</view>
 
 			<view class="swiper-box">
-				<u-swiper :list="goodsDetail.goods.goods_image" :indicator="goodsDetail.goods.goods_image.length" :indicatorStyle="{'bottom': '50rpx'}" :autoplay="true" height="100vw" @click="swiperClick"></u-swiper>
+				<u-swiper :list="goodsDetail.goods.goods_image" :indicator="goodsDetail.goods.goods_image.length" :indicatorStyle="{'bottom': '70rpx'}" :autoplay="true" height="100vw" radius="0" @click="swiperClick"></u-swiper>
 			</view>
-			<view v-if="priceType == 'discount_price'" class="rounded-t-[40rpx] -mt-[40rpx] relative flex items-center justify-between !bg-cover box-border pb-[26rpx] h-[136rpx] px-[30rpx]" :style="{ background: 'url(' + img('addon/shop/detail/discount_price_bg.png') + ') no-repeat'}">
+			<view v-if="priceType == 'discount_price'" class="rounded-t-[40rpx] -mt-[44rpx] relative flex items-center justify-between !bg-cover box-border pb-[26rpx] h-[136rpx] px-[30rpx]" :style="{ background: 'url(' + img('addon/shop/detail/discount_price_bg.png') + ') no-repeat'}">
 				<view class="text-[#fff]">
 					<text class="text-[28rpx] mr-[10rpx] font-500">折扣价</text>
 					<view class="inline-block">
@@ -24,7 +24,27 @@
 					<image class="h-[28rpx] mr-[2rpx]" :src="img('addon/shop/detail/discount_price.png')" mode="heightFix"></image>
 					<view class="flex items-center text-[24rpx] -mb-[10rpx] overflow-hidden h-[28rpx]">
 						<text class="mr-[4rpx]">距结束</text>
-						<up-count-down class="text-[#fff] text-[28rpx]" :time="discountTime" format="HH:mm:ss"></up-count-down>
+						<up-count-down class="text-[#fff] text-[28rpx]" :time="discountTime" format="DD:HH:mm:ss" @change="onChange">
+							<view class="flex">
+								<view class="text-[24rpx] flex items-center" v-if="timeData.days>0">
+									<text>{{ timeData.days }}</text>
+									<text class="text-[20rpx] ml-[2rpx] mr-[4rpx]">天</text>
+								</view>
+								<view class="text-[24rpx] flex items-center">
+									<text v-if="timeData.hours">{{ timeData.hours>10?timeData.hours:'0'+timeData.hours}}</text>
+									<text v-else>0</text>
+									<text class="text-[20rpx] ml-[2rpx] mr-[4rpx]">时</text>
+								</view>
+								<view class="text-[24rpx] flex items-center">
+									<text>{{ timeData.minutes }}</text>
+									<text class="text-[20rpx] ml-[2rpx] mr-[4rpx]">分</text>
+								</view>
+								<view class="text-[24rpx] flex items-center">
+									<text>{{ timeData.seconds<10 ? '0'+timeData.seconds : timeData.seconds}}</text>
+									<text class="text-[20rpx] ml-[2rpx] mr-[4rpx]">秒</text>
+								</view>
+							</view>
+						</up-count-down>
 					</view>
 				</view>
 			</view>
@@ -59,7 +79,7 @@
 					</view>
 				</view>
 
-				<view class="mt-[var(--top-m)] sidebar-marign card-template" v-if="isGoodsPropertyTemp">
+				<view class="mt-[var(--top-m)] sidebar-margin card-template" v-if="isGoodsPropertyTemp">
 					<view @click="servicesDataShow = !servicesDataShow" v-if="goodsDetail.service && goodsDetail.service.length" class="card-template-item">
 						<text class="text-[#333] text-[26rpx] leading-[30rpx] font-400 shrink-0">服务</text>
 						<view class="text-[#343434] text-[26rpx] leading-[30rpx] font-400 truncate ml-auto">
@@ -95,7 +115,7 @@
 					</view>
 				</view>
 
-				<view class="mt-[var(--top-m)] sidebar-marign card-template">
+				<view class="mt-[var(--top-m)] sidebar-margin card-template">
 					<view class="flex items-center justify-between min-h-[40rpx]" :class="{'mb-[30rpx]': evaluate && evaluate.list && evaluate.list.length}">
 						<text class="title !mb-[0]">宝贝评价({{ evaluate.count }})</text>
 						<view v-if="evaluate.count" class="h-[40rpx] flex items-center" @click="toLink(goodsDetail.goods_id)">
@@ -113,7 +133,7 @@
 							<view class="flex justify-between w-full mt-[16rpx]">
 								<view class="flex-1 w-[540rpx] text-[26rpx] text-[#333] max-h-[72rpx] leading-[36rpx] multi-hidden mr-[50rpx]">{{ item.content }}</view>
 								<view class="w-[80rpx] shrink-0">
-									<u--image v-if="item.image_mid && item.image_mid.length" width="80rpx" height="80rpx" radius="16rpx" :src="img(item.image_mid[0])" model="aspectFill" @click="imgListPreview(item.images[0])">
+									<u--image v-if="item.image_mid && item.image_mid.length" width="80rpx" height="80rpx" radius="var(--goods-rounded-mid)" :src="img(item.image_mid[0])" model="aspectFill" @click="imgListPreview(item.images[0])">
 										<template #error>
 											<u-icon name="photo" color="#999" size="50"></u-icon>
 										</template>
@@ -124,7 +144,7 @@
 					</view>
 				</view>
 
-				<view class="my-[var(--top-m)] goods-sku sidebar-marign card-template" v-if="goodsDetail.goods && goodsDetail.goods.attr_format && Object.keys(goodsDetail.goods.attr_format).length">
+				<view class="my-[var(--top-m)] goods-sku sidebar-margin card-template" v-if="goodsDetail.goods && goodsDetail.goods.attr_format && Object.keys(goodsDetail.goods.attr_format).length">
 					<view class="title mb-[30rpx]">商品属性</view>
 					<view>
 						<block v-for="(item,index) in goodsDetail.goods.attr_format" :key="index">
@@ -143,7 +163,7 @@
 					</view>
 				</view>
 
-				<view class="my-[var(--top-m)] sidebar-marign card-template px-[var(--pad-sidebar-m)]">
+				<view class="my-[var(--top-m)] sidebar-margin card-template px-[var(--pad-sidebar-m)]">
 					<view class="title">商品详情</view>
 					<view class="u-content">
 						<u-parse :content="goodsDetail.goods.goods_desc" :tagStyle="{img: 'vertical-align: top;',p:'overflow: hidden;word-break:break-word;' }"></u-parse>
@@ -154,7 +174,7 @@
 				<view class="border-[0] border-t-[2rpx] border-solid border-[#f5f5f5] w-[100%] flex justify-between pl-[32rpx] pr-[4rpx] bg-[#fff] box-border fixed left-0 bottom-0 tab-bar z-1 items-center">
 					<view class="flex items-center">
 						<view class="flex flex-col justify-center items-center mr-[38rpx]" @click="redirect({ url: '/addon/shop/pages/index', mode: 'reLaunch' })">
-							<view class="nc-iconfont nc-icon-shouyeV6xx text-[36rpx]"></view>
+							<view class="nc-iconfont nc-icon-shouyeV6xx11 text-[36rpx]"></view>
 							<text class="text-[20rpx] mt-[10rpx]">首页</text>
 						</view>
 						<view class="flex flex-col justify-center items-center mr-[38rpx]" @click="openShareFn">
@@ -307,6 +327,13 @@ import { useLogin } from '@/hooks/useLogin'
 import useMemberStore from '@/stores/member'
 import { useShare }from '@/hooks/useShare'
 import sharePoster from '@/components/share-poster/share-poster.vue'
+
+// 使用 reactive 创建响应式对象  
+const timeData = ref({});
+// 定义 onChange 方法  
+const onChange = (e) => {  
+  timeData.value = e;  
+};
 
 // 分享
 const{setShare} = useShare()
@@ -785,7 +812,7 @@ onUnload(()=>{
 	height: 5rpx !important;
 }
 .datail-title{
-	background: linear-gradient(#fff , rgba(255,255,255,0));
+	background: linear-gradient(#fff 70%, #F6F6F6);
 }
 .goods-sku .value-wid{
 	width: calc(100% - 160rpx);

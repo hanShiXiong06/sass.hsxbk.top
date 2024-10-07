@@ -324,4 +324,10 @@ class Order extends BaseModel
             $query->whereLike("taker_name|taker_mobile", "%" . $this->handelSpecialCharacter($value) . "%");
         }
     }
+    // 获取最后一条信息的订单编号
+    public function getLastOrder($order_no)
+    {
+        return $this->where('order_no', $order_no)->order('id desc')->find();
+    }
+    
 }

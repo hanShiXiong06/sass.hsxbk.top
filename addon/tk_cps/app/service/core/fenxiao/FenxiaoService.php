@@ -22,7 +22,34 @@ class FenxiaoService extends BaseApiService
     {
         parent::__construct();
     }
-
+    public function getFenxiaoInfo()
+    {
+        $fenxiaoModel=new FenxiaoMember();
+        $fenxiaoOrderModel = new FenxiaoOrder();
+        $firstFenxiao=$fenxiaoModel->where(['site_id'=>$this->site_id,'pid'=>$this->member_id])->select();
+        $firstNum=count($firstFenxiao);
+        $secondNum=0;
+        $firstOrderNum=0;
+        $secondOrderNum=0;
+        foreach ($firstFenxiao as $k => $v){
+            //$v['member_id']
+            $twoFenxiao=$fenxiaoModel->where(['site_id'=>$this->site_id,'pid'=>$v['member_id']])->select();
+            $secondNum=$secondNum+count($twoFenxiao);
+            $firstOrder=$fenxiaoOrderModel->where(['site_id'=>$this->site_id,'member_id'=>$v['member_id']])->select();
+            $firstOrderNum=$firstOrderNum+count($firstOrder);
+            foreach ($twoFenxiao as $k2 => $v2){
+                $secondOrder=$fenxiaoOrderModel->where(['site_id'=>$this->site_id,'member_id'=>$v2['member_id']])->select();
+                $secondOrderNum=$secondOrderNum+count($secondOrder);
+            }
+        }
+        $numData=[
+            'first_num'=>$firstNum,
+            'second_num'=>$secondNum,
+            'first_order_num'=>$firstOrderNum,
+            'second_order_num'=>$secondOrderNum
+        ];
+        return $numData;
+    }
     /**
      * @Notes:分销佣金结算
      * @Interface fenxiaoEvent

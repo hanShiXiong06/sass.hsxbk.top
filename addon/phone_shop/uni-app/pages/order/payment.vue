@@ -240,13 +240,14 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import { orderCreateCalculate, orderCreate } from '@/addon/phone_shop/api/order'
+import { orderCreateCalculate, orderCreate, getShopOrderDetail } from '@/addon/phone_shop/api/order'
 import { redirect, img, moneyFormat, mobileHide } from '@/utils/common'
 import selectCoupon from './components/select-coupon/select-coupon'
 import selectStore from './components/select-store/select-store'
 import addressList from './components/address-list/address-list'
 import invoice from './components/invoice/invoice'
 import { useSubscribeMessage } from '@/hooks/useSubscribeMessage'
+import { onLoad, onShow } from '@dcloudio/uni-app'
 
 const createData = ref({
     order_key: '',
@@ -367,6 +368,20 @@ const verify = () => {
 
     return verify
 }
+onShow(() => {
+    if (orderId !== 0) {
+        // 查询订单状态
+        getShopOrderDetail(orderId).then(res => {
+            if (res.data.status == 2) {
+                uni.showToast({ title: '支付成功', icon: 'none' })
+                redirect({ url: '/addon/phone_shop/pages/order/detail', param: { order_id: orderId }, mode: 'redirectTo' })
+            }
+        })
+
+    }
+
+
+})
 
 /**
  * 支付弹窗关闭

@@ -142,7 +142,7 @@
 <script lang="ts" setup>
 import { ref, reactive, computed } from 'vue'
 import { t } from '@/lang'
-import type { ElTree, FormInstance } from 'element-plus'
+import type { ElTree, FormInstance,ElMessage } from 'element-plus'
 import { addShippingTemplate, editShippingTemplate, getShippingTemplateInfo } from '@/addon/shop/api/delivery'
 import { AnyObject } from '@/types/global'
 import { useRoute, useRouter } from 'vue-router'
@@ -424,7 +424,16 @@ const onSave = async (formEl: FormInstance | undefined) => {
 
     await formEl.validate(async (valid) => {
         if (valid) {
+            if(formData.is_free_shipping && freeShippingData.value.length == 0){
+                ElMessage.error(t('freeShippingPlaceholder'))
+                return
+            }
+            if(formData.no_delivery && noDeliveryData.value.length == 0){
+                ElMessage.error('noDeliveryPlaceholder')
+                return
+            }
             loading.value = true
+
 
             const data:AnyObject = {
                 template_id: formData.template_id,
@@ -459,7 +468,6 @@ const onSave = async (formEl: FormInstance | undefined) => {
                 })
             })
             data.area = Object.values(area)
-
             save(data).then(() => {
                 loading.value = false
                 router.push({ path: '/shop/order/shipping/template' })

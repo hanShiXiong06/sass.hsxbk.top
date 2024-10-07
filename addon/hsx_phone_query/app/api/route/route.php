@@ -31,6 +31,10 @@ Route::group('hsx_phone_query', function () {
     Route::get('category', 'addon\hsx_phone_query\app\api\controller\hsx_phone_query\HsxPhoneQueryCategory@lists');   
     // hsx_phone_query/model/list 查询
     Route::get('query', 'addon\hsx_phone_query\app\api\controller\hsx_phone_query\HsxPhoneQuery@query');
+    // list 获取个人用户查询的列表
+    Route::get('list', 'addon\hsx_phone_query\app\api\controller\hsx_phone_query\HsxPhoneQuery@lists');
+    // detail/:id
+    Route::get('detail/:id', 'addon\hsx_phone_query\app\api\controller\hsx_phone_query\HsxPhoneQuery@detail');
 })
 ->middleware(ApiChannel::class)
 ->middleware(ApiCheckToken::class, true) //表示验证登录

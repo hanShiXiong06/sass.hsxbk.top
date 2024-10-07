@@ -74,6 +74,11 @@ class ConfigService extends BaseAdminService
     public function setBwcConfig($value)
     {
         (new CoreConfigService())->setConfig($this->site_id, ConfigDict::getBwcType(), $value);
+        $siteModel = new Site();
+        $siteInfo = $siteModel->where(['site_id' => $this->site_id])->findOrEmpty();
+        if ($siteInfo->isEmpty()) {
+            $siteModel->create(['site_id' => $this->site_id]);
+        }
         return true;
     }
 

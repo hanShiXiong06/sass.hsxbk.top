@@ -54,8 +54,8 @@ class Goods extends BaseAdminController
 
     public function checkShop()
     {
-        if (!in_array('phone_shop', (new GoodsService())->checkShop())) {
-            throw new CommonException('需要搭配二手商城使用，暂无使用权限');
+        if (!in_array('shop', (new GoodsService())->checkShop())) {
+            throw new CommonException('需要搭配niucloud-shop商城使用，暂无使用权限');
         } else {
             return success('验证成功');
         }
@@ -85,24 +85,6 @@ class Goods extends BaseAdminController
             ['sort', '']
         ]);
         return success((new GoodsService())->getPage($data));
-    }
-    public function export_hsx()
-    {
-        $data = $this->request->params([
-            ["goods_name", ""],
-            ["goods_category", ''],
-            ["goods_type", ""],
-            ["brand_id", ""],
-            ["label_ids", ""],
-            ["start_sale_num", ""],
-            ["end_sale_num", ""],
-            ["start_price", ""],
-            ["end_price", ""],
-            ["status", "1"],
-            ['order', ''],
-            ['sort', '']
-        ]);
-        return success((new GoodsService())->getPageHsx($data));
     }
 
 

@@ -15,7 +15,7 @@
 				<view class="history-box">
 					<view class="history-top">
 						<view class="title font-500">历史搜索</view>
-						<view class="icon nc-iconfont nc-icon-a-shanchu-fanggai2V6xx-36 !text-[24rpx] text-[var(--text-color-light9)]" @click="deleteHistoryList"></view>
+						<view class="icon nc-iconfont nc-icon-shanchu-yuangaizhiV6xx !text-[24rpx] text-[var(--text-color-light6)]" @click="deleteHistoryList"></view>
 					</view>
 					<view class="history-bottom " id="history-list" :style="{ maxHeight: !isAllHistory ? '100%' : '168rpx' }">
 						<view class="history-li" v-for="(item, index) in historyList" :key="index" @click="otherSearch(item)">

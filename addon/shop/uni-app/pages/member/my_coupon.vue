@@ -3,12 +3,12 @@
         <view class="fixed left-0 top-0 right-0 z-10">
             <scroll-view :scroll-x="true" class="scroll-Y box-border px-[var(--sidebar-m)] bg-white">
                 <view class="flex whitespace-nowrap justify-around items-center h-[88rpx]">
-                    <view :class="['text-[28rpx] text-[#333] h-[40rpx] leading-[40rpx]', { 'class-select !text-primary': couponStatus === item.status }]" @click="statusClickFn(item.status)" v-for="(item, index) in statusList">{{ item.status_name }}({{ item.count }})</view>
+                    <view :class="['text-[28rpx] text-[#333] h-[88rpx] leading-[88rpx] font-400', { 'class-select !text-primary': couponStatus === item.status }]" @click="statusClickFn(item.status)" v-for="(item, index) in statusList">{{ item.status_name }}({{ item.count }})</view>
                 </view>
             </scroll-view>
             <scroll-view :scroll-x="true" scroll-with-animation :scroll-into-view="'id' + (subActive ? subActive - 1 : 0)"  class="px-[var(--sidebar-m)]  box-border bg-white">
 				<view class="items-center flex h-[88rpx]">
-					<text class="flex-shrink-0 w-[126rpx] h-[54rpx] text-[24rpx] flex-center text-center text-[#333] bg-[var(--temp-bg)] rounded-[30rpx] box-border mr-[20rpx] border-[2rpx] border-solid border-[#F8F9FD]" :class="{'!text-primary !border-primary !bg-[rgba(239,0,12,0.04)]':item.value == curType}"
+					<text class="flex-shrink-0 w-[126rpx] h-[54rpx] text-[24rpx] flex-center text-center text-[#333] bg-[var(--temp-bg)] rounded-[30rpx] box-border mr-[20rpx] border-[2rpx] border-solid border-[#F8F9FD]" :class="{'!text-primary !border-primary font-500 !bg-[var(--primary-color-light)]':item.value == curType}"
 						v-for="(item,index) in typeList" :key="index" :id="'id' + index"
 							@click="typeClick(index,item.value)">{{item.label}}
 						</text>
@@ -169,12 +169,12 @@ const typeClick = (index : number,data:any) =>{
 
 .class-select {
     position: relative;
-    font-weight: 500;
+    font-weight: 500 !important;
 
     &::before {
         content: "";
         position: absolute;
-        bottom: -16rpx;
+        bottom: 10rpx;
         height: 6rpx;
         background-color: $u-primary;
         width: 40rpx;

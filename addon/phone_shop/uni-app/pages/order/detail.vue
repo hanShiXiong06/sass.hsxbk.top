@@ -114,10 +114,10 @@
                                         <text class="text-[32rpx]">￥</text>
                                         <text class="text-[32rpx] font-500">{{
                                             parseFloat(goodsItem.price).toFixed(2).split('.')[0]
-                                            }}</text>
+                                        }}</text>
                                         <text class="text-[32rpx] font-500">.{{
                                             parseFloat(goodsItem.price).toFixed(2).split('.')[1]
-                                            }}</text>
+                                        }}</text>
                                     </block>
                                 </view>
                                 <text class="text-right text-[26rpx]">x{{ goodsItem.num }}</text>
@@ -282,6 +282,7 @@
                         </view>
                         <!-- #ifdef MP-WEIXIN -->
                         <view>
+
                             <nc-contact :send-message-title="sendMessageTitle" :send-message-path="sendMessagePath"
                                 :send-message-img="sendMessageImg">
                                 <view class="flex flex-col justify-center items-center">
@@ -335,7 +336,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue';
-import { onLoad } from '@dcloudio/uni-app'
+import { onLoad, onShow } from '@dcloudio/uni-app'
 import { t } from '@/locale'
 import { img, redirect, copy } from '@/utils/common';
 import { getShopOrderDetail, orderClose, orderFinish } from '@/addon/phone_shop/api/order';
@@ -381,6 +382,7 @@ const orderDetailFn = (id) => {
         }
 
         sendMessageTitle.value = detail.value.order_goods[0].goods_name
+        sendMessagePath.value = detail.value.order_id
         sendMessageImg.value = img(detail.value.order_goods[0].goods_image_thumb_small || '')
 
         loading.value = false;
@@ -574,6 +576,20 @@ const showLogistics = (data: any) => {
     return status
 }
 
+onShow(() => {
+    if (orderId.value !== 0) {
+        // 查询订单状态
+        getShopOrderDetail(orderId.value).then(res => {
+            if (res.data.status == 2) {
+                uni.showToast({ title: '支付成功', icon: 'none' })
+                // redirect({ url: '/addon/phone_shop/pages/order/detail', param: { order_id: orderId.value }, mode: 'redirectTo' })
+                // 重新请求订单详情
+                orderDetailFn(orderId.value);
+            }
+        })
+    }
+})
+
 /************ 虚拟商品核销-start ***************/
 const verifyGoodsData = ref({}) //虚拟商品
 const isShowVerify = computed(() => {
@@ -582,7 +598,8 @@ const isShowVerify = computed(() => {
         verifyGoodsData.value = detail.value.order_goods[0]
 
         let data = detail.value.order_goods[0];
-        bool = data.is_verify == 1 && data.goods_type == 'virtual' && data.delivery_status == 'delivery_finish' && detail.value.status == 3 ? true : false;
+
+        bool = data.is_verify == 1 && data.goods_type == 'virtual' && data.delivery_status == 'delivery_finish' && detail.value.status == 3 || detail.value.status == 5 ? true : false;
     }
     return bool
 })

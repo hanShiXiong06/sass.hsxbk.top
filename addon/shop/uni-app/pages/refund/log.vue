@@ -2,7 +2,7 @@
     <view :style="themeColor()">
         <view class="bg-[var(--page-bg-color)] min-h-screen overflow-hidden" v-if="!loading">
 			<view class="pt-[var(--top-m)]">
-				<view class="card-template sidebar-marign mb-[var(--top-m)]" v-for="(item,index) in detail.refund_log">
+				<view class="card-template sidebar-margin mb-[var(--top-m)]" v-for="(item,index) in detail.refund_log">
 					<view class="text-[28rpx]">{{item.type_name || '--'}}</view>
 					<view class="text-[24rpx] mt-[20rpx] mb-[10rpx] text-[var(--text-color-light9)]">{{item.main_type_name}} {{item.main_name}}</view>
 					<view class="text-[24rpx] text-[var(--text-color-light9)]">{{item.create_time}}</view>

@@ -10,12 +10,17 @@
 </template>
 <script setup lang="ts">
 import { onLoad, onShow } from '@dcloudio/uni-app'
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import categoryTemplateTwoOne from '@/addon/phone_shop/pages/goods/components/category-template-two-one.vue';
 import categoryTemplateOneOne from '@/addon/phone_shop/pages/goods/components/category-template-one-one.vue';
 import categoryTemplateTwoTwo from '@/addon/phone_shop/pages/goods/components/category-template-two-two.vue';
 import { getGoodsCategoryConfig } from '@/addon/phone_shop/api/goods';
 import useCartStore from '@/addon/phone_shop/stores/cart'
+import useMemberStore from "@/stores/member";
+import { useLogin } from "@/hooks/useLogin";
+
+const memberStore = useMemberStore();
+const userInfo = computed(() => memberStore.info);
 
 const cartStore = useCartStore();
 const config = ref({})
@@ -30,7 +35,20 @@ const getGoodsCategoryConfigFn = () => {
 	})
 }
 
+
 onLoad((options: any) => {
+	if (!userInfo.value) {
+		let pid = uni.getStorageSync("pid");
+		if (pid && pid > 0) {
+			useLogin().setLoginBack({
+				url: "/addon/phone_shop/pages/goods/category?mid=" + pid,
+			});
+
+		} else {
+			useLogin().setLoginBack({ url: "/addon/phone_shop/pages/goods/category" });
+
+		}
+	}
 	categoryId.value = options.category_id || 0;
 	getGoodsCategoryConfigFn()
 });

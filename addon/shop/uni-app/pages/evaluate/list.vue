@@ -8,7 +8,7 @@
             </scroll-view>
         </view>
         <mescroll-body ref="mescrollRef" top="88rpx" @init="mescrollInit" :down="{ use: false }" @up="getEvaluateListFn">
-            <view class="sidebar-marign pt-[var(--top-m)]" v-if="list.length">
+            <view class="sidebar-margin pt-[var(--top-m)]" v-if="list.length">
                 <template v-for="(item, index) in list">
                     <view class="mb-[var(--top-m)] card-template !pb-[20rpx]">
                         <view class="flex items-center  justify-between">

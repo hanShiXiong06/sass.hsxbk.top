@@ -1,13 +1,16 @@
-import request from '@/utils/request'
+import request from "@/utils/request";
 
 // USER_CODE_BEGIN -- phone_shop_recycle_category
+export function getCategoryList(params: Record<string, any>) {
+  return request.get(`phone_shop/recycle_category`, { params });
+}
 /**
  * 获取二手机分类列表
  * @param params
  * @returns
  */
-export function getRecycleCategoryList(params: Record<string, any>) {
-    return request.get(`phone_shop/recycle_category`, {params})
+export function getCategoryTree(params: Record<string, any>) {
+  return request.get(`phone_shop/recycle_category_tree`, { params });
 }
 
 /**
@@ -16,7 +19,7 @@ export function getRecycleCategoryList(params: Record<string, any>) {
  * @returns
  */
 export function getRecycleCategoryInfo(category_id: number) {
-    return request.get(`phone_shop/recycle_category/${category_id}`);
+  return request.get(`phone_shop/recycle_category/${category_id}`);
 }
 
 /**
@@ -25,7 +28,10 @@ export function getRecycleCategoryInfo(category_id: number) {
  * @returns
  */
 export function addRecycleCategory(params: Record<string, any>) {
-    return request.post('phone_shop/recycle_category', params, { showErrorMessage: true, showSuccessMessage: true })
+  return request.post("phone_shop/recycle_category", params, {
+    showErrorMessage: true,
+    showSuccessMessage: true,
+  });
 }
 
 /**
@@ -35,7 +41,11 @@ export function addRecycleCategory(params: Record<string, any>) {
  * @returns
  */
 export function editRecycleCategory(params: Record<string, any>) {
-    return request.put(`phone_shop/recycle_category/${params.category_id}`, params, { showErrorMessage: true, showSuccessMessage: true })
+  return request.put(
+    `phone_shop/recycle_category/${params.category_id}`,
+    params,
+    { showErrorMessage: true, showSuccessMessage: true }
+  );
 }
 
 /**
@@ -44,9 +54,10 @@ export function editRecycleCategory(params: Record<string, any>) {
  * @returns
  */
 export function deleteRecycleCategory(category_id: number) {
-    return request.delete(`phone_shop/recycle_category/${category_id}`, { showErrorMessage: true, showSuccessMessage: true })
+  return request.delete(`phone_shop/recycle_category/${category_id}`, {
+    showErrorMessage: true,
+    showSuccessMessage: true,
+  });
 }
-
-
 
 // USER_CODE_END -- phone_shop_recycle_category

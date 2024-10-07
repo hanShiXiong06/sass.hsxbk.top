@@ -5,9 +5,9 @@
 
 namespace addon\spdr\app\service\admin;
 
-use addon\phone_shop\app\model\goods\Goods;
-use addon\phone_shop\app\model\goods\GoodsSku;
-use addon\phone_shop\app\model\goods\GoodsSpec;
+use addon\shop\app\model\goods\Goods;
+use addon\shop\app\model\goods\GoodsSku;
+use addon\shop\app\model\goods\GoodsSpec;
 use addon\spdr\app\job\goods\ImportGoods;
 use app\service\core\site\CoreSiteService;
 use app\service\core\sys\CoreConfigService;
@@ -23,7 +23,7 @@ use think\facade\Log;
 /**
  * 商品服务层
  * Class GoodsService
- * @package addon\phone_shop\app\service\admin\goods
+ * @package addon\shop\app\service\admin\goods
  */
 class GoodsService extends BaseAdminService
 {
@@ -231,76 +231,6 @@ class GoodsService extends BaseAdminService
         return $list;
     }
 
-    public function getPageHsx(array $where = [])
-    {
-        $field = 'goods_id,goods_category,site_id,goods_name,status,sort,create_time,sub_title';
-        $order = 'sort asc, create_time desc';
-        $sku_where = [
-            ['goodsSku.is_default', '=', 1],
-        ];
-
-        if (!empty($where['start_price']) && !empty($where['end_price'])) {
-            $money = [$where['start_price'], $where['end_price']];
-            sort($money);
-            $sku_where[] = ['goodsSku.price', 'between', $money];
-        } else if (!empty($where['start_price'])) {
-            $sku_where[] = ['goodsSku.price', '>=', $where['start_price']];
-        } else if (!empty($where['end_price'])) {
-            $sku_where[] = ['goodsSku.price', '<=', $where['end_price']];
-        }
-        if (!empty($where['order'])) {
-            $order = $where['order'] . ' ' . $where['sort'];
-        }
-
-        $search_model = $this->model->where([['goods.site_id', '=', $this->site_id]])->withSearch(["goods_name", "goods_type", "brand_id", "goods_category", "label_ids", 'service_ids', "sale_num", "status"], $where)
-            ->field($field)
-            ->withJoin([
-                'goodsSku' => ['sku_id', 'goods_id', 'price', 'member_price', 'market_price','sku_no', 'cost_price']
-            ])->where($sku_where)->order($order)->append(['goods_type_name', 'goods_edit_path', 'goods_cover_thumb_small']);
-        $list = $this->pageQuery($search_model);
-
-        foreach ($list['data'] as $k => $v) {
-
-            if (isset($v['goodsSku']['member_price'])) {
-                $member_price = json_decode($v['goodsSku']['member_price'], true);
-                $list['data'][$k]['price'] = $member_price[0]['price'];
-            }else{
-                $list['data'][$k]['price'] = $v['goodsSku']['price'];
-            }
-
-           
-            $list['data'][$k]['sku_no'] = $v['goodsSku']['sku_no'];
-//            if (is_array( $list['data'][$k]['goods_category'] )) {
-//                $goods_category =  implode(",", $list['data'][$k]['goods_category']);
-//            }
-
-            // 将数组元素赋值给变量
-            if (isset($list['data'][$k]['goods_category'][0])) {
-                $goods_category1 = $list['data'][$k]['goods_category'][0];
-            }else{
-                $goods_category1  = '';
-            }
-            if (isset($list['data'][$k]['goods_category'][1])) {
-                $goods_category2 = $list['data'][$k]['goods_category'][1];
-            }else{
-                $goods_category2  = '';
-            }
-
-            // 将变量赋值到列表
-            $list['data'][$k]['goods_category1'] = $goods_category1;
-            $list['data'][$k]['goods_category2'] = $goods_category2;
-
-            // 数组转字符串  $list['data'][$k]['goods_category']
-            // 判断 isset($list['data'][$k]['member_price'] ) 里面的值是一个 json 字符串 转为数组 并 赋值给 price
-          
-
-//            $list['data'][$k]['cost_price'] = $v['goodsSku']['cost_price'];
-        }
-
-        $this->export_hsx($list['data']);
-        return $list;
-    }
-
     /**
      * @Notes:非队列形式直接导出封装
      * @Interface export
@@ -374,8 +304,6 @@ class GoodsService extends BaseAdminService
 
         (new CoreExportService())->export($this->site_id, 'spdr_export_goods', $data_column, $data);
     }
-
-
 
     /**
      * @Notes:添加产品
@@ -618,37 +546,4 @@ class GoodsService extends BaseAdminService
         }
         return $url;
     }
-    public function export_hsx($data)
-    {
-
-        $data_column = [
-            'goods_id' => [
-                'name' => '商品ID',
-            ],
-            'goods_name' => [
-                'name' => '商品名称'
-            ],
-            'sub_title' => [
-                'name' => '副标题'
-            ],
-//            'cost_price' => [
-//                'name' => '成本价'
-//            ],
-            'sku_no' => [
-                'name' => '串号'
-            ],
-            'price' => [
-                'name' => '售价'
-            ],
-            'goods_category1' => [
-                'name' => '商品一级分类'
-            ],
-            'goods_category2' => [
-                'name' => '商品二级分类'
-            ],
-        ];
-
-        (new CoreExportService())->export($this->site_id, 'spdr_export_goods', $data_column, $data);
-    }
-
 }

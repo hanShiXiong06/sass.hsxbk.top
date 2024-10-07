@@ -1,7 +1,7 @@
 <template>
     <view :style="themeColor()">
         <view class="bg-[var(--page-bg-color)] min-h-[100vh]" v-if="orderData">
-			<view class="pt-[30rpx] sidebar-marign payment-bottom">
+			<view class="pt-[30rpx] sidebar-margin payment-bottom">
                 <!-- 配送方式 -->
                 <view class="mb-[var(--top-m)] rounded-[var(--rounded-big)] bg-white" v-if="orderData.basic.has_goods_types.includes('real') && delivery_type_list.length">
                     <view class="rounded-tl-[var(--rounded-big)] rounded-tr-[var(--rounded-big)] head-tab flex items-center w-full bg-[#F1F1F1]" v-if="delivery_type_list.length > 1">
@@ -37,12 +37,21 @@
 
                         <!-- 自提点 -->
                         <view class="flex items-center w-full" v-if="createData.delivery.delivery_type == 'store'" @click="storeRef.open()">
-                            <view v-if="!$u.test.isEmpty(orderData.delivery.take_store)" class="pt-[26rpx] pb-[30rpx] w-full flex items-center">
+                            <view v-if="!$u.test.isEmpty(orderData.delivery.take_store)" class="pt-[40rpx] pb-[30rpx] w-full flex items-center">
 								<view class="flex flex-col">
 									<view class="text-[30rpx] font-500 text-[#303133] mb-[20rpx]">{{ orderData.delivery.take_store.store_name }}</view>
-									<view class="text-[24rpx] text-[var(--text-color-light6)] mb-[14rpx]">门店地址：{{ orderData.delivery.take_store.full_address }}</view>
-									<view class="text-[24rpx] text-[var(--text-color-light6)] mb-[14rpx]">联系电话：{{ orderData.delivery.take_store.store_mobile }}</view>
-									<view class="text-[24rpx] text-[var(--text-color-light6)]">营业时间：{{ orderData.delivery.take_store.trade_time }}</view>
+									<view class="text-[24rpx] text-[var(--text-color-light6)] mb-[20rpx] leading-[1.4] flex">
+                                        <text class="flex-shrink-0">门店地址：</text>
+                                        <text class="max-w-[490rpx]">{{ orderData.delivery.take_store.full_address }}</text> 
+                                    </view>
+									<view class="text-[24rpx] text-[var(--text-color-light6)] mb-[20rpx]">
+                                        <text>联系电话：</text>
+                                        <text>{{ orderData.delivery.take_store.store_mobile }}</text> 
+                                    </view>
+									<view class="text-[24rpx] text-[var(--text-color-light6)]">
+                                        <text>营业时间：</text>
+                                        <text>{{ orderData.delivery.take_store.trade_time }}</text>
+                                    </view>
 								</view>
 								<text class="ml-auto nc-iconfont nc-icon-youV6xx text-[26rpx] text-[var(--text-color-light9)]"></text>
                             </view>
@@ -191,7 +200,8 @@ const createData: any = ref({
     invoice: {},
     delivery: {
         delivery_type: ''
-    }
+    },
+	extend_data:{} // 扩展数据，目前礼品卡用到
 })
 
 const orderData: any = ref(null)

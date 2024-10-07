@@ -642,7 +642,7 @@ return [
             // 页面数据源
             "data" => [
                 "global" => [
-                    "title" =>"CPS霸王餐",
+                    "title" =>"CPS霸王餐HOT",
                     "pageBgColor" =>"#F8F8F8",
                     "bgUrl" =>"addon/tk_cps/diy/img/bg.png",
                     "imgWidth" =>750,
@@ -1119,7 +1119,14 @@ return [
                         "localsize" =>28,
                         "yqbgcolor" =>"rgba(233, 234, 255, 1)",
                         "yqbordercolor" =>"rgba(101, 139, 254, 1)",
-                        "yqfontcolor" =>"rgba(48, 101, 215, 1)"
+                        "yqfontcolor" =>"rgba(48, 101, 215, 1)",
+                        "cateshow" =>"1",
+                        "catebackground" =>"#1f87e8",
+                        "catefontcolor" =>"rgba(41, 41, 41, 1)",
+                        "cateselectfontcolor" =>"rgba(255, 255, 255, 1)",
+                        "showsearch" =>"1",
+                        "searchcolor" =>"#ffffff",
+                        "searchtextcolor" =>"rgba(128, 11, 11, 1)"
                     ]
                 ]
             ]

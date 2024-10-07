@@ -1,7 +1,7 @@
 <template>
     <view :style="themeColor()">
         <view class="bg-[var(--page-bg-color)] min-h-[100vh]" v-if="orderData">
-            <view class="pt-[30rpx] sidebar-marign payment-bottom">
+            <view class="pt-[30rpx] sidebar-margin payment-bottom">
                 <!-- 配送方式 -->
                 <view class="mb-[var(--top-m)] rounded-[var(--rounded-big)] bg-white" v-if="orderData.basic.has_goods_types.includes('real') && delivery_type_list.length">
                     <view class="rounded-tl-[var(--rounded-big)] rounded-tr-[var(--rounded-big)] head-tab flex items-center w-full bg-[#f1f1f1]" v-if="delivery_type_list.length > 1">

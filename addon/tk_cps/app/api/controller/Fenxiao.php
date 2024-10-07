@@ -20,4 +20,15 @@ class Fenxiao extends BaseController
         return success((new FenxiaoService())->checkFenxiao($data));
     }
 
+    /**
+     * @Notes:分销统计
+     * @Interface getFenxiaoInfo
+     * @return Response
+     * @author: TK
+     * @Time: 2024/9/21   下午12:45
+     */
+    public function getFenxiaoInfo()
+    {
+        return success((new FenxiaoService())->getFenxiaoInfo());
+    }
 }

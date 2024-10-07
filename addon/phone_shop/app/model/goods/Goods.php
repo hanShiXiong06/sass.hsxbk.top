@@ -497,6 +497,9 @@ class Goods extends BaseModel
     public static function getLastGoodsId()
     {
         $goods_id = self::order('goods_id desc')->limit(1)->value('goods_id');
+        if (empty($goods_id)) {
+            $goods_id = 0;
+        }
         return $goods_id;
     }
     

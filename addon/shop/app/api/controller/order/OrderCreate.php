@@ -46,6 +46,13 @@ class OrderCreate extends BaseApiController
 //            ['member_remark', ''],//买家留言
             [ 'discount', [] ],//优惠
 //            ['invoice', []],//发票
+
+            [ 'card_id', 0 ], //礼品卡id
+
+            ['seckill_id',0],
+            ['pintuan_id',0],
+
+            [ 'extend_data', [] ] // 扩展数据
         ]);
         return success('SUCCESS', ( new OrderCreateService() )->calculate($data));
     }

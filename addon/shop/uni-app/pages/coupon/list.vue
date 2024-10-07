@@ -29,7 +29,7 @@
 			</view>
 		</view>
 		<mescroll-body ref="mescrollRef"  @init="mescrollInit" :down="{ use: false }"  height="auto" @up="getShopCouponListFn" :top="mescrollTop">
-			<view v-if="list.length" class="pb-[var(--top-m)] sidebar-marign">
+			<view v-if="list.length" class="pb-[var(--top-m)] sidebar-margin">
 				<template v-for="(item, index) in list">
 					<view v-if="item.btnType === 'collected'"
 							class="flex items-center relative w-[100%] rounded-[var(--rounded-big)] overflow-hidden bg-[#fff] py-[20rpx] background-size"

@@ -80,10 +80,10 @@
                                                                     <text class="text-[26rpx] font-500">￥</text>
                                                                     <text class="text-[36rpx] font-500">{{
                                                                         parseFloat(goodsPrice(item)).toFixed(2).split('.')[0]
-                                                                    }}</text>
+                                                                        }}</text>
                                                                     <text class="text-[24rpx] font-500">.{{
                                                                         parseFloat(goodsPrice(item)).toFixed(2).split('.')[1]
-                                                                    }}</text>
+                                                                        }}</text>
                                                                     <image class="h-[24rpx] ml-[6rpx]"
                                                                         v-if="priceType(item) == 'member_price'"
                                                                         :src="img('addon/phone_shop/VIP.png')"
@@ -180,10 +180,10 @@
                                                         <text class="text-[26rpx] font-500">￥</text>
                                                         <text class="text-[36rpx] font-500">{{
                                                             parseFloat(goodsPrice(item)).toFixed(2).split('.')[0]
-                                                        }}</text>
+                                                            }}</text>
                                                         <text class="text-[24rpx] font-500">.{{
                                                             parseFloat(goodsPrice(item)).toFixed(2).split('.')[1]
-                                                        }}</text>
+                                                            }}</text>
                                                         <image class="h-[24rpx] ml-[6rpx]"
                                                             v-if="priceType(item) == 'member_price'"
                                                             :src="img('addon/phone_shop/VIP.png')" mode="heightFix" />
@@ -488,9 +488,10 @@ const deleteInvalidList = () => {
 // 价格类型 
 const priceType = (data: any) => {
     let type = "";
+
     if (data.goods.is_discount && data.goodsSku.sale_price != data.goodsSku.price) {
         type = 'discount_price'// 折扣
-    } else if (data.member_discount && getToken() && data.goodsSku.member_price != data.goodsSku.price) {
+    } else if (data.goods.member_discount && getToken() && data.goodsSku.member_price != data.goodsSku.price) {
         type = 'member_price' // 会员价
     } else {
         type = ""
@@ -501,9 +502,10 @@ const priceType = (data: any) => {
 // 商品价格
 const goodsPrice = (data: any) => {
     let price = "0.00";
+
     if (data.goods.is_discount && data.goodsSku.sale_price != data.goodsSku.price) {
         price = data.goodsSku.sale_price ? data.goodsSku.sale_price : data.goodsSku.price // 折扣价
-    } else if (data.member_discount && getToken() && data.goodsSku.member_price != data.goodsSku.price) {
+    } else if (data.goods.member_discount && getToken() && data.goodsSku.member_price != data.goodsSku.price) {
         price = data.goodsSku.member_price ? data.goodsSku.member_price : data.goodsSku.price // 会员价
     } else {
         price = data.goodsSku.price

@@ -4,7 +4,7 @@
 			<view class="py-[14rpx] flex items-center justify-between">
 				<view class="flex-1 flex items-center h-[64rpx] bg-[#F6F8F8] rounded-[33rpx] px-[32rpx] mr-[30rpx]">
 					<u-input class="flex-1" maxlength="50" v-model="goods_name" @confirm="searchTypeFn('all')"
-						placeholder="请搜索您想要的商品" placeholderClass="text-[#a5a6a6] text-[26rpx]" fontSize="26rpx"
+						placeholder="请搜索您想要的商品(串号搜索前加#)" placeholderClass="text-[#a5a6a6] text-[26rpx]" fontSize="26rpx"
 						clearable border="none"></u-input>
 					<text class="nc-iconfont nc-icon-sousuo-duanV6xx1 text-[32rpx] ml-[18rpx] !text-[#999]"
 						@click="searchTypeFn('all')"></text>
@@ -15,13 +15,14 @@
 			</view>
 			<view class="flex justify-between tems-center py-[22rpx] px-[20rpx]">
 				<view class=" flex items-center justify-between text-[24rpx] text-[#666] flex-1">
-					<text :class="{ 'text-[#303133] ': searchType == 'all' }" @click="searchTypeFn('all')">综合排序</text>
-					<view class="flex items-center" :class="{ 'text-[#303133]': searchType == 'sale_num' }"
-						@click="searchTypeFn('sale_num')">
-						<text class="mr-[4rpx]">销量</text>
-						<text v-if="sale_num == 'asc'"
-							class="text-[18rpx] text-[#666] nc-iconfont nc-icon-a-xiangshangV6xx1"></text>
-						<text v-else class="text-[18rpx] text-[#666] nc-iconfont nc-icon-a-xiangxiaV6xx1"></text>
+					<!-- <text :class="{ 'text-[#303133] ': searchType == 'all' }" @click="searchTypeFn('day')">今日上新</text> -->
+					<view class="flex items-center"
+						:class="{ 'text-[#303133]': searchType == 'sale_num', 'active': create_time }"
+						@click="searchTypeFn('day')">
+						<text class="mr-[4rpx]">今日上新</text>
+						<text v-if="create_time"
+							class="text-[18rpx]  nc-iconfont nc-icon-shanchu-yuangaizhiV6xx"></text>
+						<!-- <text v-else class="text-[18rpx] text-[#666] nc-iconfont nc-icon-a-xiangxiaV6xx1"></text> -->
 					</view>
 					<view class="flex items-center" :class="{ 'text-[#303133]': searchType == 'price' }"
 						@click="searchTypeFn('price')">
@@ -39,11 +40,10 @@
 			</view>
 		</view>
 		<u-popup :show="labelPopup" mode="top" @close="labelPopup = false">
-
-			<view @touchmove.prevent.stop class="">
+			<view @touchmove.prevent.stop>
 				<!-- <view class="text-sm font-bold px-[30rpx] mt-3">全部分类</view> -->
-				<view class=" tabs-box z-2 fixed left-0 bg-[#fff] bottom-[50px] top-20 pl-[30rpx] pt-[30rpx]">
-					<scroll-view :scroll-y="true" class="scroll-height">
+				<view class="  tabs-box z-2 fixed left-0 bg-[#fff] bottom-[50px] top-20 pl-[10rpx] pt-[30rpx]">
+					<scroll-view :scroll-y="true" class="scroll-height bg-[#ddd] ">
 						<view class="bg-[#F4F6F8]">
 							<view class="tab-item truncate"
 								:class="{ 'tab-item-active': currGoodsCategory == index, 'rounded-br-[12rpx]': currGoodsCategory - 1 === index, 'rounded-tr-[12rpx]': currGoodsCategory + 1 === index }"
@@ -62,12 +62,11 @@
 
 					<view class="flex flex-wrap pl-[30rpx] pt-[30rpx] mr-3">
 
-						<u-input placeholder="请输入查找最低价格" border="surround" class="mr-3"
+						<u-input placeholder="最低价格" border="surround" class="mr-3"
 							prefixIconStyle="font-size: 22px;color: #909399" v-model="price_between.start_price">
 						</u-input>
 						-
-						<u-input placeholder="请输入最高价格" border="surround" class="ml-3"
-							v-model="price_between.end_price" />
+						<u-input placeholder="最高价格" border="surround" class="ml-3" v-model="price_between.end_price" />
 					</view>
 					<scroll-view class="h-[70vh]" :scroll-y="true">
 						<view
@@ -98,8 +97,9 @@
 
 					<view class="flex flex-wrap justify-end pl-[30rpx] p-[30rpx] ">
 						<div class="flex ">
-							<u-button type="primary" class="mr-3" text="重置" @click="resetQuery"></u-button>
-							<u-button type="success" :plain="true" @click="searchTypeFn" text="搜索"></u-button>
+							<u-button type="success" :plain="true" class="mr-3 " text="重置"
+								@click="resetQuery"></u-button>
+							<u-button type="primary" @click="searchTypeFn" text="搜索"></u-button>
 						</div>
 
 
@@ -110,6 +110,7 @@
 
 		<mescroll-body ref="mescrollRef" top="160rpx" bottom="50px" @init="mescrollInit" :down="{ use: false }"
 			@up="getAllAppListFn">
+
 			<view v-if="articleList.length"
 				:class="['sidebar-marign', !listType ? 'flex justify-between flex-wrap' : '']">
 				<template v-for="(item, index) in articleList">
@@ -159,6 +160,11 @@
 										已售:{{
 											item.sale_num }}{{ item.unit
 										}}</text>
+
+									<text @click.stop="onGoodsShare(item.goods_id)"
+										class="nc-iconfont nc-icon-fenxiangV6xx"></text>
+									<!-- #ifdef MP || APP-PLUS  -->
+									<!-- #endif -->
 								</view>
 							</view>
 						</view>
@@ -212,6 +218,8 @@
 				<mescroll-empty :option="{ tip: '暂无商品' }"></mescroll-empty>
 			</view>
 		</mescroll-body>
+		<!-- 小程序隐私协议 -->
+		<wx-privacy-popup ref="wxPrivacyPopupRef"></wx-privacy-popup>
 
 		<tabbar />
 	</view>
@@ -220,8 +228,8 @@
 <script setup lang="ts">
 import { reactive, ref, onMounted } from 'vue'
 import { t } from '@/locale'
-import { redirect, img, getToken } from '@/utils/common';
-import { getGoodsCategoryTree, getGoodsPages } from '@/addon/phone_shop/api/goods';
+import { redirect, img, getToken, deepClone } from '@/utils/common';
+import { getGoodsDetail, getGoodsCategoryTree, getGoodsPages } from '@/addon/phone_shop/api/goods';
 import MescrollBody from '@/components/mescroll/mescroll-body/mescroll-body.vue';
 import MescrollEmpty from '@/components/mescroll/mescroll-empty/mescroll-empty.vue';
 import useMescroll from '@/components/mescroll/hooks/useMescroll.js';
@@ -240,6 +248,7 @@ const labelPopup = ref(false);
 const goods_name = ref("");
 const price = ref("");
 const sale_num = ref("");
+const create_time = ref("");
 const searchType = ref('all');
 const isShow = ref(false)//输入框清除文字按钮
 let price_between = ref({
@@ -253,11 +262,11 @@ onLoad(async (option) => {
 	currGoodsCategory.value = option.curr_goods_category || ''
 	goods_name.value = option.goods_name || ''
 	coupon_id.value = option.coupon_id || ''
-	await getGoodsCategoryTree().then((res: any) => {
-		const initData = { category_name: "全部", category_id: '' };
-		categoryList.value.push(initData);
-		categoryList.value = categoryList.value.concat(res.data);
-	});
+	if (option.create_time) {
+		create_time.value = new Date().getTime()
+	}
+
+
 })
 
 interface mescrollStructure {
@@ -266,26 +275,170 @@ interface mescrollStructure {
 	endSuccess: Function,
 	[propName: string]: any
 }
+const goodsDetail = ref({})
+const onGoodsShare = (id: number) => {
+
+	getGoodsDetail({
+		goods_id: id,
+	}).then(res => {
+		if (!res.data.goods || JSON.stringify(res.data) === '[]') {
+			uni.showToast({ title: '找不到该商品', icon: 'none' })
+			setTimeout(() => {
+				redirect({ url: '/addon/phone_shop/pages/index', mode: 'reLaunch' })
+			}, 600)
+			return false
+		}
+
+		goodsDetail.value = deepClone(res.data);
+		// 如果  goodsDetail.value.goods.goods_image 中有 , 则转为数组 如果没有则是单张图片
+
+		if (goodsDetail.value.goods.goods_image.indexOf(',') > -1) {
+			goodsDetail.value.goods.goods_image = goodsDetail.value.goods.goods_image.split(',')
+		} else {
+			goodsDetail.value.goods.goods_image = [goodsDetail.value.goods.goods_image]
+		}
+
+		// console.log(goodsDetail.value.goods.goods_image);
+		downloadMultipleImages(goodsDetail.value.goods.goods_image).then(res => {
+
+			if (res) {
+
+				let sku_no = goodsDetail.value.sku_no ? '#' + goodsDetail.value.sku_no + ' ' : ''
+				uni.setClipboardData({
+					data: goodsDetail.value.goods.goods_name + ' ' + goodsDetail.value.goods.sub_title + ' ' + sku_no + goodsDetail.value.goods.price,
+					success() {
+						uni.showToast({
+							title: '图片下载及复制文案成功',
+							icon: 'none'
+						})
+					}
+				})
+			} else {
+				uni.showToast({
+					title: '下载失败',
+					icon: 'none'
+				});
+			}
+		})
+		//iPhone15 Pro 128G 111 #990899
+
+	})
+
+}
+
+
+/************** 一键复制-start **********/
+// const toCopy = () => {
+// 	// 复制商品名称 及价格
+// 	let sku_no = goodsDetail.value.sku_no ? goodsDetail.value.sku_no + '|' : ''
+// 	uni.setClipboardData({
+// 		data: goodsDetail.value.goods.goods_name + '|' + goodsDetail.value.goods.sub_title + '|' + sku_no + goodsDetail.value.sale_price + "元",
+// 		success() {
+// 			uni.showToast({
+// 				title: '复制成功',
+// 				icon: 'none'
+// 			})
+// 		}
+// 	})
+// }
+/************** 一键复制-end **********/
+/*
+* downloadBanner
+* 一键下载所有的banner图片
+* */
+
+
+
+// #ifdef MP || APP-PLUS
+// Main function to download all images
+// const downloadBanner = () => {
+// 	const images = goodsDetail.value.goods.goods_image;
+// 	downloadMultipleImages(images)
+// }
+
+// 下载单个图片的函数
+function downloadImage(imageUrl: string) {
+	return new Promise((resolve, reject) => {
+		uni.downloadFile({
+			url: imageUrl,
+			success: (res) => {
+				if (res.errMsg == "downloadFile:ok") {
+					uni.saveImageToPhotosAlbum({
+						filePath: res.tempFilePath,
+						success: () => {
+							uni.showToast({
+								title: '保存成功',
+								icon: 'none'
+							});
+							resolve(res.tempFilePath);  // 成功时解析文件路径
+						},
+						fail: () => {
+							uni.showToast({
+								title: '保存失败，请稍后重试',
+								icon: 'none'
+							});
+							reject('保存图片失败');  // 失败时拒绝
+						}
+					});
+				} else {
+					reject('下载文件失败');  // 下载文件失败时拒绝
+				}
+			},
+			fail: () => {
+				uni.showToast({
+					title: '保存失败，请稍后重试',
+					icon: 'none'
+				});
+				reject('下载过程中出错');  // 请求失败时拒绝
+			}
+		});
+	});
+}
+
+// 下载多个图片的函数
+function downloadMultipleImages(images: Object) {
+	// 创建多个下载任务
+	let downloadTasks = images.map((imageUrl: string) => downloadImage(imageUrl));
+	loading.value = true;
+	// 使用 Promise.all 等待所有图片下载完成
+	return Promise.all(downloadTasks)
+		.then((results) => {
+			loading.value = false;
+			return true
+
+		})
+		.catch((error) => {
+			loading.value = false;
+			return false
+
+		});
+}
+
+
+// #endif
 
 const getAllAppListFn = (mescroll: mescrollStructure) => {
 	loading.value = false;
 	let data: object = {
 		goods_category: goods_category.value,
-		page: mescroll.num,
+		page: mescroll.num || 15,
 		limit: mescroll.size,
 		keyword: goods_name.value,
 		coupon_id: coupon_id.value,
 		order: searchType.value === 'all' ? '' : searchType.value,
 		sort: searchType.value == 'price' ? price.value : sale_num.value,
 		start_price: price_between.value.start_price,
-		end_price: price_between.value.end_price
+		end_price: price_between.value.end_price,
+		create_time: create_time.value
 	};
 	getGoodsPages(data).then((res: any) => {
 		let newArr = (res.data.data as Array<Object>);
 		//设置列表数据
-		if (Number(mescroll.num) === 1) {
-			articleList.value = []; //如果是第一页需手动制空列表
-		}
+		// if (Number(mescroll.num) === 1) {
+		// 	articleList.value = []; //如果是第一页需手动制空列表
+		// }
+
+
 		articleList.value = articleList.value.concat(newArr);
 		mescroll.endSuccess(newArr.length);
 		loading.value = true;
@@ -323,11 +476,25 @@ const loadTreeCategory = (id: string) => {
 const goods_category = ref('');
 // 搜索
 
-const searchTypeFn = (type) => {
+const searchTypeFn = async (type) => {
+	if (categoryList.value.length == 0) {
+		await getGoodsCategoryTree().then((res: any) => {
+			const initData = { category_name: "全部", category_id: '' };
+			categoryList.value.push(initData);
+			categoryList.value = categoryList.value.concat(res.data);
+			// loadCategory(categoryList.value[0].category_id)
+		});
+	}
 	searchType.value = type;
 	if (type == 'all') {
 		sale_num.value = '';
 		price.value = '';
+
+	}
+	if (type == 'day') {
+		// 今日上新 当前的日期 通过 原生的js 完成 yyyy-hh-mm
+		goods_category.value = ''
+		create_time.value = create_time.value ? "" : new Date().toLocaleDateString().split('/').join('-');
 	}
 	if (type == 'price') {
 		sale_num.value = '';
@@ -378,6 +545,7 @@ const resetQuery = () => {
 	searchType.value = 'all';
 	listType.value = true;
 	articleList.value = [];
+	create_time.value = ''
 	getMescroll().resetUpScroll();
 }
 onMounted(() => {
@@ -479,13 +647,13 @@ const goodsPrice = (data: any) => {
 	height: 92rpx;
 	text-align: center;
 	line-height: 92rpx;
-	background-color: #fff;
+	background-color: #e7e2e23f;
 }
 
 .tabs-box .tab-item-active {
 	position: relative;
 	color: var(--primary-color);
-	background-color: #F4F6F8;
+	background-color: #ffffff;
 
 	&::before {
 		display: inline-block;
@@ -514,5 +682,9 @@ const goodsPrice = (data: any) => {
 
 .scroll-height {
 	height: 100%;
+}
+
+.active {
+	color: #f00
 }
 </style>

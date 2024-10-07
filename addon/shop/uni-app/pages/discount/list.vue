@@ -3,10 +3,10 @@
         <view class="fixed top-0 left-0 w-full z-10 text-[0]">
 			<!-- #ifdef MP-WEIXIN -->
 			<view class="absolute top-0 left-0 right-0 z-999">
-				<top-tabbar :data="param" :scrollBool="topTabarObj.getScrollBool()" class="top-header"/>
+				<top-tabbar :data="param"  class="top-header"/>
 			</view>
 			<!-- #endif -->
-			<u-swiper v-if="bannerList.length" :list="imgList" :indicator="bannerList.length" :indicatorStyle="{'bottom': '46rpx',}" :autoplay="true" :height="headStyle" @click="toRedirect"></u-swiper>
+			<u-swiper v-if="bannerList.length" :list="imgList" :indicator="bannerList.length" :indicatorStyle="{'bottom': '60rpx',}" :autoplay="true" :height="headStyle"  @click="toRedirect"></u-swiper>
 			<image v-if="!bannerListLoading&&!bannerList.length" :src="img('addon/shop/discount/discount_banner.png')" mode="scaleToFill" class="w-full" :style="{height: headStyle}" :show-menu-by-longpress="true"/>
 			<view class="relative w-full h-[110rpx] mt-[-40rpx] z-5" v-if="discountList.length">
                 <view class="bg-[#f24f3d] w-[750rpx] rounded-tl-[24rpx] rounded-tr-[24rpx] h-[96rpx] absolute left-0 bottom-0"></view>
@@ -31,7 +31,7 @@
         </view>
 
 	    <mescroll-body v-if="discountList.length" ref="mescrollRef" :top="mescrollTop" @init="mescrollInit" :down="{ use: false }" @up="getActiveDiscountGoodsListFn">
-            <view class="sidebar-marign py-[var(--top-m)] bg-[#F4F6F8]">
+            <view class="sidebar-margin py-[var(--top-m)] bg-[#F4F6F8]">
 				<block v-for="(item,index) in list" :key="index">
 					<view class="bg-[#fff] p-[20rpx] flex rounded-[var(--rounded-big)]" :class="{'mb-[var(--top-m)]':index<list.length-1}" @click="toLink(item)">
 						<view class="w-[240rpx] h-[240rpx] rounded-[var(--goods-rounded-big)] overflow-hidden">

@@ -3,22 +3,21 @@
 		<u-popup class="popup-type" :show="goodsSkuPop" @close="closeFn" mode="bottom">
 			<view class="py-[32rpx] relative" v-if="goodsDetail.detail" @touchmove.prevent.stop>
 				<view class="flex px-[32rpx] mb-[40rpx]">
-
-					<view class="w-[180rpx] h-[180rpx] rounded-[var(--goods-rounded-big)] overflow-hidden">
-						<u--image width="180rpx" height="180rpx" :src="img(goodsDetail.detail.sku_image)" @click="imgListPreview(goodsDetail.detail.sku_image)" model="aspectFill">
+					<view class="w-[180rpx] h-[180rpx]">
+						<u--image width="180rpx" height="180rpx" :radius="'var(--goods-rounded-big)'" :src="img(goodsDetail.detail.sku_image)" @click="imgListPreview(goodsDetail.detail.sku_image)" model="aspectFill">
 							<template #error>
-								<image class="w-[180rpx] h-[180rpx]" :src="img('static/resource/images/diy/shop_default.jpg')" mode="aspectFill"></image>
+								<image class="w-[180rpx] h-[180rpx] rounded-[var(--goods-rounded-big)] overflow-hidden" :src="img('static/resource/images/diy/shop_default.jpg')" mode="aspectFill"></image>
 							</template>
 						</u--image>
 					</view>
-					<view class="flex flex-1 flex-col ml-[20rpx] py-[10rpx]">
+					<view class="flex flex-1 flex-col justify-between ml-[20rpx] py-[10rpx]">
 						<view class="w-[100%]">
 							<view class="text-[var(--price-text-color)] flex items-baseline">
-								<text class="leading-[62rpx] price-font" v-if="goodsDetail.point">
+								<text class="price-font" v-if="goodsDetail.point">
 									<text class="text-[44rpx]">{{goodsDetail.point}}</text>
 									<text class="text-[38rpx]">{{t('point')}}</text>
 								</text>
-								<text class="text-[38rpx] mb-[10rpx]" v-if="goodsDetail.point&&parseFloat(goodsDetail.price)">+</text>
+								<text class="text-[38rpx]" v-if="goodsDetail.point&&parseFloat(goodsDetail.price)">+</text>
 								<template v-if="goodsDetail.point&&parseFloat(goodsDetail.price)">
 									<text class="text-[44rpx] price-font">{{ parseFloat(goodsDetail.price).toFixed(2) }}</text>
 									<text class="text-[38rpx] price-font">元</text>
@@ -32,9 +31,7 @@
 							</view>
 							<view class="text-[26rpx] leading-[32rpx] text-[var(--text-color-light6)] mt-[10rpx]">库存{{goodsDetail.detail.stock}}{{ goodsDetail.goods.unit }}</view>
 						</view>
-						<view class="w-[100%] mt-[14rpx]" v-if="goodsDetail.goodsSpec && goodsDetail.goodsSpec.length">
-							<text class="text-[26rpx] text-[var(--text-color-light6)] flex items-center">已选规格：{{goodsDetail.detail.sku_spec_format}}</text>
-						</view>
+						<view class="text-[26rpx] leading-[30rpx] text-[var(--text-color-light6)] w-[100%] max-h-[60rpx] multi-hidden" v-if="goodsDetail.goodsSpec && goodsDetail.goodsSpec.length">已选规格：{{goodsDetail.detail.sku_spec_format}}</view>
 					</view>
 				</view>
 				<scroll-view class="h-[500rpx] px-[32rpx] box-border mb-[60rpx]" scroll-y="true">
@@ -53,10 +50,10 @@
 						<view class="text-[28rpx]">购买数量</view>
 						<u-number-box :min="1" :max="parseInt(goodsDetail.detail.limit_num)<goodsDetail.stock?parseInt(goodsDetail.detail.limit_num):goodsDetail.stock" integer :step="1" input-width="68rpx" v-model="buyNum" input-height="52rpx">
 							<template #minus>
-								<text class="text-[30rpx] nc-iconfont nc-icon-jianV6xx font-500" :class="{ '!text-[var(--text-color-light9)]': buyNum === 1 }"></text>
+								<text class="text-[30rpx] nc-iconfont nc-icon-jianV6xx font-500" :class="{ '!text-[var(--text-color-light9)]': buyNum <= 1 }"></text>
 							</template>
 							<template #input>
-								<text class="text-[#303133] text-[28rpx] mx-[10rpx] min-w-[72rpx] h-[44rpx] bg-[var(--temp-bg)] leading-[44rpx] text-center rounded-[6rpx]">{{ buyNum }}</text>
+								<input  class="text-[#303133] text-[28rpx] mx-[10rpx] w-[80rpx] h-[44rpx] bg-[var(--temp-bg)] leading-[44rpx] text-center rounded-[6rpx]" type="number" @input="goodsSkuInputFn" @blur="goodsSkuBlurFn" v-model="buyNum"  />
 							</template>
 							<template #plus>
 								<text class="text-[30rpx] nc-iconfont nc-icon-jiahaoV6xx font-500" :class="{ '!text-[var(--text-color-light9)]': buyNum >= goodsDetail.stock || buyNum ==parseInt(goodsDetail.detail.limit_num)}"></text>
@@ -118,6 +115,26 @@
         }
         return price;
     })
+	
+	
+	const goodsSkuInputFn = ()=>{
+		setTimeout(() => {
+			if(buyNum.value >= goodsDetail.value.stock){
+				buyNum.value = goodsDetail.value.stock;
+			}
+		},0)
+	}
+	
+	const goodsSkuBlurFn = ()=>{
+		setTimeout(() => {
+			if(!buyNum.value || buyNum.value <= 0 ){
+				buyNum.value = 1;
+			}
+			if(buyNum.value >= goodsDetail.value.stock){
+				buyNum.value = goodsDetail.value.stock;
+			}
+		},0)
+	}
 
 	// 会员信息
 	const memberStore = useMemberStore()

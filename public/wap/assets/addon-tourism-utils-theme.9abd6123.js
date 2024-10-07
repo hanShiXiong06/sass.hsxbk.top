@@ -1,1 +1,0 @@
-const r={"--primary-color":"#FA6400","--primary-color-dark":"#F48032","--primary-color-disabled":"#FFC29A","--primary-color-light":"#FFF4ED","--page-bg-color":"#f7f7f7","--price-text-color":"#F55246"};export{r as default};

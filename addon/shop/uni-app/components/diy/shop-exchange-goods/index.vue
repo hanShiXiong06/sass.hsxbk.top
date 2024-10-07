@@ -4,9 +4,9 @@
 			<view :style="maskLayer"></view>
 			<view class="diy-shop-exchange-goods-list relative flex flex-wrap justify-between">
 				<view class="overflow-hidden bg-[#fff] flex flex-col box-border w-[calc(50%-10rpx)] rounded-[var(--rounded-mid)]" :class="{'mt-[20rpx]': index > 1}" :style="itemCss" v-for="(item,index) in goodsList" :key="item.goods_id" @click="toLink(item)">
-					<u--image :width="style2Width" :height="style2Width" :src="img(item.goods_cover_thumb_mid || '')" model="aspectFill">
+					<u--image :width="style2Width" :height="style2Width" radius="var(--rounded-mid)" :src="img(item.goods_cover_thumb_mid || '')" model="aspectFill">
 						<template #error>
-							<image :style="{'width': style2Width,'height': style2Width}" :src="img('static/resource/images/diy/shop_default.jpg')" mode="aspectFill"></image>
+							<image class="rounded-[var(--rounded-mid)] overflow-hidden" :style="{'width': style2Width,'height': style2Width}" :src="img('static/resource/images/diy/shop_default.jpg')" mode="aspectFill"></image>
 						</template>
 					</u--image>
 					<view class="flex-1 pt-[10rpx] pb-[20rpx] px-[16rpx] flex flex-col justify-between">

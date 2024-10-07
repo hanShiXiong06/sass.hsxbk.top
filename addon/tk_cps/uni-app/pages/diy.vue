@@ -47,6 +47,7 @@
 
 	// 监听页面显示
 	diy.onShow((data : any) => {
+
 		if (data.value) {
 			// uni.setNavigationBarTitle({
 			// 	title: diyData.title

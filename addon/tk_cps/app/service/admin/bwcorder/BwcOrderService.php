@@ -12,7 +12,8 @@
 namespace addon\tk_cps\app\service\admin\bwcorder;
 
 use addon\tk_cps\app\model\bwcorder\BwcOrder;
-
+use addon\tk_cps\app\job\BwcOrder as BwcOrderJob;
+use addon\tk_cps\app\service\core\BwcService;
 use core\base\BaseAdminService;
 
 
@@ -28,7 +29,12 @@ class BwcOrderService extends BaseAdminService
         parent::__construct();
         $this->model = new BwcOrder();
     }
-
+    public function asyncDayOrder($mini)
+    {
+      // (new BwcService())->cronOrder($this->site_id,$mini);
+        BwcOrderJob::dispatch(['site_id' => $this->site_id,'mini'=>$mini]);
+       return [];
+    }
     /**
      * 获取霸王餐订单列表
      * @param array $where

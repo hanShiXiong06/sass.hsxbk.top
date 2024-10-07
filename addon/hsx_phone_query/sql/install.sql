@@ -79,6 +79,7 @@ drop TABLE  IF EXISTS `{{prefix}}hsx_phone_query_info`;
 CREATE TABLE `{{prefix}}hsx_phone_query_info` (
     `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '自增主键',
     `imei` VARCHAR(50) NOT NULL COMMENT 'IMEI码',
+    `member_id` INT UNSIGNED NOT NULL COMMENT '会员id',
     `sn` VARCHAR(50) NOT NULL COMMENT '序列号',
     `info` TEXT NOT NULL COMMENT '查询信息，以JSON格式存储',
     `type_id` INT UNSIGNED NOT NULL COMMENT '类型ID，关联其他表',

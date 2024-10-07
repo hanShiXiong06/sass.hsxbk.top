@@ -71,7 +71,7 @@
 									</view>
 									<template v-else-if="(item.goods_type == 'virtual' && config.cart.event !== 'cart') || item.goods_type == 'real'">
 										<view v-if="config.cart.control && config.cart.style === 'style-1'" class="h-[44rpx] relative">
-											<view :id="'itemCart' + index" class="w-[102rpx] box-border text-center text-[#fff] bg-color h-[46rpx] text-[22rpx] leading-[46rpx] rounded-[100rpx]" @click.stop="itemCart(item, 'itemCart' + index)">
+											<view :id="'itemCart' + index" class="w-[102rpx] box-border text-center text-[#fff] primary-btn-bg h-[46rpx] text-[22rpx] leading-[46rpx] rounded-[100rpx]" @click.stop="itemCart(item, 'itemCart' + index)">
 												{{ config.cart.text }}
 											</view>
 											<view
@@ -124,7 +124,7 @@
 			</mescroll-body>
 			<!--  #ifdef  H5 -->
 			<view v-if="config.cart.control && config.cart.event === 'cart'"
-				class="bg-[#fff] z-10 flex justify-between items-center fixed left-0 right-0 bottom-[50px] box-solid px-[24rpx] py-[17rpx] mb-ios border-[0] border-t-[2rpx] border-solid border-[#eee]">
+				class="bg-[#fff] z-10 flex justify-between items-center fixed left-0 right-0 bottom-[50px] box-solid px-[24rpx] py-[17rpx] mb-ios border-[0] border-t-[2rpx] border-solid border-[#f6f6f6]">
 				<view class="flex items-center">
 					<view class="w-[66rpx] h-[66rpx] mr-[27rpx] relative">
 						<view id="animation-end" class="w-[66rpx] h-[66rpx] rounded-[35rpx] bg-[var(--primary-color)] text-center leading-[70rpx]" @click.stop="toCart">
@@ -148,7 +148,7 @@
 
 			<!-- #ifdef MP-WEIXIN -->
 			<view v-if="config.cart.control && config.cart.event === 'cart'"
-				class="bg-[#fff] z-10 flex justify-between items-center fixed left-0 right-0 bottom-[100rpx] box-solid px-[24rpx] py-[17rpx] mb-ios border-[0] border-t-[2rpx] border-solid border-[#eee]">
+				class="bg-[#fff] z-10 flex justify-between items-center fixed left-0 right-0 bottom-[100rpx] box-solid px-[24rpx] py-[17rpx] mb-ios border-[0] border-t-[2rpx] border-solid border-[#f6f6f6]">
 				<view class="flex items-center">
 					<view class="w-[66rpx] h-[66rpx] mr-[27rpx] relative">
 						<view id="animation-end"
@@ -478,18 +478,19 @@ const settlement = () => {
 		uni.showToast({ title: '还没有选择商品', icon: 'none' })
 		return
 	}
-	const ids:any = []
+	const cart_ids:any = []
 	Object.values(cartList.value).forEach(item => {
 		Object.keys(item).forEach(v => {
-			if (v != 'totalNum' && v != 'totalMoney') ids.push(item[v].id)
+			if (v != 'totalNum' && v != 'totalMoney') cart_ids.push(item[v].id)
 		})
 
 	})
+	if(cart_ids.length == 0){
+		return;
+	}
 	uni.setStorage({
 		key: 'orderCreateData',
-		data: {
-			cart_ids: ids
-		},
+		data: { cart_ids },
 		success() {
 			redirect({ url: '/addon/shop/pages/order/payment' })
 		}

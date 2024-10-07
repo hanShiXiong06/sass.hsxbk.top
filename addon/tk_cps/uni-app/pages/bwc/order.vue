@@ -1,72 +1,75 @@
 <template>
-
-	<mescroll-body ref="mescrollRef" @init="mescrollInit" @down="downCallback" @up="getActListFn">
-		<view class="mb-2 z-1000" v-if="orderStatusData">
-			<scroll-view scroll-x="true" class="scroll-Y box-border px-[24rpx] bg-white">
-				<view class="flex whitespace-nowrap justify-around">
-					<view :class="['text-sm leading-[90rpx]',{'class-select': orderState === index}]"
-						@click="orderStateFn(index)" v-for="(item,index) in orderStatusData">{{item}}</view>
-				</view>
-			</scroll-view>
-		</view>
-		<view class="tk-card text-[#ff0004]">
-			<view class="text-xs">1、评价类订单请在次日11点前完成评价</view>
-			<view class="text-xs mt-1">2、订单完成后才会显示预计佣金/积分</view>
-		</view>
-		<view class="tk-card" v-for="(item,index) in list">
-			<view class="flex justify-between mb-2">
-				<view class="text-xs">订单号:{{item.orderSn}}</view>
-				<block v-for="(item1,index1) in orderStatusData" :key="index1">
-					<view class="text-xs" v-if="index1==item.state">{{item1}}</view>
-				</block>
-
+	<view class="detail-box">
+		<mescroll-body ref="mescrollRef" @init="mescrollInit" @down="downCallback" @up="getActListFn">
+			<view class="mb-2 z-1000" v-if="orderStatusData">
+				<scroll-view scroll-x="true" class="scroll-Y box-border px-[24rpx] bg-white">
+					<view class="flex whitespace-nowrap justify-around">
+						<view :class="['text-sm leading-[90rpx]',{'class-select': orderState === index}]"
+							@click="orderStateFn(index)" v-for="(item,index) in orderStatusData">{{item}}</view>
+					</view>
+				</scroll-view>
 			</view>
-			<view class="flex">
-				<image style="width: 180rpx; height: 140rpx; background-color: #eeeeee;border-radius: 8px;"
-					:src="item.logo" mode="aspectFill"></image>
-				<view class="flex flex-col ml-2 w-[100%] justify-between" style="">
-					<view class="font-bold tk-sltext text-xs">{{item.name}}</view>
-					<view class="flex justify-between">
-						<view class="flex items-center">
-							<image style="width: 32rpx; height: 32rpx; background-color: #eeeeee;border-radius: 8px;"
-								:src="item.platformLogo" mode="aspectFill"></image>
-							<view class="text-xs mt-[4rpx] ml-2">{{item.platformName}}</view>
+			<view class="tk-card text-[#ff0004]">
+				<view class="text-xs">1、评价类订单请在次日11点前完成评价</view>
+				<view class="text-xs mt-1">2、订单完成后才会显示预计佣金/积分</view>
+			</view>
+			<view class="tk-card" v-for="(item,index) in list">
+				<view class="flex justify-between mb-2">
+					<view class="text-xs">订单号:{{item.orderSn}}</view>
+					<block v-for="(item1,index1) in orderStatusData" :key="index1">
+						<view class="text-xs" v-if="index1==item.state">{{item1}}</view>
+					</block>
+
+				</view>
+				<view class="flex">
+					<image style="width: 180rpx; height: 140rpx; background-color: #eeeeee;border-radius: 8px;"
+						:src="item.logo" mode="aspectFill"></image>
+					<view class="flex flex-col ml-2 w-[100%] justify-between" style="">
+						<view class="font-bold tk-sltext text-xs">{{item.name}}</view>
+						<view class="flex justify-between">
+							<view class="flex items-center">
+								<image
+									style="width: 32rpx; height: 32rpx; background-color: #eeeeee;border-radius: 8px;"
+									:src="item.platformLogo" mode="aspectFill"></image>
+								<view class="text-xs mt-[4rpx] ml-2">{{item.platformName}}</view>
+							</view>
+
+						</view>
+						<view class="flex justify-between">
+							<view class="text-xs">{{item.create_time}}</view>
+							<view v-if="item.fanxian>0" class="text-xs text-[#ff0202]">
+								预计:{{item.fanxian>0?item.fanxian:''}}
+							</view>
 						</view>
 
 					</view>
-					<view class="flex justify-between">
-						<view class="text-xs">{{item.create_time}}</view>
-						<view v-if="item.fanxian>0" class="text-xs text-[#ff0202]">预计:{{item.fanxian>0?item.fanxian:''}}
-						</view>
-					</view>
 
 				</view>
 
-			</view>
+				<view class="line-box w-[100%] mt-3"></view>
 
-			<view class="line-box w-[100%] mt-3"></view>
-
-			<view v-if="item.state!=1" class="flex justify-end">
-				<!-- <u-button color="#828282" shape="circle" size="small" :plain="true"
+				<view v-if="item.state!=1" class="flex justify-end">
+					<!-- <u-button color="#828282" shape="circle" size="small" :plain="true"
 						:customStyle="{lineHeight:'76rpx', margin:'0rpx', color:'#000000',width:'140rpx',marginTop:'12rpx',marginRight:'12rpx'}"
 						@click="openShop(item)">查看店铺</u-button> -->
-				<u-button v-if="item.state!=1||item.state!=2" color="#828282" shape="circle" size="small" :plain="true"
-					:customStyle="{lineHeight:'76rpx', margin:'0rpx', color:'#000000',width:'140rpx',marginTop:'12rpx',marginRight:'12rpx'}"
-					@click="redirect({url:'/addon/tk_cps/pages/bwc/orderdetail?id='+item.id})">查看订单</u-button>
-				<u-button v-if="item.state==3" color="#828282" shape="circle" size="small" :plain="true"
-					:customStyle="{lineHeight:'76rpx', margin:'0rpx', color:'#000000',width:'140rpx',marginTop:'12rpx',marginRight:'12rpx'}"
-					@click="cancelOrder(item)">取消报名</u-button>
-				<u-button v-if="item.state==3" color="#FE6D3A" shape="circle" size="small"
-					:customStyle="{lineHeight:'76rpx', margin:'0rpx', color:'#ffffff',width:'140rpx',marginTop:'12rpx',marginRight:'12rpx'}"
-					@click="goOrder(item)">前往下单</u-button>
+					<u-button v-if="item.state!=1||item.state!=2" color="#828282" shape="circle" size="small"
+						:plain="true"
+						:customStyle="{lineHeight:'76rpx', margin:'0rpx', color:'#000000',width:'140rpx',marginTop:'12rpx',marginRight:'12rpx'}"
+						@click="redirect({url:'/addon/tk_cps/pages/bwc/orderdetail?id='+item.id})">查看订单</u-button>
+					<u-button v-if="item.state==3" color="#828282" shape="circle" size="small" :plain="true"
+						:customStyle="{lineHeight:'76rpx', margin:'0rpx', color:'#000000',width:'140rpx',marginTop:'12rpx',marginRight:'12rpx'}"
+						@click="cancelOrder(item)">取消报名</u-button>
+					<u-button v-if="item.state==3" color="#FE6D3A" shape="circle" size="small"
+						:customStyle="{lineHeight:'76rpx', margin:'0rpx', color:'#ffffff',width:'140rpx',marginTop:'12rpx',marginRight:'12rpx'}"
+						@click="goOrder(item)">前往下单</u-button>
 
+				</view>
 			</view>
-		</view>
 
-		<mescroll-empty :option="{'icon': img('static/resource/images/empty.png')}"
-			v-if="!list.length && loading"></mescroll-empty>
-	</mescroll-body>
-
+			<mescroll-empty :option="{'icon': img('static/resource/images/empty.png')}"
+				v-if="!list.length && loading"></mescroll-empty>
+		</mescroll-body>
+	</view>
 	<tabbar addon="tk_cps" />
 	<!-- #ifdef MP-WEIXIN -->
 	<!-- 小程序隐私协议 -->

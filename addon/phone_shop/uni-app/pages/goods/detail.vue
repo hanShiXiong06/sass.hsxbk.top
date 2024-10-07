@@ -50,6 +50,7 @@
 						<text class="text-[32rpx] font-medium price-font">￥</text>
 						<text class="text-[48rpx] price-font">{{ parseFloat(goodsPrice).toFixed(2).split('.')[0]
 							}}</text>
+
 						<text class="text-[32rpx] mr-[10rpx] price-font">.{{
 							parseFloat(goodsPrice).toFixed(2).split('.')[1] }}</text>
 						<image v-if="priceType == 'member_price'" class="h-[34rpx] mr-[12rpx] w-[80rpx]"
@@ -532,6 +533,7 @@
 	<!-- #ifdef MP-WEIXIN -->
 	<!-- 小程序隐私协议 -->
 	<wx-privacy-popup ref="wxPrivacyPopupRef"></wx-privacy-popup>
+
 	<!-- #endif -->
 	<!-- 强制绑定手机号 -->
 	<bind-mobile ref="bindMobileRef" />
@@ -554,7 +556,7 @@ import { useShare } from '@/hooks/useShare'
 import sharePoster from '@/components/share-poster/share-poster.vue'
 import MescrollEmpty from "@/components/mescroll/mescroll-empty/mescroll-empty.vue";
 import MescrollBody from "@/components/mescroll/mescroll-body/mescroll-body.vue";
-// import BindMobile from '@/components/bind-mobile/bind-mobile.vue'
+import BindMobile from '@/components/bind-mobile/bind-mobile.vue'
 
 // 分享
 const { setShare } = useShare()
@@ -985,17 +987,25 @@ const priceType = ref('') //''=>原价，discount_price=>折扣价，member_pric
 // 商品价格
 const goodsPrice = computed(() => {
 	let price = "0.00";
+
+	console.log(goodsDetail.value);
+	console.log(goodsDetail.value.goods.member_discount, goodsDetail.value.member_price, goodsDetail.value.price)
+	console.log(Object.keys(goodsDetail.value).length && Object.keys(goodsDetail.value.goods).length && goodsDetail.value.goods.member_discount && getToken() && goodsDetail.value.member_price != goodsDetail.value.price);
+
 	if (Object.keys(goodsDetail.value).length && Object.keys(goodsDetail.value.goods).length && goodsDetail.value.goods.is_discount && goodsDetail.value.sale_price != goodsDetail.value.price) {
 		// 折扣价
 		price = goodsDetail.value.sale_price ? goodsDetail.value.sale_price : goodsDetail.value.price;
 		priceType.value = 'discount_price'
+		console.log(111);
 	} else if (Object.keys(goodsDetail.value).length && Object.keys(goodsDetail.value.goods).length && goodsDetail.value.goods.member_discount && getToken() && goodsDetail.value.member_price != goodsDetail.value.price) {
 		// 会员价
 		price = goodsDetail.value.member_price ? goodsDetail.value.member_price : goodsDetail.value.price;
 		priceType.value = 'member_price'
+		console.log(goodsDetail.value.member_price);
 	} else {
 		price = goodsDetail.value.price
 		priceType.value = ''
+		console.log(333);
 	}
 	return price;
 })

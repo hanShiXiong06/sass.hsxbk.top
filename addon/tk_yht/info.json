@@ -2,9 +2,10 @@
   "title": "一号通",
   "desc": "一号通API接口接入",
   "key": "tk_yht",
-  "version": "1.2.4",
+  "version": "1.2.6",
   "author": "TK",
   "type": "addon",
   "support_app": "",
+  "support_version":"0.5.2",
   "compile":[]
 }

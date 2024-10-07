@@ -60,8 +60,18 @@ class HsxPhoneQueryInfo extends BaseModel
             $query->where("type", $value);
         }
     }
-
+// 关联分类
+public function category()
+{
+    return $this->hasOne(HsxPhoneQueryCategory::class, 'id', 'type_id');
+}
     
+public function getTypeNameAttr($value, $data)
+{
+    // 通过关联获取 category 并返回 name
+    $category = $this->category()->find();
+    return $category ? $category->name : '未知分类';
+}
     
 
     

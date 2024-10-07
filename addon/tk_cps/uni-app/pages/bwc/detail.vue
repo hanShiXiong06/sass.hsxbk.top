@@ -120,12 +120,12 @@
 
 		<view class="b-tabbar safe-area-inset-bottom">
 			<view class="b-tabbar-back fb items-center p-2">
-				<view class="flex flex-col items-center" @click="redirect({ url: '/addon/tk_cps/pages/bwc/act' })">
+				<view class="flex flex-col items-center" @click="goto('/addon/tk_cps/pages/bwc/act')">
 					<u-icon name="clock" color="#000000" size="22"></u-icon>
 					<view class="text-xs font-bold">活动</view>
 				</view>
 
-				<view class="flex flex-col items-center" @click="redirect({ url: '/addon/tk_cps/pages/bwc/order' })">
+				<view class="flex flex-col items-center" @click="goto('/addon/tk_cps/pages/bwc/order')">
 					<u-icon name="order" color="#000000" size="22"></u-icon>
 					<view class="text-xs font-bold">订单</view>
 				</view>
@@ -210,6 +210,11 @@
 	setShare();
 	onShareAppMessage();
 	onShareTimeline();
+	const goto = (url) => {
+		uni.navigateTo({
+			url: url,
+		});
+	};
 	const loading = ref(false);
 	import useMemberStore from "@/stores/member";
 	const memberStore = useMemberStore();

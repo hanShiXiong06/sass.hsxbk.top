@@ -154,7 +154,8 @@
                         min-width="120" align="right" sortable="custom">
                         <template #default="{ row }">
                             <div class="cursor-pointer price-wrap" @click="memberPriceEvent(row)">
-                                <span>￥{{ row.goodsSku.sale_price }}</span>
+                                <span v-if="row.goodsSku.member_price">￥{{ JSON.parse(row.goodsSku.member_price).level_1
+                                    }}</span>
                                 <el-icon class="icon-wrap ml-[5px] invisible">
                                     <EditPen />
                                 </el-icon>
@@ -196,7 +197,7 @@
                             <div>{{ row.create_time }}</div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="create_time" :label="t('updateTime')" min-width="150" sortable="custom">
+                    <el-table-column prop="update_time" :label="t('updateTime')" min-width="150" sortable="custom">
                         <template #default="{ row }">
                             <div>{{ row.update_time }}</div>
                         </template>

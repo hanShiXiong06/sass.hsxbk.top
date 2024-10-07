@@ -39,7 +39,7 @@ class CoreRecycleCategoryService extends BaseCoreService
      * @param string $order
      * @return array
      */
-    public function getTree($condition = [], $field = 'category_id,site_id,images,need_vip, category_name,image,level,pid,category_full_name,is_show,sort', $order = 'sort desc, create_time desc')
+    public function getTree($condition = [], $field = 'category_id,site_id,images,need_vip, category_name,image,level,pid,category_full_name,is_show,sort', $order = 'sort asc, create_time desc')
     {
         $list = $this->model->where($condition)->field($field)->order($order)->select()->toArray();
         $list = list_to_tree($list, 'category_id', 'pid', 'child_list');

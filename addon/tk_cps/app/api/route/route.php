@@ -16,7 +16,7 @@ Route::group('tk_cps', function () {
     Route::post('bwcnotice', 'addon\tk_cps\app\api\controller\Notice@bwcNotice');
 });
 Route::group('tk_cps', function () {
-   // Route::get('ceshi', 'addon\tk_cps\app\api\controller\Bwc@ceshi');
+   //Route::get('ceshi', 'addon\tk_cps\app\api\controller\Bwc@ceshi');
     /***************************************************** 霸王餐活动****************************************************/
     //活动列表
     Route::get('bwc/actlist', 'addon\tk_cps\app\api\controller\Bwc@actList');
@@ -46,6 +46,8 @@ Route::group('tk_cps', function () {
     Route::post('bwc/checkfenxiao', 'addon\tk_cps\app\api\controller\Bwc@checkFenxiao');
     //分销绑定
     Route::post('checkfenxiao', 'addon\tk_cps\app\api\controller\Fenxiao@checkFenxiao');
+    //统计分销订单
+    Route::get('fenxiao/getfenxiaofnfo','addon\tk_cps\app\api\controller\Fenxiao@getFenxiaoInfo');
 
 })->middleware(ApiChannel::class)
     ->middleware(ApiCheckToken::class, true) //表示验证登录

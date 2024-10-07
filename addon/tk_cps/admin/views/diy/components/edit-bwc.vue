@@ -101,6 +101,40 @@
           </el-form-item>
         </div>
       </el-form>
+      <h3 class="mb-[10px]">搜索设置</h3>
+      <el-form label-width="80px" class="px-[10px]">
+        <el-form-item label="是否显示">
+          <el-radio-group v-model="diyStore.editComponent.showsearch">
+            <el-radio :label="'0'">隐藏</el-radio>
+            <el-radio :label="'1'">显示</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <div v-if="diyStore.editComponent.showsearch == 1">
+          <el-form-item label="背景颜色">
+            <!-- <el-color-picker
+              v-model="diyStore.editComponent.searchcolor"
+              show-alpha
+              :predefine="diyStore.predefineColors"
+            /> -->
+            <div>
+              <color-picker
+                v-model:pureColor="diyStore.editComponent.searchcolor"
+                v-model:gradientColor="diyStore.editComponent.searchcolor"
+                format="hex6"
+                shape="square"
+                useType="both"
+              />
+            </div>
+          </el-form-item>
+          <!-- <el-form-item label="文字颜色">
+            <el-color-picker
+              v-model="diyStore.editComponent.searchtextcolor"
+              show-alpha
+              :predefine="diyStore.predefineColors"
+            />
+          </el-form-item> -->
+        </div>
+      </el-form>
       <h3 class="mb-[10px]">分类设置</h3>
       <el-form label-width="80px" class="px-[10px]">
         <el-form-item label="分类显示">

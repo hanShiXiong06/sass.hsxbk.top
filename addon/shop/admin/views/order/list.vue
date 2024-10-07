@@ -157,7 +157,7 @@
 												<el-button type="primary" link @click="close(item)">{{ t('orderClose') }}</el-button>
 												<el-button type="primary" link @click="orderAdjustMoney(item)">{{ t('editPrice') }}</el-button>
 											</template>
-                                            <el-button type="primary" v-if="(item.status == 1 || item.status == 2) && item.delivery_type != 'virtual'" link @click="orderEditAddressFn(item)">{{ t('editAddress') }}</el-button>
+                                            <el-button type="primary" v-if="(item.status == 1 || item.status == 2) && item.delivery_type != 'virtual' && item.activity_type != 'giftcard'" link @click="orderEditAddressFn(item)">{{ t('editAddress') }}</el-button>
 											<el-button type="primary" link @click="delivery(item)" v-if="item.status == 2">{{ t('sendOutGoods') }}</el-button>
 											<el-button type="primary" link @click="finish(item)" v-if="item.status == 3">{{ t('confirmTakeDelivery') }}</el-button>
 										</template>

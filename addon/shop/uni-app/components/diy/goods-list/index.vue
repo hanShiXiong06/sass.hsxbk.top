@@ -47,7 +47,7 @@
 					</view>
 				</block>
 				<block v-if="diyComponent.style == 'style-3'">
-					<view :style="style3Css">
+					<view :style="style3Css" v-if="goodsList.length">
 						<scroll-view :id="'warpStyle3-'+diyComponent.id" class="whitespace-nowrap min-h-[290rpx]" :scroll-x="true">
 							<view :id="'item'+index+diyComponent.id" class="w-[214rpx] mb-[6rpx] rounded-[var(--rounded-mid)] inline-block bg-[#fff] box-border overflow-hidden" :class="{'!mr-[0rpx]' : index == (goodsList.length-1)}" :style="itemCss+itemStyle3" v-for="(item,index) in goodsList" :key="item.goods_id" @click="toLink(item)">
 								<u--image width="214rpx" height="160rpx" :src="img(item.goods_cover_thumb_mid || '')" model="aspectFill">
