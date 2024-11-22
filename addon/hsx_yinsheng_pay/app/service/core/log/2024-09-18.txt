@@ -1,0 +1,174 @@
+==========post=========2024-09-18 21:52:11==================
+==========首次======================
+http://111.224.82.249:82/api/pay
+array (
+  'timeStamp' => '2024-09-18 21:52:11',
+  'norce' => '0f25f317d5074c5e928ef19b0b99edd6',
+  'code' => '00000',
+  'businessData' => 
+  array (
+    'rpcError' => false,
+    'data' => 
+    array (
+      'mercId' => '826121757320282',
+      'encryData' => '58ca35fb0c2946f7c6fc3ed19f6acbf6',
+      'amount' => '1',
+      'orderEfficientTime' => '20240918222211',
+      'orderId' => '2024091837839792903343',
+      'orderCreateTime' => '20240918215211',
+      'reqMsgId' => '1726667531',
+    ),
+    'suffixCode' => 0,
+  ),
+  'subCode' => '0',
+  'sign' => 'f0McTN3gZNUK6Jcw5MM7zNkZyKcatihXu0tkkz+hdELOoywZkmy5lMprAN31VfxrvuJI4ZgipjKTAYrUo3f6PRdd/3DgjbrazF+LTe1Fh5oWzJcDuRr5jBc5Ia9nSU35LQ3HH7sL2DipuA0XvTulgIJGJROve1pCxzUr7Ev6Ke8=',
+  'subMsg' => '下单成功',
+)
+==========post=========2024-09-18 21:52:11==================
+==========首次======================
+http://111.224.82.249:82/api/pay
+array (
+  'out_trade_no' => '20240918480085277892608',
+  'money' => 3180.0,
+  'body' => '苹果12Pro Max 256...',
+  'channel' => 'weapp',
+  'refund_url' => '',
+  'quit_url' => '',
+  'buyer_id' => '',
+  'openid' => '',
+  'site_id' => 100005,
+  'voucher' => '',
+)
+==========post=========2024-09-18 21:54:47==================
+==========首次======================
+http://111.224.82.249:82/api/pay
+'20240918480085277892608'
+==========post=========2024-09-18 21:54:47==================
+==========首次======================
+http://111.224.82.249:82/api/pay
+array (
+  's' => '/api/pay',
+)
+==========post=========2024-09-18 21:54:47==================
+==========首次======================
+http://111.224.82.249:82/api/pay
+array (
+  'timeStamp' => '2024-09-18 21:54:48',
+  'norce' => '8026540a458d4ae89e283caa5331afc1',
+  'code' => '00000',
+  'businessData' => 
+  array (
+    'rpcError' => false,
+    'data' => 
+    array (
+      'mercId' => '826121757320282',
+      'encryData' => '092d81ab813aa4443787ca25f39ca4c4',
+      'amount' => '1',
+      'orderEfficientTime' => '20240918222448',
+      'orderId' => '2024091893805666743707',
+      'orderCreateTime' => '20240918215448',
+      'reqMsgId' => '1726667687',
+    ),
+    'suffixCode' => 0,
+  ),
+  'subCode' => '0',
+  'sign' => 'rNEEH6UUxbqjHmKfaWCNhpfab8w9q46dkI+PnOgSRWPyINtqRYZrrxD2wSouS4yYv8i3FGLffkzM2nA8Zi2iEQRcFXe8WCCs6Ys82w98HgwpVa29hDigyL2IIfKdHnXkDEVRLBBFi7BUSbBarDf9ODWrar2LhL/Mi8cR5ZOTWKs=',
+  'subMsg' => '下单成功',
+)
+==========post=========2024-09-18 21:54:47==================
+==========首次======================
+http://111.224.82.249:82/api/pay
+array (
+  'out_trade_no' => '20240918480085965025280',
+  'money' => 3180.0,
+  'body' => '苹果12Pro Max 256...',
+  'channel' => 'weapp',
+  'refund_url' => '',
+  'quit_url' => '',
+  'buyer_id' => '',
+  'openid' => '',
+  'site_id' => 100005,
+  'voucher' => '',
+)
+==========post=========2024-09-18 21:59:19==================
+==========首次======================
+http://111.224.82.249:82/api/pay
+array (
+  'timeStamp' => '2024-09-18 21:59:19',
+  'norce' => 'cd9970fac6f34eec80f6b57036901a66',
+  'code' => '00000',
+  'businessData' => 
+  array (
+    'rpcError' => false,
+    'data' => 
+    array (
+      'mercId' => '826121757320282',
+      'encryData' => '465fa956f63ab14df09061c0b01774ce',
+      'amount' => '1',
+      'orderEfficientTime' => '20240918222919',
+      'orderId' => '2024091899066506983308',
+      'orderCreateTime' => '20240918215919',
+      'reqMsgId' => '1726667959',
+    ),
+    'suffixCode' => 0,
+  ),
+  'subCode' => '0',
+  'sign' => 'bv0fmSxf2matA5S3xhx14PY5PpWHV3vdOvEg5vMR8t8K/HKoxeD7Wwt7AeP6e3EECc+i9PvY0CsiGA0u/MV6RDDXN8q7a5siW6RXhT9fSWfKU5LsBGbgJWCLIAu3vVfgSGA+xUk8/rWUUOxMib140U2s8STdVsFHsAdM9U8gZuk=',
+  'subMsg' => '下单成功',
+)
+==========post=========2024-09-18 21:59:19==================
+==========首次======================
+http://111.224.82.249:82/api/pay
+array (
+  'out_trade_no' => '20240918480087048658944',
+  'money' => 3180.0,
+  'body' => '苹果12Pro Max 256...',
+  'channel' => 'weapp',
+  'refund_url' => '',
+  'quit_url' => '',
+  'buyer_id' => '',
+  'openid' => '',
+  'site_id' => 100005,
+  'voucher' => '',
+)
+==========post=========2024-09-18 22:00:30==================
+==========首次======================
+http://111.224.82.249:82/api/pay
+array (
+  'timeStamp' => '2024-09-18 22:00:30',
+  'norce' => 'a455e336ff4949b09fbd9eb33374a405',
+  'code' => '00000',
+  'businessData' => 
+  array (
+    'rpcError' => false,
+    'data' => 
+    array (
+      'mercId' => '826121757320282',
+      'encryData' => '7595603980daa9e454d8a73e928dcaab',
+      'amount' => '1',
+      'orderEfficientTime' => '20240918223030',
+      'orderId' => '2024091812184398436697',
+      'orderCreateTime' => '20240918220030',
+      'reqMsgId' => '1726668030',
+    ),
+    'suffixCode' => 0,
+  ),
+  'subCode' => '0',
+  'sign' => 'ckAFwYoMRoEgVjzzpE6+DQbQTAE77KLiia3xCunlBZSc1pF5zhvOkdjrPceG+SU/yEKb8pqWEQSVNgHIWN91nDsFkHoKegr4xk3rmHY8js1mCScEPhiU7qfZMbKW3OYv9Chhe5ISnFgYHw3LaNVVFYcXwaqelXVwC/kOj250jLI=',
+  'subMsg' => '下单成功',
+)
+==========post=========2024-09-18 22:00:30==================
+==========首次======================
+http://111.224.82.249:82/api/pay
+array (
+  'out_trade_no' => '20240918480087333101568',
+  'money' => 3180.0,
+  'body' => '苹果12Pro Max 256...',
+  'channel' => 'weapp',
+  'refund_url' => '',
+  'quit_url' => '',
+  'buyer_id' => '',
+  'openid' => '',
+  'site_id' => 100005,
+  'voucher' => '',
+)

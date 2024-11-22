@@ -1,0 +1,11 @@
+{
+  "title": "群发助手",
+  "desc": "快捷推送消息",
+  "key": "qf_notice",
+  "version": "0.0.3",
+  "author": "TK",
+  "type": "addon",
+  "support_app": "",
+  "compile":[],
+  "support_version": "0.5.3"
+}

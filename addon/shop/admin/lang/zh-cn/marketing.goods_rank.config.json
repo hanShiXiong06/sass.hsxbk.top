@@ -1,0 +1,10 @@
+{
+    "rankName":"榜单标题",
+    "rankImages":"榜单图片",
+    "rankRemark":"榜单说明",
+    "save":"保存",
+    "imagePlaceholder":"请上传榜单图片",
+    "rankNamePlaceholder":"请输入榜单名称",
+    "rankRemarkPlaceholder":"请输入榜单说明"
+
+}

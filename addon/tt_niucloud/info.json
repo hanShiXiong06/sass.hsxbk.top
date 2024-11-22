@@ -1,0 +1,11 @@
+{
+  "title": "Trusty组件库",
+  "desc": "官方组件拓展，不修改官方代码的同时，开发更多好用组件。",
+  "key": "tt_niucloud",
+  "version": "0.0.6",
+  "author": "Damon",
+  "type": "addon",
+  "support_app": "",
+  "compile":[],
+  "support_version": "0.5.2"
+}

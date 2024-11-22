@@ -1,0 +1,1 @@
+import{bt as a,d as s,r as t,p as e,o as l,c as n,w as o,y as r,z as u,u as d,D as c}from"./index-7bf68536.js";const p=s({__name:"index",setup(s){let p=t("");return e((()=>{a.get("tt_niucloud/hello_world").then((a=>{p.value=a.data}))})),(a,s)=>{const t=c;return l(),n(t,{class:"text-[20px]"},{default:o((()=>[r(u(d(p)),1)])),_:1})}}});export{p as default};

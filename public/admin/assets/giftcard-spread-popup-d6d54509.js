@@ -1,0 +1,1 @@
+import{_ as o}from"./giftcard-spread-popup.vue_vue_type_script_setup_true_lang-bde9ac1b.js";import"./index-99f00cf3.js";/* empty css                  *//* empty css                   *//* empty css                 *//* empty css                  *//* empty css                 *//* empty css                        */import"./browser-a1ac24ac.js";export{o as default};

@@ -1,0 +1,11 @@
+{
+  "title": "二手机报价",
+  "desc": "二手机报价单",
+  "key": "phone_shop_price",
+  "version": "0.0.1",
+  "author": "hsx",
+  "type": "addon",
+  "support_app": "phone_shop",
+  "support_version": "0.5.2",
+  "compile": []
+}

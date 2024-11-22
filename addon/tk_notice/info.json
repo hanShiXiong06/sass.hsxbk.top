@@ -1,0 +1,11 @@
+{
+  "title": "消息通知",
+  "desc": "",
+  "key": "tk_notice",
+  "version": "0.0.6",
+  "author": "TK",
+  "type": "addon",
+  "support_app": "",
+  "support_version":"0.5.2",
+  "compile":[]
+}

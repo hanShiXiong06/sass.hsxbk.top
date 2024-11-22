@@ -1,0 +1,11 @@
+{
+  "title": "聚合CPS联盟",
+  "desc": "全新定义的聚合CPS，超强拓展集成能力，支持多平台、多类型活动转链",
+  "key": "tk_cps",
+  "version": "2.0.9",
+  "author": "TK",
+  "type": "app",
+  "support_app": "",
+  "support_version":"0.5.4",
+  "compile":[]
+}
