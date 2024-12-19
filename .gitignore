@@ -3,3 +3,4 @@
 *.log
 /runtime
 install.lock
+/vendor
