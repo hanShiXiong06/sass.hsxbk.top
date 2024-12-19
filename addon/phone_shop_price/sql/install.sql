@@ -35,4 +35,18 @@ CREATE TABLE `{{prefix}}phone_shop_recycle_order` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-Alter table `{{prefix}}phone_shop_site` add  `price_status` tinyint default 0 ;
+-- 创建收款方式信息表
+CREATE TABLE IF NOT EXISTS `{{prefix}}phone_shop_payment_info` (
+    `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
+    `member_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '会员ID',
+    `pay_type` varchar(50) NOT NULL DEFAULT '' COMMENT '收款方式',
+    `account` varchar(255) NOT NULL DEFAULT '' COMMENT '收款账号',
+    `qrcode_image` varchar(255) NOT NULL DEFAULT '' COMMENT '收款码图片',
+    `is_default` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否默认(0-否,1-是)',
+    `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
+    `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    KEY `idx_member_id` (`member_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='收款方式信息表';
+
+SET FOREIGN_KEY_CHECKS = 1;

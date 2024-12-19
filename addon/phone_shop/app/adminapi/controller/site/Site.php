@@ -56,8 +56,7 @@ class Site extends BaseAdminController
              ["brand_status",0],
              ["label_group_status",0],
              ["label_status",0],
-             ["service_status",0],
-             ["price_status",0]
+             ["service_status",0]
         ]);
         $this->validate($data, 'addon\phone_shop\app\validate\site\Site.add');
         $id = (new SiteService())->add($data);
@@ -78,8 +77,7 @@ class Site extends BaseAdminController
              ["brand_status",0],
              ["label_group_status",0],
              ["label_status",0],
-             ["service_status",0],
-            ["price_status",0]
+             ["service_status",0]
         ]);
         // $this->validate($data, 'addon\phone_shop\app\validate\site\Site.edit');
         (new SiteService())->edit($id, $data);
@@ -96,5 +94,12 @@ class Site extends BaseAdminController
         return success('DELETE_SUCCESS');
     }
 
-    
+    /**
+     * 获取订单状态
+     * @return Response
+     */
+    public function getStatus()
+    {
+        return success(( new SiteService() )->getStatus());
+    }
 }

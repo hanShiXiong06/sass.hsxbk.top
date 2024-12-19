@@ -3,7 +3,7 @@
 
         <!--返回-->
         <el-card class="card !border-none" shadow="never">
-            <el-page-header :content="pageName" :icon="ArrowLeft" @back="$router.back()" />
+            <el-page-header :content="pageName" :icon="ArrowLeft" @back="back()" />
         </el-card>
         <!--返回 end-->
 
@@ -161,7 +161,7 @@ const save = () => {
 }
 const back = () => {
     router.push('/shop_fenxiao/lists')
-};
+}
 
 //跳转分销等级列表页面
 const addLevelFn = ()=>{

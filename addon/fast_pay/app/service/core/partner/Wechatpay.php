@@ -38,8 +38,7 @@ class Wechatpay
         $config['mch_public_cert_path'] = url_to_path($config['mch_public_cert_path'] ?? '');
         $config['mp_app_id']=$config['app_id'];
         $config['mini_app_id']=$config['app_id'];
-//        $config['sub_mimi_app_id']='wx95bf05c52e0ff096';
-//        $config['sub_app_id']='wx95bf05c52e0ff096';
+
         // 选填-默认为正常模式。可选为： MODE_NORMAL, MODE_SERVICE
         $config['mode'] = Pay::MODE_SERVICE;
         Pay::config($this->payConfig($config, 'wechat'));

@@ -97,7 +97,6 @@
 
         <!-- 商品分类推广弹出框 -->
         <goods-category-spread-popup ref="goodsCategorySpreadPopupRef" />
-
         <el-image-viewer :url-list="previewImageList" v-if="imageViewer.show" @close="imageViewer.show = false"
             :initial-index="imageViewer.index" :zoom-rate="1" />
 
@@ -235,21 +234,12 @@ const imageViewer = reactive({
 })
 const previewImageList = ref([])
 const previewImage = (row: any) => {
-    imageViewer.show = true
-    // 判断 row.images 中是否是完整路径, 如果是 则不管 如果不是则通过 配置的图片路径 添加完中的路径
-    previewImageList.value = [getImageUrl(row.images)]
-}
 
-const getImageUrl = (url) => {
-    // 检查 URL 是否已经包含 http 或 https
-    if (url.startsWith('http://') || url.startsWith('https://')) {
-        // URL 已经包含协议，直接返回
-        return url;
-    } else {
-        // URL 不包含协议，添加 VITE_IMG_DOMAIN 前缀
-        return import.meta.env.VITE_IMG_DOMAIN + url;
-    }
-};
+
+    imageViewer.show = true
+
+    previewImageList.value = [row.images]
+}
 
 const switchShow = (row: any) => {
     const obj = cloneDeep(row)

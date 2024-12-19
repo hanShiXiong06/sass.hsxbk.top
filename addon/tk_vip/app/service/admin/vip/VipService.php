@@ -14,9 +14,10 @@ namespace addon\tk_vip\app\service\admin\vip;
 use addon\tk_vip\app\model\vip\Vip;
 use app\model\member\Member;
 use app\model\member\MemberLevel;
-
 use app\service\core\member\CoreMemberService;
 use core\base\BaseAdminService;
+use think\Exception;
+use think\facade\Db;
 
 
 /**
@@ -42,7 +43,7 @@ class VipService extends BaseAdminService
         $field = 'id,site_id,member_id,level_id,over_time,update_time,create_time';
         $order = 'update_time desc';
 
-        $search_model = $this->model->where([ [ 'site_id' ,"=", $this->site_id ] ])->withSearch(["member_id","level_id","over_time"], $where)->with(['member','memberLevel'])->field($field)->order($order);
+        $search_model = $this->model->where([['site_id', "=", $this->site_id]])->withSearch(["member_id", "level_id", "over_time"], $where)->with(['member', 'memberLevel'])->field($field)->order($order);
         $list = $this->pageQuery($search_model);
         return $list;
     }
@@ -56,7 +57,7 @@ class VipService extends BaseAdminService
     {
         $field = 'id,site_id,member_id,level_id,over_time,update_time,create_time';
 
-        $info = $this->model->field($field)->where([['id', "=", $id]])->with(['member','memberLevel'])->findOrEmpty()->toArray();
+        $info = $this->model->field($field)->where([['id', "=", $id]])->with(['member', 'memberLevel'])->findOrEmpty()->toArray();
         return $info;
     }
 
@@ -67,9 +68,31 @@ class VipService extends BaseAdminService
      */
     public function add(array $data)
     {
-        $data['site_id'] = $this->site_id;
-        $res = $this->model->create($data);
-        return $res->id;
+        Db::startTrans();
+        try {
+            $data['site_id'] = $this->site_id;
+            if (!$data['member_id'] > 0) throw new Exception('请选择关联会员');
+            $vipInfo = $this->model->where(['site_id' => $this->site_id, 'member_id' => $data['member_id']])->findOrEmpty();
+            if (!$vipInfo->isEmpty()) throw new Exception('已存在记录，请修改调整');
+            if ($data['over_time'] > time() || $data['over_time'] == 0) {
+                (new CoreMemberService())->modify($this->site_id, $data['member_id'], 'member_level', $data['level_id']);
+            }
+            event('VipLog', [
+                'site_id' => $this->site_id,
+                'member_id' => $data['member_id'],
+                'level_id' => $data['level_id'],
+                'over_time' => $data['over_time'],
+                'type' => 'admin',
+                'body' => '后台新增'
+            ]);
+            $res = $this->model->create($data);
+            Db::commit();
+            return $res->id;
+
+        } catch (\Exception $e) {
+            Db::rollback();
+            throw new \think\Exception($e->getMessage());
+        }
 
     }
 
@@ -81,19 +104,27 @@ class VipService extends BaseAdminService
      */
     public function edit(int $id, array $data)
     {
-        if($data['over_time']>time()||$data['over_time']==0){
-            (new CoreMemberService())->modify($this->site_id, $data['member_id'], 'member_level', $data['level_id']);
+        Db::startTrans();
+        try {
+            if (!$data['member_id'] > 0) throw new Exception('请选择关联会员');
+            if ($data['over_time'] > time() || $data['over_time'] == 0) {
+                (new CoreMemberService())->modify($this->site_id, $data['member_id'], 'member_level', $data['level_id']);
+            }
+            event('VipLog', [
+                'site_id' => $this->site_id,
+                'member_id' => $data['member_id'],
+                'level_id' => $data['level_id'],
+                'over_time' => $data['over_time'],
+                'type' => 'admin',
+                'body' => '后台调整'
+            ]);
+            $this->model->where([['id', '=', $id], ['site_id', '=', $this->site_id]])->update($data);
+            Db::commit();
+            return true;
+        } catch (\Exception $e) {
+            Db::rollback();
+            throw new \think\Exception($e->getMessage());
         }
-        event('VipLog',[
-            'site_id'=>$this->site_id,
-            'member_id'=>$data['member_id'],
-            'level_id'=>$data['level_id'],
-            'over_time'=>$data['over_time'],
-            'type'=>'admin',
-            'body'=>'后台调整'
-        ]);
-        $this->model->where([['id', '=', $id],['site_id', '=', $this->site_id]])->update($data);
-        return true;
     }
 
     /**
@@ -103,19 +134,21 @@ class VipService extends BaseAdminService
      */
     public function del(int $id)
     {
-        $model = $this->model->where([['id', '=', $id],['site_id', '=', $this->site_id]])->find();
+        $model = $this->model->where([['id', '=', $id], ['site_id', '=', $this->site_id]])->find();
         $res = $model->delete();
         return $res;
     }
-    
-    public function getMemberAll(){
-       $memberModel = new Member();
-       return $memberModel->where([["site_id","=",$this->site_id]])->select()->toArray();
+
+    public function getMemberAll()
+    {
+        $memberModel = new Member();
+        return $memberModel->where([["site_id", "=", $this->site_id]])->select()->toArray();
     }
 
-    public function getMemberLevelAll(){
-       $memberLevelModel = new MemberLevel();
-       return $memberLevelModel->where([["site_id","=",$this->site_id]])->select()->toArray();
+    public function getMemberLevelAll()
+    {
+        $memberLevelModel = new MemberLevel();
+        return $memberLevelModel->where([["site_id", "=", $this->site_id]])->select()->toArray();
     }
 
 }

@@ -1,1 +1,0 @@
-import{O as u}from"./index-99f00cf3.js";function i(){return u.post("niucloud/build",{})}function o(){return u.get("niucloud/build")}function n(){return u.get("niucloud/build/log")}function t(){return u.post("niucloud/build/clear")}function d(){return u.get("niucloud/build/check")}export{i as a,n as b,t as c,o as g,d as p};

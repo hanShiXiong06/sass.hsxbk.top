@@ -61,7 +61,7 @@
             v-model="formData.growth"
             controls-position="right"
             class="ml-[120px]"
-            :min="1"
+            :min="0"
           />
           <span class="ml-2">{{ t("growth") }}</span>
           <div class="form-tip">{{ t("everyDayTips") }}</div>
@@ -113,7 +113,7 @@
                 <el-input-number
                   v-model="scope.row.growth"
                   controls-position="right"
-                  :min="1"
+                  :min="0"
                 ></el-input-number>
               </template>
             </el-table-column>

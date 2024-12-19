@@ -6,6 +6,6 @@
   "author": "hsx",
   "type": "addon",
   "support_app": "phone_shop",
-  "support_version": "0.5.2",
-  "compile": []
+  "compile":[],
+  "support_version": "0.5.2"
 }

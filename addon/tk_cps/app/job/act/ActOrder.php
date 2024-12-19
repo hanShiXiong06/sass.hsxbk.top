@@ -14,6 +14,7 @@ use addon\tk_cps\app\job\order\MyxqNearOrder;
 use addon\tk_cps\app\job\order\MyxqOtherOrder;
 use addon\tk_cps\app\job\order\MyxqRechaegeOrder;
 use addon\tk_cps\app\model\site\Site;
+use addon\tk_cps\app\service\core\OrderService;
 use app\service\core\sys\CoreConfigService;
 use core\base\BaseJob;
 use think\facade\Log;
@@ -39,12 +40,18 @@ class ActOrder extends BaseJob
                 }
                 foreach ($currentPageSites as $k => $v) {
                     $config = $this->getConfig($v['site_id']);
-                    JtkOrder::dispatch(['site_id' => $v['site_id'], 'config' => $config, 'type' => 0]);
-                    MyxqDcOrder::dispatch(['site_id' => $v['site_id'], 'config' => $config, 'type' => 0]);
-                    MyxqMovieOrder::dispatch(['site_id' => $v['site_id'], 'config' => $config, 'type' => 0]);
-                    MyxqOtherOrder::dispatch(['site_id' => $v['site_id'], 'config' => $config, 'type' => 0]);
-                    MyxqNearOrder::dispatch(['site_id' => $v['site_id'], 'config' => $config, 'type' => 0]);
-                    MyxqRechaegeOrder::dispatch(['site_id' => $v['site_id'], 'config' => $config, 'type' => 0]);
+                    //JtkOrder::dispatch(['site_id' => $v['site_id'], 'config' => $config, 'type' => 0]);
+                    (new OrderService())->jtkOrderList( $v['site_id'],$config,0);
+                    //MyxqDcOrder::dispatch(['site_id' => $v['site_id'], 'config' => $config, 'type' => 0]);
+                    (new OrderService())->myxqDcOrder($v['site_id'],$config,0);
+                    //MyxqMovieOrder::dispatch(['site_id' => $v['site_id'], 'config' => $config, 'type' => 0]);
+                    (new OrderService())->myxqMovieOrder($v['site_id'],$config,0);
+                    //MyxqOtherOrder::dispatch(['site_id' => $v['site_id'], 'config' => $config, 'type' => 0]);
+                    (new OrderService())->myxqOtherOrder($v['site_id'],$config,0);
+                    //MyxqNearOrder::dispatch(['site_id' => $v['site_id'], 'config' => $config, 'type' => 0]);
+                    (new OrderService())->myxqNearOrder($v['site_id'],$config,0);
+                    //MyxqRechaegeOrder::dispatch(['site_id' => $v['site_id'], 'config' => $config, 'type' => 0]);
+                    (new OrderService())->myxqRechargeOrder($v['site_id'],$config,0);
                 }
                 if (count($currentPageSites) < 10) {
                     break;

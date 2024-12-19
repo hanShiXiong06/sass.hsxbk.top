@@ -1,1 +1,0 @@
-import{O as t}from"./index-99f00cf3.js";function i(){return t.get("tk_jhkd/delivery/list")}function s(e){return t.get(`tk_jhkd/delivery/delivery/${e}`)}function d(e){return t.put(`tk_jhkd/delivery/delivery/${e.delivery_type}`,e,{showSuccessMessage:!0})}export{i as a,d as e,s as g};

@@ -519,8 +519,8 @@ export function deleteServe(service_id: number) {
  * 获取商品分类树结构
  * @returns
  */
-export function getCategoryTree() {
-  return request.get(`phone_shop/goods/tree`);
+export function getCategoryTree(params: any) {
+  return request.get(`phone_shop/goods/tree`, { params });
 }
 
 /**

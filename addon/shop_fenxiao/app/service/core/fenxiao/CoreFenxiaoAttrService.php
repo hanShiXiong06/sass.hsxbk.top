@@ -34,6 +34,13 @@ class CoreFenxiaoAttrService extends BaseCoreService
         return true;
     }
 
+    public static function memberBecomeFenxiao($site_id, $member_id)
+    {
+        //上级分销商累加分销商下级人数
+        (new CoreFenxiaoDataService())->childFenxiaoNumOnlyInc($site_id, $member_id);
+        return true;
+    }
+
     /**
      * 修改会员所绑定的分销商
      * @param $site_id

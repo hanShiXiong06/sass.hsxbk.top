@@ -1,5 +1,8 @@
 <template>
 	<div class="main-container">
+        <el-card class="box-card !border-none" shadow="never">
+            <el-page-header :content="t('orderInfo')" :icon="ArrowLeft" @back="back()" />
+        </el-card>
 		<el-form :model="formData" label-width="150px" ref="formRef" class="page-form" v-loading="loading">
 			<el-card class="box-card !border-none relative" shadow="never" v-if="formData">
 				<h3 class="panel-title">{{ t('orderInfo') }}</h3>
@@ -66,6 +69,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { t } from '@/lang'
+import { ArrowLeft } from "@element-plus/icons-vue";
 import type { FormInstance } from 'element-plus'
 import { getRechargeOrderInfo } from '@/addon/recharge/api/recharge'
 import { useRoute, useRouter } from 'vue-router'
@@ -97,6 +101,10 @@ const formRef = ref<FormInstance>()
 const toMember = (memberId: number) => {
     router.push(`/member/detail?id=${memberId}`)
 }
+
+const back = () => {
+    router.push('/recharge/order/list')
+};
 
 </script>
 

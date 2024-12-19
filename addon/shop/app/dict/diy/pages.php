@@ -98,8 +98,8 @@ return [
                                 'url' => '/addon/shop/pages/goods/search',
                                 'action' => '',
                             ],
-                            'style' => 'style-1',
-                            'styleName' => '风格一',
+                            'style' => 'style-2',
+                            'styleName' => '风格2',
                             "subTitle" => [
                                 "text" => "本地好价·优选生活",
                                 "textColor" => "#000000",
@@ -111,10 +111,12 @@ return [
                                 "interval" => 3,
                                 "list" => [
                                     [
-                                        'text' => '新品推荐'
+                                        'text' => '新品推荐',
+                                        'id' => '1l3juvqvimw0'
                                     ],
                                     [
-                                        'text' => '爆款'
+                                        'text' => '爆款',
+                                        'id' => '2vejp61n1xk0'
                                     ]
                                 ]
                             ],
@@ -196,20 +198,30 @@ return [
                             "indicatorStyle" => "style-3",
                             "indicatorAlign" => "center",
                             "swiperStyle" => "style-3",
-                            "imageHeight" => 204,
+                            "imageHeight" => 274,
                             "topRounded" => 0,
                             "bottomRounded" => 0,
                             "list" => [
                                 [
-                                    "imageUrl" => "addon/shop/diy/index/style3/banner1.jpg",
+                                    "imageUrl" => "addon/shop/diy/index/style3/banner3.jpg",
                                     "imgWidth" => 750,
-                                    "imgHeight" => 432,
+                                    "imgHeight" => 580,
                                     "link" => [
                                         "name" => ""
                                     ],
                                     "id" => "397htiaqung0",
                                     "width" => 355,
-                                    "height" => 204.48
+                                    "height" => 274.53
+                                ],[
+                                    "imageUrl" => "addon/shop/diy/index/style3/banner2.jpg",
+                                    "imgWidth" => 750,
+                                    "imgHeight" => 580,
+                                    "link" => [
+                                        "name" => ""
+                                    ],
+                                    "id" => "6mrj3vwiamw0",
+                                    "width" => 355,
+                                    "height" => 274.53
                                 ]
                             ]
                         ],
@@ -233,6 +245,38 @@ return [
                             "both" => 0
                         ],
                         "pageStyle" => "padding-top:2rpx;padding-bottom:0rpx;padding-right:0rpx;padding-left:0rpx;"
+                    ],
+                    [
+                        "path"=> "edit-horz-blank",
+                        "uses"=> 0,
+                        "id"=> "4wk9nzocm3c",
+                        "componentName"=> "HorzBlank",
+                        "componentTitle"=> "辅助空白",
+                        "ignore"=> [
+                            "pageBgColor",
+                            "componentBgUrl"
+                        ],
+                        "height"=> 22,
+                        "textColor"=> "#303133",
+                        "pageStartBgColor"=> "",
+                        "pageEndBgColor"=> "",
+                        "pageGradientAngle"=> "to bottom",
+                        "componentBgUrl"=> "",
+                        "componentBgAlpha"=> 2,
+                        "componentStartBgColor"=> "rgba(246, 246, 246, 1)",
+                        "componentEndBgColor"=> "",
+                        "componentGradientAngle"=> "to bottom",
+                        "topRounded"=> 17,
+                        "bottomRounded"=> 0,
+                        "elementBgColor"=> "",
+                        "topElementRounded"=> 0,
+                        "bottomElementRounded"=> 0,
+                        "margin"=> [
+                            "top"=> -21,
+                            "bottom"=> 0,
+                            "both"=> 0
+                        ],
+                        "pageStyle"=> "padding-top:2rpx;padding-bottom:0rpx;padding-right:0rpx;padding-left:0rpx;"
                     ],
                     [
                         "path" => "edit-graphic-nav",
@@ -479,17 +523,17 @@ return [
                         "componentBgUrl" => "",
                         "componentBgAlpha" => 2,
                         "componentStartBgColor" => "rgba(255, 255, 255, 1)",
-                        "componentEndBgColor" => "rgba(246, 246, 246, 1)",
+                        "componentEndBgColor" => "",
                         "componentGradientAngle" => "to bottom",
-                        "topRounded" => 20,
-                        "bottomRounded" => 0,
+                        "topRounded" => 12,
+                        "bottomRounded" => 12,
                         "elementBgColor" => "",
                         "topElementRounded" => 0,
                         "bottomElementRounded" => 0,
                         "margin" => [
-                            "top" => -25,
-                            "bottom" => 0,
-                            "both" => 0
+                            "top" => -10,
+                            "bottom" => 10,
+                            "both" => 10
                         ],
                         "pageStyle" => "padding-top:2rpx;padding-bottom:0rpx;padding-right:0rpx;padding-left:0rpx;"
                     ],
@@ -844,8 +888,8 @@ return [
                         "topRounded" => 12,
                         "bottomRounded" => 12,
                         "elementBgColor" => "#FFFAF5",
-                        "topElementRounded" => 0,
-                        "bottomElementRounded" => 0,
+                        "topElementRounded" => 10,
+                        "bottomElementRounded" => 10,
                         "margin" => [
                             "top" => 10,
                             "bottom" => 0,
@@ -1113,8 +1157,8 @@ return [
                         "topRounded" => 12,
                         "bottomRounded" => 12,
                         "elementBgColor" => "",
-                        "topElementRounded" => 0,
-                        "bottomElementRounded" => 0,
+                        "topElementRounded" => 10,
+                        "bottomElementRounded" => 10,
                         "margin" => [
                             "top" => 10,
                             "bottom" => 0,
@@ -1151,7 +1195,7 @@ return [
                         "list" => [
                             [
                                 "id" => "18o4pyaufktc",
-                                "imageUrl" => "addon/shop/diy/index/style3/single_recommend_banner1.png",
+                                "imageUrl" => "addon/shop/diy/index/style3/single_recommend_banner1.jpg",
                                 "imgWidth" => 345,
                                 "imgHeight" => 495,
                                 "link" => [
@@ -1162,7 +1206,7 @@ return [
                             ],
                             [
                                 "id" => "18o8pyaufktc",
-                                "imageUrl" => "addon/shop/diy/index/style3/single_recommend_banner2.png",
+                                "imageUrl" => "addon/shop/diy/index/style3/single_recommend_banner2.jpg",
                                 "imgWidth" => 345,
                                 "imgHeight" => 495,
                                 "link" => [
@@ -1222,6 +1266,7 @@ return [
 
                         ],
                         "imageHeight"=> 89,
+                        "isSameScreen"=> false,
                         "list"=> [
                             [
                                 "link"=> [
@@ -1255,7 +1300,118 @@ return [
                             "both"=> 10
                         ]
                     ],
-                    
+                    [
+                        "path" => "edit-many-goods-list",
+                        "uses" => 0,
+                        "id" => "37adfqtqe080",
+                        "componentName" => "ManyGoodsList",
+                        "componentTitle" => "多商品组",
+                        "ignore" => [
+                            "componentBgUrl"
+                        ],
+                        "style" => "style-2",
+                        "num" => 6,
+                        "sortWay" => "default",
+                        "headStyle" => "style-4",
+                        "aroundRadius" => 25,
+                        "source" => "custom",
+                        "goods_category" => "",
+                        "goods_category_name" => "请选择",
+                        "goodsNameStyle" => [
+                            "color" => "#303133",
+                            "control" => true,
+                            "fontWeight" => "normal",
+                            "isShow" => true
+                        ],
+                        "priceStyle" => [
+                            "color" => "#FF4142",
+                            "control" => true,
+                            "isShow" => true
+                        ],
+                        "saleStyle" => [
+                            "color" => "#999999",
+                            "control" => true,
+                            "isShow" => true
+                        ],
+                        "labelStyle" => [
+                            "control" => true,
+                            "isShow" => true
+                        ],
+                        "btnStyle" =>  [
+                            "fontWeight" =>  false,
+                            "padding" =>  0,
+                            "aroundRadius" =>  25,
+                            "cartEvent" =>  "detail",
+                            "text" =>  "购买",
+                            "textColor" =>  "#FFFFFF",
+                            "startBgColor" =>  "#FF4142",
+                            "endBgColor" =>  "#FF4142",
+                            "style" =>  "nc-icon-gouwuche1",
+                            "control" =>  true
+                        ],
+                        "list" => [
+                            [
+                                "title" => "推荐",
+                                "desc" => "猜你喜欢",
+                                "source" => "all",
+                                "goods_category" => "",
+                                "goods_category_name" => "请选择",
+                                "goods_ids" => [],
+                                "imageUrl" => "",
+                                "id" => "67pl1ysjhr40"
+                            ],
+                            [
+                                "id" => "6z59zcmk4jk0",
+                                "title" => "衣鞋包饰",
+                                "desc" => "分类描述",
+                                "source" => "all",
+                                "goods_category" => "",
+                                "goods_category_name" => "请选择",
+                                "goods_ids" => [],
+                                "imageUrl" => ""
+                            ],
+                            [
+                                "id" => "1cfbll6wnmw0",
+                                "title" => "居家百货",
+                                "desc" => "分类描述",
+                                "source" => "all",
+                                "goods_category" => "",
+                                "goods_category_name" => "请选择",
+                                "goods_ids" => [],
+                                "imageUrl" => ""
+                            ],
+                            [
+                                "id" => "49p79g5l5qs0",
+                                "title" => "食品营养",
+                                "desc" => "分类描述",
+                                "source" => "all",
+                                "goods_category" => "",
+                                "goods_category_name" => "请选择",
+                                "goods_ids" => [],
+                                "imageUrl" => ""
+                            ]
+                        ],
+                        "textColor" => "#303133",
+                        "pageStartBgColor" => "rgba(255, 255, 255, 1)",
+                        "pageEndBgColor" => "rgba(255, 255, 255, 0.4)",
+                        "pageGradientAngle" => "to bottom",
+                        "componentBgUrl" => "",
+                        "componentBgAlpha" => 2,
+                        "componentStartBgColor" => null,
+                        "componentEndBgColor" => null,
+                        "componentGradientAngle" => "to bottom",
+                        "topRounded" => 0,
+                        "bottomRounded" => 0,
+                        "elementBgColor" => "",
+                        "topElementRounded" => 12,
+                        "bottomElementRounded" => 12,
+                        "margin" => [
+                            "top" => 0,
+                            "bottom" => 0,
+                            "both" => 10
+                        ],
+                        "pageStyle" => "background:linear-gradient(to bottom,rgba(255, 255, 255, 1),rgba(255, 255, 255, 0.4));padding-top:2rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
+                    ]
                 ]
             ]
         ],
@@ -1363,6 +1519,7 @@ return [
                                 "startColor" => "rgba(255,255,255,0.7)",
                                 "endColor" => "",
                             ],
+                            'positionColor' => '#ffffff',
                             'hotWord' => [
                                 "interval" => 3,
                                 'list' => [
@@ -2005,8 +2162,8 @@ return [
                         "topRounded" => 12,
                         "bottomRounded" => 12,
                         "elementBgColor" => "#FFFAF5",
-                        "topElementRounded" => 0,
-                        "bottomElementRounded" => 0,
+                        "topElementRounded" => 10,
+                        "bottomElementRounded" => 10,
                         "margin" => [
                             "top" => 5,
                             "bottom" => 5,
@@ -2163,8 +2320,8 @@ return [
                         "topRounded" => 12,
                         "bottomRounded" => 12,
                         "elementBgColor" => "#FFFAF5",
-                        "topElementRounded" => 0,
-                        "bottomElementRounded" => 0,
+                        "topElementRounded" => 10,
+                        "bottomElementRounded" => 10,
                         "margin" => [
                             "top" => 5,
                             "bottom" => 5,
@@ -2488,8 +2645,8 @@ return [
                         'pageGradientAngle' => 'to bottom',
                         'componentBgUrl' => '',
                         'componentBgAlpha' => 2,
-                        "componentStartBgColor" => "rgba(253, 41, 52, 1)",
-                        "componentEndBgColor" => "rgba(255, 236, 236, 1)",
+                        "componentStartBgColor" => "",
+                        "componentEndBgColor" => "",
                         "componentGradientAngle" => "to bottom",
                         "topRounded" => 0,
                         "bottomRounded" => 12,
@@ -2845,6 +3002,7 @@ return [
                         "componentTitle" => "图片广告",
                         "ignore" => [],
                         "imageHeight" => 160,
+                        "isSameScreen"=> false,
                         "list" => [
                             [
                                 "link" => [
@@ -3828,7 +3986,32 @@ return [
                                 "imgWidth" => 92,
                                 "imgHeight" => 92,
                                 "link" => [
-                                    "name" => ""
+                                    "name" => "SHOP_MY_GOODS_COLLECT",
+                                    "parent" => "SHOP_LINK",
+                                    "title" => "商品收藏",
+                                    "url" => "/addon/shop/pages/goods/collect",
+                                    "action" => ""
+                                ],
+                                "label" => [
+                                    "control" => false,
+                                    "text" => "热门",
+                                    "textColor" => "#FFFFFF",
+                                    "bgColorStart" => "#F83287",
+                                    "bgColorEnd" => "#FE3423"
+                                ]
+                            ],
+                            [
+                                "id" => "38fqtyu8cx5k0",
+                                "title" => "我的足迹",
+                                "imageUrl" => "addon/shop/diy/member/style1/nav_browse.png",
+                                "imgWidth" => 92,
+                                "imgHeight" => 92,
+                                "link" => [
+                                    "name" => "SHOP_MY_GOODS_BROWSE",
+                                    "parent" => "SHOP_LINK",
+                                    "title" => "我的足迹",
+                                    "url" => "/addon/shop/pages/goods/browse",
+                                    "action" => ""
                                 ],
                                 "label" => [
                                     "control" => false,
@@ -4419,7 +4602,10 @@ return [
                                 "imgWidth" => 58,
                                 "imgHeight" => 58,
                                 "link" => [
-                                    "name" => ""
+                                    "name" => "SHOP_MY_GOODS_BROWSE",
+                                    "parent" => "SHOP_LINK",
+                                    "title" => "我的足迹",
+                                    "url" => "/addon/shop/pages/goods/browse",
                                 ],
                                 "label" => [
                                     "control" => false,

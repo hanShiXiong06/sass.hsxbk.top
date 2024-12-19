@@ -11,7 +11,6 @@
 
 namespace addon\tk_vip\app\service\api;
 
-use addon\tk_vip\app\service\core\SendService;
 use addon\tk_vip\app\dict\order\OrderDict;
 use addon\tk_vip\app\model\order\Order;
 use addon\tk_vip\app\service\core\MemberService;
@@ -81,6 +80,11 @@ class OrderService extends BaseApiService
         if(isset($level_list[$data['level_index']])&&isset($level_list[$data['level_index']]['level_benefits']['tk_vip_fee'])&&isset($level_list[$data['level_index']]['level_benefits']['tk_vip_fee']['fee_info'])){
             $sku_data=$level_list[$data['level_index']]['level_benefits']['tk_vip_fee']['fee_info'][$data['sku_index']];
             if(!isset($sku_data['id'])||($sku_data['id']!=$data['sku_info']['id']))  throw new Exception('会员等级信息已经变更，请刷新页面');
+            $fee_info=$level_list[$data['level_index']]['level_benefits']['tk_vip_fee'];
+            if(isset($fee_info['is_real'])&&$fee_info['is_real']==1){
+               $checkInfo= (new RealService())->checkReal();
+               if($checkInfo['type']!='success') throw new Exception('实名验证未通过');
+            }
             $orderData=[
                 'site_id'=>$this->site_id,
                 'member_id'=>$this->member_id,

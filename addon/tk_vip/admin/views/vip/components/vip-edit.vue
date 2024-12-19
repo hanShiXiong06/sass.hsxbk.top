@@ -14,11 +14,36 @@
       class="page-form"
       v-loading="loading"
     >
-      <el-form-item :label="t('memberId')">
+      <el-form-item v-if="formData.id > 0" :label="t('memberId')">
         <div>{{ formData.member_id_name }}</div>
       </el-form-item>
-
-      <el-form-item :label="t('levelId')">
+      <el-form-item v-else :label="t('memberId')" prop="member_id">
+        <el-select
+          class="input-width"
+          v-model="formData.member_id"
+          clearable
+          :placeholder="t('memberIdPlaceholder')"
+        >
+          <div class="mt-2 mb-2 ml-4">
+            <el-input
+              @change="change"
+              v-model="keyword"
+              style="width: 200px"
+              placeholder="搜索会员支持昵称/会员名"
+            >
+              <template #append>搜索 </template></el-input
+            >
+          </div>
+          <el-option label="请选择" value=""></el-option>
+          <el-option
+            v-for="(item, index) in memberIdList"
+            :key="index"
+            :label="item['nickname']"
+            :value="item['member_id']"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item :label="t('levelId')" prop="level_id">
         <el-select
           class="input-width"
           v-model="formData.level_id"
@@ -36,8 +61,10 @@
       </el-form-item>
 
       <el-form-item :label="t('overTime')" class="input-width">
+   
         <el-date-picker
           class="flex-1 !flex"
+          style="width:480px"
           v-model="formData.over_time"
           clearable
           type="datetime"
@@ -46,6 +73,10 @@
         >
         </el-date-picker>
       </el-form-item>
+      <el-form-item>
+        <span class="text-gray-400">留空代表永久有效</span>
+      </el-form-item>
+
     </el-form>
 
     <template #footer>
@@ -74,7 +105,7 @@ import {
   getWithMemberList,
   getWithMemberLevelList,
 } from "@/addon/tk_vip/api/vip";
-
+import {dateChange} from "@/addon/tk_vip/utils/common"
 let showDialog = ref(false);
 const loading = ref(false);
 
@@ -138,9 +169,15 @@ const confirm = async (formEl: FormInstance | undefined) => {
 
 // 获取字典数据
 
-const memberIdList = ref([] as any[]);
+const change = () => {
+  setMemberIdList();
+};
+const keyword = ref();
+const memberIdList = ref([]);
 const setMemberIdList = async () => {
-  memberIdList.value = await (await getWithMemberList({})).data;
+  memberIdList.value = await (
+    await getWithMemberList({ keyword: keyword.value })
+  ).data.data;
 };
 setMemberIdList();
 const levelIdList = ref([] as any[]);

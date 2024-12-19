@@ -111,5 +111,16 @@ return [
         'class' => 'addon\shop\app\job\marketing\ManjianEnd',
         'function' => ''
     ],
+    [
+        'key' => 'shop_goods_statistical_update',
+        'name' => '商品统计更新',
+        'desc' => '',
+        'time' => [
+            'type' => 'day',
+            'min' => 1
+        ],
+        'class' => 'addon\shop\app\job\goods\GoodsStatisticalUpdate',
+        'function' => ''
+    ],
 
 ];

@@ -33,12 +33,19 @@ return [
                         ]
                     ],
                     "topStatusBar" => [
-                        "bgColor" =>"#ffffff",
-                        "isTransparent" =>false,
-                        "isShow" =>true,
-                        "style" =>"style-1",
-                        "textColor" =>"#333333",
-                        "textAlign" =>"center"
+                        "isShow" => false,
+                        "bgColor" => "#ffffff",
+                        "rollBgColor" => "#ffffff",
+                        "style" => "style-1",
+                        "styleName" => "风格1",
+                        "textColor" => "#333333",
+                        "rollTextColor" => "#333333",
+                        "textAlign" => "center",
+                        "inputPlaceholder" => "请输入搜索关键词",
+                        "imgUrl" => "",
+                        "link" => [
+                            "name" => ""
+                        ]
                     ],
                     "popWindow" => [
                         "imgUrl" =>"",
@@ -664,12 +671,19 @@ return [
                         ]
                     ],
                     "topStatusBar" => [
-                        "bgColor" =>"#ffffff",
-                        "isTransparent" =>false,
-                        "isShow" =>true,
-                        "style" =>"style-1",
-                        "textColor" =>"#333333",
-                        "textAlign" =>"center"
+                        "isShow" => false,
+                        "bgColor" => "#ffffff",
+                        "rollBgColor" => "#ffffff",
+                        "style" => "style-1",
+                        "styleName" => "风格1",
+                        "textColor" => "#333333",
+                        "rollTextColor" => "#333333",
+                        "textAlign" => "center",
+                        "inputPlaceholder" => "请输入搜索关键词",
+                        "imgUrl" => "",
+                        "link" => [
+                            "name" => ""
+                        ]
                     ],
                     "popWindow" => [
                         "imgUrl" =>"",
@@ -1173,17 +1187,18 @@ return [
                         ]
                     ],
                     "topStatusBar" => [
-                        "isShow" =>true,
-                        "bgColor" =>"#ffffff",
-                        "isTransparent" =>false,
-                        "style" =>"style-1",
-                        "styleName" =>"风格1",
-                        "textColor" =>"#333333",
-                        "textAlign" =>"center",
-                        "inputPlaceholder" =>"请输入搜索关键词",
-                        "imgUrl" =>"",
+                        "isShow" => false,
+                        "bgColor" => "#ffffff",
+                        "rollBgColor" => "#ffffff",
+                        "style" => "style-1",
+                        "styleName" => "风格1",
+                        "textColor" => "#333333",
+                        "rollTextColor" => "#333333",
+                        "textAlign" => "center",
+                        "inputPlaceholder" => "请输入搜索关键词",
+                        "imgUrl" => "",
                         "link" => [
-                            "name" =>""
+                            "name" => ""
                         ]
                     ],
                     "popWindow" => [
@@ -1430,12 +1445,19 @@ return [
                         ]
                     ],
                     "topStatusBar" => [
-                        "bgColor" =>"#ffffff",
-                        "isTransparent" =>false,
-                        "isShow" =>true,
-                        "style" =>"style-1",
-                        "textColor" =>"#333333",
-                        "textAlign" =>"center"
+                        "isShow" => false,
+                        "bgColor" => "#ffffff",
+                        "rollBgColor" => "#ffffff",
+                        "style" => "style-1",
+                        "styleName" => "风格1",
+                        "textColor" => "#333333",
+                        "rollTextColor" => "#333333",
+                        "textAlign" => "center",
+                        "inputPlaceholder" => "请输入搜索关键词",
+                        "imgUrl" => "",
+                        "link" => [
+                            "name" => ""
+                        ]
                     ],
                     "popWindow" => [
                         "imgUrl" =>"",

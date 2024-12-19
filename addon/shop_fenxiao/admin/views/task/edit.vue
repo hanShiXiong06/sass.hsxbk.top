@@ -3,7 +3,7 @@
 
         <!--返回-->
         <el-card class="card !border-none" shadow="never">
-            <el-page-header :content="pageName" :icon="ArrowLeft" @back="$router.back()" />
+            <el-page-header :content="pageName" :icon="ArrowLeft" @back="back()" />
         </el-card>
 
         <el-card class="card mt-[15px] !border-none" shadow="never">
@@ -376,7 +376,7 @@ const onSave = async (formEl: FormInstance | undefined) => {
 }
 
 // 返回
-const back = () =>{
+const back = () => {
     router.push('/shop_fenxiao/task/list');
 }
 

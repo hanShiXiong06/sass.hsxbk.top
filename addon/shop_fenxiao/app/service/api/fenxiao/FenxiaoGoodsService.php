@@ -40,6 +40,7 @@ class FenxiaoGoodsService extends BaseApiService
         $sku_where = [
             ['goodsSku.is_default', '=', 1],
             ['goods.site_id', '=', $this->site_id],
+            ['goods.is_gift', '=', FenxiaoGoodsDict::NOT_IS_GIFT],
             ['status', '=', 1]
         ];
         // 参数过滤
@@ -137,6 +138,7 @@ class FenxiaoGoodsService extends BaseApiService
         $sku_where = [
             ['goodsSku.is_default', '=', 1],
             ['goods.site_id', '=', $this->site_id],
+            ['goods.is_gift', '=', FenxiaoGoodsDict::NOT_IS_GIFT],
             ['status', '=', 1]
         ];
         // 参数过滤

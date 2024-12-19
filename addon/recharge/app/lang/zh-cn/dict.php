@@ -28,5 +28,9 @@ return [
         'recharge_link' => '会员充值',
         'recharge_title'=>'会员充值',
         'recharge_index' => '充值'
-    ]
+    ],
+    'dict_recharge_package_status' => [
+        'on' => '开启',
+        'off' => '关闭',
+    ],
 ];

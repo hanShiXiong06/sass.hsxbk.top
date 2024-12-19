@@ -160,7 +160,7 @@
                         </div>
 
                         <el-form-item :label="t('sort')">
-                            <el-input v-model.trim="giftcardEdit.formData.sort" clearable :placeholder="t('sortPlaceholder')" class="input-width-mid" show-word-limit maxlength="6" @keyup="filterNumber($event)" />
+                            <el-input v-model.trim="giftcardEdit.formData.sort" clearable :placeholder="t('sortPlaceholder')" class="input-width-mid" show-word-limit maxlength="8" @keyup="filterNumber($event)" />
                         </el-form-item>
                     </el-form>
                 </el-tab-pane>

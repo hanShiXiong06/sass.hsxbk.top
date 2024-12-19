@@ -43,8 +43,8 @@ class OrderService extends BaseApiService
                 "order_from" => $this->channel,
                 "order_id" => create_no(),
                 "order_money" => $data['price'],
-                "remark"=>$data['remark'],
-                "business_id"=>$data['business_id']
+                "remark" => $data['remark'],
+                "business_id" => $data['business_id'] ?? 0
             ];;
             $res = $this->orderModel->create($info);
             //添加订单支付表
@@ -73,7 +73,7 @@ class OrderService extends BaseApiService
     {
         $field = 'id,site_id,member_id,order_from,order_id,order_money,order_discount_money,order_status,refund_status,out_trade_no,remark,pay_time,create_time,close_reason,is_enable_refund,close_time,ip,update_time,delete_time';
         $order = 'create_time desc';
-        $search_model = $this->orderModel->where([ [ 'site_id' ,"=", $this->site_id ] ])->withSearch(["member_id","order_from","order_id","out_trade_no","pay_time","is_enable_refund","close_time","ip","update_time","delete_time"], $where)->with(['member'])->field($field)->order($order);
+        $search_model = $this->orderModel->where([['site_id', "=", $this->site_id]])->withSearch(["member_id", "order_from", "order_id", "out_trade_no", "pay_time", "is_enable_refund", "close_time", "ip", "update_time", "delete_time"], $where)->with(['member'])->field($field)->order($order);
         $list = $this->pageQuery($search_model);
         return $list;
     }

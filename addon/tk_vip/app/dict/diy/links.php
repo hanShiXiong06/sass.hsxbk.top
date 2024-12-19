@@ -27,6 +27,20 @@ return [
                 'is_share' => 1,
                 'action' => 'decorate'
             ],
+            [
+                'name' => 'TK_VIP_REAL_CARD',
+                'title' => '实名认证',
+                'url' => '/addon/tk_vip/pages/real',
+                'is_share' => 1,
+                'action' => 'decorate'
+            ],
+            [
+                'name' => 'TK_VIP_V_MANAGE',
+                'title' => '手机管理',
+                'url' => '/addon/tk_vip/pages/manage',
+                'is_share' => 1,
+                'action' => 'decorate'
+            ],
         ]
     ],
 

@@ -1,15 +1,27 @@
 <template>
     <el-dialog v-model="showDialog" :title="formData.id ? t('updatePhoneShopRecycleOrder') : t('addPhoneShopRecycleOrder')" width="50%" class="diy-dialog-wrap" :destroy-on-close="true">
         <el-form :model="formData" label-width="120px" ref="formRef" :rules="formRules" class="page-form" v-loading="loading">
+                <el-form-item :label="t('orderNo')" prop="order_no">
+                    <el-input v-model="formData.order_no" clearable :placeholder="t('orderNoPlaceholder')" class="input-width" />
+                </el-form-item>
+                
+                <el-form-item :label="t('memberId')" prop="member_id">
+                    <el-input v-model="formData.member_id" clearable :placeholder="t('memberIdPlaceholder')" class="input-width" />
+                </el-form-item>
+                
+                <el-form-item :label="t('siteId')" prop="site_id">
+                    <el-input v-model="formData.site_id" clearable :placeholder="t('siteIdPlaceholder')" class="input-width" />
+                </el-form-item>
+                
                 <el-form-item :label="t('count')" prop="count">
                     <el-input v-model="formData.count" clearable :placeholder="t('countPlaceholder')" class="input-width" />
                 </el-form-item>
                 
-                <el-form-item :label="t('expressId')" >
+                <el-form-item :label="t('expressId')" prop="express_id">
                     <el-input v-model="formData.express_id" clearable :placeholder="t('expressIdPlaceholder')" class="input-width" />
                 </el-form-item>
                 
-                <el-form-item :label="t('sendUsername')" >
+                <el-form-item :label="t('sendUsername')" prop="send_username">
                     <el-input v-model="formData.send_username" clearable :placeholder="t('sendUsernamePlaceholder')" class="input-width" />
                 </el-form-item>
                 
@@ -17,7 +29,7 @@
                     <el-input v-model="formData.telphone" clearable :placeholder="t('telphonePlaceholder')" class="input-width" />
                 </el-form-item>
                 
-                <el-form-item :label="t('payType')" prop="pay_type">
+                <el-form-item :label="t('payType')" >
                     <el-input v-model="formData.pay_type" clearable :placeholder="t('payTypePlaceholder')" class="input-width" />
                 </el-form-item>
                 
@@ -25,19 +37,43 @@
                     <el-input v-model="formData.account" clearable :placeholder="t('accountPlaceholder')" class="input-width" />
                 </el-form-item>
                 
-                <el-form-item :label="t('status')" >
-                    <el-select class="input-width"  v-model="formData.status" clearable :placeholder="t('statusPlaceholder')">
-                    <el-option label="请选择" value=""></el-option>
-                        <el-option
-                            v-for="(item, index) in statusList"
-                            :key="index"
-                            :label="item.name"
-                            :value="item.value"
-                        />
-                    </el-select>
+                <el-form-item :label="t('deliveryType')" prop="delivery_type">
+                    <el-input v-model="formData.delivery_type" clearable :placeholder="t('deliveryTypePlaceholder')" class="input-width" />
                 </el-form-item>
                 
-                <el-form-item :label="t('closeExpressId')" >
+                <el-form-item :label="t('returnType')" prop="return_type">
+                    <el-input v-model="formData.return_type" clearable :placeholder="t('returnTypePlaceholder')" class="input-width" />
+                </el-form-item>
+                
+                <el-form-item :label="t('qrcodeImage')" >
+                    <el-input v-model="formData.qrcode_image" clearable :placeholder="t('qrcodeImagePlaceholder')" class="input-width" />
+                </el-form-item>
+                
+                <el-form-item :label="t('returnAddress')" >
+                    <el-input v-model="formData.return_address" clearable :placeholder="t('returnAddressPlaceholder')" class="input-width" />
+                </el-form-item>
+                
+                <el-form-item :label="t('status')" >
+                    <el-input v-model="formData.status" clearable :placeholder="t('statusPlaceholder')" class="input-width" />
+                </el-form-item>
+                
+                <el-form-item :label="t('createAt')" >
+                    <el-input v-model="formData.create_at" clearable :placeholder="t('createAtPlaceholder')" class="input-width" />
+                </el-form-item>
+                
+                <el-form-item :label="t('updateAt')" >
+                    <el-input v-model="formData.update_at" clearable :placeholder="t('updateAtPlaceholder')" class="input-width" />
+                </el-form-item>
+                
+                <el-form-item :label="t('overAt')" >
+                    <el-input v-model="formData.over_at" clearable :placeholder="t('overAtPlaceholder')" class="input-width" />
+                </el-form-item>
+                
+                <el-form-item :label="t('comment')" >
+                    <el-input v-model="formData.comment" clearable :placeholder="t('commentPlaceholder')" class="input-width" />
+                </el-form-item>
+                
+                <el-form-item :label="t('closeExpressId')" prop="close_express_id">
                     <el-input v-model="formData.close_express_id" clearable :placeholder="t('closeExpressIdPlaceholder')" class="input-width" />
                 </el-form-item>
                 
@@ -59,7 +95,7 @@ import { ref, reactive, computed, watch } from 'vue'
 import { useDictionary } from '@/app/api/dict'
 import { t } from '@/lang'
 import type { FormInstance } from 'element-plus'
-import { addPhoneShopRecycleOrder, editPhoneShopRecycleOrder, getPhoneShopRecycleOrderInfo, getWithMemberList } from '@/addon/phone_shop_price/api/phone_shop_recycle_order'
+import { addPhoneShopRecycleOrder, editPhoneShopRecycleOrder, getPhoneShopRecycleOrderInfo } from '@/addon/phone_shop_price/api/phone_shop_recycle_order'
 
 let showDialog = ref(false)
 const loading = ref(false)
@@ -69,13 +105,23 @@ const loading = ref(false)
  */
 const initialFormData = {
     id: '',
+    order_no: '',
+    member_id: '',
     count: '',
     express_id: '',
     send_username: '',
     telphone: '',
     pay_type: '',
     account: '',
+    delivery_type: '',
+    return_type: '',
+    qrcode_image: '',
+    return_address: '',
     status: '',
+    create_at: '',
+    update_at: '',
+    over_at: '',
+    comment: '',
     close_express_id: '',
 }
 const formData: Record<string, any> = reactive({ ...initialFormData })
@@ -85,6 +131,16 @@ const formRef = ref<FormInstance>()
 // 表单验证规则
 const formRules = computed(() => {
     return {
+    order_no: [
+        { required: true, message: t('orderNoPlaceholder'), trigger: 'blur' },
+        
+    ]
+,
+    member_id: [
+        { required: true, message: t('memberIdPlaceholder'), trigger: 'blur' },
+        
+    ]
+,
     count: [
         { required: true, message: t('countPlaceholder'), trigger: 'blur' },
         
@@ -115,8 +171,48 @@ const formRules = computed(() => {
         
     ]
 ,
+    delivery_type: [
+        { required: true, message: t('deliveryTypePlaceholder'), trigger: 'blur' },
+        
+    ]
+,
+    return_type: [
+        { required: true, message: t('returnTypePlaceholder'), trigger: 'blur' },
+        
+    ]
+,
+    qrcode_image: [
+        { required: true, message: t('qrcodeImagePlaceholder'), trigger: 'blur' },
+        
+    ]
+,
+    return_address: [
+        { required: true, message: t('returnAddressPlaceholder'), trigger: 'blur' },
+        
+    ]
+,
     status: [
         { required: true, message: t('statusPlaceholder'), trigger: 'blur' },
+        
+    ]
+,
+    create_at: [
+        { required: true, message: t('createAtPlaceholder'), trigger: 'blur' },
+        
+    ]
+,
+    update_at: [
+        { required: true, message: t('updateAtPlaceholder'), trigger: 'blur' },
+        
+    ]
+,
+    over_at: [
+        { required: true, message: t('overAtPlaceholder'), trigger: 'blur' },
+        
+    ]
+,
+    comment: [
+        { required: true, message: t('commentPlaceholder'), trigger: 'blur' },
         
     ]
 ,
@@ -156,19 +252,9 @@ const confirm = async (formEl: FormInstance | undefined) => {
 }
 
 // 获取字典数据
-    let statusList = ref([])
-    const statusDictList = async () => {
-    statusList.value = await (await useDictionary('recycle_order')).data.dictionary
-    }
-    statusDictList();
-    watch(() => statusList.value, () => { formData.status = statusList.value[0].value })
+    
 
     
-    const memberIdList = ref([] as any[])
-    const setMemberIdList = async () => {
-    memberIdList.value = await (await getWithMemberList({})).data
-    }
-    setMemberIdList()
 const setFormData = async (row: any = null) => {
     Object.assign(formData, initialFormData)
     loading.value = true

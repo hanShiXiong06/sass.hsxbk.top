@@ -37,6 +37,7 @@
   "cardInstructionMaxTips": "使用须知字符数不能超过50000",
   "cardRightBalance": "面值",
   "cardRightBalancePlaceholder": "请输入面值",
+  "cardRightBalanceZeroTips": "面值不能小于0",
   "cardRightBalancePriceTips": "面值格式输入错误",
   "addBalance": "添加面值",
   "cardRightBalanceEmpty": "至少添加一种面值金额",

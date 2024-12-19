@@ -2,10 +2,10 @@
   "title": "商品导入导出",
   "desc": "商品批量导入导出",
   "key": "spdr",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "author": "友数云",
   "type": "addon",
   "support_app": "",
-  "support_version":"0.5.2",
+  "support_version":"0.5.4",
   "compile":[]
 }

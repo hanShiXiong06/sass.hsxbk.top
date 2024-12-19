@@ -202,7 +202,7 @@ class RechargeOrder extends BaseModel
      */
     public function item()
     {
-        return $this->hasMany(RechargeOrderItem::class, 'order_id', 'order_id');
+        return $this->hasOne(RechargeOrderItem::class, 'order_id', 'order_id');
     }
 
     /**

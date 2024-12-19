@@ -4,7 +4,6 @@ return [
         'menu_name' => '导入导出',
         'menu_key' => 'site_spdr_shop_goods',
         'menu_short_name' => '批量',
-        'parent_key' => '',
         'menu_type' => '0',
         'icon' => 'nc-iconfont nc-icon-jiaohuanV6xx',
         'api_url' => '',

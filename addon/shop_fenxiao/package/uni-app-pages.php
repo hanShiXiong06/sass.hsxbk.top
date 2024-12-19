@@ -74,6 +74,9 @@ return [
 				{
 					"path": "shop_fenxiao/pages/apply",
 					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
 						"navigationBarTitleText": "%shop_fenxiao.pages.apply%"
 					},
 					"needLogin": true

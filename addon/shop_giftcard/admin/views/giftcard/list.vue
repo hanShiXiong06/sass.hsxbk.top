@@ -81,12 +81,13 @@
 
                     <el-table-column prop="category_id" :label="t('categoryId')" min-width="120" :show-overflow-tooltip="true">
                         <template #default="{ row }">
-                            <div>{{ row.category.category_name }}</div>
+                            <div v-if="row.category">{{ row.category.category_name }}</div>
+                            <div v-else>--</div>
                         </template>
                     </el-table-column>
 
                     <el-table-column prop="card_right_type_name" :label="t('cardRightType')" min-width="100" :show-overflow-tooltip="true"/>
-                    
+
                     <el-table-column prop="validity_type" :label="t('validityType')" min-width="180">
                         <template #default="{ row }">
                             <div v-if="row.validity_type == 'forever'">{{ t('validityForever') }}</div>
@@ -167,7 +168,7 @@
 
         <!-- 礼品卡推广弹出框 -->
         <giftcard-spread-popup ref="giftcardSpreadPopupRef" />
-        <giftcard-detail ref="giftcardDetailDialog"></giftcard-detail> 
+        <giftcard-detail ref="giftcardDetailDialog"></giftcard-detail>
     </div>
 </template>
 

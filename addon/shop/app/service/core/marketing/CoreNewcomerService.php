@@ -144,7 +144,7 @@ class CoreNewcomerService extends BaseCoreService
                 $order_where = [
                     [ 'site_id', '=', $site_id ],
                     [ 'member_id', '=', $member_id ],
-                    [ 'status', 'in', [ OrderDict::WAIT_DELIVERY, OrderDict::WAIT_TAKE, OrderDict::FINISH ] ]
+                    [ 'status', 'in', [ OrderDict::WAIT_PAY, OrderDict::WAIT_DELIVERY, OrderDict::WAIT_TAKE, OrderDict::FINISH ] ]
                 ];
                 switch ($config[ 'participation_way' ]) {
                     case NewcomerDict::NEVER_ORDER:

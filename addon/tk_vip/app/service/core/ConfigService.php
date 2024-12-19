@@ -41,7 +41,22 @@ class ConfigService extends BaseAdminService
         }
         return $info['value'];
     }
-
+    public function getRealConfig()
+    {
+        $info = (new CoreConfigService())->getConfig($this->site_id, ConfigDict::getRealType());
+        if (empty($info)) {
+            $info['value']['open_real'] = '0';
+            $info['value']['app_code'] = '';
+            $info['value']['open_mobile_code'] = '';
+            $info['value']['max_real_num'] = '0';
+            $info['value']['is_auto'] = '0';
+            $info['value']['field'] = '';
+        }
+        if(!isset($info['value']['is_upload_card'])){
+            $info['value']['is_upload_card']='0';
+        }
+        return $info['value'];
+    }
     /**
      * 设置配置信息
      * @param $site_id
@@ -52,6 +67,13 @@ class ConfigService extends BaseAdminService
     {
 
         (new CoreConfigService())->setConfig($this->site_id, ConfigDict::getType(), $value);
+
+        return true;
+    }
+    public function setRealConfig($value)
+    {
+
+        (new CoreConfigService())->setConfig($this->site_id, ConfigDict::getRealType(), $value);
 
         return true;
     }

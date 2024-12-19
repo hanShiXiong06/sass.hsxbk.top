@@ -12,8 +12,8 @@
 namespace addon\phone_shop\app\service\api\goods;
 
 use addon\phone_shop\app\model\goods\Category;
-use addon\phone_shop\app\model\site\Site;
 use addon\phone_shop\app\service\core\goods\CoreGoodsCategoryService;
+use addon\phone_shop\app\model\site\Site;
 use core\base\BaseApiService;
 
 /**
@@ -62,7 +62,13 @@ class GoodsCategoryService extends BaseApiService
     public function getList(array $where = [], $field = 'category_id,category_name,image,level,pid,category_full_name')
     {
         $order = 'sort desc,create_time desc';
-        return $this->model->where([ [ 'site_id', 'in', "{$this->site_id},100005" ] , [ 'is_show', '=', 1 ] ])->withSearch([ "category_name", 'level', 'category_id', 'pid' ], $where)->field($field)->order($order)->select()->toArray();
+        if($this->site_id !== 0 ){
+            $sites =  (new Site())-> field('category_status')->where([['site_id','=', $this->site_id]]) ->findOrEmpty()->toArray();
+            
+        }
+        
+        $site_id = empty($sites['category_status'] ) ? $this->site_id : $this->site_id.",0";
+        return $this->model->where([ [ 'site_id', 'in', "$site_id" ] , [ 'is_show', '=', 1 ] ])->withSearch([ "category_name", 'level', 'category_id', 'pid' ], $where)->field($field)->order($order)->select()->toArray();
     }
 
     /* 获取分类详情 */
@@ -75,9 +81,12 @@ class GoodsCategoryService extends BaseApiService
         }
         
         $site_id = empty($sites['category_status'] ) ? $this->site_id : $this->site_id.",0";
-       
 
         $info = $this->model->field($field)->where([ [ 'category_id', '=', $id ], [ 'site_id', 'in', "$site_id" ]  ])->findOrEmpty()->toArray();
+        // 如果id不属于当前站点 则提示 无权限
+        // if( $info['site_id'] !== $this->site_id) {
+        //     throw new AdminException('SHOP_GOODS_CATEGORY_NOT_POWER');
+        // } 
 
         if (!empty($info)) {
             $info[ 'child_count' ] = 0;
@@ -88,5 +97,3 @@ class GoodsCategoryService extends BaseApiService
         return $info;
     }
 }
-
-      

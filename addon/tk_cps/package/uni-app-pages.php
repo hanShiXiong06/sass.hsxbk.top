@@ -3,7 +3,7 @@ return [
     'pages' => <<<EOT
         // PAGE_BEGIN
 				// *********************************** CPS联盟 ***********************************
-				{
+			    {
 					"path": "tk_cps/pages/bwc/act",
 					"style": {
 						"navigationBarTitleText": "同城霸王餐"
@@ -15,20 +15,15 @@ return [
 						"navigationBarTitleText": "订单列表"
 					},
 					"needLogin": true
-
 				},
 				{
 					"path": "tk_cps/pages/member",
 					"style": {
 						"navigationBarTitleText": "个人中心",
 						// #ifndef H5
-						"navigationStyle": "custom",
-						"app-plus": {
-							"titleView": false
-						}
+						"navigationStyle": "custom"
 						// #endif 
 					}
-
 				},
 				{
 					"path": "tk_cps/pages/bwc/orderdetail",
@@ -55,33 +50,24 @@ return [
 					"style": {
 						"navigationBarTitleText": "CPS联盟首页",
 						"enablePullDownRefresh": true
-
 					}
 				},
 				{
 					"path": "tk_cps/pages/diy",
 					"style": {
 						"navigationBarTitleText": "%tk_cps.pages.diy%",
-						"enablePullDownRefresh": true,
-						"usingComponents": {
-							"diy-group": "../../../../addon/components/diy/group/index",
-							"fixed-group": "../../../../addon/components/fixed/group/index"
-						},
 						// #ifndef H5
-						"navigationStyle": "custom",
-						"app-plus": {
-							"titleView": false
-						}
+						"navigationStyle": "custom"
 						// #endif 
 					}
 				},
 				{
-				"path": "tk_cps/pages/fenxiao/index",
-				"style": {
-					"navigationBarTitleText": "分销中心"
+					"path": "tk_cps/pages/fenxiao/index",
+					"style": {
+						"navigationBarTitleText": "分销中心"
+					},
+					"needLogin": true
 				},
-				"needLogin": true
-			    },
 				// PAGE_END
 EOT
 ];

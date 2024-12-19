@@ -15,7 +15,6 @@ use addon\phone_shop_price\app\model\recycle_category\RecycleCategory;
 use addon\phone_shop_price\app\service\core\RecycleCategory\CoreRecycleCategoryService;
 use addon\phone_shop\app\model\shop_address\ShopAddress;
 use addon\phone_shop\app\model\goods\Goods;
-use addon\phone_shop\app\model\site\Site;
 use core\base\BaseApiService;
 use app\model\member\Member;
 
@@ -46,13 +45,8 @@ class RecycleCategoryService extends BaseApiService
         // 查询用户的身份
         $getMemberInfo = $this->getMemberInfo();
         $is_use = !empty($getMemberInfo['memberLevelData']['level_benefits']['hsx_quote']['is_use']) ? 1 : 0;
-        if($this->site_id !== 0 ){
-            $sites =  (new Site())-> field('price_status')->where([['site_id','=', $this->site_id]]) ->findOrEmpty()->toArray();
-            
-        }
         
-        $site_id = empty($sites['price_status'] ) ? $this->site_id : $this->site_id.",0";
-        return ( new CoreRecycleCategoryService() )->getTree([ [ 'site_id', 'in', "$site_id" ]  ] , $is_use );
+        return ( new CoreRecycleCategoryService() )->getTree([ [ 'site_id', 'in', "{$this->site_id}" ]  ] , $is_use );
         
     }
     // address_list 获取商家的收货地址

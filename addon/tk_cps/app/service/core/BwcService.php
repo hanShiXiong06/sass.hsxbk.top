@@ -490,7 +490,7 @@ class BwcService extends BaseApiService
         try {
             $bwcModel = new BwcOrder();
             $sid = 'sid' . $this->member_id;
-            $data['notifyUrl'] = (new CommonService())->getUrl($this->site_id) . '/api/tk_cps/bwcnotice';  //回掉URL
+            $data['notifyUrl'] = (new CommonService())->getDomainUrl($this->site_id) . '/api/tk_cps/bwcnotice';  //回掉URL
             $data['sid'] = $sid;
             $insertData = $data['data'];
             $params = [

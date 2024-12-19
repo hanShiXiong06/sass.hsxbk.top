@@ -957,7 +957,6 @@ ALTER TABLE `{{prefix}}phone_shop_goods_label` MODIFY `sort` INT(11) NOT NULL DE
 ALTER TABLE `{{prefix}}phone_shop_goods_label` MODIFY `create_time` INT(11) NOT NULL DEFAULT 0 COMMENT '创建时间' AFTER `sort`;
 
 ALTER TABLE `{{prefix}}phone_shop_goods_label` MODIFY `update_time` INT(11) NOT NULL DEFAULT 0 COMMENT '更新时间' AFTER `create_time`;
-
 DROP TABLE IF EXISTS `{{prefix}}phone_shop_site`;
 CREATE TABLE `{{prefix}}phone_shop_site` (
   `id` int NOT NULL AUTO_INCREMENT,

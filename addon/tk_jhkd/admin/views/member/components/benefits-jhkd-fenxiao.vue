@@ -3,7 +3,13 @@
     <el-form-item label="" prop="discount" class="!mb-[10px]">
       <div>
         <div class="flex items-center">
-          <el-checkbox v-model="formData.is_use" :true-label="1" :false-label="0" label="" size="large" />
+          <el-checkbox
+            v-model="formData.is_use"
+            :true-label="1"
+            :false-label="0"
+            label=""
+            size="large"
+          />
           <span class="ml-[10px] el-form-item__label">聚合快递分销</span>
           <div class="w-[680px]" v-show="formData.is_use">
             <span class="ml-[10px] el-form-item__label">分销方式</span>
@@ -11,26 +17,58 @@
               <el-radio :label="0">按比例</el-radio>
               <el-radio :label="1">按固定金额</el-radio>
             </el-radio-group>
-            <div v-if="formData.fenxiao_type == 0" class="flex items-center mt-[5px]">
+            <div
+              v-if="formData.fenxiao_type == 0"
+              class="flex items-center mt-[5px]"
+            >
               <span class="ml-[10px] mr-4">一级分销</span>
-              <el-input style="width: 80px" v-model="formData.first_rate" placeholder="请输入" class="w-[120px]" />
+              <el-input
+                style="width: 80px"
+                v-model="formData.first_rate"
+                placeholder="请输入"
+                class="w-[120px]"
+              />
               <span class="ml-[5px]">%</span>
             </div>
-            <div v-if="formData.fenxiao_type == 0" class="flex items-center mt-[5px]">
+            <div
+              v-if="formData.fenxiao_type == 0"
+              class="flex items-center mt-[5px]"
+            >
               <span class="ml-[10px] mr-4">二级分销</span>
-              <el-input style="width: 80px" v-model="formData.second_rate" placeholder="请输入" class="w-[120px]" />
+              <el-input
+                style="width: 80px"
+                v-model="formData.second_rate"
+                placeholder="请输入"
+                class="w-[120px]"
+              />
               <span class="ml-[5px]">%</span>
             </div>
 
-            <div v-if="formData.fenxiao_type == 1" class="flex items-center mt-[5px]">
+            <div
+              v-if="formData.fenxiao_type == 1"
+              class="flex items-center mt-[5px]"
+            >
               <span class="ml-[10px] mr-4">一级分销</span>
-              <el-input style="width: 80px" v-model="formData.first_commission" placeholder="请输入" class="w-[120px]" />
+              <el-input
+                style="width: 80px"
+                v-model="formData.first_commission"
+                placeholder="请输入"
+                class="w-[120px]"
+              />
               <span class="ml-[5px]">元</span>
             </div>
 
-            <div v-if="formData.fenxiao_type == 1" class="flex items-center mt-[5px]">
+            <div
+              v-if="formData.fenxiao_type == 1"
+              class="flex items-center mt-[5px]"
+            >
               <span class="ml-[10px] mr-4">二级分销</span>
-              <el-input style="width: 80px" v-model="formData.second_commission" placeholder="请输入" class="w-[120px]" />
+              <el-input
+                style="width: 80px"
+                v-model="formData.second_commission"
+                placeholder="请输入"
+                class="w-[120px]"
+              />
               <span class="ml-[5px]">元</span>
             </div>
           </div>
@@ -137,4 +175,5 @@ defineExpose({
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+</style>

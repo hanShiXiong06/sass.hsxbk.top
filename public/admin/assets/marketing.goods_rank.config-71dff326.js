@@ -1,1 +1,0 @@
-const a="榜单标题",e="榜单图片",r="榜单说明",n="保存",o="请上传榜单图片",k="请输入榜单名称",c="请输入榜单说明",s={rankName:a,rankImages:e,rankRemark:r,save:n,imagePlaceholder:o,rankNamePlaceholder:k,rankRemarkPlaceholder:c};export{s as default,o as imagePlaceholder,e as rankImages,a as rankName,k as rankNamePlaceholder,r as rankRemark,c as rankRemarkPlaceholder,n as save};

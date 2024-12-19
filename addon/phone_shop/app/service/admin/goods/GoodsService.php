@@ -1242,7 +1242,7 @@ class GoodsService extends BaseAdminService
         if ($siteId == '100005') {
             return '不能同步自己的商品';
         }
-        $sites = [ 100010];
+        $sites = [ 100012];
         // 如果你$sites 中 没有有 当前的 $siteId  直接返回 无权限
         if (!in_array($siteId, $sites)) {
             return '没有权限';

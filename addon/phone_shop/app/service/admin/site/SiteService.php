@@ -12,7 +12,7 @@
 namespace addon\phone_shop\app\service\admin\site;
 
 use addon\phone_shop\app\model\site\Site;
-
+use addon\phone_shop\app\dict\site\SiteDict;
 use core\base\BaseAdminService;
 
 
@@ -36,7 +36,7 @@ class SiteService extends BaseAdminService
      */
     public function getPage(array $where = [])
     {
-        $field = 'id,site_id,site_name,client,category_status,brand_status,label_group_status,label_status,service_status,price_status';
+        $field = 'id,site_id,site_name,client,category_status,brand_status,label_group_status,label_status,service_status';
         $order = '';
 
         $search_model = $this->model->where([ ])->withSearch(["id","site_name","client"], $where)->field($field)->order($order);
@@ -51,7 +51,7 @@ class SiteService extends BaseAdminService
      */
     public function getInfo(int $id)
     {
-        $field = 'id,site_id,site_name,client,category_status,brand_status,label_group_status,label_status,service_status,price_status';
+        $field = 'id,site_id,site_name,client,category_status,brand_status,label_group_status,label_status,service_status';
 
         $info = $this->model->field($field)->where([['id', "=", $id]])->findOrEmpty()->toArray();
         $info['category_status'] = strval($info['category_status']);
@@ -100,5 +100,13 @@ class SiteService extends BaseAdminService
         $res = $model->delete();
         return $res;
     }
-    
+    // getStatus
+    /**
+     * 充值订单状态
+     * @return array|array[]|string
+     */
+    public function getStatus()
+    {
+        return SiteDict::getType();
+    }
 }

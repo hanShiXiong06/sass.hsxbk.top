@@ -37,5 +37,21 @@ class Config extends BaseAdminController
         (new ConfigService())->setConfig($data);
         return success('操作成功');
     }
-
+    public function getRealConfig()
+    {
+        return success("操作成功",(new ConfigService())->getRealConfig());
+    }
+    public function setRealConfig(){
+        $data = $this->request->params([
+            ['open_real', '0'],
+            ['app_code', ''],
+            ['open_mobile_code', '0'],
+            ['max_real_num', '0'],
+            ['is_auto',''],  //自动认证
+            ['field',[]],
+            ['is_upload_card',0]
+        ]);
+        (new ConfigService())->setRealConfig($data);
+        return success('操作成功');
+    }
 }

@@ -10,12 +10,9 @@
 // +----------------------------------------------------------------------
 namespace addon\shop\app\job\marketing;
 
-use addon\shop\app\dict\active\ActiveDict;
 use addon\shop\app\dict\active\ManjianDict;
-use addon\shop\app\model\active\Active;
 use addon\shop\app\model\manjian\Manjian;
 use addon\shop\app\model\manjian\ManjianGoods;
-use addon\shop\app\service\core\marketing\CoreActiveService;
 use core\base\BaseJob;
 use think\facade\Log;
 

@@ -2,10 +2,10 @@
   "title": "聚合快递",
   "desc": "全网快递一件比价",
   "key": "tk_jhkd",
-  "version": "1.6.0",
+  "version": "1.6.2",
   "author": "TK",
   "type": "app",
   "support_app": "",
-  "support_version":"0.5.2",
+  "support_version":"0.5.4",
   "compile":[]
 }

@@ -180,7 +180,7 @@ class CoreFenxiaoDataService extends BaseCoreService
             //维护分销商的数据信息
             $fenxiao->save(
                 [
-                    'child_num' => Db::raw('child_num - ' . 1),
+                    'child_num' => Db::raw('CASE WHEN child_num - ' . 1 . '>= 0 THEN child_num - ' . 1 . ' ELSE 0 END'),
                 ]
             );
             CoreEventService::fenxiaoChildMemberChangeAfter($site_id, $member_id, [ 'child_num' => -1 ]);
@@ -225,8 +225,8 @@ class CoreFenxiaoDataService extends BaseCoreService
             //维护分销商的数据信息
             $fenxiao->save(
                 [
-                    'child_num' => Db::raw('child_num - ' . 1),
-                    'child_fenxiao_num' => Db::raw('child_fenxiao_num - ' . 1),
+                    'child_num' => Db::raw('CASE WHEN child_num - ' . 1 . '>= 0 THEN child_num - ' . 1 . ' ELSE 0 END'),
+                    'child_fenxiao_num' => Db::raw('CASE WHEN child_fenxiao_num - ' . 1 . '>= 0 THEN child_fenxiao_num - ' . 1 . ' ELSE 0 END'),
                 ]
             );
 
@@ -235,4 +235,27 @@ class CoreFenxiaoDataService extends BaseCoreService
         }
         return true;
     }
+
+    /**
+     * 分销商增加下级分销商人数
+     * @param $site_id
+     * @param $member_id
+     * @return true
+     */
+    public function childFenxiaoNumOnlyInc($site_id, $member_id)
+    {
+        $fenxiao = ( new Fenxiao() )->where([ [ 'site_id', '=', $site_id ], [ 'member_id', '=', $member_id ] ])->findOrEmpty();
+        if (!$fenxiao->isEmpty()) {
+            //维护分销商的数据信息
+            $fenxiao->save(
+                [
+                    'child_fenxiao_num' => Db::raw('child_fenxiao_num + ' . 1),
+                ]
+            );
+
+            CoreEventService::fenxiaoChildFenxiaoChangeAfter($site_id, $member_id, [ 'child_fenxiao_num' => 1 ]);
+        }
+        return true;
+    }
+
 }

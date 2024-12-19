@@ -23,6 +23,8 @@ return [
             'addon\recharge\app\listener\pay\PayTypeByTrade',
         ],
         'WapIndex' => [ 'addon\recharge\app\listener\WapIndexListener' ],
+        // 订单创建后
+        'AfterRechargeOrderCreate' => ['addon\recharge\app\listener\order\AfterRechargeOrderCreate'],
     ],
     'subscribe' => [
     ],

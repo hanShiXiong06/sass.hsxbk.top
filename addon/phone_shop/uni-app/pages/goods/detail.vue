@@ -11,9 +11,9 @@
 			</view>
 
 			<view class="swiper-box">
-				<u-swiper :list="goodsDetail.goods.goods_image" :indicator="goodsDetail.goods.goods_image.length"
+				<up-swiper :list="goodsDetail.goods.goods_image" :indicator="goodsDetail.goods.goods_image.length"
 					:indicatorStyle="{ 'bottom': '50rpx' }" :autoplay="true" height="100vw"
-					@click="swiperClick"></u-swiper>
+					@click="swiperClick"></up-swiper>
 			</view>
 			<view v-if="priceType == 'discount_price'"
 				class="-mt-[26rpx] relative flex items-center justify-between !bg-cover box-border pb-[26rpx] h-[136rpx] px-[30rpx]"
@@ -244,8 +244,7 @@
 										:class="{ 'mb-[20rpx]': (index + 1) == articleList.length }"
 										@click="toDetail(item.goods_id)">
 										<u--image class="rounded-[10rpx] overflow-hidden" width="190rpx" height="190rpx"
-											:src="img(item.goods_cover_thumb_mid ? item.goods_cover_thumb_mid : '')"
-											model="aspectFill">
+											:src="img(item.goods_cover ? item.goods_cover : '')" model="aspectFill">
 											<template #error>
 												<u-icon name="photo" color="#999" size="50"></u-icon>
 											</template>
@@ -281,8 +280,7 @@
 										class="w-[324rpx] flex flex-col bg-[#fff] box-border rounded-[12rpx] overflow-hidden mt-[20rpx]"
 										@click="toDetail(item)">
 										<u--image width="334rpx" height="334rpx"
-											:src="img(item.goods_cover_thumb_mid ? item.goods_cover_thumb_mid : '')"
-											model="aspectFill">
+											:src="img(item.goods_cover ? item.goods_cover : '')" model="aspectFill">
 											<template #error>
 												<u-icon name="photo" color="#999" size="50"></u-icon>
 											</template>
@@ -605,9 +603,9 @@ onLoad((option) => {
 		goodsDetail.value = deepClone(res.data);
 		isCollect.value = goodsDetail.value.goods.is_collect;
 		goodsDetail.value.delivery_type_list = goodsDetail.value.goods.delivery_type_list ? Object.values(goodsDetail.value.goods.delivery_type_list).map(el => el.name) : [];
-		goodsDetail.value.goods.goods_image = goodsDetail.value.goods.goods_image_thumb_big;
+		goodsDetail.value.goods.goods_image = goodsDetail.value.goods.goods_image.split(',');
 		goodsDetail.value.goods.goods_image.forEach((item, index) => {
-			goodsDetail.value.goods.goods_image[index] = img(item);
+			goodsDetail.value.goods.goods_image[index] = img(item.trim());
 		})
 
 		let data = deepClone(res.data);
@@ -623,13 +621,13 @@ onLoad((option) => {
 
 		sendMessageTitle.value = goodsDetail.value.goods.goods_name
 		sendMessagePath.value = '/addon/phone_shop/pages/goods/detail?sku_id=' + goodsDetail.value.sku_id;
-		sendMessageImg.value = img(goodsDetail.value.goods.goods_cover_thumb_mid)
+		sendMessageImg.value = img(goodsDetail.value.goods.goods_cover)
 
 		// 分享 - start
 		let share = {
 			title: goodsDetail.value.goods.goods_name,
 			desc: goodsDetail.value.goods.sub_title,
-			url: goodsDetail.value.goods.goods_cover_thumb_mid
+			url: goodsDetail.value.goods.goods_cover
 		}
 		uni.setNavigationBarTitle({
 			title: goodsDetail.value.goods.goods_name
@@ -820,6 +818,8 @@ const toLink = () => {
 
 //预览图片
 const imgListPreview = (item: any, index: any) => {
+	console.log(item);
+
 	if (Array.isArray(item)) {
 		if (!item.length) return false
 		var urlList = item;
@@ -1004,7 +1004,7 @@ const goodsPrice = computed(() => {
 	} else {
 		price = goodsDetail.value.price
 		priceType.value = ''
-		console.log(333);
+
 	}
 	return price;
 })

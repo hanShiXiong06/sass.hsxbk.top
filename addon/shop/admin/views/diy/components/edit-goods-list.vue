@@ -102,7 +102,7 @@
                 <el-form-item :label="t('goodsBtnStyle')" class="!items-center" v-if="diyStore.editComponent.btnStyle.control">
                     <div class="flex">
                         <template v-for="(item,index) in btnStyleList">
-                            <div v-if=" item.isShow == true" class="cursor-pointer flex items-center justify-center border-[1px] border-solid border-transparent rounded-[6px] py-[5px] px-[8px] mr-[10px]" :class="{'border-[var(--el-color-primary)]': diyStore.editComponent.btnStyle.style == item.value}">
+                            <div v-if=" item.isShow == true" class="cursor-pointer flex items-center justify-center border-[1px] border-solid border-transparent rounded-[6px] py-[5px] px-[8px] mr-[10px]" :class="{'!border-[var(--el-color-primary)]': diyStore.editComponent.btnStyle.style == item.value}">
                                 <div v-if="item.type == 'icon'" :class="['nc-iconfont !text-[25px] text-[var(--el-color-primary)]', item.title]" @click="changeBtnStyle(item)"></div>
                                 <div v-if="item.type == 'button'" class="leading-[1] text-[12px] px-[10px] py-[8px] text-[#fff] rounded-[20px] bg-[var(--el-color-primary)]" @click="changeBtnStyle(item)">
                                     {{item.title}}

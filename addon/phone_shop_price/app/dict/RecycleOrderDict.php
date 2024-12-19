@@ -21,23 +21,88 @@ use app\dict\pay\PayDict;
 class RecycleOrderDict
 {
     // 订单状态
-    // 已下单
-    const START_ORDER = 1;
-    // 质检中
-    
-    // 质检完成
-    // 订单完成
-    // 有退货
-    // 订单关闭
-    const CHECHING = 2;
-    // 质检完成
-    const CHECHED = 3;
-    // 订单完成
-    const FINSH = 4;
-    // 有退货
-    
-    //已关闭
-    const CLOSE = -1;
+    const ORDER_STATUS = [
+        'PENDING_RECEIVE' => 1,    // 待收货
+        'PENDING_CHECK' => 2,      // 待质检
+        'CHECKING' => 3,           // 质检中
+        'PENDING_CONFIRM' => 4,    // 待确认
+        'PENDING_PAYMENT' => 5,    // 待打款
+        'COMPLETED' => 6,          // 已完成
+        'PENDING_RETURN' => 7,     // 待退货
+        'RETURNED' => 8,           // 已寄出
+        'CLOSED' => 9,             // 已关闭
+    ];
+
+    // 订单状态文本
+    const ORDER_STATUS_TEXT = [
+        1 => '待收货',
+        2 => '待质检',
+        3 => '质检中',
+        4 => '待确认',
+        5 => '待打款',
+        6 => '已完成',
+        7 => '待退货',
+        8 => '已寄出',
+        9 => '已关闭',
+    ];
+
+    // 设备状态
+    const DEVICE_STATUS = [
+        'PENDING_CHECK' => 1,      // 待质检
+        'CHECKING' => 2,           // 质检中
+        'CHECKED' => 3,            // 质检完成
+        'PENDING_CONFIRM' => 4,    // 待确认
+        'COMPLETED' => 5,          // 已完成
+        'RETURNED' => 6,           // 退回
+    ];
+
+    // 设备状态文本
+    const DEVICE_STATUS_TEXT = [
+        1 => '待质检',
+        2 => '质检中',
+        3 => '质检完成',
+        4 => '待确认',
+        5 => '已完成',
+        6 => '退回',
+    ];
+
+    // 支付方式
+    const PAY_TYPE = [
+        'ALIPAY' => 1,    // 支付宝
+        'WECHAT' => 2,    // 微信
+        'BANK' => 3,      // 银行卡
+    ];
+
+    // 支付方式文本
+    const PAY_TYPE_TEXT = [
+        1 => '支付宝',
+        2 => '微信',
+        3 => '银行卡',
+    ];
+
+    // 配送方式
+    const DELIVERY_TYPE = [
+        'MAIL' => 'mail',          // 邮寄
+        'SELF' => 'self',          // 自送
+    ];
+
+    // 配送方式文本
+    const DELIVERY_TYPE_TEXT = [
+        'mail' => '邮寄',
+        'self' => '自送',
+    ];
+
+    // 退回方式
+    const RETURN_TYPE = [
+        'MAIL' => 'mail',          // 邮寄
+        'SELF' => 'self',          // 自取
+    ];
+
+    // 退回方式文本
+    const RETURN_TYPE_TEXT = [
+        'mail' => '邮寄',
+        'self' => '自取',
+    ];
 
     // 退款相关状态
     // 未申请
@@ -75,40 +140,72 @@ class RecycleOrderDict
     {
         $data = [
 
-            self::START_ORDER => [
-                'name' => '待质检',
-                'status' => self::START_ORDER,
+            self::ORDER_STATUS['PENDING_RECEIVE'] => [
+                'name' => '待提交',
+                'status' => self::ORDER_STATUS['PENDING_RECEIVE'],
                 'is_refund' => 0,
                 'action' => [],
                 
             ],
-            self::CHECHING => [
+            self::ORDER_STATUS['PENDING_CHECK'] => [
+                'name' => '待质检',
+                'status' => self::ORDER_STATUS['PENDING_CHECK'],
+                'is_refund' => 0,
+                'action' => [],
+                'member_action' => [
+                ],
+            ],
+            self::ORDER_STATUS['CHECKING'] => [
                 'name' => '质检中',
-                'status' => self::CHECHING,
+                'status' => self::ORDER_STATUS['CHECKING'],
                 'is_refund' => 0,
                 'action' => [],
                 'member_action' => [
                 ],
             ],
-            self::CHECHED => [
-                'name' => '质检完成',
-                'status' => self::CHECHED,
+            self::ORDER_STATUS['PENDING_CONFIRM'] => [
+                'name' => '待确认',
+                'status' => self::ORDER_STATUS['PENDING_CONFIRM'],
                 'is_refund' => 0,
                 'action' => [],
                 'member_action' => [
                 ],
             ],
-            self::FINSH => [
-                'name' => '订单完成',
-                'status' => self::FINSH,
+            self::ORDER_STATUS['PENDING_PAYMENT'] => [
+                'name' => '待打款',
+                'status' => self::ORDER_STATUS['PENDING_PAYMENT'],
                 'is_refund' => 0,
                 'action' => [],
                 'member_action' => [
                 ],
             ],
-            self::CLOSE => [
+            self::ORDER_STATUS['COMPLETED'] => [
+                'name' => '已完成',
+                'status' => self::ORDER_STATUS['COMPLETED'],
+                'is_refund' => 0,
+                'action' => [],
+                'member_action' => [
+                ],
+            ],
+            self::ORDER_STATUS['PENDING_RETURN'] => [
+                'name' => '待退货',
+                'status' => self::ORDER_STATUS['PENDING_RETURN'],
+                'is_refund' => 0,
+                'action' => [],
+                'member_action' => [
+                ],
+            ],
+            self::ORDER_STATUS['RETURNED'] => [
+                'name' => '已寄出',
+                'status' => self::ORDER_STATUS['RETURNED'],
+                'is_refund' => 0,
+                'action' => [],
+                'member_action' => [
+                ],
+            ],
+            self::ORDER_STATUS['CLOSED'] => [
                 'name' => '已关闭',
-                'status' => self::CLOSE,
+                'status' => self::ORDER_STATUS['CLOSED'],
                 'is_refund' => 0,
                 'action' => [],
                 'member_action' => [

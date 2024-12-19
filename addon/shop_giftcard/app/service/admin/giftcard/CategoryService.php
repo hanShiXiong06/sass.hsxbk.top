@@ -13,7 +13,9 @@ namespace addon\shop_giftcard\app\service\admin\giftcard;
 
 
 use addon\shop_giftcard\app\model\giftcard\Category;
+use addon\shop_giftcard\app\model\giftcard\Giftcard;
 use core\base\BaseAdminService;
+use core\exception\AdminException;
 
 
 /**
@@ -103,6 +105,8 @@ class CategoryService extends BaseAdminService
      */
     public function del($id)
     {
+        $count = ( new Giftcard() )->where([ [ 'category_id', '=', $id ], [ 'site_id', '=', $this->site_id ] ])->count();
+        if ($count > 0) throw new AdminException('CATEGORY_CAN_NOT_DEL');
         $model = $this->model->where([ [ 'category_id', '=', $id ], [ 'site_id', '=', $this->site_id ] ])->find();
         $res = $model->delete();
         return $res;

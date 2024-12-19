@@ -121,18 +121,15 @@ class GoodsService extends BaseAdminService
                 $price = $value['售价'] +300;
             }
 
-           
-            
             
             //数组组装
             $info = [
                 'goods_no'=>$successCount,
                 'goods_name' => $value['商品名称'] ?? '',
                 'sub_title' => $value['副标题'] ?? "",
-                'goods_cover' =>  $this->joinUrl( $value['缩略图'],'.jpg') ?? '',
+                'goods_cover' => $this->joinUrl($value['缩略图'],'.jpg') ?? '',
                 'goods_image' => $this->joinUrl($value['轮播图'],'.jpg')?? '',
-               
-                'goods_desc' => $value['视频'] ,
+                'goods_desc' => $this->joinUrl($value['视频'],'.mp4')?? '',
                 'goods_category' =>  $goods_category,
                 'goods_type' => $value['商品类型'],
                 'brand_id' => $brand_id,
@@ -475,14 +472,10 @@ class GoodsService extends BaseAdminService
             if (!empty($data['goods_image'])) $data['goods_cover'] = explode(',', $data['goods_image'])[0];
             // 获取商品最后添加的商品id getLastGoodsId
            $goods_id =  $this->model->getLastGoodsId();
-
-            
-
            if (!empty($data['goods_desc'])) {
                 // Check if the string does not start with '<'
-                if (strpos($data['goods_desc'], '<') !== 0) {
-                   $url =  $this->joinUrl($data['goods_desc'],'.mp4');
-                    $data['goods_desc'] = "<p><video src=\"{$url}\"></video></p>";
+                if (substr($data['goods_desc'], 0, 1) !== '<') {
+                    $data['goods_desc'] = "<p><video src=\"{$data['goods_desc']}\"></video></p>";
                 }
                 // Else case can be handled here if needed
             }
@@ -494,7 +487,6 @@ class GoodsService extends BaseAdminService
                 'sub_title' => $data['sub_title'],
                 'goods_type' => $data['goods_type'],
                 'goods_cover' => $data['goods_cover'],
-               
                 'goods_image' => $data['goods_image'],
                 'goods_category' => $data['goods_category'],
                 'goods_desc' => $data['goods_desc'],

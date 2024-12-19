@@ -18,6 +18,25 @@ use think\Response;
 class Recharge extends BaseApiController
 {
     /**
+     * 获取充值套餐
+     * @return Response
+     */
+    public function getRechargeLists()
+    {
+        $res = ( new RechargeOrderService() )->getRechargeLists();
+        return success($res);
+    }
+
+    /**
+     * 获取充值套餐配置
+     * @return \think\Response
+     */
+    public function getRechargeConfig()
+    {
+        return success(( new RechargeOrderService() )->getRechargeConfig());
+    }
+
+    /**
      * 充值订单创建
      * @return Response
      */
@@ -25,7 +44,8 @@ class Recharge extends BaseApiController
     {
         $data = $this->request->params([
             [ 'member_message', '' ],
-            [ 'recharge_money', 0 ]
+            [ 'recharge_money', 0 ],
+            [ 'recharge_id', 0 ]
         ]);
         $res = ( new RechargeOrderService() )->recharge($data);
         return success($res);

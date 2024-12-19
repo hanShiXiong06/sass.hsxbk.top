@@ -98,26 +98,12 @@ const handleClick = (id) => {
 
 // 预览图片
 const previewImages = (images) => {
-    // 判断 images中是否 开头是是 http如果不是 
-    console.log(images.startsWith('http'));
-
-    if (!images.startsWith('http')) {
-        images = getImgUrl(images) + images;
-    }
-    console.log(images);
     uni.previewImage({
         indicator: "number",
         loop: true,
         urls: Array.isArray(images) ? images : [images]
     });
 };
-
-// 获取 图片的url 域名 从 vite中
-// 获取图片域名
-const getImgUrl = () => {
-    return import.meta.env.VITE_IMG_DOMAIN || '';
-}
-
 
 // 跳转到购买VIP页面
 const linkVip = () => {

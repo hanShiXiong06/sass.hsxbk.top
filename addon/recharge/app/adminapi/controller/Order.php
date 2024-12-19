@@ -32,7 +32,8 @@ class Order extends BaseAdminController
             [ 'pay_time', [] ],
             [ 'member_id', '' ],
             [ 'start_money', 0 ],
-            [ 'end_money', 0 ]
+            [ 'end_money', 0 ],
+            [ 'recharge_id', 0 ]
         ]);
         return success(( new RechargeOrderService() )->getPage($data));
     }

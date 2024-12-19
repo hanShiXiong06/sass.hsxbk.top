@@ -11,9 +11,8 @@
 
 namespace addon\tk_cps\app\adminapi\controller\actorder;
 
-use addon\tk_cps\app\job\v2\ActOrderDay;
-use core\base\BaseAdminController;
 use addon\tk_cps\app\service\admin\actorder\ActorderService;
+use core\base\BaseAdminController;
 
 
 /**
@@ -25,21 +24,23 @@ class Actorder extends BaseAdminController
 {
     public function asyncorder()
     {
-         ActOrderDay::dispatch([]);
-         return success('后台正在处理，请刷新界面');
+        (new ActorderService())->asyncOrder();
+        return success('后台正在处理，请稍后刷新界面');
 
     }
-   /**
-    * 获取CPS活动订单列表
-    * @return \think\Response
-    */
-    public function lists(){
+
+    /**
+     * 获取CPS活动订单列表
+     * @return \think\Response
+     */
+    public function lists()
+    {
         $data = $this->request->params([
-             ["sid",""],
-             ["order_id",""],
-             ["jl_js",""],
-             ["pt_js",""],
-             ["create_time",["",""]]
+            ["sid", ""],
+            ["order_id", ""],
+            ["jl_js", ""],
+            ["pt_js", ""],
+            ["create_time", ["", ""]]
         ]);
         return success((new ActorderService())->getPage($data));
     }
@@ -49,7 +50,8 @@ class Actorder extends BaseAdminController
      * @param int $id
      * @return \think\Response
      */
-    public function info(int $id){
+    public function info(int $id)
+    {
         return success((new ActorderService())->getInfo($id));
     }
 
@@ -57,20 +59,21 @@ class Actorder extends BaseAdminController
      * 添加CPS活动订单
      * @return \think\Response
      */
-    public function add(){
+    public function add()
+    {
         $data = $this->request->params([
-             ["sid",""],
-             ["member_id",""],
-             ["name",""],
-             ["chanel",""],
-             ["order_id",""],
-             ["pay_money",0.00],
-             ["rate",""],
-             ["commission",0.00],
-             ["status",""],
-             ["status_name",""],
-             ["jl_js",""],
-             ["pt_js",""],
+            ["sid", ""],
+            ["member_id", ""],
+            ["name", ""],
+            ["chanel", ""],
+            ["order_id", ""],
+            ["pay_money", 0.00],
+            ["rate", ""],
+            ["commission", 0.00],
+            ["status", ""],
+            ["status_name", ""],
+            ["jl_js", ""],
+            ["pt_js", ""],
 
         ]);
         $this->validate($data, 'addon\tk_cps\app\validate\actorder\Actorder.add');
@@ -83,20 +86,21 @@ class Actorder extends BaseAdminController
      * @param $id  CPS活动订单id
      * @return \think\Response
      */
-    public function edit(int $id){
+    public function edit(int $id)
+    {
         $data = $this->request->params([
-             ["sid",""],
-             ["member_id",""],
-             ["name",""],
-             ["chanel",""],
-             ["order_id",""],
-             ["pay_money",0.00],
-             ["rate",""],
-             ["commission",0.00],
-             ["status",""],
-             ["status_name",""],
-             ["jl_js",""],
-             ["pt_js",""],
+            ["sid", ""],
+            ["member_id", ""],
+            ["name", ""],
+            ["chanel", ""],
+            ["order_id", ""],
+            ["pay_money", 0.00],
+            ["rate", ""],
+            ["commission", 0.00],
+            ["status", ""],
+            ["status_name", ""],
+            ["jl_js", ""],
+            ["pt_js", ""],
 
         ]);
         $this->validate($data, 'addon\tk_cps\app\validate\actorder\Actorder.edit');
@@ -109,10 +113,11 @@ class Actorder extends BaseAdminController
      * @param $id  CPS活动订单id
      * @return \think\Response
      */
-    public function del(int $id){
+    public function del(int $id)
+    {
         (new ActorderService())->del($id);
         return success('DELETE_SUCCESS');
     }
 
-    
+
 }

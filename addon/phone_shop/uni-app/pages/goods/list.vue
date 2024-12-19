@@ -27,9 +27,7 @@
 					<view class="flex items-center" :class="{ 'text-[#303133]': searchType == 'price' }"
 						@click="searchTypeFn('price')">
 						<text class=" mr-[4rpx]">价格</text>
-						<text v-if="price == 'asc'"
-							class="text-[18rpx] text-[#666] nc-iconfont nc-icon-a-xiangshangV6xx1"></text>
-						<text v-else class="text-[18rpx] text-[#666] nc-iconfont nc-icon-a-xiangxiaV6xx1"></text>
+
 					</view>
 					<view class="flex items-center" :class="{ 'text-[#303133]': searchType == 'label' }"
 						@click="searchTypeFn('label')">
@@ -39,6 +37,38 @@
 				</view>
 			</view>
 		</view>
+		<u-popup :show="pricePopup" mode="top" @close="pricePopup = false">
+			<view @touchmove.prevent.stop>
+
+				<!--        价格区间筛选 -->
+				<view class="flex justify-center flex-wrap  pb-[20rpx]">
+
+					<view class="flex flex-wrap pl-[30rpx] pt-[30rpx] mr-3">
+
+						<u-input placeholder="最低价格" border="surround" class="mr-3"
+							prefixIconStyle="font-size: 22px;color: #909399" v-model="price_between.start_price">
+						</u-input>
+						-
+						<u-input placeholder="最高价格" border="surround" class="ml-3" v-model="price_between.end_price" />
+						<!-- <view @click='price_order_change'>
+							<text v-if="price == 'asc'"
+								class="text-[18rpx] text-[#666] nc-iconfont nc-icon-a-xiangshangV6xx1"></text>
+							<text v-else class="text-[18rpx] text-[#666] nc-iconfont nc-icon-a-xiangxiaV6xx1"></text>
+						</view> -->
+					</view>
+
+					<view class="flex flex-wrap justify-end pl-[30rpx] p-[30rpx] ">
+						<div class="flex ">
+							<u-button type="success" :plain="true" class="mr-3 " text="重置"
+								@click="resetQuery"></u-button>
+							<u-button type="primary" @click="searchTypeFn" text="搜索"></u-button>
+						</div>
+
+
+					</view>
+				</view>
+			</view>
+		</u-popup>
 		<u-popup :show="labelPopup" mode="top" @close="labelPopup = false">
 			<view @touchmove.prevent.stop>
 				<!-- <view class="text-sm font-bold px-[30rpx] mt-3">全部分类</view> -->
@@ -59,15 +89,6 @@
 
 				<!--        价格区间筛选 -->
 				<view class="flex justify-center flex-wrap pl-[200rpx] pb-[20rpx]">
-
-					<view class="flex flex-wrap pl-[30rpx] pt-[30rpx] mr-3">
-
-						<u-input placeholder="最低价格" border="surround" class="mr-3"
-							prefixIconStyle="font-size: 22px;color: #909399" v-model="price_between.start_price">
-						</u-input>
-						-
-						<u-input placeholder="最高价格" border="surround" class="ml-3" v-model="price_between.end_price" />
-					</view>
 					<scroll-view class="h-[70vh]" :scroll-y="true">
 						<view
 							class="bg-[#fff] grid grid-cols-3 gap-x-[50rpx] gap-y-[32rpx] py-[33rpx] px-[23rpx]  rounded-[16rpx]">
@@ -107,6 +128,7 @@
 				</view>
 			</view>
 		</u-popup>
+
 
 		<mescroll-body ref="mescrollRef" top="160rpx" bottom="50px" @init="mescrollInit" :down="{ use: false }"
 			@up="getAllAppListFn">
@@ -245,6 +267,7 @@ const mescrollRef = ref(null);
 const loading = ref<boolean>(false);
 // 标签
 const labelPopup = ref(false);
+const pricePopup = ref(false);
 const goods_name = ref("");
 const price = ref("");
 const sale_num = ref("");
@@ -477,6 +500,8 @@ const goods_category = ref('');
 // 搜索
 
 const searchTypeFn = async (type) => {
+	console.log(type);
+
 	if (categoryList.value.length == 0) {
 		await getGoodsCategoryTree().then((res: any) => {
 			const initData = { category_name: "全部", category_id: '' };
@@ -496,14 +521,6 @@ const searchTypeFn = async (type) => {
 		goods_category.value = ''
 		create_time.value = create_time.value ? "" : new Date().toLocaleDateString().split('/').join('-');
 	}
-	if (type == 'price') {
-		sale_num.value = '';
-		if (price.value) {
-			price.value = price.value == 'asc' ? 'desc' : 'asc';
-		} else {
-			price.value = 'asc';
-		}
-	}
 	if (type == 'sale_num') {
 		price.value = '';
 		if (sale_num.value) {
@@ -511,6 +528,11 @@ const searchTypeFn = async (type) => {
 		} else {
 			sale_num.value = 'asc';
 		}
+	}
+	if (type == 'price') {
+		console.log(price_between.value);
+		pricePopup.value = !pricePopup.value
+
 	}
 	if (type == 'label') {
 		sale_num.value = 'asc';
@@ -524,6 +546,15 @@ const searchTypeFn = async (type) => {
 		getMescroll().resetUpScroll();
 	}
 }
+// const price_order_change = () => {
+
+// 	if (price.value) {
+// 		price.value = price.value == 'asc' ? 'desc' : 'asc';
+// 	} else {
+// 		price.value = 'asc';
+// 	}
+// }
+
 //列表样式切换
 const listIconBtn = () => {
 	listType.value = !listType.value
@@ -542,6 +573,7 @@ const resetQuery = () => {
 	price_between.value.start_price = '';
 	price_between.value.end_price = '';
 	labelPopup.value = false;
+	pricePopup.value = false;
 	searchType.value = 'all';
 	listType.value = true;
 	articleList.value = [];

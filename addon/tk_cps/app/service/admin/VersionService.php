@@ -83,7 +83,6 @@ class VersionService extends CoreCloudBaseService
         if (empty($config['app_id'])) throw new CommonException('WEAPP_APPID_EMPTY');
         if (empty($config['upload_private_key'])) throw new CommonException('UPLOAD_KEY_EMPTY');
         if (!file_exists($config['upload_private_key'])) throw new CommonException('UPLOAD_KEY_NOT_EXIST');
-
         $compile_addon = (new Addon())->where([['compile', 'like', "%weapp%"]])->field('key')->findOrEmpty();
         // 上传任务key
         $task_key = uniqid();
@@ -98,7 +97,7 @@ class VersionService extends CoreCloudBaseService
         if ($compile_addon->isEmpty()) {
             dir_copy($editUniapp, $uni_dir, exclude_dirs: ['node_modules', 'unpackage', 'dist']);
             $this->handleUniapp($uni_dir);
-            $this->handelPageJson($uni_dir.'/src/pages.json');
+            $this->handelPageJson($uni_dir . '/src/pages.json');
             // 替换env文件
             $this->weappEnvReplace($uni_dir . DIRECTORY_SEPARATOR . '.env.production');
         } else {
@@ -107,6 +106,7 @@ class VersionService extends CoreCloudBaseService
             dir_copy($compile_dir, $uni_dir);
             $this->weappCompileReplace($uni_dir);
         }
+
         file_put_contents($package_dir . 'private.key', file_get_contents($config['upload_private_key']));
         // 将临时目录下文件生成压缩包
         $zip_file = $temp_dir . DIRECTORY_SEPARATOR . 'weapp.zip';
@@ -136,6 +136,7 @@ class VersionService extends CoreCloudBaseService
         if (isset($response['code']) && $response['code'] == 0) throw new CommonException($response['msg']);
         return ['key' => $query['timestamp']];
     }
+
     public function handelPageJson($path)
     {
         $jsonArr = $this->uniappPageJsonToArr($path);
@@ -237,21 +238,23 @@ class VersionService extends CoreCloudBaseService
         $jsonArr['subPackages'] = $subPackages;
         $this->uniappPageJsonWrite($jsonArr, $path);
     }
+
     public function addPlugin()
     {
-        $site_id=$this->request->siteId();
-        $plugin_appids=[
+        $site_id = $this->request->siteId();
+        $plugin_appids = [
             'meishi' => 'wx5c787b48e6a02a51',
             'jtkDc' => 'wx6c999744b6d125ef',
             'jtkMovie' => 'wx89752980e795bfde',
             'menpiao-plugin' => 'wx06aa3a687000c5d1',
             'hotel-plugin' => 'wx3c08fc3019c05906'
         ];
-        foreach($plugin_appids as $plugin_name => $appid){
+        foreach ($plugin_appids as $plugin_name => $appid) {
             (new CoreWeappService())->addPlugin($site_id, $appid);
         }
         return true;
     }
+
     public function uniappPageJsonToArr($path)
     {
         $chanagew = 'changew';
@@ -260,6 +263,8 @@ class VersionService extends CoreCloudBaseService
         $jsonString = preg_replace('/\/\/.*/', '', $jsonString); // 去除 // 注释
         $jsonString = preg_replace('!/\*.*?\*/!s', '', $jsonString); // 去除 /* 注释 */
         $jsonString = preg_replace('/\\\\W/', $chanagew, $jsonString);
+        // 去除空格和换行
+        $jsonString = preg_replace('/\s+/', '', $jsonString);
         $jsonArray = json_decode($jsonString, true);
         if ($jsonArray === null && json_last_error() !== JSON_ERROR_NONE) {
             // JSON解析出错
@@ -284,6 +289,7 @@ class VersionService extends CoreCloudBaseService
         }
         return true;
     }
+
     public function deleteFolder($folderPath)
     {
         if (is_dir($folderPath)) {

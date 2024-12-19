@@ -20,6 +20,10 @@ class FenxiaoGoodsDict
     const CALCULATE_TYPE_RATE = 1;//按照比率计算
     const CALCULATE_TYPE_MONEY = 2;//固定金额
 
+    //商品是否赠品(0:否 1:是)
+    const IS_GIFT = 1;
+    const NOT_IS_GIFT = 0;
+
     /**
      * 计算方式
      * @param $type

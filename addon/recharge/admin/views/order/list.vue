@@ -197,7 +197,8 @@ const orderTableData = reactive({
         pay_time: [],
         order_from: '',
         start_money: '',
-        end_money: ''
+        end_money: '',
+        recharge_id:route.query.recharge_id
     }
 })
 

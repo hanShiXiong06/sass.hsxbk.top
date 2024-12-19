@@ -35,8 +35,8 @@ class ManjianEnd extends BaseJob
             ])->whereBetweenTime('end_time', 1, time())->column('manjian_id');//过滤end_time=0的情况，0表示活动永久有效
 
             foreach ($ids as $k => $v) {
-                (new Manjian())->where([ ['manjian_id', '=', $v], ['status', '=', ManjianDict::ACTIVE], ['end_time', '<=', time()] ])->update([ 'status' => ManjianDict::END ]);
-                (new ManjianGoods())->where([ ['manjian_id', '=', $v]])->update([ 'status' => ManjianDict::END ]);
+                ( new Manjian() )->where([ [ 'manjian_id', '=', $v ], [ 'status', '=', ManjianDict::ACTIVE ], [ 'end_time', '<=', time() ] ])->update([ 'status' => ManjianDict::END ]);
+                ( new ManjianGoods() )->where([ [ 'manjian_id', '=', $v ] ])->update([ 'status' => ManjianDict::END ]);
             }
 
             return true;

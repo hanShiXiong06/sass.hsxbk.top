@@ -25,6 +25,10 @@ Route::group('tk_vip', function () {
     Route::get('config/getconfig', 'addon\tk_vip\app\adminapi\controller\config\Config@getConfig');
     //设置配置
     Route::post('config/setconfig', 'addon\tk_vip\app\adminapi\controller\config\Config@setConfig');
+    //获取实名配置
+    Route::get('config/getrealconfig', 'addon\tk_vip\app\adminapi\controller\config\Config@getRealConfig');
+    //设置实名配置
+    Route::post('config/setrealconfig', 'addon\tk_vip\app\adminapi\controller\config\Config@setRealConfig');
 })->middleware([
     AdminCheckToken::class,
     AdminCheckRole::class,
@@ -104,3 +108,27 @@ Route::group('tk_vip', function () {
     AdminLog::class
 ]);
 // USER_CODE_END -- tkvip_vip_log
+
+// USER_CODE_BEGIN -- tkvip_real
+
+Route::group('tk_vip', function () {
+
+    //实名认证列表
+    Route::get('real', 'addon\tk_vip\app\adminapi\controller\real\Real@lists');
+    //实名认证详情
+    Route::get('real/:id', 'addon\tk_vip\app\adminapi\controller\real\Real@info');
+    //添加实名认证
+    Route::post('real', 'addon\tk_vip\app\adminapi\controller\real\Real@add');
+    //编辑实名认证
+    Route::put('real/:id', 'addon\tk_vip\app\adminapi\controller\real\Real@edit');
+    //删除实名认证
+    Route::delete('real/:id', 'addon\tk_vip\app\adminapi\controller\real\Real@del');
+    //获取实名认证审核状态
+    Route::get('real/status', 'addon\tk_vip\app\adminapi\controller\real\Real@getRealStatus');
+
+})->middleware([
+    AdminCheckToken::class,
+    AdminCheckRole::class,
+    AdminLog::class
+]);
+// USER_CODE_END -- tkvip_real

@@ -36,6 +36,11 @@ return [
                         "control" => true
                     ],
                 ],
+                // 组件属性
+                'template' => [
+                    "topElementRounded" => 10,// 元素上圆角
+                    "bottomElementRounded" => 10 // 元素下圆角
+                ]
             ]
         ]
     ]

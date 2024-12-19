@@ -5,7 +5,7 @@
                     <el-input v-model.trim="formData.category_name" clearable :placeholder="t('categoryNamePlaceholder')" class="input-width" maxlength="10" />
                 </el-form-item>
                 <el-form-item :label="t('sort')" prop="sort">
-                    <el-input v-model.trim="formData.sort" maxlength="6" show-word-limit clearable :placeholder="t('sortPlaceholder')" class="input-width" @keyup="filterNumber($event)" @blur="formData.sort = $event.target.value"/>
+                    <el-input v-model.trim="formData.sort" maxlength="8" show-word-limit clearable :placeholder="t('sortPlaceholder')" class="input-width" @keyup="filterNumber($event)" @blur="formData.sort = $event.target.value"/>
                 </el-form-item>
                 <el-form-item :label="t('status')">
                     <el-switch v-model.trim="formData.status" :active-value="1" :inactive-value="0" />

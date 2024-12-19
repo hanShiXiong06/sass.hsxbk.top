@@ -38,8 +38,6 @@ class Manjian extends BaseModel
     protected $type = [
         'start_time' => 'timestamp',
         'end_time' => 'timestamp',
-        'create_time' => 'timestamp',
-        'update_time' => 'timestamp',
     ];
 
     // 设置json类型字段
@@ -54,7 +52,7 @@ class Manjian extends BaseModel
      */
     public function activeGoods()
     {
-        return $this->hasMany(ManjianGoods::class, 'active_id', 'active_id');
+        return $this->hasMany(ManjianGoods::class, 'manjian_id', 'manjian_id');
     }
 
     /**
@@ -113,7 +111,7 @@ class Manjian extends BaseModel
      * @param $value
      * @param $data
      */
-    public function searchEndTimeAttr(Query $query, $value, $data)
+    public function searchCreateTimeAttr(Query $query, $value, $data)
     {
         $start_time = empty($value[0]) ? 0 : strtotime($value[0]);
         $end_time = empty($value[1]) ? 0 : strtotime($value[1]);

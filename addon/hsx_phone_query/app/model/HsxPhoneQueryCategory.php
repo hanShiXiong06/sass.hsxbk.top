@@ -90,6 +90,19 @@ class HsxPhoneQueryCategory extends BaseModel
         }
     }
     
+    /**
+     * 搜索器:显示状态
+     * @param $query
+     * @param $value
+     * @param $data
+     */
+    public function searchIsShowAttr($query, $value, $data)
+    {
+        if ($value !== '') {
+            $query->where("is_show", $value);
+        }
+    }
+    
     
 
     

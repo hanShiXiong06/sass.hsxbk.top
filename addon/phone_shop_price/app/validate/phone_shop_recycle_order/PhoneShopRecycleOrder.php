@@ -12,7 +12,7 @@
 namespace addon\phone_shop_price\app\validate\phone_shop_recycle_order;
 use core\base\BaseValidate;
 /**
- * 回收订单验证器
+ * 回收订单主验证器
  * Class PhoneShopRecycleOrder
  * @package addon\phone_shop_price\app\validate\phone_shop_recycle_order
  */
@@ -20,26 +20,34 @@ class PhoneShopRecycleOrder extends BaseValidate
 {
 
        protected $rule = [
-            'id' => 'number',
-            'count' => 'require|number',
-            'telphone' => 'require|mobile',
-            'pay_type' => 'require',
-            'account' => 'require'
+            'order_no' => 'require',
+            'member_id' => 'require',
+            'count' => 'require',
+            'express_id' => 'require',
+            'send_username' => 'require',
+            'telphone' => 'require',
+            'account' => 'require',
+            'delivery_type' => 'require',
+            'return_type' => 'require',
+            'close_express_id' => 'require'
         ];
 
        protected $message = [
-            'id.number' => ['common_validate.number', ['id']],
+            'order_no.require' => ['common_validate.require', ['order_no']],
+            'member_id.require' => ['common_validate.require', ['member_id']],
             'count.require' => ['common_validate.require', ['count']],
-            'count.number' => ['common_validate.number', ['count']],
+            'express_id.require' => ['common_validate.require', ['express_id']],
+            'send_username.require' => ['common_validate.require', ['send_username']],
             'telphone.require' => ['common_validate.require', ['telphone']],
-            'telphone.mobile' => ['common_validate.mobile', ['telphone']],
-            'pay_type.require' => ['common_validate.require', ['pay_type']],
-            'account.require' => ['common_validate.require', ['account']]
+            'account.require' => ['common_validate.require', ['account']],
+            'delivery_type.require' => ['common_validate.require', ['delivery_type']],
+            'return_type.require' => ['common_validate.require', ['return_type']],
+            'close_express_id.require' => ['common_validate.require', ['close_express_id']]
         ];
 
        protected $scene = [
-            "add" => ['count', 'express_id', 'send_username', 'telphone', 'pay_type', 'account', 'status', 'close_express_id'],
-            "edit" => ['count', 'express_id', 'send_username', 'telphone', 'pay_type', 'account', 'status', 'close_express_id']
+            "add" => ['order_no', 'member_id', 'count', 'express_id', 'send_username', 'telphone', 'pay_type', 'account', 'delivery_type', 'return_type', 'qrcode_image', 'return_address', 'status', 'create_at', 'update_at', 'over_at', 'comment', 'close_express_id'],
+            "edit" => ['order_no', 'member_id', 'count', 'express_id', 'send_username', 'telphone', 'pay_type', 'account', 'delivery_type', 'return_type', 'qrcode_image', 'return_address', 'status', 'create_at', 'update_at', 'over_at', 'comment', 'close_express_id']
         ];
 
 }

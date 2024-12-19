@@ -30,7 +30,7 @@ class RechargeOrderDict
 
     // 退款相关状态
     // 未申请
-    const NOT_APPLAY = 0;
+    const NOT_APPLY = 0;
     // 退款中
     const REFUNDING = 1;
     // 退款完成

@@ -81,22 +81,21 @@ class CategoryService extends BaseAdminService
      * @param string $order
      * @return array
      */
- 
-    public function getTree(array $params = [])
+    public function getTree()
     {
        
         if($this->site_id !== 0 ){
+            $sites =  (new Site())->where([['site_id','=', $this->site_id]]) -> field('category_status')->find();
+         
+        }
+        if($this->site_id !== 0 ){
             $sites =  (new Site())-> field('category_status')->where([['site_id','=', $this->site_id]]) ->findOrEmpty()->toArray();
-           
+            
         }
         
-
         $site_id = empty($sites['category_status'] ) ? $this->site_id : $this->site_id.",0";
-        
-        return ( new CoreGoodsCategoryService() )->getTree([ [ 'site_id', 'in', "$site_id" ] ], $params['flag']  );
-        
+        return ( new CoreGoodsCategoryService() )->getTree([ [ 'site_id', 'in', "$site_id" ]  ]);
     }
-
 
     /**
      * 获取商品分类信息

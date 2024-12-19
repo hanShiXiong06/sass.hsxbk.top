@@ -39,7 +39,7 @@
 
                     <el-table-column prop="sort" :label="t('sort')" min-width="200" sortable="custom">
                         <template #default="{ row }">
-                            <el-input v-model.trim="row.sort" class="!w-[120px]" maxlength="6" @blur="sortInputListener(row.sort, row)" />
+                            <el-input v-model.trim="row.sort" class="!w-[120px]" maxlength="8" @blur="sortInputListener(row.sort, row)" />
                         </template>
                     </el-table-column>
 

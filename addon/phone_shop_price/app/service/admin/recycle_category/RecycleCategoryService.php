@@ -12,10 +12,7 @@
 namespace addon\phone_shop_price\app\service\admin\recycle_category;
 
 use addon\phone_shop_price\app\model\recycle_category\RecycleCategory;
-use addon\phone_shop\app\model\site\Site;
 use addon\phone_shop_price\app\service\core\RecycleCategory\CoreRecycleCategoryService;
-use core\exception\AdminException;
-use core\exception\CommonException;
 
 use core\base\BaseAdminService;
 
@@ -42,13 +39,8 @@ class RecycleCategoryService extends BaseAdminService
     {
         $field = 'category_id,site_id,category_name,image,level,pid,category_full_name,is_show,sort,create_time,update_time,images, need_vip';
         $order = '';
-        if($this->site_id !== 0 ){
-            $sites =  (new Site())-> field('price_status')->where([['site_id','=', $this->site_id]]) ->findOrEmpty()->toArray();
-            
-        }
-        
-        $site_id = empty($sites['price_status'] ) ? $this->site_id : $this->site_id.",0";
-        $search_model = $this->model->where([ [ 'site_id' ,"in", $site_id ] ])->withSearch(["category_name","level","pid","category_full_name","is_show","sort","create_time","update_time"], $where)->field($field)->order($order);
+
+        $search_model = $this->model->where([ [ 'site_id' ,"=", $this->site_id ] ])->withSearch(["category_name","level","pid","category_full_name","is_show","sort","create_time","update_time"], $where)->field($field)->order($order);
         $list = $this->pageQuery($search_model);
         return $list;
     }
@@ -61,13 +53,7 @@ class RecycleCategoryService extends BaseAdminService
      */
     public function getTree()
     {
-        if($this->site_id !== 0 ){
-            $sites =  (new Site())-> field('price_status')->where([['site_id','=', $this->site_id]]) ->findOrEmpty()->toArray();
-            
-        }
-        
-        $site_id = empty($sites['price_status'] ) ? $this->site_id : $this->site_id.",0";
-        return ( new CoreRecycleCategoryService() )->getTree([ [ 'site_id', 'in', "$site_id" ]  ]);
+        return ( new CoreRecycleCategoryService() )->getTree([ [ 'site_id', 'in', "{$this->site_id}" ]  ]);
     }
 
     /**
@@ -135,9 +121,6 @@ class RecycleCategoryService extends BaseAdminService
         }
         if ($category_info[ 'level' ] == 1 && $category_info[ 'pid' ] != $data[ 'pid' ] && $category_info[ 'child_count' ] > 0) {
             throw new CommonException('SHOP_GOODS_CATEGORY_EXIST_CHILD');
-        }
-        if($category_info[ 'site_id' ]!=$this->site_id){
-            throw new AdminException('无权限修改');
         }
 
         $data[ 'category_full_name' ] = $data[ 'category_name' ];

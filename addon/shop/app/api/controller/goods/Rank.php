@@ -37,7 +37,7 @@ class Rank extends BaseApiController
     public function pages()
     {
         $data = $this->request->params([
-            [ "name","" ],
+            [ "name", "" ],
         ]);
         return success(( new RankService() )->getPage($data));
     }
@@ -50,6 +50,8 @@ class Rank extends BaseApiController
     {
         $data = $this->request->params([
             [ 'rank_id', 0 ],
+            [ 'page', 0 ],
+            [ 'limit', 0 ],
         ]);
         return success(( new RankService() )->getGoodsPage($data));
     }
@@ -61,8 +63,7 @@ class Rank extends BaseApiController
     public function components()
     {
         $data = $this->request->params([
-            [ 'num', 0 ],
-            [ 'rank_ids', '' ],
+            [ 'rank_id', 0 ],
         ]);
 
         return success(( new RankService() )->getRankComponents($data));

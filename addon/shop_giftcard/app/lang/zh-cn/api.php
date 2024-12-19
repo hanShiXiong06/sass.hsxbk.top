@@ -50,7 +50,9 @@ return [
 
     'CARD_BAG_NOT_FUND' => '卡包不存在',
     'CARD_RECEIVE_EMPTY' => '该礼品卡已领完',
-    'CARD_RECEIVE_LIMIT_MAX' => '该礼品卡领取数量已达上限'
+    'CARD_RECEIVE_LIMIT_MAX' => '该礼品卡领取数量已达上限',
+
+    'CATEGORY_CAN_NOT_DEL' => '该分类下存在礼品卡，无法删除',
 
 
 ];

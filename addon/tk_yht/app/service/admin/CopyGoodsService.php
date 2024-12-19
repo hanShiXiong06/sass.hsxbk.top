@@ -118,6 +118,11 @@ class CopyGoodsService extends BaseAdminService
             $info['attr_format']='';
             $info['member_discount']=0;
             $info['poster_id']=0;
+            $info['is_limit']=0;
+            $info['limit_type']=1;
+            $info['max_buy']=0;
+            $info['min_buy']=0;
+            $info['is_gift']=0;
             return (new GoodsService())->add($info);
         } else {
             throw new Exception(isset($data['status']) ? $data['msg'] : '采集失败:请使用正确的商品ID或店铺ID');

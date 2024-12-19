@@ -35,6 +35,7 @@
                                 </el-radio-group>
                                 <p class="text-[var(--el-text-color-secondary)] text-[12px] leading-[25px]">{{ t('selfPurchaseRebateTipOne') }}</p>
                                 <p class="text-[var(--el-text-color-secondary)] text-[12px] leading-[25px]">{{ t('selfPurchaseRebateTipTwo') }}</p>
+                                <p class="text-[var(--el-text-color-secondary)] text-[12px] leading-[25px]">{{ t('selfPurchaseRebateTipThree') }}</p>
                             </div>
                         </el-form-item>
                     </template>

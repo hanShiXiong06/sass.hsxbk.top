@@ -60,27 +60,22 @@ class CoreGoodsCategoryService extends BaseCoreService
      * @param string $order
      * @return array
      */
-    public function getTree( $condition = [], $flag , $field = 'category_id,site_id, category_name,image,level,pid,category_full_name,is_show,sort', $order = 'sort desc, create_time desc')
+    public function getTree($condition = [], $field = 'category_id,site_id, category_name,image,level,pid,category_full_name,is_show,sort', $order = 'sort desc, create_time desc')
 {
-   
-     $list = $this->model->where($condition)->field($field)->order($order)->select()->toArray();
+    // 获取分类列表
+    $list = $this->model->where($condition)->field($field)->order($order)->select()->toArray();
     
-    // 判断是否需要计算 count 
-    if($flag  ==1){
-
-        // 获取分类列表
-        // 计算每个分类下的商品数量
-        foreach ($list as &$category) {
-            // 处理多对多关系的 category_id
-            $category['goods_count'] = $this->model->calcCount($category['category_id'],$condition[0][2]);
-        }
+    // 计算每个分类下的商品数量
+    foreach ($list as &$category) {
+        // 处理多对多关系的 category_id
+        $category['goods_count'] = $this->model->calcCount($category['category_id']);
     }
+    
     // 转换为树形结构
     $list = list_to_tree($list, 'category_id', 'pid', 'child_list');
     
     return $list;
-}   
-    
+}
 
 
 }

@@ -3,6 +3,7 @@
     <el-card class="box-card !border-none" shadow="never">
       <div class="flex justify-between items-center">
         <span class="text-lg">{{ pageName }}</span>
+        <el-button type="primary" @click="addEvent"> 新增VIP </el-button>
       </div>
 
       <el-card
@@ -109,13 +110,14 @@
           >
             <template #default="{ row }">
               <el-tag
-                v-if="dateChange(row.over_time) < Date.now()&&dateChange(row.over_time)>0"
+                v-if="
+                  dateChange(row.over_time) < Date.now() &&
+                  dateChange(row.over_time) > 0
+                "
                 type="danger"
                 >已到期</el-tag
               >
-              <el-tag
-                v-if="dateChange(row.over_time)==0"
-                type="successr"
+              <el-tag v-if="dateChange(row.over_time) == 0" type="successr"
                 >永久</el-tag
               >
               <el-tag

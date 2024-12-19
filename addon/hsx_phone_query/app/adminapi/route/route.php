@@ -68,6 +68,10 @@ Route::group('hsx_phone_query', function () {
     Route::put('hsx_phone_query_category/:id', 'addon\hsx_phone_query\app\adminapi\controller\hsx_phone_query_category\HsxPhoneQueryCategory@edit');
     //删除分类
     Route::delete('hsx_phone_query_category/:id', 'addon\hsx_phone_query\app\adminapi\controller\hsx_phone_query_category\HsxPhoneQueryCategory@del');
+    //修改排序
+    Route::post('hsx_phone_query_category/modify_sort/:id', 'addon\hsx_phone_query\app\adminapi\controller\hsx_phone_query_category\HsxPhoneQueryCategory@modifySort');
+    //修改显示状态
+    Route::post('hsx_phone_query_category/modify_show/:id', 'addon\hsx_phone_query\app\adminapi\controller\hsx_phone_query_category\HsxPhoneQueryCategory@modifyShow');
     
 })->middleware([
     AdminCheckToken::class,

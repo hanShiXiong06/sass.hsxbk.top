@@ -70,7 +70,7 @@ class LabelGroup extends BaseAdminController
             [ "group_name", "" ],
             [ "sort", 0 ],
         ]);
-        $this->validate($data, 'addon\shop\app\validate\goods\LabelGroup.add');
+        // $this->validate($data, 'addon\shop\app\validate\goods\LabelGroup.add');
         $id = ( new LabelGroupService() )->add($data);
         return success('ADD_SUCCESS', [ 'id' => $id ]);
     }
@@ -86,7 +86,7 @@ class LabelGroup extends BaseAdminController
             [ "group_name", "" ],
             [ "sort", 0 ],
         ]);
-        $this->validate($data, 'addon\shop\app\validate\goods\LabelGroup.edit');
+        // $this->validate($data, 'addon\shop\app\validate\goods\LabelGroup.edit');
         ( new LabelGroupService() )->edit($id, $data);
         return success('EDIT_SUCCESS');
     }

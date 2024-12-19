@@ -36,10 +36,20 @@ class HsxPhoneQueryCategoryService extends BaseAdminService
      */
     public function getPage(array $where = [])
     {
-        $field = 'id,site_id,type_id,name,price';
-        $order = '';
+        $field = 'id,site_id,type_id,name,price,is_show,sort';
+        $order = 'sort desc,id desc';
 
-        $search_model = $this->model->where([ [ 'site_id' ,"=", $this->site_id ] ])->withSearch(["id","type_id","name","price"], $where)->field($field)->order($order);
+        $search_model = $this->model->where([ [ 'site_id' ,"=", $this->site_id ] ])->withSearch(["id","type_id","name","price","is_show"], $where)->field($field)->order($order);
+        
+        // 添加调试信息
+        $debug_info = [
+            'SQL' => $search_model->fetchSql(true)->select(),
+            'where条件' => $where,
+            'site_id' => $this->site_id,
+            'search_fields' => ["id","type_id","name","price","is_show"]
+        ];
+        trace('分类列表查询调试信息：' . json_encode($debug_info, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), 'debug');
+        
         $list = $this->pageQuery($search_model);
         return $list;
     }
@@ -51,9 +61,12 @@ class HsxPhoneQueryCategoryService extends BaseAdminService
      */
     public function getInfo(int $id)
     {
-        $field = 'id,site_id,type_id,name,price';
+        $field = 'id,site_id,type_id,name,price,is_show,sort';
 
-        $info = $this->model->field($field)->where([['site_id', "=", $id]])->findOrEmpty()->toArray();
+        $info = $this->model->field($field)->where([
+            ['id', "=", $id],
+            ['site_id', "=", $this->site_id]
+        ])->findOrEmpty()->toArray();
         return $info;
     }
 
@@ -65,9 +78,41 @@ class HsxPhoneQueryCategoryService extends BaseAdminService
     public function add(array $data)
     {
         $data['site_id'] = $this->site_id;
+        // 获取最大排序值
+        $max_sort = $this->model->where([['site_id', '=', $this->site_id]])->max('sort');
+        $data['sort'] = $max_sort + 10;
         $res = $this->model->create($data);
-        return $res->site_id;
+        return $res->id;
+    }
 
+    /**
+     * 修改排序
+     * @param int $id
+     * @param int $sort
+     * @return bool
+     */
+    public function modifySort(int $id, int $sort)
+    {
+        $this->model->where([
+            ['id', '=', $id],
+            ['site_id', '=', $this->site_id]
+        ])->update(['sort' => $sort]);
+        return true;
+    }
+
+    /**
+     * 修改显示状态
+     * @param int $id
+     * @param int $is_show
+     * @return bool
+     */
+    public function modifyShow(int $id, int $is_show)
+    {
+        $this->model->where([
+            ['id', '=', $id],
+            ['site_id', '=', $this->site_id]
+        ])->update(['is_show' => $is_show]);
+        return true;
     }
 
     /**
@@ -78,8 +123,10 @@ class HsxPhoneQueryCategoryService extends BaseAdminService
      */
     public function edit(int $id, array $data)
     {
-
-        $this->model->where([['site_id', '=', $id],['site_id', '=', $this->site_id]])->update($data);
+        $this->model->where([
+            ['id', '=', $id],
+            ['site_id', '=', $this->site_id]
+        ])->update($data);
         return true;
     }
 
@@ -90,7 +137,13 @@ class HsxPhoneQueryCategoryService extends BaseAdminService
      */
     public function del(int $id)
     {
-        $model = $this->model->where([['site_id', '=', $id],['site_id', '=', $this->site_id]])->find();
+        $model = $this->model->where([
+            ['id', '=', $id],
+            ['site_id', '=', $this->site_id]
+        ])->find();
+        if (!$model) {
+            return false;
+        }
         $res = $model->delete();
         return $res;
     }

@@ -16,7 +16,7 @@ use think\facade\Route;
 
 
 /**
- * 会员个人信息管理
+ * 会员充值
  */
 Route::group('recharge', function() {
 
@@ -33,6 +33,12 @@ Route::group('recharge', function() {
 
     // 充值订单状态
     Route::get('recharge/status', 'addon\recharge\app\api\controller\Recharge@getStatus');
+
+    // 充值套餐列表
+    Route::get('package', 'addon\recharge\app\api\controller\Recharge@getRechargeLists');
+
+    // 获取充值套餐配置
+    Route::get('config', 'addon\recharge\app\api\controller\Recharge@getRechargeConfig');
 
 })->middleware(ApiChannel::class)
     ->middleware(ApiCheckToken::class, true)

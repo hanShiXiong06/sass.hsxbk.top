@@ -3,7 +3,7 @@
 
         <!--返回-->
         <el-card class="card !border-none" shadow="never">
-            <el-page-header :content="pageName" :icon="ArrowLeft" @back="$router.back()" />
+            <el-page-header :content="pageName" :icon="ArrowLeft" @back="back()" />
         </el-card>
 
         <el-card class="card mt-[15px] !border-none" shadow="never">
@@ -80,6 +80,9 @@ import { CollectionTag, ArrowLeft } from '@element-plus/icons-vue'
 const route = useRoute()
 const router = useRouter()
 const pageName = route.meta.title
+const back = () =>{
+    router.push('/shop_fenxiao/task/list')
+}
 const searchFormRef = ref<FormInstance>()
 const repeat = ref(false)
 const id = ref(route.query.id) || 0

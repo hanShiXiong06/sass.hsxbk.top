@@ -11,7 +11,7 @@ return [
         //订单创建后
         'AfterShopOrderCreate' => [ 'addon\shop_fenxiao\app\listener\order\AfterShopOrderCreate' ],
         //订单支付后, 计算佣金
-        'AfterShopOrderPay' => [ 'addon\shop_fenxiao\app\listener\order\AfterShopOrderPay' ],
+        'ShopOrderPay' => [ 'addon\shop_fenxiao\app\listener\order\AfterShopOrderPay' ],
         //订单收货后, 结算佣金
         'AfterShopOrderFinish' => [ 'addon\shop_fenxiao\app\listener\order\AfterShopOrderFinish' ],
         //订单退款后, 重新计算佣金

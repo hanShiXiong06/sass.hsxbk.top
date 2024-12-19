@@ -1,10 +1,9 @@
 <template>
     <div class="main-container">
         <el-card class="card !border-none mb-[15px]" shadow="never">
-            <el-page-header :content="pageName" :icon="ArrowLeft"
-                @back="router.push({ path: '/vipcard/order/list' })" />
+            <el-page-header :content="pageName" :icon="ArrowLeft" @back="router.push({ path: '/vipcard/order/list' })" />
         </el-card>
-
+        
         <el-form :model="formData" label-width="100px" ref="formRef" class="page-form" v-loading="loading">
             <el-card class="box-card !border-none relative" shadow="never" v-if="formData">
                 <h3 class="panel-title">{{ t('orderInfo') }}</h3>
@@ -86,17 +85,15 @@
                 </div>
                 <div v-if="formData.member_card && formData.member_card.length">
                     <h3 class="mt-[50px] mb-[20px]">{{ t('memberCard') }}</h3>
-
                     <el-table :data="formData.member_card" style="width: 100%">
                         <el-table-column type="expand">
                             <template #default="props">
                                 <el-table :data="props.row.member_card_item" style="width: 100%" :border="false">
                                     <el-table-column width="50px"></el-table-column>
-                                    <el-table-column :label="t('serviceName')" prop="goods_name"
-                                        :show-overflow-tooltip="true" />
+                                    <el-table-column :label="t('serviceName')" prop="goods_name" :show-overflow-tooltip="true" />
                                     <el-table-column :label="t('availableNum')" align="center">
-                                        <template #default="{ row }">
-                                            {{ row.num ? row.num : t('notLimit') }}
+                                        <template #default="row">
+                                            {{ row.total_num ? row.total_num : t('notLimit') }}
                                         </template>
                                     </el-table-column>
                                     <el-table-column :label="t('useNum')" prop="use_num" align="center" />
@@ -108,32 +105,26 @@
                         <el-table-column :label="t('cardType')" prop="card_type_name" align="center" />
                         <el-table-column :label="t('status')" prop="status_name" align="center" />
                         <el-table-column :label="t('availableNum')" align="center">
-                            <template #default="{ row }">
+                            <template #default="row">
                                 {{ row.total_num ? row.total_num : t('notLimit') }}
                             </template>
                         </el-table-column>
                         <el-table-column :label="t('useNum')" prop="total_use_num" align="center" />
-                        <el-table-column :label="t('expireTime')" prop="expire_time_name" align="center"
-                            :show-overflow-tooltip="true" />
+                        <el-table-column :label="t('expireTime')" prop="expire_time_name" align="center" :show-overflow-tooltip="true" />
                     </el-table>
                 </div>
                 <h3 class="mt-[50px] mb-[20px]">{{ t('operateLog') }}</h3>
                 <div style="height: 300px">
                     <div class="flex" v-for="(items, index) in formData.order_log" :key="index">
                         <div class="mr-[20px] min-w-[71px]">
-                            <div class="leading-[1] w-full text-[14px] w-[100px] flex justify-end">{{
-                                items.action_time.split(' ')[0] }}
-                            </div>
-                            <div class="leading-[1] w-full text-[14px]  w-[100px] flex justify-end mt-[5px]">{{
-                                items.action_time.split(' ')[1] }}</div>
+                            <div class="leading-[1] w-full text-[14px] w-[100px] flex justify-end">{{ items.action_time.split(' ')[0] }}</div>
+                            <div class="leading-[1] w-full text-[14px]  w-[100px] flex justify-end mt-[5px]">{{ items.action_time.split(' ')[1] }}</div>
                         </div>
                         <div>
-                            <div
-                                class="w-[16px] h-[16px] flex items-center bg-[#D1EBFF] border-[1px] border-[#0091FF] rounded-[999px]">
+                            <div class="w-[16px] h-[16px] flex items-center bg-[#D1EBFF] border-[1px] border-[#0091FF] rounded-[999px]">
                                 <div class="w-[8px] h-[8px] mx-auto bg-[#0091FF] rounded-[999px]"></div>
                             </div>
-                            <div v-if="index + 1 != formData.order_log.length"
-                                class="w-[2px] h-[50px] bg-[#D1EBFF] mx-auto">
+                            <div v-if="index + 1 != formData.order_log.length" class="w-[2px] h-[50px] bg-[#D1EBFF] mx-auto">
                             </div>
                         </div>
                         <span class="leading-[1] ml-[20px] text-[14px]">{{ items.action }}</span>

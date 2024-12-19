@@ -11,7 +11,10 @@
 
 namespace addon\recharge\app\service\api;
 
+use addon\recharge\app\dict\RechargePackageDict;
+use addon\recharge\app\model\Recharge;
 use addon\recharge\app\model\RechargeOrder;
+use addon\recharge\app\service\core\CoreRechargeConfigService;
 use addon\recharge\app\service\core\CoreRechargeOrderService;
 use addon\recharge\app\dict\RechargeOrderDict;
 use core\base\BaseApiService;
@@ -27,6 +30,32 @@ class RechargeOrderService extends BaseApiService
     {
         parent::__construct();
         $this->model = new RechargeOrder();
+    }
+
+    /**
+     * 获取充值套餐榜配置
+     * @return array
+     */
+    public function getRechargeConfig()
+    {
+        return ( new CoreRechargeConfigService() )->getRechargeConfig($this->site_id);
+    }
+
+    /**
+     * 获取充值套餐列表
+     * @return array
+     */
+    public function getRechargeLists()
+    {
+        $field = 'recharge_id,recharge_name,face_value,buy_price,point,growth';
+        $order = 'sort desc,create_time desc';
+        $list = ( new Recharge() )
+            ->where([ [ 'site_id', '=', $this->site_id ], [ 'status', '=', RechargePackageDict::ON ] ])
+            ->field($field)
+            ->order($order)
+            ->select()
+            ->toArray();
+        return $list;
     }
 
     /**

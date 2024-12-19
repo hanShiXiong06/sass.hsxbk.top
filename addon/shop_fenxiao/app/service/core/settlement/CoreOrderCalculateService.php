@@ -61,7 +61,6 @@ class CoreOrderCalculateService extends BaseCoreService
 
     /**
      * 分销订单计算(分销，团队分红，渠道代理)
-     * @param $site_id
      * @param $order //订单信息考虑订单商品已经实际查出  直接是基础信息， order_goods(未传入，需要再次查询)
      */
     public function calculate(array $data)
@@ -69,7 +68,6 @@ class CoreOrderCalculateService extends BaseCoreService
         //订单数据
         $this->order_data = $data['order_data'];
         $this->site_id = $this->order_data['site_id'];
-
         $this->order_id = $this->order_data['order_id'];
         $this->order_no = $this->order_data['order_no'];
         $this->member_id = $this->order_data['member_id'];
@@ -208,17 +206,33 @@ class CoreOrderCalculateService extends BaseCoreService
             $fenxiao_order_goods['order_goods_money'] = $order_goods_money;
 
             $fenxiao_goods_rule_type = $fenxiao_goods['fenxiao_type'];//分销商品计算规则
+
+            if($fenxiao_config['self_purchase_rebate'] == 1){//开启自购
+                $start_index = 0;
+            }else{//关闭自购
+                if($this->member_id == $this->parent_list[0]['member_id']){
+                    $start_index = 1;
+                }else{
+                    $start_index = 0;
+                }
+            }
             //遍历上级
+
             foreach ($this->parent_list as $k => $v) {
 
                 //一级分销比率
-                if ($k == 0) {
-                    $one_rate = $this->fenxiao_level['one_rate'];
+                if ($k == $start_index) {
+
+
                     //是否开启自购
-                    $first_parent = $this->parent_list[0] ?? [];
+                    $first_parent = $this->parent_list[$k] ?? [];
+
+                    $temp_level_info = $first_parent['level_data'];
+//                    $one_rate = $this->fenxiao_level['one_rate'];
+                    $one_rate = $temp_level_info['one_rate'];
                     if ($first_parent && $first_parent['status'] == FenxiaoDict::NORMAL) {
 
-                        if (($fenxiao_config['self_purchase_rebate'] == 1 && $this->is_self) || !$this->is_self) {
+//                        if (($fenxiao_config['self_purchase_rebate'] == 1 && $this->is_self) || !$this->is_self) {
                             $one_fenxiao_order_goods = $fenxiao_order_goods;
                             $one_fenxiao_order_goods['commission_level'] = 1;
                             $one_fenxiao_order_goods['fenxiao_member_id'] = $first_parent['member_id'];
@@ -258,12 +272,13 @@ class CoreOrderCalculateService extends BaseCoreService
                             }
                             $this->fenxiao_order_data['commission_fenxiao'] += $one_fenxiao_order_goods['commission'];
                             $this->insertFenxiaoGoodsTemplate($one_fenxiao_order_goods);
-                        }
+//                        }
                     }
-                } else if ($k == 1) {
-                    $two_rate = $this->fenxiao_level['two_rate'];
+                } else if ($k == ($start_index + 1)) {
+//                    $two_rate = $this->fenxiao_level['two_rate'];
+                    $two_rate = $temp_level_info['two_rate'];
                     //是否开启自购
-                    $second_parent = $this->parent_list[1] ?? [];
+                    $second_parent = $this->parent_list[$k] ?? [];
 
                     if ($second_parent && $second_parent['status'] == FenxiaoDict::NORMAL) {
                         if ($fenxiao_config['level'] == 2) {//是否启用二级分销

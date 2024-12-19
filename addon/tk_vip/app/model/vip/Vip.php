@@ -87,12 +87,7 @@ class Vip extends BaseModel
             $query->where([["over_time", "<=", $end]]);
         }
     }
-    
-    
 
-    
-
-    
     public function member(){
        return $this->hasOne(Member::class, 'member_id', 'member_id')->joinType('left')->withField('nickname,member_id')->bind(['member_id_name'=>'nickname']);
     }
@@ -100,5 +95,8 @@ class Vip extends BaseModel
     public function memberLevel(){
        return $this->hasOne(MemberLevel::class, 'level_id', 'level_id')->joinType('left')->withField('level_name,level_id')->bind(['level_id_name'=>'level_name']);
     }
-
+    public function memberInfo()
+    {
+        return $this->hasOne(Member::class, 'member_id', 'member_id');
+    }
 }

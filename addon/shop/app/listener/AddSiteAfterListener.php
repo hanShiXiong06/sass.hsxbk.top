@@ -30,176 +30,6 @@ class AddSiteAfterListener
             $site_id = $params[ 'site_id' ];
             request()->siteId($site_id);
 
-            // 创建素材
-            $category_model = new SysAttachmentCategory();
-            $attachment_category = $category_model->create([
-                'site_id' => $site_id,
-                'pid' => 0,
-                'type' => 'image',
-                'name' => '商城素材',
-                'sort' => 1
-            ]);
-            $attachment_model = new SysAttachment();
-            $attachment_list = [
-                [
-                    'site_id' => $site_id,
-                    'name' => time() . $site_id . $attachment_category->id . 'head_01.png', // 附件名称
-                    'real_name' => '超值爆款', // 原始文件名
-                    'path' => 'addon/shop/attachment/head_01.png', // 完整地址
-                    'url' => 'addon/shop/attachment/head_01.png', // 网络地址
-                    'dir' => 'addon/shop/attachment', // 附件路径
-                    'att_size' => '3958', // 附件大小
-                    'att_type' => 'image', // 附件类型image,video
-                    'storage_type' => 'local', // 图片上传类型 local本地  aliyun  阿里云oss  qiniu  七牛 ....
-                    'cate_id' => $attachment_category->id, // 素材分类id
-                    'create_time' => time()
-                ],
-                [
-                    'site_id' => $site_id,
-                    'name' => time() . $site_id . $attachment_category->id . 'head_02.png', // 附件名称
-                    'real_name' => '限时折扣', // 原始文件名
-                    'path' => 'addon/shop/attachment/head_02.png', // 完整地址
-                    'url' => 'addon/shop/attachment/head_02.png', // 网络地址
-                    'dir' => 'addon/shop/attachment', // 附件路径
-                    'att_size' => '2408', // 附件大小
-                    'att_type' => 'image', // 附件类型image,video
-                    'storage_type' => 'local', // 图片上传类型 local本地  aliyun  阿里云oss  qiniu  七牛 ....
-                    'cate_id' => $attachment_category->id, // 素材分类id
-                    'create_time' => time()
-                ],
-                [
-                    'site_id' => $site_id,
-                    'name' => time() . $site_id . $attachment_category->id . 'head_03.png', // 附件名称
-                    'real_name' => '商品榜单', // 原始文件名
-                    'path' => 'addon/shop/attachment/head_03.png', // 完整地址
-                    'url' => 'addon/shop/attachment/head_03.png', // 网络地址
-                    'dir' => 'addon/shop/attachment', // 附件路径
-                    'att_size' => '2621', // 附件大小
-                    'att_type' => 'image', // 附件类型image,video
-                    'storage_type' => 'local', // 图片上传类型 local本地  aliyun  阿里云oss  qiniu  七牛 ....
-                    'cate_id' => $attachment_category->id, // 素材分类id
-                    'create_time' => time()
-                ],
-                [
-                    'site_id' => $site_id,
-                    'name' => time() . $site_id . $attachment_category->id . 'image_ads_01.png', // 附件名称
-                    'real_name' => '商品低至五折', // 原始文件名
-                    'path' => 'addon/shop/attachment/image_ads_01.png', // 完整地址
-                    'url' => 'addon/shop/attachment/image_ads_01.png', // 网络地址
-                    'dir' => 'addon/shop/attachment', // 附件路径
-                    'att_size' => '44566', // 附件大小
-                    'att_type' => 'image', // 附件类型image,video
-                    'storage_type' => 'local', // 图片上传类型 local本地  aliyun  阿里云oss  qiniu  七牛 ....
-                    'cate_id' => $attachment_category->id, // 素材分类id
-                    'create_time' => time()
-                ],
-                [
-                    'site_id' => $site_id,
-                    'name' => time() . $site_id . $attachment_category->id . 'active_cube_01.png', // 附件名称
-                    'real_name' => '魔方素材01', // 原始文件名
-                    'path' => 'addon/shop/attachment/active_cube_01.png', // 完整地址
-                    'url' => 'addon/shop/attachment/active_cube_01.png', // 网络地址
-                    'dir' => 'addon/shop/attachment', // 附件路径
-                    'att_size' => '36850', // 附件大小
-                    'att_type' => 'image', // 附件类型image,video
-                    'storage_type' => 'local', // 图片上传类型 local本地  aliyun  阿里云oss  qiniu  七牛 ....
-                    'cate_id' => $attachment_category->id, // 素材分类id
-                    'create_time' => time()
-                ],
-                [
-                    'site_id' => $site_id,
-                    'name' => time() . $site_id . $attachment_category->id . 'active_cube_02.png', // 附件名称
-                    'real_name' => '魔方素材02', // 原始文件名
-                    'path' => 'addon/shop/attachment/active_cube_02.png', // 完整地址
-                    'url' => 'addon/shop/attachment/active_cube_02.png', // 网络地址
-                    'dir' => 'addon/shop/attachment', // 附件路径
-                    'att_size' => '26463', // 附件大小
-                    'att_type' => 'image', // 附件类型image,video
-                    'storage_type' => 'local', // 图片上传类型 local本地  aliyun  阿里云oss  qiniu  七牛 ....
-                    'cate_id' => $attachment_category->id, // 素材分类id
-                    'create_time' => time()
-                ],
-                [
-                    'site_id' => $site_id,
-                    'name' => time() . $site_id . $attachment_category->id . 'active_cube_03.png', // 附件名称
-                    'real_name' => '魔方素材03', // 原始文件名
-                    'path' => 'addon/shop/attachment/active_cube_03.png', // 完整地址
-                    'url' => 'addon/shop/attachment/active_cube_03.png', // 网络地址
-                    'dir' => 'addon/shop/attachment', // 附件路径
-                    'att_size' => '29142', // 附件大小
-                    'att_type' => 'image', // 附件类型image,video
-                    'storage_type' => 'local', // 图片上传类型 local本地  aliyun  阿里云oss  qiniu  七牛 ....
-                    'cate_id' => $attachment_category->id, // 素材分类id
-                    'create_time' => time()
-                ],
-                [
-                    'site_id' => $site_id,
-                    'name' => time() . $site_id . $attachment_category->id . 'active_cube_04.png', // 附件名称
-                    'real_name' => '魔方素材04', // 原始文件名
-                    'path' => 'addon/shop/attachment/active_cube_04.png', // 完整地址
-                    'url' => 'addon/shop/attachment/active_cube_04.png', // 网络地址
-                    'dir' => 'addon/shop/attachment', // 附件路径
-                    'att_size' => '26068', // 附件大小
-                    'att_type' => 'image', // 附件类型image,video
-                    'storage_type' => 'local', // 图片上传类型 local本地  aliyun  阿里云oss  qiniu  七牛 ....
-                    'cate_id' => $attachment_category->id, // 素材分类id
-                    'create_time' => time()
-                ],
-                [
-                    'site_id' => $site_id,
-                    'name' => time() . $site_id . $attachment_category->id . 'active_cube_05.png', // 附件名称
-                    'real_name' => '魔方素材05', // 原始文件名
-                    'path' => 'addon/shop/attachment/active_cube_05.png', // 完整地址
-                    'url' => 'addon/shop/attachment/active_cube_05.png', // 网络地址
-                    'dir' => 'addon/shop/attachment', // 附件路径
-                    'att_size' => '107422', // 附件大小
-                    'att_type' => 'image', // 附件类型image,video
-                    'storage_type' => 'local', // 图片上传类型 local本地  aliyun  阿里云oss  qiniu  七牛 ....
-                    'cate_id' => $attachment_category->id, // 素材分类id
-                    'create_time' => time()
-                ],
-                [
-                    'site_id' => $site_id,
-                    'name' => time() . $site_id . $attachment_category->id . 'active_cube_06.png', // 附件名称
-                    'real_name' => '魔方素材06', // 原始文件名
-                    'path' => 'addon/shop/attachment/active_cube_06.png', // 完整地址
-                    'url' => 'addon/shop/attachment/active_cube_06.png', // 网络地址
-                    'dir' => 'addon/shop/attachment', // 附件路径
-                    'att_size' => '130868', // 附件大小
-                    'att_type' => 'image', // 附件类型image,video
-                    'storage_type' => 'local', // 图片上传类型 local本地  aliyun  阿里云oss  qiniu  七牛 ....
-                    'cate_id' => $attachment_category->id, // 素材分类id
-                    'create_time' => time()
-                ],
-                [
-                    'site_id' => $site_id,
-                    'name' => time() . $site_id . $attachment_category->id . 'active_cube_07.png', // 附件名称
-                    'real_name' => '魔方素材07', // 原始文件名
-                    'path' => 'addon/shop/attachment/active_cube_07.png', // 完整地址
-                    'url' => 'addon/shop/attachment/active_cube_07.png', // 网络地址
-                    'dir' => 'addon/shop/attachment', // 附件路径
-                    'att_size' => '129386', // 附件大小
-                    'att_type' => 'image', // 附件类型image,video
-                    'storage_type' => 'local', // 图片上传类型 local本地  aliyun  阿里云oss  qiniu  七牛 ....
-                    'cate_id' => $attachment_category->id, // 素材分类id
-                    'create_time' => time()
-                ],
-                [
-                    'site_id' => $site_id,
-                    'name' => time() . $site_id . $attachment_category->id . 'active_cube_08.png', // 附件名称
-                    'real_name' => '魔方素材08', // 原始文件名
-                    'path' => 'addon/shop/attachment/active_cube_08.png', // 完整地址
-                    'url' => 'addon/shop/attachment/active_cube_08.png', // 网络地址
-                    'dir' => 'addon/shop/attachment', // 附件路径
-                    'att_size' => '81778', // 附件大小
-                    'att_type' => 'image', // 附件类型image,video
-                    'storage_type' => 'local', // 图片上传类型 local本地  aliyun  阿里云oss  qiniu  七牛 ....
-                    'cate_id' => $attachment_category->id, // 素材分类id
-                    'create_time' => time()
-                ]
-            ];
-            $attachment_model->insertAll($attachment_list);
-
             // 创建默认商品海报
             $poster = new CorePosterService();
             $template = $poster->getTemplateList('shop', 'shop_goods')[ 0 ];
@@ -767,6 +597,204 @@ class AddSiteAfterListener
                 ]
             ];
             $label_model->insertAll($label_list);
+
+            // 创建素材
+            $category_model = new SysAttachmentCategory();
+            $category_info = $category_model->where([
+                [ 'site_id', '=', $site_id ],
+                [ 'name', '=', '商城素材' ]
+            ])->field('id')->findOrEmpty()->toArray();
+
+            if (!empty($category_info)) {
+                $category_id = $category_info[ 'id' ];
+            } else {
+                $attachment_category = $category_model->create([
+                    'site_id' => $site_id,
+                    'pid' => 0,
+                    'type' => 'image',
+                    'name' => '商城素材',
+                    'sort' => 1
+                ]);
+                $category_id = $attachment_category->id;
+            }
+
+            $attachment_model = new SysAttachment();
+            $attachment_list = [
+                [
+                    'site_id' => $site_id,
+                    'name' => time() . $site_id . $category_id . 'head_01.png', // 附件名称
+                    'real_name' => '超值爆款', // 原始文件名
+                    'path' => 'addon/shop/attachment/head_01.png', // 完整地址
+                    'url' => 'addon/shop/attachment/head_01.png', // 网络地址
+                    'dir' => 'addon/shop/attachment', // 附件路径
+                    'att_size' => '3958', // 附件大小
+                    'att_type' => 'image', // 附件类型image,video
+                    'storage_type' => 'local', // 图片上传类型 local本地  aliyun  阿里云oss  qiniu  七牛 ....
+                    'cate_id' => $category_id, // 素材分类id
+                    'create_time' => time()
+                ],
+                [
+                    'site_id' => $site_id,
+                    'name' => time() . $site_id . $category_id . 'head_02.png', // 附件名称
+                    'real_name' => '限时折扣', // 原始文件名
+                    'path' => 'addon/shop/attachment/head_02.png', // 完整地址
+                    'url' => 'addon/shop/attachment/head_02.png', // 网络地址
+                    'dir' => 'addon/shop/attachment', // 附件路径
+                    'att_size' => '2408', // 附件大小
+                    'att_type' => 'image', // 附件类型image,video
+                    'storage_type' => 'local', // 图片上传类型 local本地  aliyun  阿里云oss  qiniu  七牛 ....
+                    'cate_id' => $category_id, // 素材分类id
+                    'create_time' => time()
+                ],
+                [
+                    'site_id' => $site_id,
+                    'name' => time() . $site_id . $category_id . 'head_03.png', // 附件名称
+                    'real_name' => '商品榜单', // 原始文件名
+                    'path' => 'addon/shop/attachment/head_03.png', // 完整地址
+                    'url' => 'addon/shop/attachment/head_03.png', // 网络地址
+                    'dir' => 'addon/shop/attachment', // 附件路径
+                    'att_size' => '2621', // 附件大小
+                    'att_type' => 'image', // 附件类型image,video
+                    'storage_type' => 'local', // 图片上传类型 local本地  aliyun  阿里云oss  qiniu  七牛 ....
+                    'cate_id' => $category_id, // 素材分类id
+                    'create_time' => time()
+                ],
+                [
+                    'site_id' => $site_id,
+                    'name' => time() . $site_id . $category_id . 'image_ads_01.png', // 附件名称
+                    'real_name' => '商品低至五折', // 原始文件名
+                    'path' => 'addon/shop/attachment/image_ads_01.png', // 完整地址
+                    'url' => 'addon/shop/attachment/image_ads_01.png', // 网络地址
+                    'dir' => 'addon/shop/attachment', // 附件路径
+                    'att_size' => '44566', // 附件大小
+                    'att_type' => 'image', // 附件类型image,video
+                    'storage_type' => 'local', // 图片上传类型 local本地  aliyun  阿里云oss  qiniu  七牛 ....
+                    'cate_id' => $category_id, // 素材分类id
+                    'create_time' => time()
+                ],
+                [
+                    'site_id' => $site_id,
+                    'name' => time() . $site_id . $category_id . 'active_cube_01.png', // 附件名称
+                    'real_name' => '魔方素材01', // 原始文件名
+                    'path' => 'addon/shop/attachment/active_cube_01.png', // 完整地址
+                    'url' => 'addon/shop/attachment/active_cube_01.png', // 网络地址
+                    'dir' => 'addon/shop/attachment', // 附件路径
+                    'att_size' => '36850', // 附件大小
+                    'att_type' => 'image', // 附件类型image,video
+                    'storage_type' => 'local', // 图片上传类型 local本地  aliyun  阿里云oss  qiniu  七牛 ....
+                    'cate_id' => $category_id, // 素材分类id
+                    'create_time' => time()
+                ],
+                [
+                    'site_id' => $site_id,
+                    'name' => time() . $site_id . $category_id . 'active_cube_02.png', // 附件名称
+                    'real_name' => '魔方素材02', // 原始文件名
+                    'path' => 'addon/shop/attachment/active_cube_02.png', // 完整地址
+                    'url' => 'addon/shop/attachment/active_cube_02.png', // 网络地址
+                    'dir' => 'addon/shop/attachment', // 附件路径
+                    'att_size' => '26463', // 附件大小
+                    'att_type' => 'image', // 附件类型image,video
+                    'storage_type' => 'local', // 图片上传类型 local本地  aliyun  阿里云oss  qiniu  七牛 ....
+                    'cate_id' => $category_id, // 素材分类id
+                    'create_time' => time()
+                ],
+                [
+                    'site_id' => $site_id,
+                    'name' => time() . $site_id . $category_id . 'active_cube_03.png', // 附件名称
+                    'real_name' => '魔方素材03', // 原始文件名
+                    'path' => 'addon/shop/attachment/active_cube_03.png', // 完整地址
+                    'url' => 'addon/shop/attachment/active_cube_03.png', // 网络地址
+                    'dir' => 'addon/shop/attachment', // 附件路径
+                    'att_size' => '29142', // 附件大小
+                    'att_type' => 'image', // 附件类型image,video
+                    'storage_type' => 'local', // 图片上传类型 local本地  aliyun  阿里云oss  qiniu  七牛 ....
+                    'cate_id' => $category_id, // 素材分类id
+                    'create_time' => time()
+                ],
+                [
+                    'site_id' => $site_id,
+                    'name' => time() . $site_id . $category_id . 'active_cube_04.png', // 附件名称
+                    'real_name' => '魔方素材04', // 原始文件名
+                    'path' => 'addon/shop/attachment/active_cube_04.png', // 完整地址
+                    'url' => 'addon/shop/attachment/active_cube_04.png', // 网络地址
+                    'dir' => 'addon/shop/attachment', // 附件路径
+                    'att_size' => '26068', // 附件大小
+                    'att_type' => 'image', // 附件类型image,video
+                    'storage_type' => 'local', // 图片上传类型 local本地  aliyun  阿里云oss  qiniu  七牛 ....
+                    'cate_id' => $category_id, // 素材分类id
+                    'create_time' => time()
+                ],
+                [
+                    'site_id' => $site_id,
+                    'name' => time() . $site_id . $category_id . 'active_cube_05.png', // 附件名称
+                    'real_name' => '魔方素材05', // 原始文件名
+                    'path' => 'addon/shop/attachment/active_cube_05.png', // 完整地址
+                    'url' => 'addon/shop/attachment/active_cube_05.png', // 网络地址
+                    'dir' => 'addon/shop/attachment', // 附件路径
+                    'att_size' => '107422', // 附件大小
+                    'att_type' => 'image', // 附件类型image,video
+                    'storage_type' => 'local', // 图片上传类型 local本地  aliyun  阿里云oss  qiniu  七牛 ....
+                    'cate_id' => $category_id, // 素材分类id
+                    'create_time' => time()
+                ],
+                [
+                    'site_id' => $site_id,
+                    'name' => time() . $site_id . $category_id . 'active_cube_06.png', // 附件名称
+                    'real_name' => '魔方素材06', // 原始文件名
+                    'path' => 'addon/shop/attachment/active_cube_06.png', // 完整地址
+                    'url' => 'addon/shop/attachment/active_cube_06.png', // 网络地址
+                    'dir' => 'addon/shop/attachment', // 附件路径
+                    'att_size' => '130868', // 附件大小
+                    'att_type' => 'image', // 附件类型image,video
+                    'storage_type' => 'local', // 图片上传类型 local本地  aliyun  阿里云oss  qiniu  七牛 ....
+                    'cate_id' => $category_id, // 素材分类id
+                    'create_time' => time()
+                ],
+                [
+                    'site_id' => $site_id,
+                    'name' => time() . $site_id . $category_id . 'active_cube_07.png', // 附件名称
+                    'real_name' => '魔方素材07', // 原始文件名
+                    'path' => 'addon/shop/attachment/active_cube_07.png', // 完整地址
+                    'url' => 'addon/shop/attachment/active_cube_07.png', // 网络地址
+                    'dir' => 'addon/shop/attachment', // 附件路径
+                    'att_size' => '129386', // 附件大小
+                    'att_type' => 'image', // 附件类型image,video
+                    'storage_type' => 'local', // 图片上传类型 local本地  aliyun  阿里云oss  qiniu  七牛 ....
+                    'cate_id' => $category_id, // 素材分类id
+                    'create_time' => time()
+                ],
+                [
+                    'site_id' => $site_id,
+                    'name' => time() . $site_id . $category_id . 'active_cube_08.png', // 附件名称
+                    'real_name' => '魔方素材08', // 原始文件名
+                    'path' => 'addon/shop/attachment/active_cube_08.png', // 完整地址
+                    'url' => 'addon/shop/attachment/active_cube_08.png', // 网络地址
+                    'dir' => 'addon/shop/attachment', // 附件路径
+                    'att_size' => '81778', // 附件大小
+                    'att_type' => 'image', // 附件类型image,video
+                    'storage_type' => 'local', // 图片上传类型 local本地  aliyun  阿里云oss  qiniu  七牛 ....
+                    'cate_id' => $category_id, // 素材分类id
+                    'create_time' => time()
+                ]
+            ];
+            $exist_attachment_list = $attachment_model->where([
+                [ 'site_id', '=', $site_id ],
+                [ 'path', 'in', array_column($attachment_list, 'path', '') ]
+            ])->field('path')->select()->toArray();
+
+            if (!empty($exist_attachment_list)) {
+                $attachment_path_list = array_column($exist_attachment_list, 'path', '');
+
+                foreach ($attachment_list as $k => $v) {
+                    if (in_array($v[ 'path' ], $attachment_path_list)) {
+                        unset($attachment_list[ $k ]);
+                    }
+                }
+                $attachment_list = array_values($attachment_list);
+            }
+            if (!empty($attachment_list)) {
+                $attachment_model->insertAll($attachment_list);
+            }
 
             return true;
         }

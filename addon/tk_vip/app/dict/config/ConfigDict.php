@@ -8,4 +8,8 @@ class ConfigDict{
     {
         return 'TK_VIP_CONFIG';
     }
+    public static function getRealType()
+    {
+        return 'TK_VIP_REAL_CONFIG';
+    }
 }

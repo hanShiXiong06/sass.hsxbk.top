@@ -93,7 +93,7 @@ class CoreStatService extends BaseCoreService
                     } else if ($v < 0) {
                         $item_sql = ' - ' . abs($v);
                     }
-                    $update_data[$k] = Db::raw($k . $item_sql);
+                    $update_data[$k] = Db::raw('CASE WHEN '.$k . $item_sql. '>= 0 THEN ' .$k . $item_sql. ' ELSE 0 END');
                 }
             }
             if ($update_data) {

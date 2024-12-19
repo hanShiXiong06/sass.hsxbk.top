@@ -12,15 +12,19 @@
 namespace addon\shop\app\service\api\marketing;
 
 use addon\shop\app\dict\active\ManjianDict;
+use addon\shop\app\dict\coupon\CouponDict;
+use addon\shop\app\dict\coupon\CouponMemberDict;
 use addon\shop\app\model\coupon\Coupon;
-use addon\shop\app\model\goods\Goods;
+use addon\shop\app\model\coupon\CouponMember;
+use addon\shop\app\model\goods\GoodsSku;
 use addon\shop\app\model\manjian\Manjian;
-use app\model\member\Member;
+use addon\shop\app\model\manjian\ManjianGoods;
+use addon\shop\app\service\core\marketing\CoreManjianService;
 use core\base\BaseApiService;
 
 /**
  * 满减送服务层
- * Class DiscountService
+ * Class ManjianService
  * @package addon\shop\app\service\api\marketing
  */
 class ManjianService extends BaseApiService
@@ -33,100 +37,150 @@ class ManjianService extends BaseApiService
 
     /**
      * 获取满减信息
-     * @param $site_id
-     * @param $member_id
-     * @param $goods_id
      * @return array
      */
-    public function getManjianInfo($site_id, $member_id, $goods_id)
+    public function getManjianInfo($data)
     {
-        $condition = [
-            [ 'site_id', '=', $site_id ],
+        $goods_id = $data[ 'goods_id' ];
+        $sku_id = $data[ 'sku_id' ];
+        if (empty($sku_id) && !empty($goods_id)) {
+            // 查询默认规格项
+            $default_sku_info = ( new GoodsSku() )->where([ [ 'goods_id', '=', $goods_id ], [ 'site_id', '=', $this->site_id ], [ 'is_default', '=', 1 ] ], 'sku_id')
+                ->field('sku_id')->findOrEmpty()->toArray();
+            if (!empty($default_sku_info)) {
+                $sku_id = $default_sku_info[ 'sku_id' ];
+            }
+        }
+
+        $manjian_info = [];
+        $field = 'manjian_id,manjian_name,condition_type,rule_type,rule_json,join_member_type,level_ids,label_ids,start_time,end_time,remark';
+        $common_where = [
+            [ 'site_id', '=', $this->site_id ],
             [ 'status', '=', ManjianDict::ACTIVE ],
-            [ 'end_time', '>', time() ],
-            [ 'goods_type', '=', ManjianDict::ALL_GOODS ]
+            [ 'start_time', '<=', time() ],
+            [ 'end_time', '>', time() ]
         ];
-        $field = 'manjian_id,site_id,manjian_name,condition_type,goods_type,join_member_type,level_ids,label_ids,goods_ids,status,start_time,end_time,rule_type,rule_json';
-        $order = 'create_time desc';
-        $first_info =  $this->getInfo($field,$condition,$order);
-        if (empty($first_info)){
-            $condition = [
-                [ 'site_id', '=', $site_id ],
-                [ 'status', '=', ManjianDict::ACTIVE ],
-                [ 'end_time', '>', time() ],
-                [ 'goods_type', '=', ManjianDict::SELECTED_GOODS_NOT],
-                [ 'goods_ids', 'like', [ '%"' . $goods_id . '"%']]
-            ];
-            $first_info =  $this->getInfo($field,$condition,$order);
-            if (empty($first_info)){
-                $condition = [
-                    [ 'site_id', '=', $site_id ],
-                    [ 'status', '=', ManjianDict::ACTIVE ],
-                    [ 'end_time', '>', time() ],
-                    [ 'goods_type', '=', ManjianDict::SELECTED_GOODS],
-                    [ 'goods_ids', 'like', [ '%"' . $goods_id . '"%']]
-                ];
-                $first_info =  $this->getInfo($field,$condition,$order);
-            }else{
-                return [];
+        $manjian_info_all_goods = $this->model->field($field)->where($common_where)->where([ [ 'goods_type', '=', ManjianDict::ALL_GOODS ] ])->findOrEmpty()->toArray();
+        if (!empty($manjian_info_all_goods)) {//全部商品参与
+            $manjian_info = $manjian_info_all_goods;
+            $can_join = ( new CoreManjianService() )->canJoinManjian($manjian_info, $this->site_id, $this->member_id);
+            if ($can_join) {
+                $rule_content = $this->getRuleContent($manjian_info);
+                $manjian_info = $rule_content[ 'is_join' ] ? $rule_content : [];
+            }
+        } else {
+            $manjian_info_selected_goods_not = $this->model->field($field)->where($common_where)->where([ [ 'goods_type', '=', ManjianDict::SELECTED_GOODS_NOT ] ])->findOrEmpty()->toArray();
+            $manjian_goods_info = ( new ManjianGoods() )->field('manjian_id,goods_type')->where([
+                [ 'site_id', '=', $this->site_id ],
+                [ 'goods_id', '=', $goods_id ],
+                [ 'sku_id', '=', $sku_id ],
+                [ 'status', '=', ManjianDict::ACTIVE ]
+            ])->findOrEmpty()->toArray();
+            if (!empty($manjian_info_selected_goods_not) && empty($manjian_goods_info)) {//指定商品不参与
+                $manjian_info = $manjian_info_selected_goods_not;
+                $can_join = ( new CoreManjianService() )->canJoinManjian($manjian_info, $this->site_id, $this->member_id);
+                if ($can_join) {
+                    $rule_content = $this->getRuleContent($manjian_info);
+                    $manjian_info = $rule_content[ 'is_join' ] ? $rule_content : [];
+                }
+            } else {//指定商品参与
+                $manjian_info_selected_goods = $this->model->field($field)->where($common_where)->where([ [ 'goods_type', '=', ManjianDict::SELECTED_GOODS ] ])->select()->toArray();
+                if (!empty($manjian_info_selected_goods) && !empty($manjian_goods_info) && $manjian_goods_info[ 'goods_type' ] == ManjianDict::SELECTED_GOODS) {
+                    $manjian_info_selected_goods = array_column($manjian_info_selected_goods, null, 'manjian_id');
+                    if (in_array($manjian_goods_info[ 'manjian_id' ], array_keys($manjian_info_selected_goods))) {
+                        $manjian_info = $manjian_info_selected_goods[ $manjian_goods_info[ 'manjian_id' ] ];
+                        $can_join = ( new CoreManjianService() )->canJoinManjian($manjian_info, $this->site_id, $this->member_id);
+                        if ($can_join) {
+                            $rule_content = $this->getRuleContent($manjian_info);
+                            $manjian_info = $rule_content[ 'is_join' ] ? $rule_content : [];
+                        }
+                    }
+                }
             }
         }
-        if(empty($first_info)){
-            return [];
-        }
-
-        //当前会员是否可参加活动
-        switch ($first_info['join_member_type']){
-            case ManjianDict::ALL_MEMBER:
-                return $first_info;
-                break;
-            case ManjianDict::SELECTED_MEMBER_LEVEL:
-                $member_level = ( new Member() )->where([[ 'site_id', '=', $this->site_id ], [ 'member_id', '=', $member_id ] ])->value('member_level');
-                if (!in_array($member_level,$first_info['level_ids'])){
-                    return [];
-                }
-                break;
-            case ManjianDict::SELECTED_MEMBER_LABEL:
-                $member_label = ( new Member() )->where([[ 'site_id', '=', $this->site_id ], [ 'member_id', '=', $member_id ] ])->value('member_label')??[];
-                $label_ids_intersect = array_intersect($member_label,$first_info['label_ids']);
-                if (empty($label_ids_intersect)){
-                    return [];
-                }
-                break;
-        }
-
-        if (!empty($first_info)) {
-            $rule = $first_info[ 'rule_json' ];
-            foreach ($rule as $key => $item) {
-                if (isset($item[ 'coupon' ]) && !empty($item[ 'coupon' ])) {
-                    $coupon = (new Coupon())->field('title,price,min_condition_money')->where([[ 'site_id', '=', $this->site_id ],[ 'id', 'in', $item[ 'coupon' ]]])->select()->toArray();
-                    $rule[ $key ][ 'coupon_num' ] = empty($item[ 'coupon_num' ]) ? [ 1 ] : explode(',', $item[ 'coupon_num' ]);
-                    $rule[ $key ][ 'coupon_data' ] = $coupon;
-                }
-                if (isset($item[ 'goods' ]) && !empty($item[ 'goods' ])) {
-                    $coupon = (new Goods())->field('goods_name')->where([[ 'site_id', '=', $this->site_id ],[ 'goods_id', 'in', $item[ 'goods' ]]])->select()->toArray();
-                    $rule[ $key ][ 'goods_num' ] = empty($item[ 'goods_num' ]) ? [ 1 ] : explode(',', $item[ 'goods_num' ]);
-                    $rule[ $key ][ 'goods_data' ] = $coupon;
-                }
-            }
-            $first_info[ 'rule_json' ] = $rule;
-        }
-
-        return $first_info;
-
+        return $manjian_info;
     }
 
     /**
-     * 获取满减表信息
-     * @param $field
-     * @param $condition
-     * @param $order
+     * 获取满减规则内容
+     * @param $manjian_info
      * @return array
      */
-    protected function getInfo($field,$condition,$order)
+    public function getRuleContent($manjian_info)
     {
-        $info = $this->model->field($field)->where($condition)->order($order)->findOrEmpty()->toArray();
-        return $info;
+        if (!empty($manjian_info)) {
+            $is_join = false;
+            foreach ($manjian_info[ 'rule_json' ] as $key => $item) {
+                if ($item[ 'is_discount' ]) {
+                    $is_join = true;
+                }
+                if ($item[ 'is_free_shipping' ]) {
+                    $is_join = true;
+                }
+                if ($item[ 'is_give_point' ]) {
+                    $is_join = true;
+                }
+                if ($item[ 'is_give_balance' ]) {
+                    $is_join = true;
+                }
+                if ($item[ 'is_give_coupon' ]) {
+                    foreach ($item[ 'coupon' ] as $coupon_key => &$coupon) {
+                        $coupon_info = ( new Coupon() )->field('remain_count,limit_count,price,min_condition_money')->where([
+                            [ 'id', '=', $coupon[ 'coupon_id' ] ],
+                            [ 'status', '=', CouponDict::NORMAL ],
+                        ])->findOrEmpty()->toArray();
+                        $coupon_member_count = ( new CouponMember() )->where([
+                            [ 'coupon_id', '=', $coupon[ 'coupon_id' ] ],
+                            [ 'site_id', '=', $this->site_id ],
+                            [ 'member_id', '=', $this->member_id ],
+                            [ 'status', '<>', CouponMemberDict::INVALID ]
+                        ])->count();
+                        if (!empty($coupon_info)) {
+                            if ($coupon_info[ 'min_condition_money' ] == '0.00') {
+                                $coupon_name = $coupon_info[ 'price' ] . "元无门槛券";
+                            } else {
+                                $coupon_name = "满" . $coupon_info[ 'min_condition_money' ] . "元减" . $coupon_info[ 'price' ] . "元券";
+                            }
+                            $coupon[ 'coupon_name' ] = $coupon_name;
+                            if ($coupon_info[ 'remain_count' ] == 0 || $coupon_member_count >= $coupon_info[ 'limit_count' ]) {
+                                unset($item[ 'coupon' ][ $coupon_key ]);
+                            }
+                        } else {
+                            unset($item[ 'coupon' ][ $coupon_key ]);
+                        }
+                    }
+                    $item[ 'coupon' ] = array_values($item[ 'coupon' ]);
+                    if (!empty($item[ 'coupon' ])) {
+                        $is_join = true;
+                    }
+                }
+                if ($item[ 'is_give_goods' ]) {
+                    foreach ($item[ 'goods' ] as $goods_key => &$goods) {
+                        $sku_info = ( new GoodsSku() )->field('goods_id,sku_name,sku_image,price')->where([
+                            [ 'goods_id', '=', $goods[ 'goods_id' ] ],
+                            [ 'sku_id', '=', $goods[ 'sku_id' ] ],
+                            [ 'stock', '>=', $goods[ 'num' ] ],
+                        ])->with([ 'goods' ])->findOrEmpty()->toArray();
+                        if (!empty($sku_info) && $sku_info[ 'goods' ][ 'status' ] == 1) {
+                            $sku_info[ 'num' ] = $goods[ 'num' ];
+                            $goods[ 'goods_name' ] = $sku_info[ 'goods' ][ 'goods_name' ];
+                            $goods[ 'sku_name' ] = $sku_info[ 'sku_name' ];
+                            $goods[ 'sku_image' ] = $sku_info[ 'sku_image' ];
+                            $goods[ 'price' ] = $sku_info[ 'price' ];
+                        } else {
+                            unset($item[ 'goods' ][ $goods_key ]);
+                        }
+                    }
+                    $item[ 'goods' ] = array_values($item[ 'goods' ]);
+                    if (!empty($item[ 'goods' ])) {
+                        $is_join = true;
+                    }
+                }
+                $manjian_info[ 'rule_json' ][ $key ] = $item;
+            }
+            $manjian_info[ 'is_join' ] = $is_join;
+        }
+        return $manjian_info;
     }
 
 }

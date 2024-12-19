@@ -52,9 +52,12 @@ class Vip extends BaseAdminController
         $data = $this->request->params([
              ["member_id",0],
              ["level_id",0],
-             ["over_time",""],
+             ["over_time",0],
 
         ]);
+        if($data['over_time']!=0){
+            $data['over_time']=strtotime($data['over_time']);
+        }
         $this->validate($data, 'addon\tk_vip\app\validate\vip\Vip.add');
         $id = (new VipService())->add($data);
         return success('ADD_SUCCESS', ['id' => $id]);
@@ -69,10 +72,12 @@ class Vip extends BaseAdminController
         $data = $this->request->params([
              ["member_id",0],
              ["level_id",0],
-             ["over_time",""],
+             ["over_time",0],
 
         ]);
-        $data['over_time']=strtotime($data['over_time']);
+        if($data['over_time']!=0){
+            $data['over_time']=strtotime($data['over_time']);
+        }
         $this->validate($data, 'addon\tk_vip\app\validate\vip\Vip.edit');
         (new VipService())->edit($id, $data);
         return success('EDIT_SUCCESS');
@@ -80,7 +85,6 @@ class Vip extends BaseAdminController
 
     /**
      * 会员VIP管理删除
-     * @param $id  会员VIP管理id
      * @return \think\Response
      */
     public function del(int $id){

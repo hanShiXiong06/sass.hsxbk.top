@@ -11,6 +11,7 @@
 
 namespace addon\shop\app\adminapi\controller\marketing;
 
+use addon\shop\app\dict\active\ManjianDict;
 use addon\shop\app\service\admin\marketing\ManjianService;
 use core\base\BaseAdminController;
 
@@ -32,11 +33,10 @@ class Manjian extends BaseAdminController
         $data = $this->request->params([
             [ "manjian_name", "" ],
             [ "status", "" ],
-            [ "date", "" ],
+            [ "create_time", [] ],
         ]);
         return success(( new ManjianService() )->getPage($data));
     }
-
 
     /**
      * 满减送关闭
@@ -44,7 +44,7 @@ class Manjian extends BaseAdminController
      */
     public function closeManjian($id)
     {
-        (new ManjianService())->closeManjian($id);
+        ( new ManjianService() )->closeManjian($id);
         return success('SUCCESS');
     }
 
@@ -84,22 +84,6 @@ class Manjian extends BaseAdminController
     }
 
     /**
-     * 参与商品
-     * @param int $id
-     * @return \think\Response
-     * @throws \think\db\exception\DbException
-     */
-    public function goods(int $id)
-    {
-        $data = $this->request->params([
-            [ 'keyword', '' ],
-        ]);
-
-        return success(( new ManjianService() )->goods($id, $data));
-    }
-
-
-    /**
      * 添加满减送
      * @return \think\Response
      */
@@ -110,10 +94,10 @@ class Manjian extends BaseAdminController
             [ "condition_type", '' ],//条件类型
             [ "goods_type", '' ],//参与商品
             [ "join_member_type", '' ],//参与会员
-            [ "rule_type", ''],//优惠规格
-            [ "rule_json", ''],//优惠规则json
+            [ "rule_type", '' ],//优惠规格
+            [ "rule_json", '' ],//优惠规则json
             [ "goods_ids", [] ],//商品id集
-            [ "level_ids", []],//会员等级id集
+            [ "level_ids", [] ],//会员等级id集
             [ "label_ids", [] ],//会员标签id集
             [ "start_time", '' ],//开始时间
             [ "end_time", '' ],//开始时间
@@ -121,8 +105,13 @@ class Manjian extends BaseAdminController
             [ "goods_data", [] ],//参与商品json数据
         ]);
 
-        $id = ( new ManjianService() )->add($data);
-        return success('ADD_SUCCESS', [ 'id' => $id ]);
+        $res = ( new ManjianService() )->add($data);
+        if ($res[ 'code' ] === 1) {
+            return success('ADD_SUCCESS', $res);
+        } else {
+            return success('ADD_FAIL', $res);
+        }
+
     }
 
     /**
@@ -149,10 +138,10 @@ class Manjian extends BaseAdminController
             [ "condition_type", '' ],//条件类型
             [ "goods_type", '' ],//参与商品
             [ "join_member_type", '' ],//参与会员
-            [ "rule_type", ''],//优惠规格
-            [ "rule_json", []],//优惠规则json
+            [ "rule_type", '' ],//优惠规格
+            [ "rule_json", [] ],//优惠规则json
             [ "goods_ids", [] ],//商品id集
-            [ "level_ids", []],//会员等级id集
+            [ "level_ids", [] ],//会员等级id集
             [ "label_ids", [] ],//会员标签id集
             [ "start_time", '' ],//开始时间
             [ "end_time", '' ],//开始时间
@@ -161,7 +150,36 @@ class Manjian extends BaseAdminController
         ]);
 
         $res = ( new ManjianService() )->edit($id, $data);
-        return success('EDIT_SUCCESS');
+        if ($res[ 'code' ] === 1) {
+            return success('EDIT_SUCCESS', $res);
+        } else {
+            return success('EDIT_FAIL', $res);
+        }
+    }
+
+    /**
+     * 获取活动状态
+     * @return \think\Response
+     */
+    public function status()
+    {
+        return success(ManjianDict::getStatus());
+    }
+
+    /**
+     * 满减送商品校验
+     * @return \think\Response
+     */
+    public function checkGoods()
+    {
+        $data = $this->request->params([
+            [ "goods_type", '' ],//参与商品类型
+            [ "start_time", '' ],//开始时间
+            [ "end_time", '' ],//结束时间
+            [ "goods_ids", [] ],//校验的商品id
+            [ "manjian_id", 0 ],//满减活动id
+        ]);
+        return success('SUCCESS', data:( new ManjianService() )->checkGoods($data));
     }
 
 }

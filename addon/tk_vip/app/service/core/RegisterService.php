@@ -14,28 +14,30 @@ class RegisterService extends BaseAdminService
         parent::__construct();
 
     }
+
     public function sendLevel($data)
     {
-        try{
-            $member_id=$data['member_id'];
-            $site_id=$data['site_id'];
-            $level_info=(new CommonService())->getConfig($site_id);
-            $level_id=$level_info['level_id']??0;
-            $day=$level_info['day']??0;
-            $over_type=$level_info['over_type']??'common';
-            $over_time=$level_info['over_time']??'';
-            $info=[
-                'site_id'=>$site_id,
-                'member_id'=>$member_id,
-                'level_id'=>$level_id,
-                'day'=>$day,
-                'type'=>$over_type,
-                'over_time'=>$over_time,
+        try {
+            $member_id = $data['member_id'];
+            $site_id = $data['site_id'];
+            $level_info = (new CommonService())->getConfig($site_id);
+            $level_id = $level_info['level_id'] ?? 0;
+            if ($level_id == 0) return true;
+            $day = $level_info['day'] ?? 0;
+            $over_type = $level_info['over_type'] ?? 'common';
+            $over_time = $level_info['over_time'] ?? '';
+            $info = [
+                'site_id' => $site_id,
+                'member_id' => $member_id,
+                'level_id' => $level_id,
+                'day' => $day,
+                'type' => $over_type,
+                'over_time' => $over_time,
             ];
             //新的接口
-            (new MemberService())->changeVipV1($info,'gift');
+            (new MemberService())->changeVipV1($info, 'gift');
             return true;
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return false;
         }
 

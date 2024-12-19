@@ -3,7 +3,13 @@
     <el-form-item label="" prop="expand" class="!mb-[10px]">
       <div>
         <div class="flex items-center">
-          <el-checkbox v-model="formData.is_use" :true-label="1" :false-label="0" label="" size="large" />
+          <el-checkbox
+            v-model="formData.is_use"
+            :true-label="1"
+            :false-label="0"
+            label=""
+            size="large"
+          />
           <span class="ml-[10px] el-form-item__label">聚合快递单单返</span>
           <div class="w-[120px]" v-show="formData.is_use">
             <el-input v-model.trim="formData.expand" clearable>
@@ -100,4 +106,5 @@ defineExpose({
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+</style>

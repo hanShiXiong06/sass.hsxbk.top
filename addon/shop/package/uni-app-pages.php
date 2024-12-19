@@ -117,6 +117,18 @@ return [
 					}
 				},
 				{
+					"path": "shop/pages/goods/collect",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.goods.collect%"
+					}
+				},
+				{
+					"path": "shop/pages/goods/browse",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.goods.browse%"
+					}
+				},
+				{
 					"path": "shop/pages/goods/category",
 					"style": {
 						"navigationBarTitleText": "%shop.pages.goods.category%"

@@ -53,11 +53,7 @@ class Category extends BaseAdminController
      */
     public function tree()
     {
-        $data = $this->request->params([
-            [ "flag", 0 ],
-           
-        ]);
-        return success(( new CategoryService() )->getTree( $data ));
+        return success(( new CategoryService() )->getTree());
     }
 
     /**

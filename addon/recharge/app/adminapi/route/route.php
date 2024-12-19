@@ -16,9 +16,39 @@ use think\facade\Route;
 
 
 /**
- * 订单相关路由
+ * 会员充值相关路由
  */
 Route::group('recharge', function() {
+    /***************************************************** 充值套餐相关 *************************************************/
+    // 充值套餐配置
+    Route::post('package/config', 'addon\recharge\app\adminapi\controller\Recharge@setRechargeConfig');
+
+    // 获取充值套餐配置
+    Route::get('package/config', 'addon\recharge\app\adminapi\controller\Recharge@getRechargeConfig');
+
+    // 充值套餐列表
+    Route::get('package', 'addon\recharge\app\adminapi\controller\Recharge@lists');
+
+    // 添加充值套餐
+    Route::post('package', 'addon\recharge\app\adminapi\controller\Recharge@add');
+
+    // 添加充值套餐
+    Route::post('package', 'addon\recharge\app\adminapi\controller\Recharge@add');
+
+    //编辑充值套餐
+    Route::put('package/:id', 'addon\recharge\app\adminapi\controller\Recharge@edit');
+
+    //获取充值详情
+    Route::get('package/init', 'addon\recharge\app\adminapi\controller\Recharge@init');
+
+    //删除套餐
+    Route::delete('package/:id', 'addon\recharge\app\adminapi\controller\Recharge@del');
+
+    //修改套餐状态
+    Route::put('package/status', 'addon\recharge\app\adminapi\controller\Recharge@modifyStatus');
+
+    //修改排序
+    Route::put('package/sort', 'addon\recharge\app\adminapi\controller\Recharge@editSort');
 
     /***************************************************** 充值订单 *************************************************/
     //订单列表

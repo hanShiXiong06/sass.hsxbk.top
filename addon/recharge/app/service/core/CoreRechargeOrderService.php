@@ -12,6 +12,8 @@
 namespace addon\recharge\app\service\core;
 
 use addon\recharge\app\dict\RechargeOrderDict;
+use addon\recharge\app\job\OrderCreateAfter;
+use addon\recharge\app\model\Recharge;
 use addon\recharge\app\model\RechargeOrder;
 use addon\recharge\app\model\RechargeOrderItem;
 use app\dict\member\MemberAccountTypeDict;
@@ -58,7 +60,7 @@ class CoreRechargeOrderService extends BaseCoreService
         $order_items = [
             [
                 'member_id' => $data[ 'member_id' ],
-                'item_id' => 0,
+                'item_id' => $data[ 'recharge_id' ],
                 'item_type' => 'recharge', //项目类型 recharge, goods
                 'item_name' => '会员充值',
                 'item_image' => '/static/image/icon.png',
@@ -84,6 +86,8 @@ class CoreRechargeOrderService extends BaseCoreService
                 $order_item_model->create($order_item);
             }
             Db::commit();
+            //生成超时时间
+            OrderCreateAfter::dispatch(['data' => [ 'site_id' => $data[ 'site_id' ], 'order_id' => $order_id, 'order_data' => $order_data, 'basic' => get_object_vars($this), 'time' => time() ]]);
             //返回订单信息
             return [
                 'trade_type' => $order_data[ 'order_type' ],
@@ -116,11 +120,33 @@ class CoreRechargeOrderService extends BaseCoreService
             ];
             $order_model->where([ [ 'order_id', '=', $trade_id ] ])->update($order_data);
             //会员余额
+            $recharge_id = (new RechargeOrderItem())->where([ [ 'order_id', '=', $trade_id ] ])->value('item_id');
+            $member_recharge_info = (new Recharge())->where([['site_id','=',$order_info[ 'site_id' ]],['recharge_id','=',$recharge_id]])->findOrEmpty()->toArray();
+            if (!empty($member_recharge_info)){
+                //发放余额
+                Log::write('会员充值发放余额开始:'.$member_recharge_info['face_value']);
+                if($member_recharge_info['face_value'] > 0){
+                    ( new CoreMemberAccountService() )->addLog($order_info[ 'site_id' ], $order_info[ 'member_id' ], MemberAccountTypeDict::BALANCE, $member_recharge_info['face_value'], 'recharge', '会员充值到账'.$member_recharge_info['face_value'].'元余额', $order_info[ 'order_id' ]);
+                }
+                //发放积分
+                Log::write('会员充值发放积分开始:'.$member_recharge_info['point']);
+                if($member_recharge_info['point'] > 0){
+                    ( new CoreMemberAccountService() )->addLog($order_info[ 'site_id' ], $order_info[ 'member_id' ], MemberAccountTypeDict:: POINT, $member_recharge_info['point'], 'recharge', '会员充值赠送'.$member_recharge_info['point'].'积分', $recharge_id);
+                }
+                //发放成长值
+                Log::write('会员充值发放成长值开始:'.$member_recharge_info['growth']);
+                if($member_recharge_info['growth'] > 0){
+                    ( new CoreMemberAccountService() )->addLog($order_info[ 'site_id' ], $order_info[ 'member_id' ], MemberAccountTypeDict:: GROWTH, $member_recharge_info['growth'], 'recharge', '会员充值赠送'.$member_recharge_info['growth'].'成长值', $recharge_id);
+                }
+            }else{
+                //发放余额
+                Log::write('会员充值发放余额开始');
+                ( new CoreMemberAccountService() )->addLog($order_info[ 'site_id' ], $order_info[ 'member_id' ], MemberAccountTypeDict::BALANCE, $order_info[ 'order_item_money' ], 'recharge', '会员充值到账'.$order_info[ 'order_item_money' ].'元余额', $order_info[ 'order_id' ]);
+            }
 
             // 微信小程序 发货信息录入接口
             $this->orderShippingUploadShippingInfo($trade_id);
 
-            ( new CoreMemberAccountService() )->addLog($order_info[ 'site_id' ], $order_info[ 'member_id' ], MemberAccountTypeDict::BALANCE, $order_info[ 'order_item_money' ], 'recharge', '会员充值', $order_info[ 'order_id' ]);
             return true;
         } catch (Exception $e) {
             throw new CommonException($e->getMessage());

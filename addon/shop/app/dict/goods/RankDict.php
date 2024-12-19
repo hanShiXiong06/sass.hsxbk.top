@@ -20,7 +20,8 @@ class RankDict
     const MONTH = 'month';
     const QUARTER = 'quarter';
 
-    // 来源类型 goods=指定商品，category=指定分类，brand=指定品牌, label=指定标签
+    // 来源类型 all=全部，goods=指定商品，category=指定分类，brand=指定品牌, label=指定标签
+    const ALL = 'all';
     const GOODS = 'goods';
     const CATEGORY = 'category';
     const BRAND = 'brand';
@@ -31,6 +32,10 @@ class RankDict
     const COLLECT = 'collect';
     const EVALUATE = 'evaluate';
     const ACCESS = 'access';
+
+    // 状态（0：关闭，1：开启）
+    const ON = 1;
+    const OFF = 0;
 
 
     /**
@@ -60,6 +65,7 @@ class RankDict
     public static function getGoodsSource($type = '')
     {
         $data = [
+            self::ALL => get_lang('dict_shop_goods_rank_goods_source.all'), // 全部
             self::GOODS => get_lang('dict_shop_goods_rank_goods_source.goods'), // 指定商品
             self::CATEGORY => get_lang('dict_shop_goods_rank_goods_source.category'), // 指定分类
             self::BRAND => get_lang('dict_shop_goods_rank_goods_source.brand'), // 指定品牌

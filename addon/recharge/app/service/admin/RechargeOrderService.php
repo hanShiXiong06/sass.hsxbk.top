@@ -36,22 +36,28 @@ class RechargeOrderService extends BaseAdminService
     public function getPage(array $where)
     {
         $field = 'order_id, order_no, order_from, order_type, out_trade_no, order_status, refund_status, member_id, ip, member_message, order_item_money, order_discount_money, order_money, create_time, pay_time, close_time, is_delete, is_enable_refund, remark, invoice_id, close_reason';
-        $order = 'create_time desc';
-        $where['order_type'] = 'recharge';
-        $search_model = $this->model->where([ ['site_id', '=', $this->site_id] ])->withSearch(['order_no', 'order_money', 'order_from', 'order_status', 'order_type', 'member_id', 'out_trade_no', 'create_time', 'pay_time'], $where)->field($field)->with(['item' => function($query) {
-            $query->field('order_item_id, order_id, member_id, item_id, item_type, item_name, item_image, price, num, item_money, is_refund, refund_no, refund_status, create_time');
-        }, 'member' => function($query) {
-            $query->field('member_id, nickname, mobile, headimg');
-        }, 'pay' => function($query) {
-            $query->field('');
-        } ])->order($order)->append(['order_from_name' ]);
+        $order = 'recharge_order.create_time desc';
+        $where[ 'order_type' ] = 'recharge';
+        $item_where = [];
+        if (isset($where[ 'recharge_id' ]) && !empty($where[ 'recharge_id' ])) {
+            $item_where[] = [ 'item_id', '=', $where[ 'recharge_id' ] ];
+        }
+        $search_model = $this->model->where([ [ 'recharge_order.site_id', '=', $this->site_id ] ])->withSearch([ 'order_no', 'order_money', 'order_from', 'order_status', 'order_type', 'member_id', 'out_trade_no', 'create_time', 'pay_time' ], $where)
+            ->field($field)
+            ->withJoin([ 'item' => function($query) use ($item_where) {
+                $query->field('item.order_item_id, item.order_id, item.member_id, item_id, item_type, item_name, item_image, price, num, item_money, is_refund, refund_no, item.refund_status, item.create_time')->where($item_where);
+            } ])
+            ->with([ 'member' => function($query) {
+                $query->field('member_id, nickname, mobile, headimg');
+            }, 'pay' => function($query) {
+                $query->field('');
+            } ])->order($order)->append([ 'order_from_name' ]);
         $list = $this->pageQuery($search_model);
         $order_status = RechargeOrderDict::getStatus();
         $refund_status = RechargeOrderDict::getRefundStatus();
-        foreach ($list['data'] as $k => $v)
-        {
-            $list['data'][$k]['order_status_info'] = $order_status[$v['order_status']] ?? [];
-            $list['data'][$k]['refund_status_name'] = $refund_status[$v['refund_status']]['name'] ?? '';
+        foreach ($list[ 'data' ] as $k => $v) {
+            $list[ 'data' ][ $k ][ 'order_status_info' ] = $order_status[ $v[ 'order_status' ] ] ?? [];
+            $list[ 'data' ][ $k ][ 'refund_status_name' ] = $refund_status[ $v[ 'refund_status' ] ][ 'name' ] ?? '';
         }
         return $list;
     }
@@ -64,16 +70,15 @@ class RechargeOrderService extends BaseAdminService
     public function getDetail(int $order_id)
     {
         $field = 'order_id, order_no, order_from, order_type, out_trade_no, order_status, refund_status, member_id, ip, member_message, order_item_money, order_discount_money, order_money, create_time, pay_time, close_time, is_delete, is_enable_refund, remark, invoice_id, close_reason';
-        $detail = $this->model->where([['order_type', '=', 'recharge'], ['order_id', '=', $order_id], ['site_id', '=', $this->site_id] ])->field($field)->with(['item' => function($query) {
+        $detail = $this->model->where([ [ 'order_type', '=', 'recharge' ], [ 'order_id', '=', $order_id ], [ 'site_id', '=', $this->site_id ] ])->field($field)->with([ 'item' => function($query) {
             $query->field('order_item_id, order_id, member_id, item_id, item_type, item_name, item_image, price, num, item_money, is_refund, refund_no, refund_status, create_time');
         }, 'member' => function($query) {
             $query->field('member_id, nickname, mobile, headimg');
         }, 'pay' => function($query) {
             $query->field('');
-        } ])->append(['order_from_name'])->findOrEmpty()->toArray();
-        if(!empty($detail))
-        {
-            $detail['order_status_info'] = RechargeOrderDict::getStatus($detail['order_status']) ?? [];
+        } ])->append([ 'order_from_name' ])->findOrEmpty()->toArray();
+        if (!empty($detail)) {
+            $detail[ 'order_status_info' ] = RechargeOrderDict::getStatus($detail[ 'order_status' ]) ?? [];
         }
         return $detail;
     }
@@ -87,7 +92,6 @@ class RechargeOrderService extends BaseAdminService
         return RechargeOrderDict::getStatus();
     }
 
-
     /**
      * 充值订单
      * @param array $data
@@ -100,20 +104,20 @@ class RechargeOrderService extends BaseAdminService
             'recharge_refund_money' => 0
         ];
         $where = [
-            ['order_type', '=', 'recharge'],
-            ['order_status', '=', RechargeOrderDict::FINISH],
+            [ 'order_type', '=', 'recharge' ],
+            [ 'order_status', '=', RechargeOrderDict::FINISH ],
         ];
-        if(!empty($data['member_id'])) $where[] = ['member_id', '=', $data['member_id']];
+        if (!empty($data[ 'member_id' ])) $where[] = [ 'member_id', '=', $data[ 'member_id' ] ];
 
-        $res['recharge_money'] = $this->model->where($where)->sum('order_money');
+        $res[ 'recharge_money' ] = $this->model->where($where)->sum('order_money');
 
         $where = [
-            ['order_type', '=', 'recharge'],
-            ['refund_status', '=', RechargeOrderDict::REFUND_COMPLETED],
-            ['site_id','=', $this->site_id]
+            [ 'order_type', '=', 'recharge' ],
+            [ 'refund_status', '=', RechargeOrderDict::REFUND_COMPLETED ],
+            [ 'site_id', '=', $this->site_id ]
         ];
-        if(!empty($data['member_id'])) $where[] = ['member_id', '=', $data['member_id']];
-        $res['recharge_refund_money'] = $this->model->where($where)->sum('order_money');
+        if (!empty($data[ 'member_id' ])) $where[] = [ 'member_id', '=', $data[ 'member_id' ] ];
+        $res[ 'recharge_refund_money' ] = $this->model->where($where)->sum('order_money');
         return $res;
     }
 

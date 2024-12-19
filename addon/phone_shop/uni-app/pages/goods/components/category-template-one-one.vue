@@ -7,8 +7,8 @@
 				<view v-if="config.search.control"
 					class="search-box z-10 bg-[#fff] fixed top-0 left-0 right-0 h-[106rpx] box-border">
 					<input class="search-ipt pl-[32rpx] text-[24rpx]"
-						:class="{ 'pr-[106rpx]': searchName, 'pr-[32rpx]': !searchName }" type="text" v-model="searchName"
-						:placeholder="config.search.title" @confirm="searchNameFn">
+						:class="{ 'pr-[106rpx]': searchName, 'pr-[32rpx]': !searchName }" type="text"
+						v-model="searchName" :placeholder="config.search.title" @confirm="searchNameFn">
 					<view class="flex items-center h-[70rpx] absolute right-[56rpx] top-[18rpx]  z-2">
 						<u-icon v-if="searchName" name="close-circle-fill" color="#A5A6A6" size="28rpx"
 							@click="searchName = ''"></u-icon>

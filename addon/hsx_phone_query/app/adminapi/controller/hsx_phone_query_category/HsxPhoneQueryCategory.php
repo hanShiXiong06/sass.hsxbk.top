@@ -30,7 +30,8 @@ class HsxPhoneQueryCategory extends BaseAdminController
         $data = $this->request->params([
              ["type_id",""],
              ["name",""],
-             ["price",""]
+             ["price",""],
+             ["is_show",""]
         ]);
         return success((new HsxPhoneQueryCategoryService())->getPage($data));
     }
@@ -52,7 +53,9 @@ class HsxPhoneQueryCategory extends BaseAdminController
         $data = $this->request->params([
              ["type_id",0],
              ["name",""],
-             ["price",0.00]
+             ["price",0.00],
+             ["is_show",1],
+             ["sort",0]
         ]);
         $this->validate($data, 'addon\hsx_phone_query\app\validate\hsx_phone_query_category\HsxPhoneQueryCategory.add');
         $id = (new HsxPhoneQueryCategoryService())->add($data);
@@ -68,10 +71,38 @@ class HsxPhoneQueryCategory extends BaseAdminController
         $data = $this->request->params([
              ["type_id",0],
              ["name",""],
-             ["price",0.00]
+             ["price",0.00],
+             ["is_show",1],
+             ["sort",0]
         ]);
         $this->validate($data, 'addon\hsx_phone_query\app\validate\hsx_phone_query_category\HsxPhoneQueryCategory.edit');
         (new HsxPhoneQueryCategoryService())->edit($id, $data);
+        return success('EDIT_SUCCESS');
+    }
+
+    /**
+     * 修改排序
+     * @param int $id
+     * @return \think\Response
+     */
+    public function modifySort(int $id){
+        $data = $this->request->params([
+            ["sort", 0]
+        ]);
+        (new HsxPhoneQueryCategoryService())->modifySort($id, $data['sort']);
+        return success('EDIT_SUCCESS');
+    }
+
+    /**
+     * 修改显示状态
+     * @param int $id
+     * @return \think\Response
+     */
+    public function modifyShow(int $id){
+        $data = $this->request->params([
+            ["is_show", 1]
+        ]);
+        (new HsxPhoneQueryCategoryService())->modifyShow($id, $data['is_show']);
         return success('EDIT_SUCCESS');
     }
 

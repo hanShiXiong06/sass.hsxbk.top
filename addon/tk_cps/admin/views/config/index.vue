@@ -30,16 +30,7 @@
         云上传小程序
       </el-button>
     </div>
-    <div class="fixed-footer-wrap">
-      <div class="fixed-footer">
-        <el-button
-          type="primary"
-          :loading="loading"
-          @click="confirm(formRef)"
-          >{{ t("confirm") }}</el-button
-        >
-      </div>
-    </div>
+    
   </div>
 </template>
 

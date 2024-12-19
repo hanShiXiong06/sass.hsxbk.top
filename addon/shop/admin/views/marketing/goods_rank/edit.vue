@@ -7,14 +7,15 @@
     <el-card class="box-card mt-[15px] !border-none" shadow="never" v-loading="loading">
       <el-form :model="formData" label-width="120px" ref="formRef" :rules="formRules" class="page-form">
         <el-form-item :label="t('rankName')" prop="name">
-          <el-input v-model.trim="formData.name" clearable :placeholder="t('ramkkNamePlaceholder')" class="input-width" maxlength="20" show-word-limit />
+          <el-input v-model.trim="formData.name" clearable :placeholder="t('rankNamePlaceholder')" class="input-width" maxlength="10" show-word-limit />
         </el-form-item>
 
         <el-form-item :label="t('rankType')" prop="rank_type">
           <el-select v-model="formData.rank_type" :placeholder="t('rankTypePlaceholder')" clearable>
             <el-option v-for="(value, key) in formList.rankTypeList" :key="key" :label="value" :value="key" />
-          </el-select></el-form-item>
-
+          </el-select>
+        </el-form-item>
+        <div class="ml-[120px] mb-[10px] text-[12px] text-[#999] leading-[20px]">{{ t('rankTypeTips') }}</div>
         <el-form-item :label="t('ruleType')" prop="rule_type">
           <el-radio-group v-model="formData.rule_type">
             <el-radio v-for="(value, key) in formList.ruleTypeList" :key="key" :label="key">{{ value }}</el-radio>
@@ -31,8 +32,8 @@
           <goods-select-popup ref="goodsSelectPopupRef" v-model="formData.goods_ids" @goodsSelect="goodsSelect" :min="1" :max="99" />
         </el-form-item>
 
-        <el-form-item v-if="formData.goods_json && formData.goods_json.length && formData.goods_source == 'goods' ">
-          <el-table :data="formData.goods_json" size="large" max-height="400">
+        <el-form-item v-if="goods_json && goods_json.length && formData.goods_source == 'goods' ">
+          <el-table :data="goods_json" size="large" max-height="400">
             <el-table-column prop="goods_id" :label="t('goodsSelectPopupGoodsInfo')" min-width="300">
               <template #default="{ row }">
                 <div class="flex items-center cursor-pointer">
@@ -60,10 +61,20 @@
               </template>
             </el-table-column>
 
-            <el-table-column prop="sort" :label="t('排序')" min-width="120" sortable="custom">
-            <template #default="{ row }">
-              <el-input v-model.number ="row.sort" class="w-[70px]" maxlength="8"  />
-            </template>
+            <el-table-column prop="sort" :label="t('sort')" min-width="120">
+                <template #header>
+                    <div style="display: inline-flex; align-items: center">
+                        <span class="mr-[5px]">{{ t('sort') }}</span>
+                        <el-tooltip class="box-item" effect="light" :content="t('sortRules')" placement="top">
+                          <el-icon color="#666">
+                              <QuestionFilled />
+                          </el-icon>
+                        </el-tooltip>
+                    </div>
+                </template>
+                <template #default="{ row }">
+                <el-input @keyup="filterNumber($event)" v-model.number ="row.sort" class="w-[70px]" maxlength="8"  />
+                </template>
           </el-table-column>
 
             <el-table-column :label="t('operation')" align="right" min-width="160">
@@ -102,16 +113,15 @@
           </div>
         </el-form-item>
 
-        <el-form-item :label="t('showGoodsNum')" prop="show_goods_num" v-if="formData.goods_source != 'goods'">
-          <el-input v-model.number="formData.show_goods_num" clearable :placeholder="t('showGoodsNumPlaceholder')" class="input-width" maxlength="20" show-word-limit />
-        </el-form-item>
-
         <el-form-item :label="t('sort')" prop="sort">
-          <el-input v-model.number="formData.sort" clearable :placeholder="t('sortPlaceholder')" class="input-width" maxlength="6" show-word-limit />
+          <el-input v-model.number="formData.sort" clearable :placeholder="t('sortPlaceholder')" class="input-width" maxlength="8" show-word-limit  @keyup="filterNumber($event)" @blur="formData.sort = $event.target.value" />
+        </el-form-item>
+        <el-form-item :label="t('isShow')" prop="status">
+            <el-switch v-model="formData.status" :active-value="1" :inactive-value="0" />
         </el-form-item>
       </el-form>
     </el-card>
-    
+
     <div class="fixed-footer-wrap">
       <div class="fixed-footer">
         <el-button type="primary" @click="save()">{{ t("save") }}</el-button>
@@ -122,7 +132,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, reactive, nextTick } from "vue";
+import { ref, computed, reactive } from "vue";
 import { t } from "@/lang";
 import { useRoute, useRouter } from "vue-router";
 import { ArrowLeft } from "@element-plus/icons-vue";
@@ -130,37 +140,37 @@ import { FormInstance, ElMessage } from "element-plus";
 import {optionData,getRankInfo,addGoodRank,editGoodRank,} from "@/addon/shop/api/marketing";
 import goodsSelectPopup from "@/addon/shop/views/goods/components/goods-select-popup.vue";
 import {getBrandList,getLabelList,getCategoryTree} from "@/addon/shop/api/goods";
-import { img ,deepClone} from "@/utils/common";
+import {img, deepClone ,filterNumber} from '@/utils/common'
 
 const router = useRouter();
 const route = useRoute();
 const loading = ref(true);
 const rank_id = route.query.rank_id;
+const goods_json = ref([]);
 const formData = reactive({
-  name: "",
-  show_goods_num: "",
-  goods_source: "goods",
-  rank_type: "",
-  sort: "",
-  rule_type: "sale",
-  category_ids: [],
-  brand_ids: [],
-  label_ids: [],
-  goods_json: <Array<any>>[],
-  goods_ids: [],
+    name: "",
+    goods_source: "all",
+    rank_type: "",
+    sort: "",
+    rule_type: "sale",
+    category_ids: [],
+    status: 1,
+    brand_ids: [],
+    label_ids: [],
+    goods_json: <Array<any>>[],
+    goods_ids: [],
 });
 
 const formList = reactive({
-  rankTypeList: [],
-  goodsSourceList: [],
-  ruleTypeList: [],
+    rankTypeList: [],
+    goodsSourceList: [],
+    ruleTypeList: [],
 });
 const formRef = ref<FormInstance>();
-
 const formRules = computed(() => {
   return {
     name: [
-      { required: true, message: t("ramkkNamePlaceholder"), trigger: "blur" },
+      { required: true, message: t("rankNamePlaceholder"), trigger: "blur" },
     ],
     rule_type: [
       {
@@ -189,23 +199,6 @@ const formRules = computed(() => {
           if (formData.goods_source === "label") {
             if (!value || value.length === 0) {
               callback(t("labelTips")); // 提示错误信息
-            } else {
-              callback(); // 校验通过
-            }
-          } else {
-            callback();
-          }
-        },
-        trigger: "change",
-      },
-    ],
-    show_goods_num: [
-      {
-        required: true,
-        validator: (rule: any, value: any, callback: any) => {
-          if (formData.goods_source != "goods") {
-            if (!value || value.length === 0) {
-              callback(t("showGoodsNumTips")); // 提示错误信息
             } else {
               callback(); // 校验通过
             }
@@ -256,7 +249,7 @@ const formRules = computed(() => {
         trigger: 'blur',
         validator: (rule: any, value: any, callback: any) => {
             if (formData.goods_source == 'goods') {
-                if (formData.goods_json.length == 0) {
+                if (goods_json.value.length == 0) {
                     callback(new Error(t('goodsJsonEmpty')))
                 } else {
                     callback()
@@ -269,97 +262,98 @@ const formRules = computed(() => {
 });
 
 const getRankDetails= () => {
-  optionData().then((res) => {
-    loading.value = false;
-    console.log(res);
-    formList.rankTypeList = res.data.rank_type;
-    formList.goodsSourceList = res.data.goods_source;
-    formList.ruleTypeList = res.data.rule_type;
-  });
-  if (rank_id) {
-    // 获取详情
-    const id = Number(rank_id);
-    getRankInfo(id).then((res) => {
-      const data = res.data;
-      if (data) {
-        Object.assign(formData, data);
-        if (formData.goods_source == 'goods') {
-          formData.goods_ids.splice(0, formData.goods_ids.length);
-          formData.goods_json.forEach((item: any) => {
-             formData.goods_ids.push( item.goods_id) 
-          })
+    optionData().then((res) => {
+        loading.value = false;
+        formList.rankTypeList = res.data.rank_type;
+        formList.goodsSourceList = res.data.goods_source;
+        formList.ruleTypeList = res.data.rule_type;
+    });
+    if (rank_id) {
+        // 获取详情
+        loading.value = true;
+        const id = Number(rank_id);
+        getRankInfo(id).then((res) => {
+        const data = res.data;
+        if (data) {
+            Object.assign(formData, data);
+            if (formData.goods_source == 'goods') {
+            formData.goods_ids.splice(0, formData.goods_ids.length);
+            formData.goods_json.forEach((item: any) => {
+                formData.goods_ids.push( item.goods_id)
+            })
+
+            }
+            goods_json.value = data.goods_list.map((item: any) => {
+            return {
+                goods_id: item.goods_id,
+                sort: item.sort,
+                price:item.goodsSku.price,
+                goods_type_name: item.goods_type_name,
+                goods_name: item.goods_name,
+                goods_image: item.goodsSku.sku_image,
+            };
+            });
+            loading.value = false;
 
         }
-        formData.goods_json = data.goods_list.map((item: any) => {
-          return {
-            goods_id: item.goods_id,   
-            sort: item.sort,                  
-            price:item.goodsSku.price,  
-            goods_type_name: item.goods_type_name,
-            goods_name: item.goods_name,
-            goods_image: item.goodsSku.sku_image,
-          };
-        });
-  
-      }
-    })
-  }
+        })
+    }
 };
 getRankDetails();
 
 // 商品分类
 const goodsCategoryOptions = reactive([]);
 const goodsCategoryProps = {
-  multiple: true,
+     multiple: true,
 };
 
 const categoryHandleChange = (value: any) => {
-  console.log(value, formData.category_ids, formData.category_ids.toString());
+    console.log(value, formData.category_ids, formData.category_ids.toString());
 };
 
 // 跳转到商品分类，添加分类
 const toGoodsCategoryEvent = () => {
-  const url = router.resolve({
-    path: "/shop/goods/category",
-  });
-  window.open(url.href);
+    const url = router.resolve({
+        path: "/shop/goods/category",
+    });
+    window.open(url.href);
 };
 
 // 刷新商品分类
 const refreshGoodsCategory = (bool = false) => {
-  getCategoryTree().then((res) => {
-    const data = res.data;
-    if (data) {
-      const goodsCategoryTree: any = [];
-      data.forEach((item: any) => {
-        const children: any = [];
-        if (item.child_list) {
-          item.child_list.forEach((childItem: any) => {
-            children.push({
-              value: childItem.category_id,
-              label: childItem.category_name,
+    getCategoryTree().then((res) => {
+        const data = res.data;
+        if (data) {
+        const goodsCategoryTree: any = [];
+        data.forEach((item: any) => {
+            const children: any = [];
+            if (item.child_list) {
+            item.child_list.forEach((childItem: any) => {
+                children.push({
+                value: childItem.category_id,
+                label: childItem.category_name,
+                });
             });
-          });
+            }
+            goodsCategoryTree.push({
+            value: item.category_id,
+            label: item.category_name,
+            children,
+            });
+        });
+        goodsCategoryOptions.splice(
+            0,
+            goodsCategoryOptions.length,
+            ...goodsCategoryTree
+        );
+        if (bool) {
+            ElMessage({
+            message: t("refreshSuccess"),
+            type: "success",
+            });
         }
-        goodsCategoryTree.push({
-          value: item.category_id,
-          label: item.category_name,
-          children,
-        });
-      });
-      goodsCategoryOptions.splice(
-        0,
-        goodsCategoryOptions.length,
-        ...goodsCategoryTree
-      );
-      if (bool) {
-        goodsCategoryTree({
-          message: t("refreshSuccess"),
-          type: "success",
-        });
-      }
-    }
-  });
+        }
+    });
 };
 
 refreshGoodsCategory();
@@ -369,26 +363,26 @@ const brandOptions = reactive([]);
 
 // 跳转到商品品牌，添加品牌
 const toGoodsBrandEvent = () => {
-  const url = router.resolve({
-    path: "/shop/goods/brand",
-  });
-  window.open(url.href);
+    const url = router.resolve({
+        path: "/shop/goods/brand",
+    });
+    window.open(url.href);
 };
 
 // 商品品牌
 const refreshGoodsBrand = (bool = false) => {
-  getBrandList({}).then((res) => {
-    const data = res.data;
-    if (data) {
-      brandOptions.splice(0, brandOptions.length, ...data);
-      if (bool) {
-        ElMessage({
-          message: t("refreshSuccess"),
-          type: "success",
-        });
-      }
-    }
-  });
+    getBrandList({}).then((res) => {
+        const data = res.data;
+        if (data) {
+        brandOptions.splice(0, brandOptions.length, ...data);
+        if (bool) {
+            ElMessage({
+            message: t("refreshSuccess"),
+            type: "success",
+            });
+        }
+        }
+    });
 };
 
 refreshGoodsBrand();
@@ -398,122 +392,120 @@ const labelOptions = reactive([]);
 
 // 跳转到商品标签，添加标签
 const toGoodsLabelEvent = () => {
-  const url = router.resolve({
-    path: "/shop/goods/label",
-  });
-  window.open(url.href);
+    const url = router.resolve({
+        path: "/shop/goods/label",
+    });
+    window.open(url.href);
 };
 
 // 商品标签
-const refreshGoodsLabel = () => {
-  getLabelList({}).then((res) => {
-    const data = res.data;
-    if (data) {
-      labelOptions.splice(0, labelOptions.length, ...data);
-    }
-  });
+const refreshGoodsLabel = (bool = false) => {
+    getLabelList({}).then((res) => {
+        const data = res.data;
+        if (data) {
+        labelOptions.splice(0, labelOptions.length, ...data);
+        if (bool) {
+            ElMessage({
+            message: t("refreshSuccess"),
+            type: "success",
+            });
+        }
+        }
+    });
 };
 
 refreshGoodsLabel();
 
 //选择商品
 const goodsSelect = (value: any) => {
-  let arr = [...formData.goods_json]; 
-  const existingSorts = arr.map((el: any) => el.sort).sort((a, b) => a - b);
-  for (let key in value) {
-    let goods_sku: any = value[key];
-    let sku: any = {
-      goods_id: goods_sku.goods_id,
-      price: goods_sku.goodsSku.price,
-      goods_type_name: goods_sku.goods_type_name,
-      goods_image: goods_sku.goods_cover,
-      goods_name: goods_sku.goods_name,
-    };
-
-    const existingIndex = arr.findIndex((el: any) => el.goods_id == sku.goods_id);
-    if (existingIndex !== -1) {
-      arr[existingIndex] = { ...arr[existingIndex], ...sku };
-    } else {
-      let newSort = 1;
-      while (existingSorts.includes(newSort)) {
-        newSort++;  
-      }
-      sku.sort = newSort;
-      arr.push(deepClone(sku));  
-      existingSorts.push(newSort);
-      existingSorts.sort((a, b) => a - b);  
+    let arr = [];
+    for (let key in value) {
+        let goods_sku: any = value[key];
+        let sku: any = {
+            goods_id: goods_sku.goods_id,
+            price: goods_sku.goodsSku.price,
+            goods_type_name: goods_sku.goods_type_name,
+            goods_image: goods_sku.goods_cover,
+            goods_name: goods_sku.goods_name,
+        };
+    if (goods_json.value.length) {
+        goods_json.value.forEach((el: any) => {
+            if (el.goods_id == sku.goods_id) {
+                sku = Object.assign(sku, el)
+            }
+        })
     }
-  }
-
-  formData.goods_json = arr.sort((a: any, b: any) => a.sort - b.sort);
+        arr.push(deepClone(sku))
+    }
+    goods_json.value = arr;
 };
-
 
 // 删除商品
 const deleteGoodsEvent = (row: any, index: any) => {
-  formData.goods_json.splice(index, 1);
-  formData.goods_ids.splice(formData.goods_ids.indexOf(row.goods_id), 1);
+    goods_json.value.splice(index, 1);
+    formData.goods_ids.splice(formData.goods_ids.indexOf(row.goods_id), 1);
 };
-
 
 const preventDuplication = ref(false);
 const save = async () => {
-  // 触发表单校验
-  if (preventDuplication.value) return;
-  await formRef.value?.validate(async (valid) => {
-    if (valid) {
-      formData.goods_json = formData.goods_json.map((item: any) => {
-        return {
-          goods_id: item.goods_id,  // 保留 goods_id
-          sort: item.sort,          // 保留 sort 排序号
-        };
-      });
-      const goodsCategory:any = []
-      formData.category_ids.forEach((item:any)=>{
-        if (typeof item == 'object'){
-          item.forEach((second:any)=>{
-            if(goodsCategory.indexOf(second) == -1){
-              goodsCategory.push(second)
-            }
-          })
-        }else{
-          if(goodsCategory.indexOf(item) == -1){
-              goodsCategory.push(item)
-            }
-        }
-      })
-      formData.category_ids = goodsCategory
+    // 触发表单校验
+    if (preventDuplication.value) return;
 
-      preventDuplication.value = true;    
-      if (rank_id) {
-        formData.id = rank_id; // 将 rank_id 拼接到 dataToSubmit 中
-        editGoodRank(formData).then((res) => {
-            preventDuplication.value = false;
-            if (res.data) {
-              router.push("/shop/marketing/goods_rank/list");
-            }
-          }).catch(() => {
-            preventDuplication.value = false;
-          });
-      } else {
-        addGoodRank(formData).then((res) => {
-            preventDuplication.value = false;
-            if (res.data) {
-              router.push("/shop/marketing/goods_rank/list");
-            }
-          }).catch(() => {
-            preventDuplication.value = false;
-          });
-      }
-    } else {
-      preventDuplication.value = false;
-    }
-  });
+    await formRef.value?.validate(async (valid) => {
+        if (valid) {
+            loading.value = true
+        formData.goods_json = goods_json.value.map((item: any) => {
+            return {
+            goods_id: item.goods_id,  // 保留 goods_id
+            sort: item.sort,          // 保留 sort 排序号
+            };
+        });
+
+        const goodsCategory:any = []
+        formData.category_ids.forEach((item: any) => {
+        if (Array.isArray(item) && item.length === 2) {
+            goodsCategory.push(item[1]);
+        } else if(Array.isArray(item) && item.length === 1) {
+            goodsCategory.push(item[0]);
+        }else{
+            goodsCategory.push(item);
+        }
+    });
+        formData.category_ids = goodsCategory
+        if (rank_id) {
+            formData.id = rank_id; // 将 rank_id 拼接到 dataToSubmit 中
+            editGoodRank(formData).then((res) => {
+                loading.value = false
+                preventDuplication.value = false;
+                if (res.data) {
+                    router.push("/shop/marketing/goods_rank/list");
+                }
+            }).catch(() => {
+                loading.value = false;
+                preventDuplication.value = false;
+            });
+        } else {
+            addGoodRank(formData).then((res) => {
+                loading.value = false
+                preventDuplication.value = false;
+                if (res.data) {
+                    router.push("/shop/marketing/goods_rank/list");
+                }
+            }).catch(() => {
+                loading.value = false;
+                preventDuplication.value = false;
+            });
+        }
+        } else {
+        preventDuplication.value = false;
+        }
+    });
 };
 
 const back = () => {
-  router.back();
+  router.push('/shop/marketing/goods_rank/list')
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+</style>

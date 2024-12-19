@@ -5,10 +5,12 @@ namespace addon\fast_pay\app\service\core\pay;
 use addon\fast_pay\app\service\core\partner\CorePayEventService;
 use addon\fast_pay\app\service\core\partner\CorePayService;
 use addon\fast_pay\app\service\core\partner\CoreRefundService;
+use app\dict\pay\OnlinePayDict;
+use app\dict\pay\PayDict;
 use app\model\pay\Refund;
 use core\base\BaseCoreService;
+use core\exception\PayException;
 use Exception;
-use think\facade\Log;
 use app\model\pay\Pay;
 class CorePartnerWechatpay extends BaseCoreService {
 
@@ -35,8 +37,40 @@ class CorePartnerWechatpay extends BaseCoreService {
      * 关闭支付
      * @return true
      */
-    public function close($params) {
-        (new CorePayService())->close( $params['out_trade_no']);
+    public function close($out_trade_no) {
+        $payModel=new Pay();
+        $pay=$payModel->where(['out_trade_no'=>$out_trade_no])->append(['type_name', 'status_name'])->findOrEmpty();
+        if ($pay->isEmpty()) throw new PayException('ALIPAY_TRANSACTION_NO_NOT_EXIST');
+        if($pay['status'] == PayDict::STATUS_CANCLE) return true;
+
+        if (!in_array($pay['status'], [
+            PayDict::STATUS_WAIT,
+            PayDict::STATUS_ING
+        ])) throw new PayException('TREAT_PAYMENT_IS_OPEN');
+        $site_id=$pay['site_id'];
+        if ($pay['status'] == PayDict::STATUS_ING) {
+            if (!empty($pay->type)) {
+                //尝试取消或关闭第三方支付
+                $close = (new CorePayEventService())->init($site_id, $pay->channel, $pay->type)->close($out_trade_no);
+                if (!$close) {//有问题查询第三方订单详情
+                    $order = (new CorePayEventService())->init($site_id, $pay->channel, $pay->type)->getOrder($out_trade_no);
+                    if (!empty($order)) {
+                        if ($order['status'] == OnlinePayDict::SUCCESS) {//如果已支付,就将支付调整为已支付
+                            (new CorePayService())->paySuccess($site_id, [
+                                'out_trade_no' => $out_trade_no,
+                                'type' => $pay->type
+                            ]);
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        //支付关闭
+        (new CorePayService())->payClose($site_id, [
+            'out_trade_no' => $out_trade_no
+        ]);
+        return true;
         return  true;
     }
 

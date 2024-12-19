@@ -11,6 +11,7 @@
 
 namespace addon\shop_fenxiao\app\service\admin\fenxiao;
 
+use addon\shop_fenxiao\app\dict\fenxiao\FenxiaoGoodsDict;
 use addon\shop_fenxiao\app\model\fenxiao\FenxiaoGoods;
 use addon\shop_fenxiao\app\model\fenxiao\FenxiaoLevel;
 use addon\shop_fenxiao\app\model\fenxiao\Goods;
@@ -43,6 +44,7 @@ class FenxiaoGoodsService extends BaseAdminService
         $sku_where = [
             ['goodsSku.is_default', '=', 1],
             ['goods.site_id', '=', $this->site_id],
+            ['goods.is_gift', '=', FenxiaoGoodsDict::NOT_IS_GIFT],
             ['status', '=', 1]
         ];
 

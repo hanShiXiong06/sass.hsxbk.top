@@ -51,7 +51,7 @@ class CoreRechargeRefundService extends BaseCoreService
         if (empty($order)) throw new CommonException('ORDER_NOT_EXIST');
         if (!$order[ 'ordermain' ][ 'is_enable_refund' ]) throw new CommonException('NOT_ALLOW_APPLY_REFUND');
         if ($order[ 'ordermain' ][ 'order_status' ] != RechargeOrderDict::FINISH) throw new CommonException('ORDER_UNPAID_NOT_ALLOW_APPLY_REFUND');
-        if ($order[ 'refund_status' ] != RechargeOrderDict::NOT_APPLAY) throw new CommonException('REFUND_HAD_APPLIED');
+        if ($order[ 'refund_status' ] != RechargeOrderDict::NOT_APPLY) throw new CommonException('REFUND_HAD_APPLIED');
 
         Db::startTrans();
         try {

@@ -11,6 +11,9 @@ import request from '@/utils/request'
 export function getConfig() {
     return request.get(`tk_vip/config/getconfig`)
 }
+export function getRealConfig() {
+    return request.get(`tk_vip/config/getrealconfig`)
+}
 /**
  * 设置配置
  * @param params
@@ -19,4 +22,6 @@ export function getConfig() {
 export function setConfig(params: Record<string, any>) {
     return request.post(`tk_vip/config/setconfig`, params, { showErrorMessage: true, showSuccessMessage: true })
 }
-
+export function setRealConfig(params: Record<string, any>) {
+    return request.post(`tk_vip/config/setrealconfig`, params, { showErrorMessage: true, showSuccessMessage: true })
+}

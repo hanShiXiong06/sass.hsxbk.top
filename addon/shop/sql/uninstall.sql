@@ -53,7 +53,7 @@ DROP TABLE IF EXISTS `{{prefix}}shop_manjian`;
 
 DROP TABLE IF EXISTS `{{prefix}}shop_manjian_goods`;
 
-DROP TABLE IF EXISTS `{{prefix}}shop_manjian_record`;
+DROP TABLE IF EXISTS `{{prefix}}shop_manjian_give_records`;
 
 DROP TABLE IF EXISTS `{{prefix}}shop_newcomer_member_records`;
 

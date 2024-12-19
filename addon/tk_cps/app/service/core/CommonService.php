@@ -149,7 +149,16 @@ class CommonService extends BaseAdminService
         $wap_url = (new CoreSysConfigService())->getSceneDomain($site_id)['wap_url'];
         return $wap_url;
     }
-
+    public function getDomainUrl(){
+        $isSecure = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on';
+        $domain = $_SERVER['HTTP_HOST'];
+        if ($isSecure) {
+            $url = 'https://' . $domain;
+        } else {
+            $url = 'http://' . $domain;
+        }
+        return $url;
+    }
     /**
      * @Notes:获取字典名称
      * @Interface getDictName

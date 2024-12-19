@@ -95,6 +95,7 @@ return [
                             "both" => 0
                         ],
                         "imageHeight" => 172,
+                        "isSameScreen"=> false,
                         "list" => [
                             [
                                 "link" => [

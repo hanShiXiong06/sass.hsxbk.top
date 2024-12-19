@@ -3,7 +3,7 @@
 
         <!--返回-->
         <el-card class="card !border-none" shadow="never">
-            <el-page-header :content="pageName" :icon="ArrowLeft" @back="$router.back()" />
+            <el-page-header :content="pageName" :icon="ArrowLeft" @back="back()" />
         </el-card>
         <!--返回 end-->
 
@@ -266,6 +266,10 @@ import { ArrowLeft } from '@element-plus/icons-vue'
 const route = useRoute()
 const router = useRouter()
 const pageName = route.meta.title
+
+const back = () => {
+    router.push('/shop_fenxiao/lists')
+}
 
 const formData: any = ref({})
 const loading = ref<boolean>(false)

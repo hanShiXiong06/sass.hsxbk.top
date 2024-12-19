@@ -11,9 +11,11 @@
 
 namespace addon\tk_cps\app\service\admin\actorder;
 
+use addon\tk_cps\app\job\v2\AsyncOrderSite;
 use addon\tk_cps\app\model\actorder\Actorder;
-
 use core\base\BaseAdminService;
+use think\Exception;
+use think\facade\Cache;
 
 
 /**
@@ -29,6 +31,17 @@ class ActorderService extends BaseAdminService
         $this->model = new Actorder();
     }
 
+    public function asyncOrder()
+    {
+        $key = Cache::get($this->site_id . 'async_cps_order_bwc', '');
+        if ($key == '') {
+            AsyncOrderSite::dispatch(['site_id' => $this->site_id]);
+            Cache::set($this->site_id . 'async_cps_order_bwc', '正在同步站点订单', 60 * 3);
+        } else {
+            throw new Exception('操作过于频繁，请3分钟后再试');
+        }
+    }
+
     /**
      * 获取CPS活动订单列表
      * @param array $where
@@ -39,7 +52,7 @@ class ActorderService extends BaseAdminService
         $field = 'id,sid,site_id,member_id,name,chanel,order_id,pay_money,rate,commission,status,status_name,jl_js,pt_js,create_time,pay_time';
         $order = 'create_time desc';
 
-         $search_model = $this->model->where([ [ 'site_id' ,"=", $this->site_id ] ])->withSearch(["sid","order_id","jl_js","pt_js","create_time"], $where)->field($field)->order($order);;
+        $search_model = $this->model->where([['site_id', "=", $this->site_id]])->withSearch(["sid", "order_id", "jl_js", "pt_js", "create_time"], $where)->field($field)->order($order);;
         $list = $this->pageQuery($search_model);
         return $list;
     }
@@ -79,7 +92,7 @@ class ActorderService extends BaseAdminService
     public function edit(int $id, array $data)
     {
 
-        $this->model->where([['id', '=', $id],['site_id', '=', $this->site_id]])->update($data);
+        $this->model->where([['id', '=', $id], ['site_id', '=', $this->site_id]])->update($data);
         return true;
     }
 
@@ -90,9 +103,9 @@ class ActorderService extends BaseAdminService
      */
     public function del(int $id)
     {
-        $model = $this->model->where([['id', '=', $id],['site_id', '=', $this->site_id]])->find();
+        $model = $this->model->where([['id', '=', $id], ['site_id', '=', $this->site_id]])->find();
         $res = $model->delete();
         return $res;
     }
-    
+
 }

@@ -1,6 +1,6 @@
 
-DROP TABLE IF EXISTS `sass_shop_goods_browse`;
-CREATE TABLE `sass_shop_goods_browse` (
+DROP TABLE IF EXISTS `shop_goods_browse`;
+CREATE TABLE `shop_goods_browse` (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
   `site_id` int NOT NULL DEFAULT 0,
   `member_id` int NOT NULL DEFAULT 0 COMMENT '浏览人',
@@ -12,44 +12,45 @@ CREATE TABLE `sass_shop_goods_browse` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci COMMENT='商品浏览历史';
 
-ALTER TABLE `sass_shop_order_goods` ADD COLUMN `sass_shop_active_refund` TINYINT(4) NOT NULL DEFAULT 0 COMMENT '商家主动退款（0否  1是）';
+ALTER TABLE `shop_order_goods` ADD COLUMN `shop_active_refund` TINYINT(4) NOT NULL DEFAULT 0 COMMENT '商家主动退款（0否  1是）';
 
-ALTER TABLE `sass_shop_order_goods` ADD COLUMN `sass_shop_active_refund_money` DECIMAL(10, 2) NOT NULL DEFAULT 0.00 COMMENT '商家主动退款金额';
+ALTER TABLE `shop_order_goods` ADD COLUMN `shop_active_refund_money` DECIMAL(10, 2) NOT NULL DEFAULT 0.00 COMMENT '商家主动退款金额';
 
-ALTER TABLE `sass_shop_goods` ADD COLUMN `is_limit` TINYINT(4) NOT NULL DEFAULT 0 COMMENT '商品是否限购(0:否 1:是)';
+ALTER TABLE `shop_goods` ADD COLUMN `is_limit` TINYINT(4) NOT NULL DEFAULT 0 COMMENT '商品是否限购(0:否 1:是)';
 
-ALTER TABLE `sass_shop_goods` ADD COLUMN `limit_type` TINYINT(4) NOT NULL DEFAULT 1 COMMENT '限购类型，1：单次限购，2：单人限购';
+ALTER TABLE `shop_goods` ADD COLUMN `limit_type` TINYINT(4) NOT NULL DEFAULT 1 COMMENT '限购类型，1：单次限购，2：单人限购';
 
-ALTER TABLE `sass_shop_goods` ADD COLUMN `max_buy` INT(11) NOT NULL DEFAULT 0 COMMENT '限购数';
+ALTER TABLE `shop_goods` ADD COLUMN `max_buy` INT(11) NOT NULL DEFAULT 0 COMMENT '限购数';
 
-ALTER TABLE `sass_shop_goods` ADD COLUMN `min_buy` INT(11) NOT NULL DEFAULT 0 COMMENT '起购数';
+ALTER TABLE `shop_goods` ADD COLUMN `min_buy` INT(11) NOT NULL DEFAULT 0 COMMENT '起购数';
 
-ALTER TABLE `sass_shop_goods` ADD COLUMN `is_gift` TINYINT(4) NOT NULL DEFAULT 0 COMMENT '商品是否赠品(0:否 1:是)';
+ALTER TABLE `shop_goods` ADD COLUMN `is_gift` TINYINT(4) NOT NULL DEFAULT 0 COMMENT '商品是否赠品(0:否 1:是)';
 
-ALTER TABLE `sass_shop_goods` ADD COLUMN `access_num` INT(11) NOT NULL DEFAULT 0 COMMENT '访问次数（浏览量）';
+ALTER TABLE `shop_goods` ADD COLUMN `access_num` INT(11) NOT NULL DEFAULT 0 COMMENT '访问次数（浏览量）';
 
-ALTER TABLE `sass_shop_goods` ADD COLUMN `cart_num` INT(11) NOT NULL DEFAULT 0 COMMENT '加入购物车数量';
+ALTER TABLE `shop_goods` ADD COLUMN `cart_num` INT(11) NOT NULL DEFAULT 0 COMMENT '加入购物车数量';
 
-ALTER TABLE `sass_shop_goods` ADD COLUMN `pay_num` INT(11) NOT NULL DEFAULT 0 COMMENT '支付件数';
+ALTER TABLE `shop_goods` ADD COLUMN `pay_num` INT(11) NOT NULL DEFAULT 0 COMMENT '支付件数';
 
-ALTER TABLE `sass_shop_goods` ADD COLUMN `pay_money` DECIMAL(10, 2) NOT NULL DEFAULT 0.00 COMMENT '支付总金额';
+ALTER TABLE `shop_goods` ADD COLUMN `pay_money` DECIMAL(10, 2) NOT NULL DEFAULT 0.00 COMMENT '支付总金额';
 
-ALTER TABLE `sass_shop_goods` ADD COLUMN `collect_num` INT(11) NOT NULL DEFAULT 0 COMMENT '收藏数量';
+ALTER TABLE `shop_goods` ADD COLUMN `collect_num` INT(11) NOT NULL DEFAULT 0 COMMENT '收藏数量';
 
-ALTER TABLE `sass_shop_goods` ADD COLUMN `evaluate_num` INT(11) NOT NULL DEFAULT 0 COMMENT '评论数量';
+ALTER TABLE `shop_goods` ADD COLUMN `evaluate_num` INT(11) NOT NULL DEFAULT 0 COMMENT '评论数量';
 
-ALTER TABLE `sass_shop_goods` ADD COLUMN `refund_num` INT(11) NOT NULL DEFAULT 0 COMMENT '退款件数';
+ALTER TABLE `shop_goods` ADD COLUMN `refund_num` INT(11) NOT NULL DEFAULT 0 COMMENT '退款件数';
 
-ALTER TABLE `sass_shop_goods` ADD COLUMN `refund_money` DECIMAL(10, 2) NOT NULL DEFAULT 0.00 COMMENT '退款总额';
+ALTER TABLE `shop_goods` ADD COLUMN `refund_money` DECIMAL(10, 2) NOT NULL DEFAULT 0.00 COMMENT '退款总额';
 
-ALTER TABLE `sass_shop_goods` MODIFY `create_time` INT(11) NOT NULL DEFAULT 0 COMMENT '创建时间' AFTER `refund_money`;
+ALTER TABLE `shop_goods` MODIFY `create_time` INT(11) NOT NULL DEFAULT 0 COMMENT '创建时间' AFTER `refund_money`;
 
-ALTER TABLE `sass_shop_goods` MODIFY `update_time` INT(11) NOT NULL DEFAULT 0 COMMENT '修改时间' AFTER `create_time`;
+ALTER TABLE `shop_goods` MODIFY `update_time` INT(11) NOT NULL DEFAULT 0 COMMENT '修改时间' AFTER `create_time`;
 
-ALTER TABLE `sass_shop_goods` MODIFY `delete_time` INT(11) NOT NULL DEFAULT 0 COMMENT '删除时间' AFTER `update_time`;
+ALTER TABLE `shop_goods` MODIFY `delete_time` INT(11) NOT NULL DEFAULT 0 COMMENT '删除时间' AFTER `update_time`;
 
-DROP TABLE IF EXISTS `sass_shop_manjian_record`;
-CREATE TABLE `sass_shop_manjian_record` (
+
+DROP TABLE IF EXISTS `shop_manjian_give_records`;
+CREATE TABLE `shop_manjian_give_records` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `site_id` INT(11) NOT NULL DEFAULT 0 COMMENT '站点id',
   `manjian_id` INT(11) NOT NULL DEFAULT 0 COMMENT '满减送活动id',
@@ -61,8 +62,8 @@ CREATE TABLE `sass_shop_manjian_record` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci COMMENT='满减送记录表';
 
 
-DROP TABLE IF EXISTS `sass_shop_manjian_goods`;
-CREATE TABLE `sass_shop_manjian_goods` (
+DROP TABLE IF EXISTS `shop_manjian_goods`;
+CREATE TABLE `shop_manjian_goods` (
   `manjian_goods_id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '满减商品活动id',
   `manjian_id` INT(11) NOT NULL DEFAULT 0 COMMENT '满减活动id',
   `site_id` INT(11) NOT NULL DEFAULT 0 COMMENT '站点id',
@@ -77,8 +78,8 @@ CREATE TABLE `sass_shop_manjian_goods` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci COMMENT='满减商品表';
 
 
-DROP TABLE IF EXISTS `sass_shop_manjian`;
-CREATE TABLE `sass_shop_manjian` (
+DROP TABLE IF EXISTS `shop_manjian`;
+CREATE TABLE `shop_manjian` (
   `manjian_id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '满减活动id',
   `site_id` INT(11) NOT NULL DEFAULT 0 COMMENT '站点id',
   `manjian_name` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '名称',
@@ -107,8 +108,8 @@ CREATE TABLE `sass_shop_manjian` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci COMMENT='满减活动表';
 
 
-DROP TABLE IF EXISTS `sass_shop_goods_stat`;
-CREATE TABLE `sass_shop_goods_stat` (
+DROP TABLE IF EXISTS `shop_goods_stat`;
+CREATE TABLE `shop_goods_stat` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `site_id` INT(11) NOT NULL DEFAULT 0 COMMENT '站点id',
   `date` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '日期',
@@ -128,8 +129,8 @@ CREATE TABLE `sass_shop_goods_stat` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci COMMENT='商品数据统计';
 
 
-DROP TABLE IF EXISTS `sass_shop_goods_rank`;
-CREATE TABLE `sass_shop_goods_rank` (
+DROP TABLE IF EXISTS `shop_goods_rank`;
+CREATE TABLE `shop_goods_rank` (
   `rank_id` INT(11) NOT NULL AUTO_INCREMENT,
   `site_id` INT(11) NOT NULL DEFAULT 0 COMMENT '站点id',
   `name` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '榜单名称',

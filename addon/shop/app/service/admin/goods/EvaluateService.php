@@ -102,10 +102,11 @@ class EvaluateService extends BaseAdminService
     public function del(int $evaluate_id)
     {
         $model = $this->model->where([ [ 'evaluate_id', '=', $evaluate_id ], [ 'site_id', '=', $this->site_id ] ])->find();
+        if (empty($model))return false;
         $res = $model->delete();
 
-        CoreGoodsStatService::addStat(['site_id' => $this->site_id, 'goods_id' => $model->goods_id, 'evaluate_num' => -1]);
-        (new Goods())->where([['goods_id', '=', $model->goods_id]])->dec('evaluate_num', 1) ->update();
+        CoreGoodsStatService::addStat([ 'site_id' => $this->site_id, 'goods_id' => $model->goods_id, 'evaluate_num' => -1 ]);
+        ( new Goods() )->where([ [ 'goods_id', '=', $model->goods_id ] ])->dec('evaluate_num', 1)->update();
         return $res;
     }
 
@@ -118,9 +119,10 @@ class EvaluateService extends BaseAdminService
     {
         $this->model->where([ [ 'evaluate_id', '=', $evaluate_id ], [ 'site_id', '=', $this->site_id ] ])->update([ 'is_audit' => EvaluateDict::AUDIT_ADOPT ]);
 
-        $goods_id = $this->model->where( 'evaluate_id', '=', $evaluate_id )->value('goods_id');
-        CoreGoodsStatService::addStat(['site_id' => $this->site_id, 'goods_id' => $goods_id, 'evaluate_num' => 1]);
-        (new Goods())->where([['goods_id', '=', $goods_id]])->inc('evaluate_num', 1) ->update();
+        $goods_id = $this->model->where('evaluate_id', '=', $evaluate_id)->value('goods_id');
+        if (empty($goods_id)) return false;
+        CoreGoodsStatService::addStat([ 'site_id' => $this->site_id, 'goods_id' => $goods_id, 'evaluate_num' => 1 ]);
+        ( new Goods() )->where([ [ 'goods_id', '=', $goods_id ] ])->inc('evaluate_num', 1)->update();
         return true;
     }
 
@@ -184,7 +186,7 @@ class EvaluateService extends BaseAdminService
         // 查询待审核的id
         $evaluate_ids = $this->model->where([ [ 'is_audit', '=', EvaluateDict::AUDIT ], [ 'site_id', '=', $this->site_id ] ])->column('evaluate_id');
         if (!empty($evaluate_ids)) {
-            GoodsEvaluateStat::dispatch(['evaluate_ids' => $evaluate_ids]);
+            GoodsEvaluateStat::dispatch([ 'evaluate_ids' => $evaluate_ids ]);
         }
 
         $this->model->where([ [ 'is_audit', '=', EvaluateDict::AUDIT ], [ 'site_id', '=', $this->site_id ] ])->update([ 'is_audit' => EvaluateDict::AUDIT_NO ]);
@@ -197,11 +199,13 @@ class EvaluateService extends BaseAdminService
      */
     public function updateGoodsEvaluateNumBach($evaluate_ids)
     {
-//        var_dump($evaluate_ids);die();
-        $list = $this->model->where([ [ 'evaluate_id', 'in', $evaluate_ids ], [ 'site_id', '=', $this->site_id ] ])->chunk(50, function ($evaluate) {
+        $list = $this->model->where([ [ 'evaluate_id', 'in', $evaluate_ids ], [ 'site_id', '=', $this->site_id ] ])->chunk(50, function($evaluate) {
             foreach ($evaluate as $item) {
-                CoreGoodsStatService::addStat(['site_id' => $this->site_id, 'goods_id' => $item['goods_id'], 'evaluate_num' => 1]);
-                (new Goods())->where([['goods_id', '=', $item['goods_id']]])->inc('evaluate_num', 1) ->update();
+                $goods_id = $this->model->where('goods_id', '=',  $item[ 'goods_id' ])->value('goods_id');
+                if (!empty($goods_id)){
+                    CoreGoodsStatService::addStat([ 'site_id' => $this->site_id, 'goods_id' => $item[ 'goods_id' ], 'evaluate_num' => 1 ]);
+                    ( new Goods() )->where([ [ 'goods_id', '=', $item[ 'goods_id' ] ] ])->inc('evaluate_num', 1)->update();
+                }
             }
         });
         return true;

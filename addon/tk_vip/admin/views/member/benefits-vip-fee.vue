@@ -13,6 +13,19 @@
           <span class="ml-[10px] el-form-item__label">付费升级</span>
         </div>
         <div class="" v-show="formData.is_use">
+          <div class="flex items-center">
+            <span class="ml-[10px] el-form-item__label"
+              >实名认证
+              <span class="text-red-500">*</span>
+            </span>
+            <el-radio-group v-model="formData.is_real">
+              <el-radio :label="'0'">不需要</el-radio>
+              <el-radio :label="'1'">需要</el-radio>
+            </el-radio-group>
+            <span class="ml-2 text-gray-400" v-if="formData.is_real == 1"
+              >需在插件实名认证配置里面开启才会生效</span
+            >
+          </div>
           <div>
             <el-button @click="addSpec()" type="primary">添加规格</el-button>
           </div>
@@ -134,6 +147,7 @@ const emits = defineEmits(["update:modelValue"]);
 const formData = ref({
   is_use: 0,
   fee_info: [],
+  is_real: 0, //是否需要实名认证
 });
 
 const formRef = ref(null);

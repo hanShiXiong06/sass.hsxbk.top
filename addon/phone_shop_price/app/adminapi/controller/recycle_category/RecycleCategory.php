@@ -55,7 +55,6 @@ class RecycleCategory extends BaseAdminController
      */
     public function tree()
     {
-      
         return success(( new RecycleCategoryService() )->getTree());
     }
 

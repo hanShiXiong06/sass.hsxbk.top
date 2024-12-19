@@ -626,6 +626,7 @@ Route::group('phone_shop', function () {
     Route::put('site/:id', 'addon\phone_shop\app\adminapi\controller\site\Site@edit');
     //删除站点(二手)管理
     Route::delete('site/:id', 'addon\phone_shop\app\adminapi\controller\site\Site@del');
+    Route::get('site/status', 'addon\phone_shop\app\adminapi\controller\site\Site@getStatus');
     
 })->middleware([
     AdminCheckToken::class,

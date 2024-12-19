@@ -20,7 +20,7 @@ return [
                     "imgWidth" => 0,
                     "imgHeight" => 0,
                     "topStatusBar" => [
-                        'isShow' => true,
+                        'isShow' => false,
                         'bgColor' => "#ffffff",
                         'rollBgColor' => "#ffffff",
                         'style' => 'style-1',
@@ -80,15 +80,16 @@ return [
                         "componentStartBgColor" => "",
                         "componentTitle" => "图片广告",
                         "elementBgColor" =>  "",
-                        "ignore" => [],
-                        "imageHeight" => 178,
+                        "ignore" => ['componentBgUrl'],
+                        "imageHeight" => 245,
+                        "isSameScreen"=> true,
                         "list" => [
                             [
-                                "height" => 178.6,
+                                "height" => 245,
                                 "id" => "65b199iieuo0",
-                                "imageUrl" => "addon/shop_fenxiao/banner_zone.png",
-                                "imgHeight" => 300,
-                                "imgWidth" => 630,
+                                "imageUrl" => "addon/shop_fenxiao/banner_zone.jpg",
+                                "imgHeight" => 490,
+                                "imgWidth" => 750,
                                 "link" => [
                                     "name" => ""
                                 ],
@@ -120,10 +121,10 @@ return [
                         "topRounded" => 8,
                         "bottomRounded" => 8,
                         "elementBgColor" => "",
-                        "topElementRounded" => 0,
-                        "bottomElementRounded" => 0,
+                        "topElementRounded" => 10,
+                        "bottomElementRounded" => 10,
                         "margin" => [
-                            "top" => -35,
+                            "top" => 0,
                             "bottom" => 0,
                             "both" => 0
                         ],

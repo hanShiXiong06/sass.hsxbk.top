@@ -45,7 +45,7 @@ class OrderService extends BaseApiService
     {
         $orderModel = new OrderAdd();
         $res = $orderModel->where([['order_status', '=', JhkdOrderAddDict::WAIT_PAY]])
-            ->where(['member_id'=>$this->member_id])
+            ->where(['member_id' => $this->member_id])
             ->findOrEmpty();
         if ($res->isEmpty()) {
             return ['type' => 'success', 'page' => ''];
@@ -108,17 +108,17 @@ class OrderService extends BaseApiService
             ];
             $submitInfo = event('DeliverySendOrder', ['site_id' => $this->site_id, 'data' => $data]);
             $submitInfo = $submitInfo [0];
-            if (isset($submitInfo['type'])&&$submitInfo['type']=='error') {
+            if (isset($submitInfo['type']) && $submitInfo['type'] == 'error') {
                 //下单失败主动发起退款
                 $data = [
                     'id' => $order_info['id'],
-                    'close_reason' => $submitInfo['msg']??'三方平台下单失败，请重新下单'
+                    'close_reason' => $submitInfo['msg'] ?? '三方平台下单失败，请重新下单'
                 ];
                 (new OrderLogService())->writeOrderLog(
                     $order_info['site_id'],
                     $order_info['order_id'],
                     JhkdOrderDict::REFUNDING,
-                    $submitInfo['msg']??'三方平台下单失败，发起退款'
+                    $submitInfo['msg'] ?? '三方平台下单失败，发起退款'
                 );
                 event('CancelOrder', $data);
                 Db::commit();
@@ -435,19 +435,21 @@ class OrderService extends BaseApiService
             $trade_type = $data['trade_type'];
             $trade_id = $data['trade_id'];
             $site_id = $data['site_id'];
-            $payInfo = $this->PayModel->where(['site_id' => $site_id, 'trade_id' => $trade_id, 'trade_type' => JhkdOrderDict::getOrderType()['type']])->where('status', '<>', -1)->findOrEmpty();
+            $payInfo = $this->PayModel->where(['site_id' => $site_id, 'trade_id' => $trade_id, 'trade_type' => JhkdOrderDict::getOrderType()['type']])
+                ->where([['status', '<>', -1]])->findOrEmpty();
             if ($payInfo->isEmpty()) throw new CommonException('select pay is empty');
-            $payInfo->save([
+            $this->PayModel->where(['site_id' => $site_id, 'trade_id' => $trade_id, 'trade_type' => JhkdOrderDict::getOrderType()['type']])
+                ->update([
                 'status' => -1,
                 'type' => '',
                 'pay_time' => ''
             ]);
             $refundInfo = $this->model->where(['site_id' => $site_id, 'refund_no' => $refund_no, 'trade_id' => $trade_id])->findOrEmpty();
             if ($refundInfo->isEmpty()) throw new CommonException('select refund is empty');
-            $refundInfo->save(['trade_type' => $trade_type]);
+            $this->model->where(['site_id' => $site_id, 'refund_no' => $refund_no, 'trade_id' => $trade_id])->update(['trade_type' => $trade_type]);
             $orderInfo = $this->OrderModel->where(['site_id' => $site_id, 'id' => $trade_id])->findOrEmpty();
             if ($orderInfo->isEmpty()) throw new CommonException('select order is empty');
-            $orderInfo->save([
+            $this->OrderModel->where(['site_id' => $site_id, 'id' => $trade_id])->update([
                 'refund_status' => JhkdOrderDict::REFUND_COMPLETED,
                 'is_enable_refund' => 0,
                 'close_time' => time(),
@@ -455,27 +457,25 @@ class OrderService extends BaseApiService
                 'order_status' => JhkdOrderDict::CLOSE,
                 'is_send' => 0,
             ]);
+            Db::commit();
             $deliveryInfo = $this->deliveryModel->where(['order_id' => $orderInfo['order_id']])->findOrEmpty();
-            if ($deliveryInfo->isEmpty()) {
-                Db::rollback();
-            } else {
-                $order_no = $deliveryInfo['order_no'];
-                (new OrderLogService())->writeOrderLog(
-                    $orderInfo['site_id'],
-                    $orderInfo['order_id'],
-                    $orderInfo['order_status'],
-                    '订单退款成功',
-                    'member'
-                );
-                event('DeliveryCancelOrder', ['site_id' => $this->site_id, 'data' => [
-                    'order_no' => $order_no,
-                    'task_id' => $deliveryInfo['task_id']
-                ]]);
-                Db::commit();
-            }
-
+            $order_no = $deliveryInfo['order_no'];
+            (new OrderLogService())->writeOrderLog(
+                $orderInfo['site_id'],
+                $orderInfo['order_id'],
+                $orderInfo['order_status'],
+                '订单退款成功',
+                'member'
+            );
+            event('DeliveryCancelOrder', ['site_id' => $this->site_id, 'data' => [
+                'order_no' => $order_no,
+                'task_id' => $deliveryInfo['task_id']
+            ]]);
+            Db::commit();
         } catch (Exception $e) {
             Db::rollback();
+            Log::write('===聚合快递退款失败===' . date('Y-m-d H:i:s'));
+            Log::write($e->getMessage());
             throw new CommonException($e->getMessage());
         }
     }
@@ -521,27 +521,27 @@ class OrderService extends BaseApiService
             }
             if ($this->config['floatWay'] == 'floatWayFixed') {
                 $selectedRule['first'] += $this->config['floatAmount'];
-                if($selectedRule['add']>0){
+                if ($selectedRule['add'] > 0) {
                     $selectedRule['add'] += $this->config['floatAmount'];
-                }else{
-                    $selectedRule['add']=3;
+                } else {
+                    $selectedRule['add'] = 3;
                 }
 
             }
             if ($this->config['floatWay'] == 'floatWayRate') {
                 $selectedRule['first'] = $selectedRule['first'] * (1 + $this->config['floatRate'] / 100);
-                if($selectedRule['add']>0){
+                if ($selectedRule['add'] > 0) {
                     $selectedRule['add'] = $selectedRule['add'] * (1 + $this->config['floatRate'] / 100);
-                }else{
-                    $selectedRule['add']=3;
+                } else {
+                    $selectedRule['add'] = 3;
                 }
             }
             if ($this->config['floatWay'] == 'floatWayBetwn') {
                 $selectedRule['first'] = $selectedRule['first'] + $this->config['firstAmount'];
-                if($selectedRule['add']>0){
+                if ($selectedRule['add'] > 0) {
                     $selectedRule['add'] = $selectedRule['add'] + $this->config['secondAmount'];
-                }else{
-                    $selectedRule['add']=3;
+                } else {
+                    $selectedRule['add'] = 3;
                 }
 
             }

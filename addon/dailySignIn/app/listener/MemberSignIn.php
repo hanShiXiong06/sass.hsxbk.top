@@ -56,7 +56,7 @@ class MemberSignIn{
                         'fromType'=>'dailySignIn',
                         'relateTag'=>0,
                         'remark'=>'签到奖励' . $this->_point . '积分'
-                    ],0);
+                    ],$params['site_id']);
 
                 }
                 if($this->_growth > 0 ){
@@ -68,7 +68,7 @@ class MemberSignIn{
                         'fromType'=>'dailySignIn',
                         'relateTag'=>0,
                         'remark'=>'签到奖励' . $this->_growth . '经验'
-                    ],0);
+                    ],$params['site_id']);
                 }
                 // 是否已签满一个周期
                 if ($memberInfo[ 'consecutive_days' ] == $sysConfig[ 'value' ][ 'cycle' ]) {

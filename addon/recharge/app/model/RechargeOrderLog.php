@@ -15,8 +15,8 @@ use core\base\BaseModel;
 
 /**
  * 订单操作日志表
- * Class OrderLog
- * @package app\model\order
+ * Class RechargeOrderLog
+ * @package addon\recharge\app\model
  */
 class RechargeOrderLog extends BaseModel
 {

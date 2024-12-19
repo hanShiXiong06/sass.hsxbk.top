@@ -15,7 +15,7 @@
                 <el-form :inline="true" :model="goodsTable.searchParam" ref="searchFormRef">
                     <el-form-item :label="t('商品sn')" prop="goods_name">
                         <el-input v-model="goodsTable.searchParam.sku_no" style="width: 600px"
-                            :placeholder="t('请输入商品sn编号,如有多个请以空格隔开,最多支持150个字符')" maxlength="150" clearable />
+                            :placeholder="t('请输入商品sn编号,如有多个请以空格隔开,最多支持100个字符')" maxlength="100" clearable />
                     </el-form-item>
                     <el-form-item :label="t('goodsName')" prop="goods_name">
                         <el-input v-model.trim="goodsTable.searchParam.goods_name"
@@ -329,8 +329,8 @@ const labelOptions: any = reactive([])
 
 // 初始化数据
 const initData = () => {
-    // 查询商品分类树结构
-    getCategoryTree().then((res) => {
+    // 查询商品分类树结构 flag 是否需要进行查询数量
+    getCategoryTree({ flag: 1 }).then((res) => {
         const data = res.data
         if (data) {
             const goodsCategoryTree: any = []

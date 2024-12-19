@@ -4,13 +4,13 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { getHelloWorld } from '@/addon/hsx_exam/api/hello_world'
+
 import { onLoad } from '@dcloudio/uni-app'
 let helloWorld = ref('');
 onLoad(() => {
-    getHelloWorld().then((res) => {
-        helloWorld.value = res.data
-    })
+    // getHelloWorld().then((res) => {
+        helloWorld.value = 'helloWorld'
+    // })
 })
 </script>
 <style lang="scss" scoped>

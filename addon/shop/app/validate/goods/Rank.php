@@ -25,9 +25,8 @@ class Rank extends BaseValidate
     protected $rule = [
         'name' => 'require',
         'banner' => 'require',
-        'show_goods_num' => 'require|>:0',
         'rank_type' => 'require|in:day,week,month,quarter',
-        'goods_source' => 'require|in:goods,category,brand,label',
+        'goods_source' => 'require|in:goods,category,brand,label,all',
         'rule_type' => 'require|in:sale,collect,evaluate,access',
         'goods_json' => 'checkGoodsSource',
         'category_ids' => 'checkGoodsSource',
@@ -38,15 +37,14 @@ class Rank extends BaseValidate
     protected $message = [
         'name.require' => [ 'common_validate.require', [ 'name' ] ],
         'banner.require' => [ 'common_validate.require', [ 'banner' ] ],
-        'show_goods_num.require' => [ 'common_validate.require', [ 'show_goods_num' ] ],
         'rank_type.require' => [ 'common_validate.require', [ 'rank_type' ] ],
         'goods_source.require' => [ 'common_validate.require', [ 'goods_source' ] ],
         'rule_type.require' => [ 'common_validate.require', [ 'rule_type' ] ],
     ];
 
     protected $scene = [
-        "add" => [ 'name', 'show_goods_num', 'rank_type', 'goods_source', 'rule_type', 'goods_json', 'category_ids', 'brand_ids', 'label_ids', 'sort'],
-        "edit" => [ 'name', 'show_goods_num', 'rank_type', 'goods_source', 'rule_type', 'goods_json', 'category_ids', 'brand_ids', 'label_ids', 'sort']
+        "add" => [ 'name', 'rank_type', 'goods_source', 'rule_type', 'goods_json', 'category_ids', 'brand_ids', 'label_ids', 'sort','status'],
+        "edit" => [ 'name', 'rank_type', 'goods_source', 'rule_type', 'goods_json', 'category_ids', 'brand_ids', 'label_ids', 'sort','status']
     ];
 
     // 自定义验证规则
@@ -74,6 +72,9 @@ class Rank extends BaseValidate
             if (empty($data['label_ids'])) {
                 return 'label_ids不能为空';
             }
+            return true;
+        }
+        if ($data['goods_source'] == RankDict::ALL) {
             return true;
         }
     }

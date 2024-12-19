@@ -223,6 +223,7 @@ class SignInMemberService extends BaseApiService{
                 'member_id'    => $entity['memberId'],
                 'account_type' => $entity['accountType'],
                 'account_data' => $entity['accountData'],
+                'site_id'      => $siteId,
                 'account_sum'  => intval(bcadd($memberAccount[$entity['accountType']],$entity['accountData'])),
                 'from_type'    => $entity['fromType'],
                 'related_id'   => $memberAccount['member_id'],
@@ -232,7 +233,7 @@ class SignInMemberService extends BaseApiService{
             $response = (new MemberAccountLog())->create($data);
             (new Member())->update([
                 $entity['accountType'] => $accountNewData,
-                'point_get'=> intval(bcadd($memberAccount['point_get'], $pointGet))
+                'point_get'=> bcadd($memberAccount['point_get'], $pointGet)
             ], [
                 'member_id' => $entity['memberId']
             ]);
@@ -255,7 +256,6 @@ class SignInMemberService extends BaseApiService{
             [ 'from_type','=',$fromType],
             [ 'site_id','=',$this->site_id??0]
         ];
-
         return (new MemberAccountLog())->where($condition)->sum('account_data');
     }
     public function checkValidate($condition){

@@ -108,7 +108,7 @@ class CorePayChannelService extends BaseCoreService
         //查询公众号配置
         $core_wechat_config_service = new CoreWechatConfigService();
         $mp_app_id = $core_wechat_config_service->getWechatConfig($site_id)['app_id'];//公众号appid
-        //查询公众号配置
+        //查询小程序配置
         $core_weapp_config_service = new CoreWeappConfigService();
         $mini_app_id = $core_weapp_config_service->getWeappConfig($site_id)['app_id'];//小程序appid
         //todo  查询微信小程序 appid  .  应用appid.....

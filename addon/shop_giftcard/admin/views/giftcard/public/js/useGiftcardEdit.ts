@@ -600,6 +600,11 @@ export function useGiftcardEdit(params: any = {}) {
                                             verify = true;
                                             break;
                                         }
+                                        if (formData.balance_json[i].balance <= 0) {
+                                            msg = t('cardRightBalanceZeroTips')
+                                            verify = true;
+                                            break; 
+                                        }
 
                                         if (balanceArr.indexOf(formData.balance_json[i].balance) == -1) {
                                             balanceArr.push(formData.balance_json[i].balance)

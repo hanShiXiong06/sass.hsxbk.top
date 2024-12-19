@@ -207,7 +207,7 @@ class Jtk extends BasePlatform
             while (true) {
                 $data = [
                     'page' => $page,
-                    'pagesize' => $pageSize,
+                    'pageSize' => $pageSize,
                     'start_time' => $start_time,
                     'end_time' => $end_time,
                     'apikey' => $this->apiKey,

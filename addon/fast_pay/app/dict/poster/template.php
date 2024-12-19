@@ -9,7 +9,7 @@ return [
                 "height" =>1280,
                 "bgType" =>"url",
                 "bgColor" =>"#ffffff",
-                "bgUrl" =>"https://vip.123pan.cn/1727471/tkosssite/17229883802aacb0c0f289a553d039ebe718d081b0_ott.png"
+                "bgUrl" =>"/addon/fast_pay/poster/wx.png"
             ],
             "value" =>[
                 [
