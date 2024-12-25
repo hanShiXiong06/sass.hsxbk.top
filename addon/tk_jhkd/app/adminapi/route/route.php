@@ -9,8 +9,15 @@ use think\facade\Route;
  * 路由（注意最好group路由名称与插件名称一致，防止路由冲突）
  */
 Route::group("tk_jhkd", function () {
+    //Route::get('ceshi', 'addon\tk_jhkd\app\adminapi\controller\Ceshi@ceshi');
     Route::get('getlink', 'addon\tk_jhkd\app\adminapi\controller\order\Order@getLink');
     Route::get('index', 'addon\tk_jhkd\app\adminapi\controller\Index@index');
+    //配置列表
+    Route::get('platform/list', 'addon\tk_jhkd\app\adminapi\controller\config\Platform@platformList');
+    //配置详情
+    Route::get('platform/config/:type', 'addon\tk_jhkd\app\adminapi\controller\config\Platform@platformConfig');
+    //配置修改
+    Route::put('platform/config/:type', 'addon\tk_jhkd\app\adminapi\controller\config\Platform@editPlatform');
     //配置获取
     Route::get('getconfig', 'addon\tk_jhkd\app\adminapi\controller\Config@getConfig');
     //余额获取

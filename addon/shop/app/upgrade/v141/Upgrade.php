@@ -57,19 +57,6 @@ class Upgrade
 
                     }
 
-                    // 轮播搜索 组件
-                    if ($cv[ 'componentName' ] == 'CarouselSearch') {
-
-                        if (!empty($diy_data[ 'value' ][ $ck ][ 'swiper' ][ 'list' ]) && $diy_data[ 'value' ][ $ck ][ 'swiper' ][ 'list' ][ 0 ][ 'imageUrl' ] == 'addon/shop/diy/index/style3/banner1.jpg') {
-                            $diy_data[ 'value' ][ $ck ][ 'swiper' ][ 'imageHeight' ] = 274;
-                            $diy_data[ 'value' ][ $ck ][ 'swiper' ][ 'list' ][ 0 ][ 'imgWidth' ] = 750;
-                            $diy_data[ 'value' ][ $ck ][ 'swiper' ][ 'list' ][ 0 ][ 'imgHeight' ] = 580;
-                            $diy_data[ 'value' ][ $ck ][ 'swiper' ][ 'list' ][ 0 ][ 'width' ] = 355;
-                            $diy_data[ 'value' ][ $ck ][ 'swiper' ][ 'list' ][ 0 ][ 'height' ] = 274.53;
-                        }
-
-                    }
-
                 }
 
                 $diy_data = json_encode($diy_data);

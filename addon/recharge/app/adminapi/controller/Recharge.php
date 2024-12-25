@@ -12,20 +12,19 @@
 namespace addon\recharge\app\adminapi\controller;
 
 
-use addon\recharge\app\job\OrderClose;
 use addon\recharge\app\service\admin\RechargeService;
 use core\base\BaseAdminController;
 
 class Recharge extends BaseAdminController
 {
     /**
-     * 设置商品排行榜配置
+     * 设置会员充值套餐配置
      * @return \think\Response
      */
     public function setRechargeConfig()
     {
         $data = $this->request->params([
-            [ "is_use", 1],
+            [ "is_use", 1 ],
             [ "recharge_explain", "" ],
             [ "min_price", 0.01 ],
             [ "close_length", 10 ],
@@ -69,8 +68,9 @@ class Recharge extends BaseAdminController
             [ "buy_price", '' ],
             [ "point", 0 ],
             [ "growth", 0 ],
-            [ "status", 1],
-            [ "sort", 0],
+            [ "gift_json", [] ],
+            [ "status", 1 ],
+            [ "sort", 0 ],
         ]);
         $this->validate($data, 'addon\recharge\app\validate\Recharge.add');
         $id = ( new RechargeService() )->add($data);
@@ -78,8 +78,8 @@ class Recharge extends BaseAdminController
     }
 
     /**
-     * 编辑商品排行榜
-     * @param int $id 排行榜id
+     * 编辑充值套餐
+     * @param int $id
      * @return \think\Response
      */
     public function edit($id)
@@ -90,8 +90,9 @@ class Recharge extends BaseAdminController
             [ "buy_price", '' ],
             [ "point", 0 ],
             [ "growth", 0 ],
-            [ "status", 1],
-            [ "sort", 0],
+            [ "gift_json", [] ],
+            [ "status", 1 ],
+            [ "sort", 0 ],
         ]);
         $this->validate($data, 'addon\recharge\app\validate\Recharge.edit');
         ( new RechargeService() )->edit($id, $data);
@@ -112,7 +113,7 @@ class Recharge extends BaseAdminController
 
     /**
      * 删除
-     * @param int $id 排行榜id
+     * @param int $id
      * @return \think\Response
      */
     public function del(int $id)
@@ -147,6 +148,15 @@ class Recharge extends BaseAdminController
         ]);
         ( new RechargeService() )->editSort($data);
         return success('EDIT_SUCCESS');
+    }
+
+    /**
+     * 获取充值赠送规则字典
+     * @return \think\Response
+     */
+    public function getPackageGiftDict()
+    {
+        return success(( new RechargeService() )->getPackageGiftDict());
     }
 
 }

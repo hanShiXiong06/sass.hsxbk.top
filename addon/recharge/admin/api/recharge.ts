@@ -8,7 +8,7 @@ import request from '@/utils/request'
  * @returns
  */
 export function getRechargeOrderList(params: Record<string, any>) {
-    return request.get(`recharge/order`, {params})
+    return request.get(`recharge/order`, { params })
 }
 
 /**
@@ -17,7 +17,7 @@ export function getRechargeOrderList(params: Record<string, any>) {
  * @returns
  */
 export function getRechargeStat(params: Record<string, any>) {
-    return request.get(`recharge/order/stat`, {params})
+    return request.get(`recharge/order/stat`, { params })
 }
 
 /**
@@ -26,7 +26,7 @@ export function getRechargeStat(params: Record<string, any>) {
  * @returns
  */
 export function getRechargeOrderInfo(order_id: number) {
-    return request.get(`recharge/order/${order_id}`);
+    return request.get(`recharge/order/${ order_id }`);
 }
 
 /**
@@ -42,7 +42,7 @@ export function getRechargeOrderStatusList() {
  * @returns
  */
 export function getRechargeRefund(params: Record<string, any>) {
-    return request.get(`recharge/refund`, {params})
+    return request.get(`recharge/refund`, { params })
 }
 
 /**
@@ -58,7 +58,7 @@ export function getRechargeRefundStatus() {
  * @returns
  */
 export function rechargeRefund(order_id: number) {
-    return request.put(`recharge/refund/${order_id}`, {}, {showSuccessMessage: true});
+    return request.put(`recharge/refund/${ order_id }`, {}, { showSuccessMessage: true });
 }
 
 /**
@@ -75,7 +75,7 @@ export function getRechargeRefundStat() {
  * @returns
  */
 export function getRechargePackageList(params: Record<string, any>) {
-    return request.get(`recharge/package`, {params})
+    return request.get(`recharge/package`, { params })
 }
 
 /**
@@ -101,7 +101,7 @@ export function addRechargePackage(params: Record<string, any>) {
  * @returns
  */
 export function editRechargePackage(params: Record<string, any>) {
-    return request.put(`recharge/package/${ params.id }`, params, {
+    return request.put(`recharge/package/${ params.recharge_id }`, params, {
         showErrorMessage: true,
         showSuccessMessage: true
     })
@@ -127,8 +127,7 @@ export function deleteRechargePackage(recharge_id: number) {
 
 /**
  * 设置充值套餐配置
- * @param recharge_id
- * @returns
+ * @param params
  */
 export function setRechargeConfig(params: Record<string, any>) {
     return request.post(`recharge/package/config`, params, { showErrorMessage: true, showSuccessMessage: true })
@@ -161,4 +160,12 @@ export function editRechargeStatus(params: Record<string, any>) {
  */
 export function modifyRechargeSort(params: Record<string, any>) {
     return request.put(`recharge/package/sort`, params, { showSuccessMessage: true })
+}
+
+/**
+ * 获取充值套餐规则字典
+ * @returns
+ */
+export function getPackageGiftDict() {
+    return request.get(`recharge/dict/package_gift`)
 }

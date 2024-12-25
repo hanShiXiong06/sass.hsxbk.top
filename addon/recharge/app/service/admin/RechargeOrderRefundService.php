@@ -18,9 +18,9 @@ use core\base\BaseAdminService;
 use Exception;
 
 /**
- * 充值订单
- * Class RechargeOrderService
- * @package app\service\admin\order
+ * 【暂不支持退款】充值退款订单
+ * Class RechargeOrderRefundService
+ * @package addon\recharge\app\service\admin
  */
 class RechargeOrderRefundService extends BaseAdminService
 {

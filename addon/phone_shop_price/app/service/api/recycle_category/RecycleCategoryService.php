@@ -46,7 +46,7 @@ class RecycleCategoryService extends BaseApiService
         $getMemberInfo = $this->getMemberInfo();
         $is_use = !empty($getMemberInfo['memberLevelData']['level_benefits']['hsx_quote']['is_use']) ? 1 : 0;
         
-        return ( new CoreRecycleCategoryService() )->getTree([ [ 'site_id', 'in', "{$this->site_id}" ]  ] , $is_use );
+        return ( new CoreRecycleCategoryService() )->getTree([ [ 'site_id', 'in', "{$this->site_id}" ],[ 'is_show', '=', 1 ]  ] , $is_use );
         
     }
     // address_list 获取商家的收货地址

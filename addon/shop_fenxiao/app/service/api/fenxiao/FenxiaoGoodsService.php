@@ -60,6 +60,7 @@ class FenxiaoGoodsService extends BaseApiService
                     }
 
                 ])
+            ->with([ 'fenxiaoGoodsRule' ])
             ->where($sku_where)->order($order)->append(['goods_type_name', 'goods_cover_thumb_small', 'goods_cover_thumb_mid']);
 
         //获取当前是否登录会员,登录会员是否是分销商
@@ -80,8 +81,11 @@ class FenxiaoGoodsService extends BaseApiService
                 //如果开启了二级分销才会计算二级佣金
                 $fenxiao_goods = $item['fenxiaoGoods'];
                 $sku = $item['goodsSku'];
-                $fenxiao_rule = $fenxiao_goods['fenxiao_rule'];
-                $fenxiao_rule = json_decode($fenxiao_rule, true);
+                $fenxiao_rule = [];
+                foreach ($item['fenxiaoGoodsRule'] as $v){
+                    $fenxiao_rule[$v['sku_id']][$v['level_id']] = $v;
+                    $fenxiao_rule[$v['sku_id']]['calculate_price'] = $v['calculate_price'];
+                }
                 $fenxiao_goods_rule = $fenxiao_rule[$sku['sku_id']] ?? [];
                 //计算订单项目分销中商品价格基准
                 $calculate_price = $fenxiao_goods_rule['calculate_price'] ?? 0;
@@ -157,6 +161,7 @@ class FenxiaoGoodsService extends BaseApiService
                         $query->where([['fenxiaoGoods.is_fenxiao', '=', 1]]);
                     }
                 ])
+            ->with([ 'fenxiaoGoodsRule' ])
             ->where($sku_where)->order($order)->append(['goods_type_name', 'goods_cover_thumb_small', 'goods_cover_thumb_mid'])->limit($where[ 'num' ])
             ->select()->toArray();
         if(!empty($list)){
@@ -178,8 +183,11 @@ class FenxiaoGoodsService extends BaseApiService
                     $item['fenxiao'] = $fenxiao->toArray();
                     $fenxiao_goods = $item['fenxiaoGoods'];
                     $sku = $item['goodsSku'];
-                    $fenxiao_rule = $fenxiao_goods['fenxiao_rule'];
-                    $fenxiao_rule = json_decode($fenxiao_rule, true);
+                    $fenxiao_rule = [];
+                    foreach ($item['fenxiaoGoodsRule'] as $v){
+                        $fenxiao_rule[$v['sku_id']][$v['level_id']] = $v;
+                        $fenxiao_rule[$v['sku_id']]['calculate_price'] = $v['calculate_price'];
+                    }
                     $fenxiao_goods_rule = $fenxiao_rule[$sku['sku_id']] ?? [];
                     //计算订单项目分销中商品价格基准
                     $calculate_price = $fenxiao_goods_rule['calculate_price'] ?? 0;

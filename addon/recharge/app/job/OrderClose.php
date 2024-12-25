@@ -27,16 +27,15 @@ class OrderClose extends BaseJob
     public function doJob()
     {
         try {
-            $list = (new RechargeOrder())->where([
-                ['order_status', '=', RechargeOrderDict::WAIT_PAY],
-                ['timeout', '<=', time()],
-                ['timeout', '>', 0]
+            $list = ( new RechargeOrder() )->where([
+                [ 'order_status', '=', RechargeOrderDict::WAIT_PAY ],
+                [ 'timeout', '<=', time() ],
+                [ 'timeout', '>', 0 ]
             ])->select();
 
             if (!$list->isEmpty()) {
-
                 foreach ($list as $v) {
-                    (new CoreRechargeOrderService())->close($v['order_id']);
+                    ( new CoreRechargeOrderService() )->close($v[ 'order_id' ]);
                 }
             }
             return true;

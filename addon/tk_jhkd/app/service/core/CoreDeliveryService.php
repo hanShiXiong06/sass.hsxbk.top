@@ -2,6 +2,7 @@
 
 namespace addon\tk_jhkd\app\service\core;
 
+use addon\tk_jhkd\app\model\orderdelivery\OrderDelivery;
 use addon\tk_jhkd\app\service\core\delivery\DeliveryLoader;
 use app\service\core\sys\CoreConfigService;
 use core\base\BaseApiService;
@@ -32,7 +33,12 @@ class CoreDeliveryService extends BaseApiService
 
     public function deliveryTrance($params)
     {
-        return (new DeliveryLoader($this->config['delivery_type'], $this->config))->deliveryTrance($params);
+        $delivery_info=(new OrderDelivery())->where(['delivery_id'=>$params['delivery_id']])->findOrEmpty();
+        if($delivery_info->isEmpty()) throw new CommonException('订单不存在');
+        if($delivery_info['platform']=='') return [];
+        if($delivery_info['delivery_id']=='') return [];
+        $config = (new CommonService())->getSiteAllDriver($this->site_id,$delivery_info['platform'])['params'];
+        return (new DeliveryLoader($delivery_info['platform'], $config))->deliveryTrance($delivery_info);
     }
 
     public function getBalance()

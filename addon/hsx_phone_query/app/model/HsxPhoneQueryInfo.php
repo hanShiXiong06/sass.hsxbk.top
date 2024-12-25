@@ -37,8 +37,16 @@ class HsxPhoneQueryInfo extends BaseModel
      * @var string
      */
     protected $name = 'hsx_phone_query_info';
+
+    /**
+     * 设置搜索器字段
+     * @var array
+     */
+    // protected $searchFields = ['sn'];
+
     /**
      * 搜索器:配置信息主键
+     * @param $query
      * @param $value
      * @param $data
      */
@@ -48,31 +56,76 @@ class HsxPhoneQueryInfo extends BaseModel
             $query->where("id", $value);
         }
     }
-    // 通过 查询sn 和 imei 搜索器
-    public function searchSN($query, $value, $data){
+
+    /**
+     * type 类型搜索器
+     * @param $query
+     * @param $value
+     * @param $data
+     */
+    // public function searchTypeAttr($query, $value, $data)
+    // {
+    //     if ($value) {
+    //         $query->where("pid", $value);
+    //     }
+    // }
+
+    /**
+     * 开始时间搜索器 使用between 完成
+     * @param $query
+     * @param $value
+     * @param $data
+     */
+    public function searchStartTimeAttr($query, $value, $data)
+    {
         if ($value) {
-            $query->where("sn", $value);
+            $query->whereBetween('create_time', [$value, $data['end_time']]);
         }
     }
-    // type 类型搜索器
-    public function searchTypeAttr($query, $value, $data){
+
+    /**
+     * keyword 搜索器 | 序列号模糊搜索 
+     * @param $query
+     * @param $value
+     * @param $data
+     */
+    public function searchKeywordAttr($query, $value, $data)
+    {
         if ($value) {
-            $query->where("type", $value);
+            $query->where("sn", 'like', '%' . $value . '%');
         }
     }
-// 关联分类
-public function category()
-{
-    return $this->hasOne(HsxPhoneQueryCategory::class, 'id', 'type_id');
-}
+
+    /**
+     * 关联分类
+     */
+    public function category()
+    {
+        return $this->hasOne(HsxPhoneQueryCategory::class, 'id', 'type_id');
+    }
     
-public function getTypeNameAttr($value, $data)
-{
-    // 通过关联获取 category 并返回 name
-    $category = $this->category()->find();
-    return $category ? $category->name : '未知分类';
-}
+    /**
+     * 获取分类名称
+     * @param $value
+     * @param $data
+     */
+    public function getTypeNameAttr($value, $data)
+    {
+        if (isset($data['type_id'])) {
+            $category = (new HsxPhoneQueryCategory())->where('id', '=', $data['type_id'])->find();
+            return $category ? $category['name'] : '';
+        }
+        return '';
+    }
     
+    /**
+     * 关联会员表
+     */
+    public function member()
+    {
+        return $this->belongsTo('app\model\member\Member', 'member_id', 'member_id')
+            ->field('member_id,nickname,headimg,mobile');
+    }
 
     
 

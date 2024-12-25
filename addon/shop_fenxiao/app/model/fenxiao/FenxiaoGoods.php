@@ -48,4 +48,14 @@ class FenxiaoGoods extends BaseModel
             ->withField('sku_id,sku_name,price,cost_price')
             ->bind([ 'sku_id', 'sku_name', 'price', 'cost_price' ]);
     }
+
+    /**
+     * 关联分销商品分佣规则表
+     * @return \think\model\relation\HasMany
+     */
+    public function goodsRule()
+    {
+        return $this->hasMany(FenxiaoGoodsRule::class, 'goods_id', 'goods_id')
+            ->withField('sku_id,goods_id,level_id,one_rate,two_rate,one_money,two_money,calculate_price');
+    }
 }

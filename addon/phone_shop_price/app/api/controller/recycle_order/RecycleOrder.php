@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
@@ -13,6 +15,7 @@ namespace addon\phone_shop_price\app\api\controller\recycle_order;
 
 use core\base\BaseApiController;
 use addon\phone_shop_price\app\service\api\recycle_order\RecycleOrderService;
+use addon\phone_shop_price\app\dict\RecycleOrderDict;
 use think\App;
 
 /**
@@ -183,11 +186,20 @@ class RecycleOrder extends BaseApiController
     /**
      * 获取订单状态列表
      */
-    public function getStatusList()
+    // public function getStatusList()
+    // {
+    //     return success([
+    //         'order_status' => RecycleOrderDict::ORDER_STATUS_TEXT,
+    //         'device_status' => RecycleOrderDict::DEVICE_STATUS_TEXT
+    //     ]);
+    // }
+
+    // getDeviceStatus 获取设备状态列表
+    public function getDeviceStatus()
     {
         return success([
+            'device_status' => RecycleOrderDict::DEVICE_STATUS_TEXT,
             'order_status' => RecycleOrderDict::ORDER_STATUS_TEXT,
-            'device_status' => RecycleOrderDict::DEVICE_STATUS_TEXT
         ]);
     }
 
@@ -196,8 +208,31 @@ class RecycleOrder extends BaseApiController
      */
     public function getStatusCount()
     {
+        
         $service = new RecycleOrderService();
-        $result = $service->getStatusCount($this->site_id, $this->member_id);
+        $result = $service->getStatusCount( );
         return success($result);
+    }
+    //updateStatus
+    public function updateStatus(int $id)
+    {
+        $data = $this->request->params([
+            ["status", ""],
+            ["action", ""]
+        ]);
+        $res = $this->service->updateStatus($id, $data);
+        return success($res);
+    }
+    // deviceConfirm    
+    public function deviceConfirm(int $id)
+    {
+        $res = $this->service->deviceConfirm($id);
+        return success($res);
+    }
+    // deviceCancel
+    public function deviceCancel(int $id)
+    {
+        $res = $this->service->deviceCancel($id);
+        return success($res);
     }
 }

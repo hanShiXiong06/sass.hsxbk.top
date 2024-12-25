@@ -30,7 +30,8 @@ class HsxPhoneQuery extends BaseAdminController
         $data = $this->request->params([
              ["imeis",""],
              ["id",""],
-             ['payType','']
+             ['payType',''],
+             ['pid',''],
         ]);
 
         $data = (new HsxPhoneQueryService())->query($data);
@@ -45,6 +46,11 @@ class HsxPhoneQuery extends BaseAdminController
         $data=$this->request->params([
             ["pages",1],
             ["limit",30],
+            ["keyword",""],
+           
+            ['pid',''],
+            ['start_time',''],
+            ['end_time','']
        ]);
       return success( (new HsxPhoneQueryService())->lists($data));
     }
@@ -54,5 +60,10 @@ class HsxPhoneQuery extends BaseAdminController
             ["id",""],
        ]);
       return success( (new HsxPhoneQueryService())->detail($data));
+    }
+    //watermark
+    public function watermark(){
+        
+        return success( (new HsxPhoneQueryService())->watermark());
     }
 }

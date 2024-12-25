@@ -79,3 +79,18 @@ Route::group('hsx_phone_query', function () {
     AdminLog::class
 ]);
 // USER_CODE_END -- hsx_phone_query_category
+
+
+// 查询手机信息列表
+Route::group('hsx_phone_query', function () {
+
+    //查询手机信息列表
+    Route::get('hsx_phone_query_list', 'addon\hsx_phone_query\app\adminapi\controller\hsx_phone_query_list\HsxPhoneQueryList@lists');
+    //查询手机信息详情
+    Route::get('hsx_phone_query_list/:id', 'addon\hsx_phone_query\app\adminapi\controller\hsx_phone_query_list\HsxPhoneQueryList@info');
+    
+})->middleware([
+    AdminCheckToken::class,
+    AdminCheckRole::class,
+    AdminLog::class
+]);

@@ -51,11 +51,10 @@ class Xinda extends BaseDelivery
             "goodsHeight" => $params['vloumHeight']
         ];
         $resInfo = $this->execute('QUERY_CHANNELS', $data);
-        if ($resInfo['code'] != 0) throw new Exception('获取运单报价失败：XINDA_error--' . $resInfo['msg']);
+        if ($resInfo['code'] != 0) return [];
         $callbackData = [];
         $resInfo = $resInfo['data']['result'];
         foreach ($resInfo as $k => $v) {
-
             $newdata = [
                 "channelId" => $v['channelId'],
                 "channelName" => $v['channelName'],
@@ -71,7 +70,7 @@ class Xinda extends BaseDelivery
                     [
                         "add" => 0,
                         "end" => 0,
-                        "first" => $v['originalPrice'],
+                        "first" => $v['priceOne'] == 0 ? $v['originalPrice'] : $v['priceOne'],
                         "start" => 1
                     ]
                 ],
@@ -131,7 +130,7 @@ class Xinda extends BaseDelivery
         $resInfo = $this->execute('COURIER_PLACE_ORDER', $data);
         if ($resInfo['code'] != 0) {
             Log::write('XINDA_error--' . $resInfo['msg']);
-            return ['type'=>'error','msg'=>$resInfo['msg']??'三方平台下单失败，请重新下单！'];
+            return ['type' => 'error', 'msg' => $resInfo['msg'] ?? '三方平台下单失败，请重新下单！'];
         }
         $res = [
             'orderNo' => $resInfo['data']['XinDabill'],
@@ -151,7 +150,7 @@ class Xinda extends BaseDelivery
             "xinDabill" => $data['order_no'],
         ];
         $resInfo = $this->execute('COURIER_ORDER_CANCEL', $params);
-        if($resInfo['code'] != 0) {
+        if ($resInfo['code'] != 0) {
             Log::write('XINDA_error--' . $resInfo['msg']);
         }
         //code  适配易达
@@ -168,14 +167,14 @@ class Xinda extends BaseDelivery
         ];
         $resInfo = $this->execute('COURIER_ORDER_QUERY', $data);
         if ($resInfo['code'] != 0) {
-            throw new Exception($resInfo['msg']);
+            return [];
         }
         $tranceData = [];
         foreach ($resInfo['data']['result'] as $k => $v) {
             $trance = explode('   【', $v);
             $tranceData[] = [
                 'time' => $trance[0] ?? '',
-                'desc' => $trance[1] ?? $resInfo['data']['result']==[]?'暂无轨迹':'',
+                'desc' => $trance[1] ?? $resInfo['data']['result'] == [] ? '暂无轨迹' : '',
 
             ];
         }
@@ -189,8 +188,8 @@ class Xinda extends BaseDelivery
             "username" => $this->config['username']
         ];
         $resInfo = $this->execute('QUERY_BALANCE', $data);
-        if ($resInfo['code'] != 0) throw new Exception($resInfo['msg']);
-        return $resInfo['data']['money'];
+        if ($resInfo['code'] != 0) return $resInfo['msg'] ?? '查询余额失败';
+        return $resInfo['data']['money'] ?? '未查询到信息';
     }
 
 

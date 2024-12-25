@@ -12,7 +12,9 @@
 namespace addon\phone_shop_price\app\adminapi\controller\recycle_order_device;
 
 use core\base\BaseAdminController;
-use addon\phone_shop_price\app\service\admin\recycle_order_device\RecycleOrderDeviceService;
+use addon\phone_shop_price\app\service\admin\recycle_order\RecycleOrderDeviceService;
+use addon\phone_shop_price\app\dict\RecycleOrderDict;
+   //  addon\phone_shop_price\app\service\admin\recycle_order\RecycleOrderDeviceService;
 
 
 /**
@@ -72,7 +74,7 @@ class RecycleOrderDevice extends BaseAdminController
              ["update_at",0],
              ["check_at",0]
         ]);
-        $this->validate($data, 'addon\phone_shop_price\app\validate\recycle_order_device\RecycleOrderDevice.add');
+       //  $this->validate($data, 'addon\phone_shop_price\app\validate\recycle_order_device\RecycleOrderDevice.add');
         $id = (new RecycleOrderDeviceService())->add($data);
         return success('ADD_SUCCESS', ['id' => $id]);
     }
@@ -95,11 +97,13 @@ class RecycleOrderDevice extends BaseAdminController
              ["price_remark",""],
              ["create_at",0],
              ["update_at",0],
-             ["check_at",0]
+             ["check_at",0],
+             ["check_status",""]
         ]);
-        $this->validate($data, 'addon\phone_shop_price\app\validate\recycle_order_device\RecycleOrderDevice.edit');
-        (new RecycleOrderDeviceService())->edit($id, $data);
-        return success('EDIT_SUCCESS');
+      
+       //  $this->validate($data, 'addon\phone_shop_price\app\validate\recycle_order_device\RecycleOrderDevice.edit');
+       
+        return success( (new RecycleOrderDeviceService())->edit($id, $data));
     }
 
     /**
@@ -112,5 +116,13 @@ class RecycleOrderDevice extends BaseAdminController
         return success('DELETE_SUCCESS');
     }
 
+    // getStatus 获取订单状态列表
+    public function getDeviceStatus(){
+        // 将RecycleOrderDict::DEVICE_STATUS,RecycleOrderDict::DEVICE_STATUS_TEXT 组合
+        // ['key'=> 'CHECKING', 'value'=> '质检中', 'id'=> 3 ]
+       // 返回文字
+        return success(RecycleOrderDict::DEVICE_STATUS_TEXT);
+    }
     
 }
+

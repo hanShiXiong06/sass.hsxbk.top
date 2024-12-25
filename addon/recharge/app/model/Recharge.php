@@ -35,7 +35,7 @@ class Recharge extends BaseModel
      */
     protected $name = 'recharge';
 
-    protected $json = [ 'coupon_id'];
+    protected $json = [ 'gift_json' ];
 
     protected $jsonAssoc = true;
 
@@ -60,7 +60,7 @@ class Recharge extends BaseModel
      */
     public function getStatusNameAttr($value, $data)
     {
-        return RechargePackageDict::getStatus()[$data['status']] ?? '';
+        return RechargePackageDict::getStatus()[ $data[ 'status' ] ] ?? '';
     }
 
     /**

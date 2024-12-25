@@ -10,10 +10,17 @@
 // +----------------------------------------------------------------------
 
 namespace addon\tk_jhkd\app\service\core;
+use addon\tk_jhkd\app\dict\config\PlatformDict;
+use addon\tk_jhkd\app\dict\delivery\KdniaoBrandDict;
+use addon\tk_jhkd\app\dict\delivery\XindaBrandDict;
+use addon\tk_jhkd\app\dict\delivery\YidaBrandDict;
+use addon\tk_jhkd\app\dict\delivery\YisuBrandDict;
+use addon\tk_jhkd\app\dict\delivery\YunyangBrandDict;
 use app\model\dict\Dict;
 use app\service\core\sys\CoreConfigService;
 use core\base\BaseAdminService;
 use core\exception\CommonException;
+use think\Exception;
 
 /**
  * 聚合快递公共服务层
@@ -26,6 +33,124 @@ class CommonService extends BaseAdminService
     {
         parent::__construct();
     }
+    public function getBrand($platform,$delivery_type)
+    {
+        if($platform == 'xinda'){
+            return XindaBrandDict::getBrand($delivery_type);
+        }
+        if($platform == 'yida'){
+            return YidaBrandDict::getBrand($delivery_type);
+        }
+        if($platform == 'yunyang'){
+            return YunyangBrandDict::getBrand($delivery_type);
+        }
+        if($platform == 'kdniao'){
+            return KdniaoBrandDict::getBrand($delivery_type);
+        }
+        if($platform == 'yisu'){
+            return YisuBrandDict::getBrand($delivery_type);
+        }
+    }
+    /**
+     * @Notes:获取站点的驱动  type 为驱动类
+     * @Interface getSiteDriver
+     * @param $site_id
+     * @param $type
+     * @return array
+     * @throws Exception
+     * @author: TK
+     * @Time: 2024/10/7   下午3:47
+     */
+    public function getSiteDriver($site_id, $type = '')
+    {
+        $info = (new CoreConfigService())->getConfig((int)$site_id, PlatformDict::getType());
+        if (empty($info)) {
+            throw new Exception('请先设置三方平台参数');
+        } else {
+            $config_type = $info['value'];
+        }
+        $extend = [];
+        foreach ($config_type as $k => $v) {
+            if ($k!='default' && $v['is_use'] == 1) {
+                $v['type'] = $k;
+                $driverInfo = $this->getDriverByType($k);
+                if ($driverInfo) {
+                    $extend[] = [
+                        'driver' => $driverInfo['driver'],
+                        'type' => $k,
+                        'name' => $driverInfo['name'],
+                        'desc' => $driverInfo['desc'],
+                        'component' => $driverInfo['component'],
+                        'params' => $v
+                    ];
+                    if ($type != '' && $type == $k) {
+                        $driverInfo['params'] = $v;
+                        return $driverInfo;
+                    }
+                }
+            }
+        }
+        if (empty($extend)) {
+            throw new Exception('暂未启用平台');
+        }
+        return $extend;
+    }
+    public function getSiteAllDriver($site_id, $type = '')
+    {
+        $info = (new CoreConfigService())->getConfig((int)$site_id, PlatformDict::getType());
+        if (empty($info)) {
+            throw new Exception('请先设置三方平台参数');
+        } else {
+            $config_type = $info['value'];
+        }
+        $extend = [];
+        foreach ($config_type as $k => $v) {
+            if ($k!='default') {
+                $v['type'] = $k;
+                $driverInfo = $this->getDriverByType($k);
+                if ($driverInfo) {
+                    $extend[] = [
+                        'driver' => $driverInfo['driver'],
+                        'type' => $k,
+                        'name' => $driverInfo['name'],
+                        'desc' => $driverInfo['desc'],
+                        'component' => $driverInfo['component'],
+                        'params' => $v
+                    ];
+                    if ($type != '' && $type == $k) {
+                        $driverInfo['params'] = $v;
+                        return $driverInfo;
+                    }
+                }
+            }
+        }
+        if (empty($extend)) {
+            throw new Exception('暂未启用平台');
+        }
+        return $extend;
+    }
+
+    /**
+     * @Notes:根据类型获取驱动信息
+     * @Interface getDriverByType
+     * @param $type
+     * @return mixed|null
+     * @author: TK
+     * @Time: 2024/10/7   下午2:56
+     */
+    public function getDriverByType($type)
+    {
+        $platform_type_list = event('JhkdPlatformType')[0];
+        $flattened_list = array_merge(...$platform_type_list);
+        foreach ($flattened_list as $k => $item) {
+            if ($item['type'] == $type) {
+                $item['driver'] = $k;
+                return $item;
+            }
+        }
+        return null;
+    }
+
     public function getConfig($site_id)
     {
         $info = (new CoreConfigService())->getConfig($site_id, 'TK_JHKD_CONFIG');

@@ -8,7 +8,7 @@ CREATE TABLE `{{prefix}}recharge` (
   `buy_price` DECIMAL(10, 2) NOT NULL COMMENT '价格',
   `point` INT(11) NOT NULL DEFAULT 0 COMMENT '赠送积分',
   `growth` INT(11) NOT NULL DEFAULT 0 COMMENT '赠送成长值',
-  `coupon_id` VARCHAR(500) NOT NULL DEFAULT '0' COMMENT '赠送优惠券ID',
+  `gift_json` TEXT DEFAULT NULL COMMENT '赠品json',
   `sale_num` INT(11) NOT NULL DEFAULT 0 COMMENT '发放数量',
   `sort` INT(11) NOT NULL DEFAULT 0 COMMENT '排序号',
   `status` TINYINT(4) NOT NULL DEFAULT 0 COMMENT '状态（0关闭 1开启）',

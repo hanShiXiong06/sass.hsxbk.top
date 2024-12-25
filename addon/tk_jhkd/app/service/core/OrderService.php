@@ -4,17 +4,21 @@ namespace addon\tk_jhkd\app\service\core;
 
 use addon\tk_jhkd\app\dict\order\JhkdOrderAddDict;
 use addon\tk_jhkd\app\dict\order\JhkdOrderDict;
+use addon\tk_jhkd\app\dict\order\OrderRefundLogDict;
 use addon\tk_jhkd\app\job\notice\Webhook;
+use addon\tk_jhkd\app\model\fenxiao\FenxiaoOrder;
 use addon\tk_jhkd\app\model\order\OrderAdd;
 use addon\tk_jhkd\app\model\orderdelivery\OrderDelivery;
 use addon\tk_jhkd\app\model\OrderDeliveryReal;
 use addon\tk_jhkd\app\model\TkjhkdBrand;
 use addon\tk_jhkd\app\model\tkjhkdorder\Tkjhkdorder;
 use app\dict\pay\PayDict;
+use app\dict\pay\RefundDict;
 use app\model\pay\Pay;
 use app\model\pay\Refund;
 use app\service\core\notice\NoticeService;
 use app\service\core\pay\CorePayService;
+use app\service\core\pay\CoreRefundService;
 use app\service\core\sys\CoreConfigService;
 use core\base\BaseApiService;
 use core\exception\CommonException;
@@ -75,6 +79,7 @@ class OrderService extends BaseApiService
             $receive_address = json_decode($params['end_address'], true);
             $receiveName = explode("-", $receive_address['address']);
             $data = [
+                "platform" => $ordeDeliveryInfo['platform'],
                 "deliveryType" => $params['delivery_type'],
                 "customer_type" => $params['customer_type'],
                 "thirdNo" => $params['order_id'],
@@ -130,7 +135,8 @@ class OrderService extends BaseApiService
             if ($orderDeliveryInfo->isEmpty()) {
                 event('DeliveryCancelOrder', ['site_id' => $this->site_id, 'data' => [
                     'order_no' => $order_no,
-                    'task_id' => $orderDeliveryInfo['task_id']
+                    'task_id' => $orderDeliveryInfo['task_id'],
+                    'order_id' => $order_id,
                 ]]);
                 //取消下单
             } else {
@@ -208,31 +214,17 @@ class OrderService extends BaseApiService
         ];
         $resInfo = event('DeliveryPreOrder', ['site_id' => $this->site_id, 'data' => $data]);
         $resInfo = $resInfo[0];
-        $url = (new CommonService())->getUrl();
         $dataInfo = [];
-        foreach ($resInfo as $k1 => $v1) {
-            $brand = (new TkjhkdBrand())->where(['delivery_type' => $v1['deliveryType']])->findOrEmpty();
-            if (!$brand->isEmpty()) {
-                $v1['logo'] = $url . '/' . $brand['logo'];
-            }
-            //$v1['showPrice'] = $this->showPrice($v1);
-            $newPrice = $this->newPriceAndRule($v1, $params['weight']);
-            $v1['showPrice'] = $newPrice['price'];
-            $v1['price_rule'] = $newPrice['price_rule'];
-            $v1['original_rule'] = $newPrice['original_rule'];
-            if ($v1['showPrice'] > $v1['preOrderFee']) {
-                $keysToRemove = ['preDeliveryFee', 'preOrderFee', 'price', 'originalFee', 'originalPrice'];
+        foreach ($resInfo['data'] as $k1 => $v1) {
+            if ($v1['showPrice'] >= $v1['preOrderFee']) {
+                $keysToRemove = ['preDeliveryFee', 'preOrderFee', 'price', 'originalPrice'];
                 $v1 = array_diff_key($v1, array_flip($keysToRemove));
                 $dataInfo[] = $v1;
             }
         }
         //增加验证key
         $key = md5(create_no() . time());
-
-        usort($dataInfo, function ($a, $b) {
-            return $a['showPrice'] <=> $b['showPrice'];
-        });
-        Cache::set($key, $dataInfo, 180);
+        Cache::set($key, $resInfo, 180);
         $data = [
             'key' => $key,
             'list' => $dataInfo
@@ -253,7 +245,7 @@ class OrderService extends BaseApiService
         if (!$cacheData) {
             throw new Exception('报价失效,请重新获取运单报价');
         } else {
-            $selectData = $cacheData[$params['delivery_index']];
+            $selectData = $cacheData['data'][$params['delivery_index']];
             if ($selectData['showPrice'] != $params['showPrice']) {
                 throw new Exception('非法的价格');
             } else {
@@ -275,6 +267,7 @@ class OrderService extends BaseApiService
             $deliveryData = [
                 "start_address" => $params['startAddress'],
                 "end_address" => $params['endAddress'],
+                "platform" => $cacheData['driver'],
                 "member_id" => $this->member_id,
                 "weight" => $params['weight'],
                 "long" => $params['vloumLong'],
@@ -303,6 +296,15 @@ class OrderService extends BaseApiService
             (new OrderDeliveryReal())->create([
                 'order_id' => $info['order_id'],
                 "weight" => $params['weight'],
+            ]);
+            //写入分销订单库
+            (new FenxiaoOrder())->save([
+                'order_id' => $info['order_id'],
+                'site_id' => $this->site_id,
+                'member_id' => $this->member_id,
+                'type' => '0',
+                'status' => 0,
+                'create_time' => time()
             ]);
             (new OrderLogService())->writeOrderLog(
                 $orderData['site_id'],
@@ -407,6 +409,8 @@ class OrderService extends BaseApiService
                 'out_trade_no' => $pay_info['out_trade_no']//支付后的交易流水号
             ];
             $order_info->save($order_data);
+            //补差价发货信息管理
+            event('DeliveryUploadShippingAdd', ['site_id' => $order_info['site_id'], 'order_id' => $order_info['order_id']]);
             (new OrderLogService())->writeOrderLog(
                 $order_info['site_id'],
                 $order_info['order_id'],
@@ -440,10 +444,10 @@ class OrderService extends BaseApiService
             if ($payInfo->isEmpty()) throw new CommonException('select pay is empty');
             $this->PayModel->where(['site_id' => $site_id, 'trade_id' => $trade_id, 'trade_type' => JhkdOrderDict::getOrderType()['type']])
                 ->update([
-                'status' => -1,
-                'type' => '',
-                'pay_time' => ''
-            ]);
+                    'status' => -1,
+                    'type' => '',
+                    'pay_time' => ''
+                ]);
             $refundInfo = $this->model->where(['site_id' => $site_id, 'refund_no' => $refund_no, 'trade_id' => $trade_id])->findOrEmpty();
             if ($refundInfo->isEmpty()) throw new CommonException('select refund is empty');
             $this->model->where(['site_id' => $site_id, 'refund_no' => $refund_no, 'trade_id' => $trade_id])->update(['trade_type' => $trade_type]);
@@ -457,6 +461,14 @@ class OrderService extends BaseApiService
                 'order_status' => JhkdOrderDict::CLOSE,
                 'is_send' => 0,
             ]);
+            //查找未支付补差价
+            $addModel = new OrderAdd();
+            $addorder = $addModel->where(['site_id' => $site_id, 'order_id' => $orderInfo['order_id']])->findOrEmpty();
+            if (!$addorder->isEmpty()) {
+                if ($addorder['order_status'] == JhkdOrderAddDict::WAIT_PAY) {
+                    $addModel->where(['site_id' => $site_id, 'order_id' => $orderInfo['order_id']])->delete();
+                }
+            }
             Db::commit();
             $deliveryInfo = $this->deliveryModel->where(['order_id' => $orderInfo['order_id']])->findOrEmpty();
             $order_no = $deliveryInfo['order_no'];
@@ -469,7 +481,9 @@ class OrderService extends BaseApiService
             );
             event('DeliveryCancelOrder', ['site_id' => $this->site_id, 'data' => [
                 'order_no' => $order_no,
-                'task_id' => $deliveryInfo['task_id']
+                'task_id' => $deliveryInfo['task_id'],
+                'order_id' => $orderInfo['order_id'],
+                'platform' => $deliveryInfo['platform'],
             ]]);
             Db::commit();
         } catch (Exception $e) {

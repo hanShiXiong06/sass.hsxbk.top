@@ -51,7 +51,7 @@ class Yunyang extends BaseDelivery
             "vloumHeight" => $params['vloumHeight']
         ];
         $resInfo = $this->execute('CHECK_CHANNEL_INTELLECT', $data);
-        if ($resInfo['code'] != 1) throw new Exception('获取运单报价失败：yunyang_error--' . $resInfo['message']);
+        if ($resInfo['code'] != 1) return [];
         $callbackData = [];
         $resInfo = $resInfo['result'];
         foreach ($resInfo as $k => $v) {
@@ -193,7 +193,7 @@ class Yunyang extends BaseDelivery
         ];
         $resInfo = $this->execute('QUERY_TRANCE', $data);
         if ($resInfo['code'] != 1) {
-            throw new Exception($resInfo['message']);
+            return [];
         }
         $tranceData = [];
         if ($resInfo['result'] != []) {
@@ -222,8 +222,8 @@ class Yunyang extends BaseDelivery
             "appid" => $this->config['appid']
         ];
         $resInfo = $this->execute('QUERY_BALANCE', $data);
-        if ($resInfo['code'] != 200) throw new Exception($resInfo['message']);
-        return $resInfo['result']['keyong'];
+        if ($resInfo['code'] != 200) return $resInfo['message']??'未查询到信息';
+        return $resInfo['result']['keyong']??'未查询到信息';
     }
 
 

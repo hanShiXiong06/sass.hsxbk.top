@@ -2,134 +2,65 @@
   <div class="main-container">
     <el-card class="box-card !border-none" shadow="never">
       <el-button type="primary" @click="addOrder()">新增订单</el-button>
-      <el-card
-        class="box-card !border-none my-[10px] table-search-wrap"
-        shadow="never"
-      >
-        <el-form
-          :inline="true"
-          :model="orderTable.searchParam"
-          ref="searchFormRef"
-        >
+      <el-card class="box-card !border-none my-[10px] table-search-wrap" shadow="never">
+        <el-form :inline="true" :model="orderTable.searchParam" ref="searchFormRef">
           <el-form-item label="会员" prop="member_id">
-            <el-select
-              class="input-width"
-              v-model="orderTable.searchParam.member_id"
-              clearable
-              :placeholder="t('memberIdPlaceholder')"
-            >
+            <el-select class="input-width" v-model="orderTable.searchParam.member_id" clearable
+              :placeholder="t('memberIdPlaceholder')">
               <div class="mt-2 mb-2 ml-4">
-                <el-input
-                  @change="change"
-                  v-model="keyword"
-                  style="width: 200px"
-                  placeholder="搜索会员支持昵称/会员名"
-                >
-                  <template #append>搜索 </template></el-input
-                >
+                <el-input @change="change" v-model="keyword" style="width: 200px" placeholder="搜索会员支持昵称/会员名">
+                  <template #append>搜索 </template></el-input>
               </div>
               <el-option label="请选择" value=""></el-option>
-              <el-option
-                v-for="(item, index) in memberIdList"
-                :key="index"
-                :label="item['nickname']"
-                :value="item['member_id']"
-              />
+              <el-option v-for="(item, index) in memberIdList" :key="index" :label="item['nickname']"
+                :value="item['member_id']" />
             </el-select>
           </el-form-item>
 
           <el-form-item :label="t('orderFrom')" prop="order_from">
-            <el-select
-              v-model="orderTable.searchParam.order_from"
-              clearable
-              class="input-item"
-            >
-              <el-option
-                v-for="(item, index) in orderFromData"
-                :key="index"
-                :label="item"
-                :value="index"
-              ></el-option>
+            <el-select v-model="orderTable.searchParam.order_from" clearable class="input-item">
+              <el-option v-for="(item, index) in orderFromData" :key="index" :label="item" :value="index"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="订单号" prop="order_id">
-            <el-input
-              v-model="orderTable.searchParam.order_id"
-              placeholder="请输入订单号"
-            />
+            <el-input v-model="orderTable.searchParam.order_id" placeholder="请输入订单号" />
           </el-form-item>
           <el-form-item label="支付单号" prop="out_trade_no">
-            <el-input
-              v-model="orderTable.searchParam.out_trade_no"
-              placeholder="请输入支付单号"
-            />
+            <el-input v-model="orderTable.searchParam.out_trade_no" placeholder="请输入支付单号" />
           </el-form-item>
 
           <el-form-item label="发单状态" prop="is_send">
-            <el-select
-              class="w-[280px]"
-              v-model="orderTable.searchParam.is_send"
-              clearable
-              :placeholder="t('isSendPlaceholder')"
-            >
+            <el-select class="w-[280px]" v-model="orderTable.searchParam.is_send" clearable
+              :placeholder="t('isSendPlaceholder')">
               <el-option label="全部" value=""></el-option>
-              <el-option
-                v-for="(item, index) in is_sendList"
-                :key="index"
-                :label="item.name"
-                :value="item.value"
-              />
+              <el-option v-for="(item, index) in is_sendList" :key="index" :label="item.name" :value="item.value" />
             </el-select>
           </el-form-item>
 
           <el-form-item :label="t('orderStatus')" prop="order_status">
-            <el-select
-              class="w-[280px]"
-              v-model="orderTable.searchParam.order_status"
-              clearable
-              :placeholder="t('orderStatusPlaceholder')"
-            >
+            <el-select class="w-[280px]" v-model="orderTable.searchParam.order_status" clearable
+              :placeholder="t('orderStatusPlaceholder')">
               <el-option label="全部" value=""></el-option>
-              <el-option
-                v-for="(item, index) in order_statusList"
-                :key="index"
-                :label="item.name"
-                :value="item.value"
-              />
+              <el-option v-for="(item, index) in order_statusList" :key="index" :label="item.name"
+                :value="item.value" />
             </el-select>
           </el-form-item>
 
           <el-form-item :label="t('refundStatus')" prop="refund_status">
-            <el-select
-              class="w-[280px]"
-              v-model="orderTable.searchParam.refund_status"
-              clearable
-              :placeholder="t('refundStatusPlaceholder')"
-            >
+            <el-select class="w-[280px]" v-model="orderTable.searchParam.refund_status" clearable
+              :placeholder="t('refundStatusPlaceholder')">
               <el-option label="全部" value=""></el-option>
-              <el-option
-                v-for="(item, index) in refund_statusList"
-                :key="index"
-                :label="item.name"
-                :value="item.value"
-              />
+              <el-option v-for="(item, index) in refund_statusList" :key="index" :label="item.name"
+                :value="item.value" />
             </el-select>
           </el-form-item>
 
           <el-form-item :label="t('remark')" prop="remark">
-            <el-input
-              v-model="orderTable.searchParam.remark"
-              :placeholder="t('remarkPlaceholder')"
-            />
+            <el-input v-model="orderTable.searchParam.remark" :placeholder="t('remarkPlaceholder')" />
           </el-form-item>
           <el-form-item :label="t('createTime')" prop="create_time">
-            <el-date-picker
-              v-model="orderTable.searchParam.create_time"
-              type="datetimerange"
-              format="YYYY-MM-DD hh:mm:ss"
-              :start-placeholder="t('startDate')"
-              :end-placeholder="t('endDate')"
-            />
+            <el-date-picker v-model="orderTable.searchParam.create_time" type="datetimerange"
+              format="YYYY-MM-DD hh:mm:ss" :start-placeholder="t('startDate')" :end-placeholder="t('endDate')" />
           </el-form-item>
 
           <el-form-item>
@@ -144,40 +75,47 @@
       </el-card>
 
       <div class="mt-[10px]">
-        <el-table
-          :data="orderTable.data"
-          size="large"
-          v-loading="orderTable.loading"
-        >
+        <el-table :data="orderTable.data" size="large" v-loading="orderTable.loading">
           <template #empty>
             <span>{{ !orderTable.loading ? t("emptyData") : "" }}</span>
           </template>
-          <el-table-column
-            prop="order_id"
-            label="订单号"
-            min-width="160"
-            :show-overflow-tooltip="true"
-          />
+          <el-table-column prop="order_from" label="渠道" min-width="80" :show-overflow-tooltip="true">
+            <template #default="{ row }">
+              <div class="flex">
+                <el-tag type="info">{{ row.order_from }}</el-tag>
+              </div>
+              <div v-if="!row.platform_name == ''" class="flex mt-1">
+                <el-tag>{{ row.platform_name }}</el-tag>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="order_id" label="基本信息" min-width="200" :show-overflow-tooltip="true">
+            <template #default="{ row }">
+              <div class="p-1">下单人:{{ row.member_id_name }}</div>
+              <div class="p-1">订单号:{{ row.order_id }}</div>
+              <div class="p-1">支付单号:{{ row.out_trade_no }}</div>
 
-          <el-table-column
-            prop="order_from"
-            :label="t('orderFrom')"
-            min-width="80"
-            :show-overflow-tooltip="true"
-          />
-          <el-table-column
-            prop="member_id_name"
-            :label="t('memberId')"
-            min-width="120"
-            :show-overflow-tooltip="true"
-          />
+            </template>
+          </el-table-column>
+          <el-table-column label="路线" min-width="120" align="center" :show-overflow-tooltip="true">
+            <template #default="{ row }">
+              <div>{{ row.start_address.address }}</div>
+              <div>
+                <el-icon>
+                  <Bottom />
+                </el-icon>
+              </div>
+              <div class="font-bold">{{ row.end_address.address }}</div>
+            </template>
+          </el-table-column>
 
-          <el-table-column
-            prop="order_money"
-            :label="t('orderMoney')"
-            min-width="120"
-            :show-overflow-tooltip="true"
-          />
+          <el-table-column prop="order_money" label="常规信息" min-width="120" :show-overflow-tooltip="true">
+            <template #default="{ row }">
+              <el-tag class="p-1">{{ row.delivery_name }}</el-tag>
+              <div class="p-1">下单重量:{{ row.orderInfo.weight }}kg</div>
+              <div class="p-1">订单金额:{{ row.order_money }}</div>
+            </template>
+          </el-table-column>
 
           <!-- <el-table-column
             prop="order_discount_money"
@@ -185,151 +123,89 @@
             min-width="120"
             :show-overflow-tooltip="true"
           /> -->
-          <el-table-column
-            prop="out_trade_no"
-            label="支付单号"
-            min-width="120"
-            :show-overflow-tooltip="true"
-          />
-          <el-table-column
-            label="发单状态"
-            min-width="80"
-            align="center"
-            :show-overflow-tooltip="true"
-          >
+
+          <el-table-column label="订单状态" min-width="120" align="center" :show-overflow-tooltip="true">
             <template #default="{ row }">
               <div v-for="(item, index) in is_sendList">
-                <el-tag v-if="item.value == row.is_send">{{
-                  item.name
-                }}</el-tag>
+                <div v-if="item.value == row.is_send">
+                  发单状态
+                  <el-tag class="ml-1">{{
+                    item.name
+                  }}</el-tag>
+                </div>
               </div>
-            </template>
-          </el-table-column>
-
-          <el-table-column
-            :label="t('orderStatus')"
-            min-width="120"
-            align="center"
-            :show-overflow-tooltip="true"
-          >
-            <template #default="{ row }">
-              <div v-for="(item, index) in order_statusList">
-                <el-tag
-                  v-if="
+              <div v-for="(item, index) in order_statusList" class="mt-1">
+                <div>
+                  <div v-if="
                     item.value == row.order_status && row.order_status != -1
-                  "
-                  >{{ item.name }}</el-tag
-                >
-                <el-tag
-                  type="warning"
-                  v-if="
+                  ">订单状态
+                    <el-tag class="ml-1">{{ item.name }}</el-tag>
+                  </div>
+                  <div v-if="
                     item.value == row.order_status && row.order_status == -1
-                  "
-                  >{{ item.name }}</el-tag
-                >
+                  ">
+                    订单状态
+                    <el-tag type="warning" class="ml-1">{{ item.name }}</el-tag>
+                  </div>
+
+                </div>
               </div>
-              <el-tag
-                class="mt-1"
-                v-if="row.addorderInfo && row.addorderInfo.order_status == 0"
-                type="error"
-              >
-                需补差价</el-tag
-              >
+              <div v-if="row.addorderInfo && row.addorderInfo.order_status == 0">
+                补差状态
+                <el-tag class="mt-1 ml-1" type="error">
+                  需补差</el-tag>
+              </div>
+              <div v-for="(item, index) in refund_statusList" class="mt-1">
+                <div v-if="item.value == row.refund_status">
+                  退款状态
+                  <el-tag class="ml-1">{{
+                    item.name
+                  }}</el-tag>
+                </div>
+
+              </div>
             </template>
           </el-table-column>
 
-          <el-table-column
-            :label="t('refundStatus')"
-            min-width="80"
-            align="center"
-            :show-overflow-tooltip="true"
-          >
-            <template #default="{ row }">
-              <div v-for="(item, index) in refund_statusList">
-                <el-tag v-if="item.value == row.refund_status">{{
-                  item.name
-                }}</el-tag>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="关闭原因"
-            prop="close_reason"
-            min-width="120"
-            align="center"
-            :show-overflow-tooltip="true"
-          >
+          <el-table-column label="关闭原因" prop="close_reason" min-width="120" align="center"
+            :show-overflow-tooltip="true">
             <template #default="{ row }">
               <div class="text-red">{{ row.close_reason }}</div>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="remark"
-            :label="t('remark')"
-            min-width="120"
-            :show-overflow-tooltip="true"
-          >
+          <el-table-column prop="remark" :label="t('remark')" min-width="120" :show-overflow-tooltip="true">
             <template #default="{ row }">
               <div>{{ row.remark }}</div>
-              <el-icon @click="showRemarkEvent(row)"><EditPen /></el-icon>
+              <el-icon @click="showRemarkEvent(row)">
+                <EditPen />
+              </el-icon>
             </template>
           </el-table-column>
+          <el-table-column prop="create_time" label="下单时间" min-width="120" :show-overflow-tooltip="true">
 
-          <el-table-column
-            :label="t('operation')"
-            fixed="right"
-            min-width="220"
-          >
+          </el-table-column>
+          <el-table-column :label="t('operation')" fixed="right" min-width="120">
             <template #default="{ row }">
-              <el-button type="primary" link @click="editEvent(row)"
-                >详情</el-button
-              >
-              <el-button
-                type="primary"
-                v-if="row.order_status == -1 || row.order_status == 0"
-                link
-                @click="deleteEvent(row.id)"
-                >{{ t("delete") }}</el-button
-              >
-              <el-button
-                type="primary"
-                v-if="row.order_status == 1 && row.is_send == 0"
-                link
-                @click="sendEvent(row.order_id)"
-                >发单</el-button
-              >
-              <el-button
-                type="primary"
-                v-if="row.order_status == 1"
-                link
-                @click="cancelEvent(row.id)"
-                >取消</el-button
-              >
+              <el-button type="primary" link @click="editEvent(row)">详情</el-button>
+              <el-button type="primary" v-if="row.order_status == -1 || row.order_status == 0" link
+                @click="deleteEvent(row.id)">{{ t("delete") }}</el-button>
+              <el-button type="primary" v-if="row.order_status == 1 && row.is_send == 0" link
+                @click="sendEvent(row.order_id)">发单</el-button>
+              <el-button type="primary" v-if="row.order_status == 1" link @click="cancelEvent(row.id)">取消</el-button>
             </template>
           </el-table-column>
         </el-table>
         <div class="mt-[16px] flex justify-end">
-          <el-pagination
-            v-model:current-page="orderTable.page"
-            v-model:page-size="orderTable.limit"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="orderTable.total"
-            @size-change="loadOrderList()"
-            @current-change="loadOrderList"
-          />
+          <el-pagination v-model:current-page="orderTable.page" v-model:page-size="orderTable.limit"
+            layout="total, sizes, prev, pager, next, jumper" :total="orderTable.total" @size-change="loadOrderList()"
+            @current-change="loadOrderList" />
         </div>
       </div>
 
       <edit ref="editOrderDialog" @complete="loadOrderList" />
     </el-card>
   </div>
-  <el-dialog
-    v-model="showWap"
-    title="使用移动端账号登录"
-    width="420"
-    height="740"
-    align-center
-  >
+  <el-dialog v-model="showWap" title="使用移动端账号登录" width="420" height="740" align-center>
     <div class="mt-[-24px]">
       <button @click="goBack" class="mr-2">返回</button>
       <button @click="refreshPage">刷新</button>
@@ -344,9 +220,7 @@
       <el-input style="width: 200px" v-model="remark" />
     </div>
     <div class="mt-[24px]">
-      <el-button type="primary" @click="remarkOrderEvent()" class="mr-2"
-        >确认</el-button
-      >
+      <el-button type="primary" @click="remarkOrderEvent()" class="mr-2">确认</el-button>
     </div>
   </el-dialog>
 </template>
@@ -535,7 +409,7 @@ const deleteEvent = (id: number) => {
       .then(() => {
         loadOrderList();
       })
-      .catch(() => {});
+      .catch(() => { });
   });
 };
 

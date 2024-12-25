@@ -48,6 +48,7 @@ class RechargeOrderDict
     ];
 
     const TYPE = 'recharge';
+
     /**
      * 订单类型以及名称
      * @return array
@@ -94,12 +95,11 @@ class RechargeOrderDict
                 ],
             ]
 
-
         ];
         if ($status == '') {
             return $data;
         }
-        return $data[$status] ?? '';
+        return $data[ $status ] ?? '';
     }
 
     /**
@@ -127,7 +127,7 @@ class RechargeOrderDict
         if ($status == '') {
             return $data;
         }
-        return $data[$status] ?? '';
+        return $data[ $status ] ?? '';
     }
 
 }

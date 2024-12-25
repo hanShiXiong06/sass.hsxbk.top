@@ -19,20 +19,17 @@
                     <el-form-item :label="t('min_price')" prop="min_price">
                         <el-input v-model.trim="formData.min_price" clearable placeholder="0.00" class="input-width-short" maxlength="8" show-word-limit />
                     </el-form-item>
-                    <div class="mt-[30px]">
-                        <h3 class="panel-title !text-sm pl-[15px]">{{ t('closeOrderInfo') }}</h3>
-                        <el-form-item prop="close_length">
-                            <div>
-                                <p class="!text-sm">
-                                    <span>{{ t('closeOrderInfoLeft') }}</span>
-                                    <el-input v-model.trim="formData.close_length" class="!w-[120px] mx-[10px]" @keyup="filterNumber($event)" clearable />
-                                    <span>{{ t('closeOrderInfoRight') }}</span>
-                                </p>
-                                <p class="text-[12px] text-[#a9a9a9] leading-normal  mt-[5px]">{{ t('closeOrderInfoBottom') }}</p>
-                            </div>
-                        </el-form-item>
-                    </div>
-                    
+                    <el-form-item :label="t('closeOrderInfo')" prop="close_length">
+                        <div>
+                            <p class="!text-sm">
+                                <span>{{ t('closeOrderInfoLeft') }}</span>
+                                <el-input v-model.trim="formData.close_length" class="!w-[120px] mx-[10px]" @keyup="filterNumber($event)" clearable />
+                                <span>{{ t('closeOrderInfoRight') }}</span>
+                            </p>
+                            <p class="text-[12px] text-[#a9a9a9] leading-normal  mt-[5px]">{{ t('closeOrderInfoBottom') }}</p>
+                        </div>
+                    </el-form-item>
+
                 </el-card>
             </el-form>
         </el-card>
@@ -72,26 +69,27 @@ const regExp: any = {
     digit: /^\d{0,10}(.?\d{0,2})$/,
     special: /^\d{0,10}(.?\d{0,3})$/
 }
+
 const formRules = computed(() => {
     return {
-        min_price:[{
+        min_price: [{
             required: true,
             trigger: 'blur',
             validator: (rule: any, value: any, callback: any) => {
                 if (value === null || value === '') {
                     callback(t('minPricePlaceholder'))
-                }else if (isNaN(value) || !regExp.digit.test(value)) {
+                } else if (isNaN(value) || !regExp.digit.test(value)) {
                     callback(t('limitTips'))
-                }else if (value < 0.01) {
+                } else if (value < 0.01) {
                     callback(t('limitTipsTwo'))
                 } else {
                     callback();
                 }
-        }
-    }],
-    close_length: [
-        { validator: validCloseLength, trigger: 'blur' }
-    ],
+            }
+        }],
+        close_length: [
+            { validator: validCloseLength, trigger: 'blur' }
+        ],
     };
 });
 
@@ -108,6 +106,7 @@ const validCloseLength = (rule:any, value:any, callback:Function) => {
         return callback()
     }
 }
+
 const getRechargeConfigFn = () => {
     getRechargeConfig().then((res: any) => {
         formData.value = res.data;
@@ -116,15 +115,14 @@ const getRechargeConfigFn = () => {
 
 getRechargeConfigFn();
 
-
 /**** 提交 ****/
 const onSave = async () => {
     await formRef.value?.validate(async(valid) => {
         if (valid) {
             setRechargeConfig(formData.value).then(() => {
                 getRechargeConfigFn();
-        }).catch(() => {
-        });
+            }).catch(() => {
+            });
         }
     });
 };

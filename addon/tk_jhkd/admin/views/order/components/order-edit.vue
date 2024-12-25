@@ -1,25 +1,17 @@
-deliveryInfo<template>
-  <el-dialog
-    v-model="showDialog"
-    title="订单详情"
-    width="50%"
-    class="diy-dialog-wrap"
-    destroy-on-close
-  >
+<template>
+  <el-dialog v-model="showDialog" title="订单详情" width="55%" class="diy-dialog-wrap" destroy-on-close>
     <el-card v-if="detailData">
       <div>
         <div class="flex items-center mt-4">
           <div
             class="mr-[28px] p-4 pl-12 pr-12 rounded-md statistic-card bg-gradient-to-r from-indigo-50 from-10% via-sky-50 via-10% to-emerald-50 to-10%"
-            v-if="startaddress"
-          >
+            v-if="startaddress">
             <div class="font-bold text-slate-400">订单金额</div>
             <div class="text-2xl">{{ detailData.order_money }}</div>
           </div>
           <div
             class="mr-[28px] p-4 pl-12 pr-12 rounded-md statistic-card bg-gradient-to-r from-indigo-50 from-10% via-sky-50 via-10% to-emerald-50 to-10%"
-            v-if="startaddress"
-          >
+            v-if="startaddress">
             <div class="font-bold text-slate-400">优惠金额</div>
             <div class="text-2xl">{{ detailData.order_discount_money }}</div>
           </div>
@@ -34,10 +26,7 @@ deliveryInfo<template>
             <span class="font-bold">
               {{ detailData.orderInfo.delivery_id }}
             </span>
-            <el-icon
-              class="ml-2"
-              @click="copyEvent(detailData.orderInfo.delivery_id)"
-            >
+            <el-icon class="ml-2" @click="copyEvent(detailData.orderInfo.delivery_id)">
               <DocumentCopy />
             </el-icon>
           </div>
@@ -74,10 +63,7 @@ deliveryInfo<template>
           {{ detailData.payInfo.pay_time }}
         </div>
       </div>
-      <div
-        v-if="detailData.orderInfo.price_rule"
-        class="mt-4 flex items-center"
-      >
+      <div v-if="detailData.orderInfo.price_rule" class="mt-4 flex items-center">
         <div class="mr-4">计价规则</div>
         <el-tag class="mr-2">
           首重：
@@ -92,7 +78,7 @@ deliveryInfo<template>
       </div>
       <div v-if="detailData.addorderInfo" class="mt-4 flex items-center">
         <div class="mr-4">补差详情</div>
-        <el-tag class="mr-2">
+        <el-tag class="mr-2" v-if="detailData.orderInfo.notice_num > 0">
           通知次数:
           {{ detailData.orderInfo.notice_num }}次
         </el-tag>
@@ -106,19 +92,17 @@ deliveryInfo<template>
             超重:
             {{
               Math.ceil(
-                detailData.deliveryRealInfo.fee_weight -
-                  detailData.orderInfo.weight
+                Number((detailData.deliveryRealInfo.fee_weight - detailData.orderInfo.weight).toFixed(2))
               )
             }}kg;￥{{
-              Math.ceil(
-                detailData.deliveryRealInfo.fee_weight -
-                  detailData.orderInfo.weight
-              ) * detailData.orderInfo.price_rule.add ?? 3
-            }};
+              (
+                Math.ceil(
+                  Number((detailData.deliveryRealInfo.fee_weight - detailData.orderInfo.weight).toFixed(2))
+                ) * (detailData.orderInfo.price_rule?.add ?? 3)
+              ).toFixed(2)
+            }}
           </div>
-          <block
-            v-for="(item, index) in detailData.deliveryRealInfo.fee_blockList"
-          >
+          <block v-for="(item, index) in detailData.deliveryRealInfo.fee_blockList">
             <div>{{ item.name }}:{{ item.fee }}元;</div>
           </block>
           <el-tag class="mr-2" type="error">
@@ -146,8 +130,7 @@ deliveryInfo<template>
       <div class="flex items-center mt-4">
         <div
           class="mr-[28px] p-4 rounded-md statistic-card bg-gradient-to-r from-indigo-50 from-10% via-sky-50 via-10% to-emerald-50 to-10%"
-          v-if="startaddress"
-        >
+          v-if="startaddress">
           <div class="font-bold">{{ startaddress.address }}</div>
           <div>{{ startaddress.full_address }}</div>
           <div class="flex text-xs text-current">
@@ -160,8 +143,7 @@ deliveryInfo<template>
         </el-icon>
         <div
           class="p-4 rounded-md statistic-card bg-gradient-to-r from-indigo-50 from-10% via-sky-50 via-10% to-emerald-50 to-10%"
-          v-if="endaddress"
-        >
+          v-if="endaddress">
           <div class="font-bold">{{ endaddress.address }}</div>
           <div>{{ endaddress.full_address }}</div>
           <div class="flex text-xs text-current">
@@ -170,28 +152,21 @@ deliveryInfo<template>
           </div>
         </div>
       </div>
-      <el-divider v-if="deliveryInfo" class="mt-4" content-position="left"
-        >轨迹跟踪</el-divider
-      >
+      <el-divider v-if="deliveryInfo" class="mt-4" content-position="left">轨迹跟踪</el-divider>
       <div class="mt-2">
         <div class="flex items-center mb-4">
-          <el-avatar
-            v-if="
+          <el-avatar v-if="
+            detailData &&
+            detailData.orderInfo &&
+            detailData.orderInfo.delivery_arry &&
+            detailData.orderInfo.delivery_arry.logo
+          " :src="img(detailData.orderInfo.delivery_arry.logo)" />
+          <div class="ml-1 p-2">
+            <div v-if="
               detailData &&
               detailData.orderInfo &&
-              detailData.orderInfo.delivery_arry &&
-              detailData.orderInfo.delivery_arry.logo
-            "
-            :src="img(detailData.orderInfo.delivery_arry.logo)"
-          />
-          <div class="ml-1 p-2">
-            <div
-              v-if="
-                detailData &&
-                detailData.orderInfo &&
-                detailData.orderInfo.delivery_arry
-              "
-            >
+              detailData.orderInfo.delivery_arry
+            ">
               {{ detailData.orderInfo.delivery_arry.name }}
             </div>
             <div class="font-bold">{{ detailData.orderInfo.delivery_id }}</div>
@@ -206,19 +181,10 @@ deliveryInfo<template>
               取件码:{{ pickInfo.pickUpCode }}
             </div>
           </div>
-          <el-tag class="ml-8 font-bold">{{
-            detailData.orderInfo.order_status_desc
-              ? detailData.orderInfo.order_status_desc
-              : "未取件"
-          }}</el-tag>
         </div>
 
         <el-timeline>
-          <el-timeline-item
-            v-for="(activity, index) in deliveryInfo"
-            :key="index"
-            :timestamp="activity.time"
-          >
+          <el-timeline-item v-for="(activity, index) in deliveryInfo" :key="index" :timestamp="activity.time">
             {{ activity.desc }}
           </el-timeline-item>
         </el-timeline>
@@ -227,26 +193,14 @@ deliveryInfo<template>
   </el-dialog>
   <el-dialog v-model="changestatusDialog" title="更改状态" width="400">
     <div class="mb-2">
-      <el-alert
-        type="info"
-        title="这里更改状态仅更新订单状态，不会有额外操作，请谨慎修改"
-        :closable="false"
-        show-icon
-      />
+      <el-alert type="info" title="这里更改状态仅更新订单状态，不会有额外操作，请谨慎修改" :closable="false" show-icon />
     </div>
     <div class="w-[320px]">
       <el-select v-model="orderstatus" placeholder="请选择订单状态">
-        <el-option
-          v-for="(item, index) in order_statusList"
-          :key="index"
-          :label="item.name"
-          :value="item.value"
-        />
+        <el-option v-for="(item, index) in order_statusList" :key="index" :label="item.name" :value="item.value" />
       </el-select>
     </div>
-    <el-button type="primary" @click="saveStatus()" class="mt-4"
-      >确定</el-button
-    >
+    <el-button type="primary" @click="saveStatus()" class="mt-4">确定</el-button>
   </el-dialog>
 </template>
 

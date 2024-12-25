@@ -41,15 +41,15 @@ class RecycleOrderService extends BaseAdminService
         // 处理列表数据,添加统计信息
         if (!empty($list['data'])) {
             foreach ($list['data'] as &$item) {
-                // 初始化统计数据  待验机 | 验机中 | 已验机 | 待确认 | 待打款 | 已完成 | 退货
+                // 初始化统计数据
                 $item['device_stats'] = [
                     'total' => 0,           // 总数量
-                    'pending' => 0,         // 待验机数量 (status = 1)
-                    'checking' => 0,        // 验机中数量 (status = 2)
-                    'checked' => 0,         // 已验机数量 (status = 3)
-                    'priced' => 0,         // 待确认数量 (status = 4)
-                    'completed' => 0,       // 已完成数量 (status = 5)
-                    'returned' => 0,        // 退货数量 (status = 4)
+                    'pending_check' => 0,   // 待质检数量 (status = 1)
+                    'checking' => 0,        // 质检中数量 (status = 2)
+                    'checked' => 0,         // 已质检数量 (status = 3)
+                    'confirmed' => 0,       // 已确认数量 (status = 4)
+                    'completed' => 0,       // 已完成数量 (status = 6)
+                    'returned' => 0,        // 已退回数量 (status = 7)
                     'total_amount' => 0,    // 总金额
                 ];
 
@@ -60,20 +60,23 @@ class RecycleOrderService extends BaseAdminService
                     foreach ($item['devices'] as $device) {
                         // 统计各状态数量
                         switch ($device['status']) {
-                            case 1:
-                                $item['device_stats']['pending']++;
+                            case 1: // PENDING_CHECK
+                                $item['device_stats']['pending_check']++;
                                 break;
-                            case 2:
+                            case 2: // CHECKING
                                 $item['device_stats']['checking']++;
                                 break;
-                            case 3:
+                            case 3: // CHECKED
                                 $item['device_stats']['checked']++;
                                 break;
-                            case 4:
-                                $item['device_stats']['returned']++;
+                            case 4: // CONFIRMED
+                                $item['device_stats']['confirmed']++;
                                 break;
-                            case 5:
+                            case 6: // COMPLETED
                                 $item['device_stats']['completed']++;
+                                break;
+                            case 7: // RETURNED
+                                $item['device_stats']['returned']++;
                                 break;
                         }
                         
@@ -151,42 +154,34 @@ class RecycleOrderService extends BaseAdminService
     /**
      * 更新设备状态
      * @param int $device_id
-     * @param string $status
+     * @param array $status
      * @return array
      */
     public function updateDeviceStatus(int $device_id, array $status)
     {
-       
-        // return $status;
         $device_model = new PhoneShopRecycleOrderDevice();
         $device = $device_model->where([['site_id', '=', $this->site_id]])->find($device_id);
-        // return $device;
-        // if (empty($device)) {
-        //     return $this->error('设备不存在');
-        // }
+        if (empty($device)) {
+            return $this->error('设备不存在');
+        }
 
         $result = $device_model->where(['id' => $device_id])->update([
             'status' => $status['status'],
             'check_result' => $status['check_result'],
             'final_price' => $status['final_price'],
             'price_remark' => $status['price_remark'],
-            'model'=>$status['model'],
+            'model' => $status['model'],
             'update_at' => time()
         ]);
-        // if ($result === false) {
-        //     return $this->error('更新失败');
-        // }
-        // 需要判断当前订单是否依然有设备未完成 , 如果有则更新为质检中
-      
-        $device_model = new PhoneShopRecycleOrderDevice();
-        $device = $device_model->where([['site_id', '=', $this->site_id], ['order_id', '=', $status['order_id']]])->select();
-        // if ($device->isEmpty()) {
-        //     return $this->error('订单不存在');
-        // }
+        
+        if ($result === false) {
+            return $this->error('更新失败');
+        }
+        
         // 更新订单状态
-        // 如果订单中还有设备未完成 , 则更新为质检中
         $this->updateOrderStatus($status['order_id']);
-        return success( $device->toArray());
+        
+        return success('更新成功');
     }
 
     /**

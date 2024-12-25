@@ -30,4 +30,48 @@ class Fenxiao extends BaseController
     {
         return success((new FenxiaoService())->getFenxiaoInfo());
     }
+    /**
+     * @Notes:新版分销数据接口
+     * getIndexData
+     * 2024/12/19  00:17
+     * author:TK
+     */
+    public function getOrderData()
+    {
+        $data = $this->request->params([
+            ['pid', ''],
+        ]);
+        return success((new FenxiaoService())->getOrderData($data));
+    }
+
+    /**
+     * @Notes:获取分销会员信息
+     * getFenxiaoMember
+     * 2024/12/20  14:29
+     * author:TK
+     */
+    public function getFenxiaoMember()
+    {
+        $data = $this->request->params([
+            ['type', 'first'],
+        ]);
+        if ($data['type'] == 'first') {
+            $res = (new FenxiaoService())->getFirstFenxiaoMember($data);
+        } else {
+            $res = (new FenxiaoService())->getTwoFenxiaoMember($data);
+        }
+        return success($res);
+    }
+    public function getFenxiaoOrder()
+    {
+        $data = $this->request->params([
+            ['type', 'two'],
+        ]);
+        if ($data['type'] == 'first') {
+            $res = (new FenxiaoService())->getFirstFenxiaoOrder($data);
+        } else {
+            $res = (new FenxiaoService())->getTwoFenxiaoOrder($data);
+        }
+        return success($res);
+    }
 }

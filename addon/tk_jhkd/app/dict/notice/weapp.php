@@ -26,11 +26,11 @@ return [
     'tk_jhkd_order_add' => [
         'tid' => '1979',
         'content' => [
-            ['订单编号', '{order_no}', 'number1'],
-            ['订单状态', '{amount}', '{amount6'],
+            ['订单编号', '{order_no}', 'character_string11'],
+            ['订单状态', '{amount}', 'amount8'],
             ['温馨提示', '{remark}', 'thing7'],
         ],
-        'kid_list' => [1, 6, 7],
+        'kid_list' => [11, 8, 7],
         'scene_desc' => '补差价提醒',
         'tips' => '使用该消息请在小程序的服务类目中添加类目：一级类目：工具 二级类目：信息查询'
     ],

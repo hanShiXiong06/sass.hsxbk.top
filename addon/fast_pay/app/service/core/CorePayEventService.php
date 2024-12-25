@@ -218,8 +218,8 @@ class CorePayEventService extends BaseCoreService
     public function refund(string $out_trade_no, float $money, float $total, string $refund_no, $voucher = '')
     {
         if ($this->type == 'fastpay_wechatpay') {
-            $money *= 100;
-            $total *= 100;
+            $money = (int)bcmul($money, 100);
+            $total = (int)bcmul($total, 100);
         }
         return $this->app('refund')->refund([
             'site_id' => $this->site_id,

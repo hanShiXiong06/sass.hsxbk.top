@@ -6,6 +6,9 @@ return [
 				{
 					"path": "shop_fenxiao/pages/index",
 					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
 						"navigationBarTitleText": "%shop_fenxiao.pages.index%"
 					},
 					"needLogin": true

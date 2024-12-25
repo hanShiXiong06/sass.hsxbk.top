@@ -58,6 +58,11 @@ return [
             //是否减少
             'dec' => 0,
         ],
+        'hsx_phone_query'=>[
+            'name'=>'手机查询',
+            'inc'=>0,
+            'dec'=>1,
+        ],
     ],
     MemberAccountTypeDict::BALANCE => [
         //调整
@@ -77,6 +82,11 @@ return [
             'inc' => 1,
             //是否减少
             'dec' => 0,
+        ],
+        'hsx_phone_query'=>[
+            'name'=>'手机查询',
+            'inc'=>0,
+            'dec'=>1,
         ],
         //充值
         'recharge' => [

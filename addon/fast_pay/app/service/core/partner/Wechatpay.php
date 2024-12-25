@@ -272,7 +272,7 @@ class Wechatpay
     public function refund(array $params)
     {
         $out_trade_no = $params['out_trade_no'];
-        $money = $params['money'];
+        $money = (int)$params['money'];
         $total = $params['total'];
         $refund_no = $params['refund_no'];
         $result = Pay::wechat()->refund([

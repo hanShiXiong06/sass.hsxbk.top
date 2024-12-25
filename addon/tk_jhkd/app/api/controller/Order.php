@@ -2,15 +2,18 @@
 
 namespace addon\tk_jhkd\app\api\controller;
 
+use addon\tk_jhkd\app\service\core\KdniaoNoticeService;
 use addon\tk_jhkd\app\service\core\TranceService;
 use addon\tk_jhkd\app\service\core\XindaNoticeService;
 use addon\tk_jhkd\app\service\core\YidaNoticeService;
 use addon\tk_jhkd\app\service\core\YidaService;
+use addon\tk_jhkd\app\service\core\YisuNoticeService;
 use addon\tk_jhkd\app\service\core\YunyangNoticeService;
 use core\base\BaseController;
 use addon\tk_jhkd\app\service\core\OrderService;
 use addon\tk_jhkd\app\dict\order\JhkdOrderDict;
 use addon\tk_jhkd\app\service\api\OrderService as ApiOrderService;
+use think\Exception;
 use think\Response;
 
 
@@ -20,11 +23,14 @@ class Order extends BaseController
     {
         return success((new OrderService())->checkAddPay());
     }
+
     /**
      *生成系统订单
      */
     public function createOrder()
     {
+        $res = (new OrderService())->checkAddPay();
+        if ($res['type'] != 'success') throw new Exception('请先支付未补差价订单');
         $data = $this->request->params([
             ["startAddress", ''],
             ["endAddress", ''],
@@ -135,6 +141,8 @@ class Order extends BaseController
             ["key", ''],
             ["delivery_index", '']
         ]);
+        $res = (new OrderService())->checkAddPay();
+        if ($res['type'] != 'success') throw new Exception('请先支付未补差价订单');
         return success((new OrderService())->preOrder($data));
     }
 
@@ -170,9 +178,9 @@ class Order extends BaseController
             ['comments', ''],//快递员信息
             ['courierPhone', ''],//揽件电话
             ['courierName', ''],//揽件员
-            ['volume',''],//实际体积
-            ['freightHaocai',0],//耗材
-            ['freightInsured',0],//保价费
+            ['volume', ''],//实际体积
+            ['freightHaocai', 0],//耗材
+            ['freightInsured', 0],//保价费
         ]);
         $params = [
             'orderNo' => $data['shopbill'],
@@ -201,8 +209,8 @@ class Order extends BaseController
                         "name" => '保价费用'
                     ],
                 ],
-                "businessTypeNew"=>'',
-                "deliveryIdNew"=>''
+                "businessTypeNew" => '',
+                "deliveryIdNew" => ''
 
             ],
 
@@ -211,6 +219,26 @@ class Order extends BaseController
         (new YunyangNoticeService())->notice($params);
         return Response::create(['message' => '推送成功', 'code' => 1], 'json', 200);
     }
+
+    /**
+     * 亿速回调
+     */
+    public function yisuNotice()
+    {
+        $data = $this->request->params([
+            ['thirdOrderNo', ''], //商户订单号
+            ['waybillNo', ''],//快递运单号
+            ['orderNo', ''],//平台订单号
+            ['type', ''],//快递列表
+            ['pushType', ''],//运单总扣款
+            ['type', ''],//运单状态
+            ['pushType', ''],//推送类型 1状态变更 2计费变更 3快递员变更 4订单变更
+            ['data', ''],//	推送信息对象, 根据推送类型决定
+        ]);
+        (new YisuNoticeService())->notice($data);
+        return Response::create('SUCCESS');
+    }
+
     /**
      * 辛达回调
      */
@@ -225,9 +253,9 @@ class Order extends BaseController
             ['expressman', ''],//揽收信息
             ['courierPhone', ''],//揽件电话
             ['courierName', ''],//揽件员
-            ['feeOver',''],//扣费状态
-            ['consumables_money',''],//包装费
-            ['change_bill_freight','']
+            ['feeOver', ''],//扣费状态
+            ['consumables_money', ''],//包装费
+            ['change_bill_freight', '']
         ]);
         $params = [
             'orderNo' => $data['xin_dabill'],
@@ -251,14 +279,32 @@ class Order extends BaseController
                         "name" => '耗材费'
                     ],
                 ],
-                "businessTypeNew"=>'',
-                "deliveryIdNew"=>''
+                "businessTypeNew" => '',
+                "deliveryIdNew" => ''
             ],
 
         ];
         (new XindaNoticeService())->notice($params);
-        return Response::create(['msg' => '推送成功', 'code' => 0,'data'=>''], 'json', 200);
+        return Response::create(['msg' => '推送成功', 'code' => 0, 'data' => ''], 'json', 200);
     }
+
+    /**
+     * @Notes:快递鸟回调
+     * kdniaoNotice
+     * 2024/12/12  14:28
+     * author:TK
+     */
+    public function kdniaoNotice()
+    {
+        $data = $this->request->params([
+            ['RequestType', ''], //辛达的订单号
+            ['DataSign', ''],//签名
+            ['RequestData', []]
+        ]);
+        (new KdniaoNoticeService())->notice($data);
+        return Response::create(['EBusinessID' => $data['RequestData']['EBusinessID'] ?? '100000', 'UpdateTime' => date('Y-m-d H:i:s', time()), 'Success' => true], 'json', 200);
+    }
+
     /**
      * 物流信息查询
      */

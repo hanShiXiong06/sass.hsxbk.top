@@ -21,9 +21,9 @@ class RefundSuccessListener
     public function handle(array $refund_info)
     {
         //交易单据处理
-        $trade_type = $refund_info['trade_type'] ?? '';
+        $trade_type = $refund_info[ 'trade_type' ] ?? '';
         if ($trade_type == 'recharge') {
-            (new CoreRechargeRefundService())->refundComplete($refund_info['refund_no']);
+            ( new CoreRechargeRefundService() )->refundComplete($refund_info[ 'refund_no' ]);
         }
 
     }

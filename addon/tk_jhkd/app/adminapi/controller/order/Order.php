@@ -171,5 +171,4 @@ class Order extends BaseAdminController
     public function deliveryInfo($deliveryid){
         return success((new TranceService())->deliveryTrance(['delivery_id'=>$deliveryid]));
     }
-
 }

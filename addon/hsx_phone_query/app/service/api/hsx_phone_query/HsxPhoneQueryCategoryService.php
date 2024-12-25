@@ -39,7 +39,7 @@ class HsxPhoneQueryCategoryService extends BaseAdminService
     $field = 'id,type_id,name,price';
     $order = 'sort desc';
 
-    $list = $this->model->where([ ['site_id', '=', $this->site_id] ])
+    $list = $this->model->where([ ['site_id', '=', $this->site_id],['is_show','=', 1] ])
         ->withSearch(['id', 'type_id', 'name', 'price'], $where)
         ->field($field)
         ->order($order)

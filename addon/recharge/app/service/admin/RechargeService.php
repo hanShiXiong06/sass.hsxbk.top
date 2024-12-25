@@ -16,6 +16,7 @@ use addon\recharge\app\model\RechargeOrder;
 use addon\recharge\app\dict\RechargeOrderDict;
 use addon\recharge\app\service\core\CoreRechargeConfigService;
 use core\base\BaseAdminService;
+use core\dict\DictLoader;
 use core\exception\AdminException;
 
 /**
@@ -58,8 +59,7 @@ class RechargeService extends BaseAdminService
      */
     public function getPage(array $where = [])
     {
-
-        $field = 'recharge_id,recharge_name,face_value,buy_price,point,growth,coupon_id,status,create_time,sort';
+        $field = 'recharge_id,recharge_name,face_value,buy_price,point,growth,status,create_time,sort,gift_json,sale_num';
         $order = 'create_time desc';
         $search_model = $this->model
             ->where([ [ 'site_id', '=', $this->site_id ] ])
@@ -68,15 +68,16 @@ class RechargeService extends BaseAdminService
             ->order($order);
         $list = $this->pageQuery($search_model);
         if (!empty($list[ 'data' ])) {
-            $recharge_ids = array_column($list[ 'data' ], 'recharge_id');
-            $sale_num = ( new RechargeOrder )
-                ->where([ [ 'recharge_order.site_id', '=', $this->site_id ], [ 'order_status', '=', RechargeOrderDict::FINISH ] ])
-                ->withJoin([ 'item' => function($query) use ($recharge_ids) {
-                    $query->where([ [ 'item_id', 'in', $recharge_ids ] ])->field('item_id');
-                } ])->group('item_id')->column('count(*)', 'item_id');
             foreach ($list[ 'data' ] as &$value) {
-                if(!empty($sale_num)) {
-                    $value[ 'sale_num' ] = isset($sale_num[ $value[ 'recharge_id' ] ]) ? $sale_num[ $value[ 'recharge_id' ] ] : 0;
+                $value[ 'gift_content' ] = [];
+                if (!empty($value[ 'gift_json' ])) {
+                    foreach ($value[ 'gift_json' ] as $k => $v) {
+                        $v[ 'key' ] = $k;
+                        $content = event('RechargeGiftContent', $v)[ 0 ];
+                        if (!empty($content)) {
+                            $value[ 'gift_content' ][] = $content;
+                        }
+                    }
                 }
             }
         }
@@ -90,8 +91,19 @@ class RechargeService extends BaseAdminService
      */
     public function add(array $data)
     {
-        $info = $this->model->where([['face_value','=',$data['face_value']]])->find();
-        if(!empty($info)) throw new AdminException('RECHARGE_AMOUNT_NOT_REPEAT');
+        $info = $this->model->where([ [ 'face_value', '=', $data[ 'face_value' ] ], [ 'site_id', '=', $this->site_id ] ])->find();
+        if (!empty($info)) throw new AdminException('RECHARGE_AMOUNT_NOT_REPEAT');
+
+        $data[ 'growth' ] = $data[ 'point' ] = 0;
+        if (isset($data[ 'gift_json' ][ 'growth' ][ 'value' ])) {
+            $data[ 'growth' ] = $data[ 'gift_json' ][ 'growth' ][ 'value' ];
+            unset($data[ 'gift_json' ][ 'growth' ]);
+        }
+        if (isset($data[ 'gift_json' ][ 'point' ][ 'value' ])) {
+            $data[ 'point' ] = $data[ 'gift_json' ][ 'point' ][ 'value' ];
+            unset($data[ 'gift_json' ][ 'point' ]);
+        }
+        $data[ 'gift_json' ] = json_encode($data[ 'gift_json' ]);
         $data[ 'create_time' ] = time();
         $data[ 'site_id' ] = $this->site_id;
         $res = $this->model->create($data);
@@ -108,8 +120,19 @@ class RechargeService extends BaseAdminService
     {
         $info = $this->model->where([ [ 'recharge_id', '=', $id ], [ 'site_id', '=', $this->site_id ] ])->find();
         if (empty($info)) throw new AdminException('RECHARGE_NOT_EXIST');
-        $face_value_info = $this->model->where([['face_value','=',$data['face_value']],['recharge_id','<>',$id]])->find();
-        if(!empty($face_value_info)) throw new AdminException('RECHARGE_AMOUNT_NOT_REPEAT');
+        $face_value_info = $this->model->where([ [ 'face_value', '=', $data[ 'face_value' ] ], [ 'recharge_id', '<>', $id ], [ 'site_id', '=', $this->site_id ] ])->find();
+        if (!empty($face_value_info)) throw new AdminException('RECHARGE_AMOUNT_NOT_REPEAT');
+
+        $data[ 'growth' ] = $data[ 'point' ] = 0;
+        if (isset($data[ 'gift_json' ][ 'growth' ][ 'value' ])) {
+            $data[ 'growth' ] = $data[ 'gift_json' ][ 'growth' ][ 'value' ];
+            unset($data[ 'gift_json' ][ 'growth' ]);
+        }
+        if (isset($data[ 'gift_json' ][ 'point' ][ 'value' ])) {
+            $data[ 'point' ] = $data[ 'gift_json' ][ 'point' ][ 'value' ];
+            unset($data[ 'gift_json' ][ 'point' ]);
+        }
+        $data[ 'gift_json' ] = json_encode($data[ 'gift_json' ]);
         $data[ 'update_time' ] = time();
         $info->save($data);
         return true;
@@ -126,14 +149,16 @@ class RechargeService extends BaseAdminService
         if (!empty($params[ 'recharge_id' ])) {
             //获取套餐信息
             $recharge_info = $this->model
-                ->field('recharge_name,face_value,buy_price,point,growth,coupon_id,status,create_time,sort')
+                ->field('recharge_name,face_value,buy_price,point,growth,status,create_time,sort,gift_json')
                 ->where([ [ 'recharge_id', '=', $params[ 'recharge_id' ] ], [ 'site_id', '=', $this->site_id ] ])
                 ->append([ 'status_name' ])
                 ->findOrEmpty()->toArray();
+            if (!empty($recharge_info)) {
+                $recharge_info[ 'gift_json' ][ 'point' ][ 'value' ] = $recharge_info[ 'point' ];
+                $recharge_info[ 'gift_json' ][ 'growth' ][ 'value' ] = $recharge_info[ 'growth' ];
+            }
         }
-
         return $recharge_info;
-
     }
 
     /**
@@ -165,7 +190,7 @@ class RechargeService extends BaseAdminService
     }
 
     /**
-     * 修改榜单排序号
+     * 修改排序号
      * @return bool
      */
     public function editSort($data)
@@ -173,6 +198,15 @@ class RechargeService extends BaseAdminService
         if (empty($data[ 'recharge_id' ])) throw new AdminException('RECHARGE_NOT_EXIST');
         $this->model->where([ [ 'recharge_id', '=', $data[ 'recharge_id' ] ], [ 'site_id', '=', $this->site_id ] ])->update([ 'sort' => $data[ 'sort' ] ]);
         return true;
+    }
+
+    /**
+     * 获取套餐字典
+     * @return array|null
+     */
+    public function getPackageGiftDict()
+    {
+        return ( new DictLoader("RechargeGift") )->load();
     }
 
 }

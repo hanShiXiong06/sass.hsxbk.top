@@ -1,25 +1,17 @@
 <template>
-  <el-dialog
-    v-model="showDialog"
-    title="订单详情"
-    width="50%"
-    class="diy-dialog-wrap"
-    :destroy-on-close="true"
-  >
+  <el-dialog v-model="showDialog" title="订单详情" width="50%" class="diy-dialog-wrap" :destroy-on-close="true">
     <el-card v-if="detailData">
       <div>
         <div class="flex items-center mt-4">
           <div
             class="mr-[28px] p-4 pl-12 pr-12 rounded-md statistic-card bg-gradient-to-r from-indigo-50 from-10% via-sky-50 via-10% to-emerald-50 to-10%"
-            v-if="detailData.orderInfo"
-          >
+            v-if="detailData.orderInfo">
             <div class="font-bold text-slate-400">订单金额</div>
             <div class="text-2xl">{{ detailData.orderInfo.order_money }}</div>
           </div>
           <div
             class="mr-[28px] p-4 pl-12 pr-12 rounded-md statistic-card bg-gradient-to-r from-indigo-50 from-10% via-sky-50 via-10% to-emerald-50 to-10%"
-            v-if="detailData.orderInfo"
-          >
+            v-if="detailData.orderInfo">
             <div class="font-bold text-slate-400">优惠金额</div>
             <div class="text-2xl">
               {{ detailData.orderInfo.order_discount_money }}
@@ -36,10 +28,7 @@
             <span class="font-bold">
               {{ detailData.deliveryInfo.delivery_id }}
             </span>
-            <el-icon
-              class="ml-2"
-              @click="copyEvent(detailData.deliveryInfo.delivery_id)"
-            >
+            <el-icon class="ml-2" @click="copyEvent(detailData.deliveryInfo.delivery_id)">
               <DocumentCopy />
             </el-icon>
           </div>
@@ -67,10 +56,7 @@
         </div>
       </div>
 
-      <div
-        v-if="detailData.deliveryInfo.price_rule"
-        class="mt-4 flex items-center"
-      >
+      <div v-if="detailData.deliveryInfo.price_rule" class="mt-4 flex items-center">
         <div class="mr-4">计价规则</div>
         <el-tag class="mr-2">
           首重：
@@ -93,25 +79,23 @@
           下单重量:
           {{ detailData.deliveryInfo.weight }}kg
         </el-tag>
- 
+
         <div class="flex mr-2">
           <div>
             超重:
             {{
               Math.ceil(
                 detailData.deliveryRealInfo.fee_weight -
-                  detailData.deliveryInfo.weight
+                detailData.deliveryInfo.weight
               )
             }}kg;￥{{
               Math.ceil(
                 detailData.deliveryRealInfo.fee_weight -
-                  detailData.deliveryInfo.weight
+                detailData.deliveryInfo.weight
               ) * detailData.deliveryInfo.price_rule.add ?? 3
             }};
           </div>
-          <block
-            v-for="(item, index) in detailData.deliveryRealInfo.fee_blockList"
-          >
+          <block v-for="(item, index) in detailData.deliveryRealInfo.fee_blockList">
             <div>{{ item.name }}:{{ item.fee }}元;</div>
           </block>
         </div>
@@ -143,8 +127,7 @@
       <div class="flex items-center mt-4">
         <div
           class="mr-[28px] p-4 rounded-md statistic-card bg-gradient-to-r from-indigo-50 from-10% via-sky-50 via-10% to-emerald-50 to-10%"
-          v-if="detailData.deliveryInfo"
-        >
+          v-if="detailData.deliveryInfo">
           <div class="font-bold">
             {{ detailData.deliveryInfo.start_address.address }}
           </div>
@@ -163,8 +146,7 @@
         </el-icon>
         <div
           class="p-4 rounded-md statistic-card bg-gradient-to-r from-indigo-50 from-10% via-sky-50 via-10% to-emerald-50 to-10%"
-          v-if="detailData.deliveryInfo.end_address"
-        >
+          v-if="detailData.deliveryInfo.end_address">
           <div class="font-bold">
             {{ detailData.deliveryInfo.end_address.address }}
           </div>
@@ -179,18 +161,11 @@
           </div>
         </div>
       </div>
-      <el-divider
-        v-if="detailData.deliveryInfo"
-        class="mt-4"
-        content-position="left"
-        >轨迹跟踪</el-divider
-      >
+      <el-divider v-if="detailData.deliveryInfo" class="mt-4" content-position="left">轨迹跟踪</el-divider>
       <div class="mt-2">
         <div class="flex items-center mb-4">
-          <el-avatar
-            v-if="detailData && detailData.deliveryInfo.delivery_arry.logo"
-            :src="img(detailData.deliveryInfo.delivery_arry.logo)"
-          />
+          <el-avatar v-if="detailData && detailData.deliveryInfo.delivery_arry.logo"
+            :src="img(detailData.deliveryInfo.delivery_arry.logo)" />
           <div class="ml-1 p-2">
             <div>{{ detailData.deliveryInfo.delivery_arry.name }}</div>
             <div class="font-bold">
@@ -213,19 +188,10 @@
               取件码:{{ detailData.deliveryInfo.courier_context.pickUpCode }}
             </div>
           </div>
-          <el-tag class="ml-8 font-bold">{{
-            detailData.deliveryInfo.order_status_desc
-              ? detailData.deliveryInfo.order_status_desc
-              : "未取件"
-          }}</el-tag>
         </div>
 
         <el-timeline>
-          <el-timeline-item
-            v-for="(activity, index) in deliveryInfo"
-            :key="index"
-            :timestamp="activity.time"
-          >
+          <el-timeline-item v-for="(activity, index) in deliveryInfo" :key="index" :timestamp="activity.time">
             {{ activity.desc }}
           </el-timeline-item>
         </el-timeline>

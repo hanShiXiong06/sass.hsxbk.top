@@ -32,7 +32,7 @@ Route::group('phone_shop_price', function () {
     Route::post('recycle_category/category/update', 'addon\phone_shop_price\app\adminapi\controller\recycle_category\RecycleCategory@updateCategory');
 })->middleware([
     AdminCheckToken::class,
-    AdminCheckRole::class,
+   
     AdminLog::class
 ]);
 // USER_CODE_END -- phone_shop_price_recycle_category
@@ -42,29 +42,18 @@ Route::group('phone_shop_price', function () {
     // 回收订单管理
     Route::get('recycle_order/list', 'addon\phone_shop_price\app\adminapi\controller\recycle_order\RecycleOrder@lists');
     Route::delete('recycle_order/:id', 'addon\phone_shop_price\app\adminapi\controller\recycle_order\RecycleOrder@deleteOrder');
-    
-    Route::post('recycle_order/device/status', 'addon\phone_shop_price\app\adminapi\controller\recycle_order\RecycleOrder@updateDeviceStatus');
-    Route::put('recycle_order/device/price', 'addon\phone_shop_price\app\adminapi\controller\recycle_order\RecycleOrder@updateDeviceFinalPrice');
-    Route::put('recycle_order/device/return', 'addon\phone_shop_price\app\adminapi\controller\recycle_order\RecycleOrder@updateDeviceReturn');
-    Route::get('recycle_order/device/detail', 'addon\phone_shop_price\app\adminapi\controller\recycle_order\RecycleOrder@getDeviceDetail');
-    // recycle_order/2
-
-    // 设备管理接口
-    Route::post('recycle_device', 'addon\phone_shop_price\app\adminapi\controller\recycle_order\RecycleOrder@addDevice');
-    Route::delete('recycle_device/:id', 'addon\phone_shop_price\app\adminapi\controller\recycle_order\RecycleOrder@deleteDevice');
-    Route::get('recycle_device/:id', 'addon\phone_shop_price\app\adminapi\controller\recycle_order\RecycleOrder@deviceInfo');
-    Route::put('recycle_device/:id', 'addon\phone_shop_price\app\adminapi\controller\recycle_order\RecycleOrder@editDevice');
-    
-    // 基础 CRUD 接口
-    Route::get('recycle_order/:id', 'addon\phone_shop_price\app\adminapi\controller\recycle_order\RecycleOrder@info');
+    Route::put('recycle_order/device/:id', 'addon\phone_shop_price\app\adminapi\controller\recycle_order_device\RecycleOrderDevice@edit');
+    // recycle_order/device post
+    Route::post('recycle_order/device', 'addon\phone_shop_price\app\adminapi\controller\recycle_order_device\RecycleOrderDevice@add');
+    Route::delete('recycle_order/device/:id', 'addon\phone_shop_price\app\adminapi\controller\recycle_order_device\RecycleOrderDevice@del');
+    // 获取订单状态列表
+    Route::get('recycle_order/status', 'addon\phone_shop_price\app\adminapi\controller\recycle_order\RecycleOrder@getStatus');
+    // 获取设备状态列表
+    Route::get('recycle_order/device/status', 'addon\phone_shop_price\app\adminapi\controller\recycle_order_device\RecycleOrderDevice@getDeviceStatus');
+    // 订单更新状态
     Route::put('recycle_order/:id', 'addon\phone_shop_price\app\adminapi\controller\recycle_order\RecycleOrder@edit');
 
-    //  订单子项的接口
-    // phone_shop_price/recycle_device/4/status
-    Route::put('recycle_device/:id/status', 'addon\phone_shop_price\app\adminapi\controller\recycle_order\RecycleOrder@updateDeviceStatus');
-    Route::put('recycle_device/:id/final_price', 'addon\phone_shop_price\app\adminapi\controller\recycle_order\RecycleOrder@updateDeviceFinalPrice');
-    Route::put('recycle_device/:id/return', 'addon\phone_shop_price\app\adminapi\controller\recycle_order\RecycleOrder@updateDeviceReturn');
-})->middleware([
+    })->middleware([
     AdminCheckToken::class,
     AdminCheckRole::class,
     AdminLog::class

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 // +----------------------------------------------------------------------
 // | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
@@ -53,22 +55,22 @@ class RecycleOrderService extends BaseApiService
         $field = 'id,order_no,site_id,count,express_id,send_username,telphone,pay_type,account,delivery_type,return_type,qrcode_image,return_address,status,create_at,update_at,over_at,comment,close_express_id';
         $order = 'create_at desc';
 
-        trace('当前site_id：' . $this->site_id, 'debug');
-        trace('当前member_id：' . $this->member_id, 'debug');
+ 
         
         // 先查询总数，不带任何条件
-        $total = $this->model->count();
-        trace('数据表总记录数：' . $total, 'debug');
+        $total = $this->model->where([['delete_at', '=', null],['site_id', '=', $this->site_id]])->count();
+
         
         // 添加site_id和member_id条件
         $search_model = $this->model->where([
             ['site_id', "=", $this->site_id],
-            ['member_id', "=", $this->member_id]
+            ['member_id', "=", $this->member_id],
+            ['delete_at', '=', null]
         ]);
         
         // 查询当前用户的记录数
         $user_total = $search_model->count();
-        trace('当前用户的记录数：' . $user_total, 'debug');
+        trace('当前用户记录数：' . $user_total, 'debug');
         
         // 处理时间查询条件
         if (!empty($where['create_at']) && is_array($where['create_at']) && count($where['create_at']) == 2) {
@@ -196,7 +198,7 @@ class RecycleOrderService extends BaseApiService
             // 创建订单
             $order = $this->model->create($orderData);
             if (!$order) {
-                throw new \Exception('创建��单失败');
+                throw new \Exception('创建单失败');
             }
 
             // 处理设备信息
@@ -214,7 +216,8 @@ class RecycleOrderService extends BaseApiService
                         'imei' => $phone['imei'],
                         'model' => $phone['model'] ?? '待识别',
                         'status' => 1,
-                        'create_at' => time()
+                        'create_at' => time(),
+                        'site_id'=>$this->site_id
                     ];
 
                     $result = $deviceModel->create($deviceData);
@@ -333,7 +336,7 @@ class RecycleOrderService extends BaseApiService
             if ($data['check_status'] == 2) {
                 $order = $this->model->where('id', $device['order_id'])->find();
                 if ($order) {
-                    // 检查该订单下所有设备是否都验机完成
+                    // 检查该订单所有设备是否都验机完成
                     $unfinishedCount = $deviceModel->where([
                         ['order_id', '=', $device['order_id']],
                         ['check_status', '<>', 2]
@@ -383,16 +386,296 @@ class RecycleOrderService extends BaseApiService
     }
     /**
      * 获取订单状态统计
-     * getStatusCount
      * @return array
-     * 返回的信息包含 状态及统计数量
-    */
-    public function getStatusCount(){
-        // RecycleOrderDict
-        // 状态在 dict中 相关的数据需要通过数据库查询
-        
-        $count = $this->model->where([['site_id','=',$this->site_id]])->count();
-        return $count;
+     */
+    public function getStatusCount()
+    {
+        // 获取所有状态的订单数量
+        $counts = $this->model->where([
+            ['site_id', '=', $this->site_id],
+            ['member_id', '=', $this->member_id],['delete_at', '=', null]
+        ])->group('status')->column('count(*)', 'status');
+
+        // 构建返回数据
+        $result = [
+            'list' => [
+                [
+                    'label' => '全部',
+                    'value' => '',
+                    'count' => array_sum($counts)
+                ]
+            ]
+        ];
+
+        // 添加各状态数量
+        foreach (RecycleOrderDict::ORDER_STATUS_TEXT as $status => $label) {
+            $result['list'][] = [
+                'label' => $label,
+                'value' => (string)$status,
+                'count' => $counts[$status] ?? 0,
+                'actions' => RecycleOrderDict::getStatus($status)['actions'] ?? []
+            ];
+        }
+        // $result =  $result['list'];
+        // unset($result['list']);
+
+        $result['status_count'] = $counts;
+        return $result;
+    }
+    // updateStatus
+    public function updateStatus(int $id, array $data)
+    {
+        try {
+            // 开启事务
+            $this->model->startTrans();
+            
+            \think\facade\Log::info('updateStatus 开始 - 参数:', ['id' => $id, 'data' => $data]);
+            
+            // 更新订单状态
+            switch ($data['action']) {
+                case 'cancel':
+                    $data['status'] = RecycleOrderDict::ORDER_STATUS['CANCELLED']; // 7
+                    break;
+                
+                case 'start_check':
+                    $data['status'] = RecycleOrderDict::ORDER_STATUS['CHECKING']; // 2
+                    break;
+                
+                case 'complete_check':
+                    $data['status'] = RecycleOrderDict::ORDER_STATUS['CHECKED']; // 3
+                    break;
+                
+                case 'confirm':
+                    $data['status'] = RecycleOrderDict::ORDER_STATUS['PAYING']; // 4
+                    break;
+                
+                case 'pay':
+                    $data['status'] = RecycleOrderDict::ORDER_STATUS['PAYED']; // 5
+                    break;
+                
+                case 'complete':
+                    $data['status'] = RecycleOrderDict::ORDER_STATUS['COMPLETED']; // 6
+                    break;
+                
+                case 'reject':
+                    $data['status'] = RecycleOrderDict::ORDER_STATUS['RETURNING']; // 8
+                    break;
+                
+                case 'return_confirm':
+                    $data['status'] = RecycleOrderDict::ORDER_STATUS['RETURNED']; // 9
+                    break;
+                
+                case 'delete':
+                    $data['delete_at'] = time();
+                    $result = $this->model->where([['id', '=', $id], ['site_id', '=', $this->site_id]])->update(['delete_at' => $data['delete_at']]);
+                    \think\facade\Log::info('删除订单结果:', ['result' => $result]);
+                    return true;
+            }
+
+            // 更新订单状态
+            if (isset($data['status'])) {
+                $order_result = $this->model->where([['id', '=', $id], ['site_id', '=', $this->site_id]])->update([
+                    'status' => $data['status'],
+                    'update_at' => time()
+                ]);
+                \think\facade\Log::info('更新订单状态结果:', ['status' => $data['status'], 'result' => $order_result]);
+                
+                if (!$order_result) {
+                    throw new \Exception('更新订单状态失败');
+                }
+            }
+
+            // 如果客户点击了一键确认，则需要将设备的状态改为已确认
+            if ($data['action'] == 'confirm') {
+                $deviceModel = new PhoneShopRecycleOrderDevice();
+                
+                // 检查是否有可以更新的设备
+                $devices_to_update = $deviceModel->where([
+                    ['order_id', '=', $id], 
+                    ['site_id', '=', $this->site_id],
+                    ['status', '=', RecycleOrderDict::DEVICE_STATUS['CHECKED']] // 只更新已质检的设备
+                ])->count();
+                
+                \think\facade\Log::info('待更新设备数量:', ['count' => $devices_to_update]);
+                
+                if ($devices_to_update > 0) {
+                    // 只更新状态为已质检(3)的设备
+                    $device_result = $deviceModel->where([
+                        ['order_id', '=', $id], 
+                        ['site_id', '=', $this->site_id],
+                        ['status', '=', RecycleOrderDict::DEVICE_STATUS['CHECKED']] // 只更新已质检的设备
+                    ])->update([
+                        'status' => RecycleOrderDict::DEVICE_STATUS['CONFIRMED'],
+                        'update_at' => time()
+                    ]);
+                    
+                    \think\facade\Log::info('更新设备状态结果:', [
+                        'order_id' => $id,
+                        'old_status' => RecycleOrderDict::DEVICE_STATUS['CHECKED'],
+                        'new_status' => RecycleOrderDict::DEVICE_STATUS['CONFIRMED'],
+                        'result' => $device_result
+                    ]);
+                    
+                    if (!$device_result) {
+                        throw new \Exception('更新设备状态失败');
+                    }
+                } else {
+                    \think\facade\Log::info('没有需要更新的设备');
+                }
+            }
+            
+            // 提交事务
+            $this->model->commit();
+            \think\facade\Log::info('updateStatus 完成');
+            return true;
+            
+        } catch (\Exception $e) {
+            // 回滚事务
+            $this->model->rollback();
+            \think\facade\Log::error('updateStatus 异常:', ['message' => $e->getMessage()]);
+            throw new \Exception($e->getMessage());
+        }
+    }
+
+    // 单台确认
+    public function deviceConfirm($device_id)
+    {
+        try {
+            $deviceModel = new PhoneShopRecycleOrderDevice();
+            
+            // 获取设备信息
+            $device = $deviceModel->where([['id', '=', $device_id]])->find();
+            if (empty($device)) {
+                throw new \Exception('设备不存在');
+            }
+            
+            // 检查设备状态是否为已质检(3)
+            if ($device['status'] != 3) {
+                throw new \Exception('设备状态不正确，无法确认');
+            }
+            
+            // 开启事务
+            $deviceModel->startTrans();
+            
+            try {
+                // 更新设备状态为已确认(4)
+                $result = $deviceModel->where([['id', '=', $device_id]])->update([
+                    'status' => RecycleOrderDict::DEVICE_STATUS['CONFIRMED'],
+                    'update_at' => time()
+                ]);
+                
+                if (!$result) {
+                    throw new \Exception('更新设备状态失败');
+                }
+                
+                // 检查订单下所有设备是否都已确认
+                $unconfirmed = $deviceModel->where([
+                    ['order_id', '=', $device['order_id']],
+                    ['status', '<>', RecycleOrderDict::DEVICE_STATUS['CONFIRMED']],
+                    ['status', '<>', RecycleOrderDict::DEVICE_STATUS['RETURNED']] // 排除已退回的设备
+                ])->count();
+                
+                // 如果所有设备都已确认，更新订单状态为已确认(4)
+                if ($unconfirmed == 0) {
+                    $order_result = $this->model->where([['id', '=', $device['order_id']]])->update([
+                        'status' => RecycleOrderDict::ORDER_STATUS['PAYING'],
+                        'update_at' => time()
+                    ]);
+                    
+                    if (!$order_result) {
+                        throw new \Exception('更新订单状态失败');
+                    }
+                }
+                
+                // 提交事务
+                $deviceModel->commit();
+                return true;
+                
+            } catch (\Exception $e) {
+                // 回滚事务
+                $deviceModel->rollback();
+                throw new \Exception($e->getMessage());
+            }
+            
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
+    }
+
+    // 单台取消
+    public function deviceCancle($device_id)
+    {
+        try {
+            $deviceModel = new PhoneShopRecycleOrderDevice();
+            
+            // 获取设备信息
+            $device = $deviceModel->where([['id', '=', $device_id]])->find();
+            if (empty($device)) {
+                throw new \Exception('设备不存在');
+            }
+            
+            // 检查设备状态是否为已质检(3)
+            if ($device['status'] != 3) {
+                throw new \Exception('设备状态不正确，无法取消');
+            }
+            
+            // 开启事务
+            $deviceModel->startTrans();
+            
+            try {
+                // 更新设备状态为已退回(6)
+                $result = $deviceModel->where([['id', '=', $device_id]])->update([
+                    'status' => RecycleOrderDict::DEVICE_STATUS['RETURNED'],
+                    'update_at' => time()
+                ]);
+                
+                if (!$result) {
+                    throw new \Exception('更新设备状态失败');
+                }
+                
+                // 检查订单下是否还有未处理的设备
+                $pending_devices = $deviceModel->where([
+                    ['order_id', '=', $device['order_id']],
+                    ['status', '<>', RecycleOrderDict::DEVICE_STATUS['CONFIRMED']], // 不是已确认
+                    ['status', '<>', RecycleOrderDict::DEVICE_STATUS['RETURNED']]  // 不是已退回
+                ])->count();
+                
+                // 如果没有未处理的设备，检查是否有确认的设备
+                if ($pending_devices == 0) {
+                    $confirmed_devices = $deviceModel->where([
+                        ['order_id', '=', $device['order_id']],
+                        ['status', '=', RecycleOrderDict::DEVICE_STATUS['CONFIRMED']]
+                    ])->count();
+                    
+                    // 更新订单状态
+                    // 有确认的设备则为已确认(4)，否则为已取消(7)
+                    $new_status = $confirmed_devices > 0 ? 
+                        RecycleOrderDict::ORDER_STATUS['PAYING'] : 
+                        RecycleOrderDict::ORDER_STATUS['CANCELLED'];
+                    
+                    $order_result = $this->model->where([['id', '=', $device['order_id']]])->update([
+                        'status' => $new_status,
+                        'update_at' => time()
+                    ]);
+                    
+                    if (!$order_result) {
+                        throw new \Exception('更新订单状态失败');
+                    }
+                }
+                
+                // 提交事务
+                $deviceModel->commit();
+                return true;
+                
+            } catch (\Exception $e) {
+                // 回滚事务
+                $deviceModel->rollback();
+                throw new \Exception($e->getMessage());
+            }
+            
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
     }
 
 }

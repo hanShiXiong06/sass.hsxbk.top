@@ -2,8 +2,8 @@
 return [
     'pages' => <<<EOT
         // PAGE_BEGIN
-            // *********************************** 快捷支付 ***********************************
-		    {
+			// *********************************** 快捷支付 ***********************************
+			{
 				"path": "fast_pay/pages/pay/index",
 				"style": {
 					"navigationBarTitleText": "收银台"
@@ -31,7 +31,7 @@ return [
 					"navigationBarTitleText": "商户收款"
 				}
 			},
-			
+
 			{
 				"path": "fast_pay/pages/partner/index",
 				"style": {
@@ -60,6 +60,6 @@ return [
 					"navigationBarTitleText": "商户收款"
 				}
 			},
-            // PAGE_END
+			// PAGE_END
 EOT
 ];

@@ -94,6 +94,7 @@ class OrderAddService extends BaseAdminService
         $info['deliveryInfo']['start_address'] = json_decode($info['deliveryInfo']['start_address'], true);
         $info['deliveryInfo']['end_address'] = json_decode($info['deliveryInfo']['end_address'], true);
         $info['deliveryInfo']['courier_context'] = json_decode($info['deliveryInfo']['courier_context'], true);
+        $info['deliveryInfo']['delivery_arry'] = (new CommonService())->getBrand($info['deliveryInfo']['platform'],$info['deliveryInfo']['delivery_type']);
         $fee_list=json_decode($info['deliveryRealInfo']['fee_blockList'],true);
         $new_fee_list=[];
         foreach ($fee_list as $fee){

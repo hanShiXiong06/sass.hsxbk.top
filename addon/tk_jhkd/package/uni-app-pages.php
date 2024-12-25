@@ -2,101 +2,115 @@
 return [
     'pages' => <<<EOT
         // PAGE_BEGIN
-			// *********************************** 聚合快递 ***********************************
-			{
-				"path": "tk_jhkd/pages/address/address",
-				"style": {
-					"navigationBarTitleText": "地址列表"
+				// *********************************** 聚合快递 ***********************************
+				{
+					"path": "tk_jhkd/pages/address/address",
+					"style": {
+						"navigationBarTitleText": "地址列表"
+					},
+					"needLogin": true
 				},
-				"needLogin": true
-			},
-			{
-				"path": "tk_jhkd/pages/address/address_edit",
-				"style": {
-					"navigationBarTitleText": "快递地址"
+				{
+					"path": "tk_jhkd/pages/address/address_edit",
+					"style": {
+						"navigationBarTitleText": "快递地址"
+					},
+					"needLogin": true
 				},
-				"needLogin": true
-			},
-			{
-				"path": "tk_jhkd/pages/address/location_address_edit",
-				"style": {
-					"navigationBarTitleText": "同城地址"
+				{
+					"path": "tk_jhkd/pages/address/location_address_edit",
+					"style": {
+						"navigationBarTitleText": "同城地址"
+					},
+					"needLogin": true
 				},
-				"needLogin": true
-			},
-			{
-				"path": "tk_jhkd/pages/agreement",
-				"style": {
-					"navigationBarTitleText": "协议详情"
+				{
+					"path": "tk_jhkd/pages/agreement",
+					"style": {
+						"navigationBarTitleText": "协议详情"
+					},
+					"needLogin": true
 				},
-				"needLogin": true
-			},
-			{
-				"path": "tk_jhkd/pages/help",
-				"style": {
-					"navigationBarTitleText": "帮助中心"
+				{
+					"path": "tk_jhkd/pages/help",
+					"style": {
+						"navigationBarTitleText": "帮助中心"
+					},
+					"needLogin": false
 				},
-				"needLogin": false
-			},
-			{
-				"path": "tk_jhkd/pages/ordersubmit",
-				"style": {
-					"navigationBarTitleText": "快递下单"
-				}
-			},
-			{
-				"path": "tk_jhkd/pages/orderlist",
-				"style": {
-					"navigationBarTitleText": "订单列表"
+				{
+					"path": "tk_jhkd/pages/ordersubmit",
+					"style": {
+						"navigationBarTitleText": "快递下单"
+					},
+					"needLogin": false
 				},
-				"needLogin": true
-			},
-			{
-				"path": "tk_jhkd/pages/orderaddlist",
-				"style": {
-					"navigationBarTitleText": "补单列表"
+				{
+					"path": "tk_jhkd/pages/orderlist",
+					"style": {
+						"navigationBarTitleText": "订单列表"
+					},
+					"needLogin": true
 				},
-				"needLogin": true
-			},
-			{
-				"path": "tk_jhkd/pages/orderdetail",
-				"style": {
-					"navigationBarTitleText": "订单详情"
+				{
+					"path": "tk_jhkd/pages/orderaddlist",
+					"style": {
+						"navigationBarTitleText": "补单列表"
+					},
+					"needLogin": true
 				},
-				"needLogin": true
-			}, {
-				"path": "tk_jhkd/pages/index",
-				"style": {
-					"navigationBarTitleText": "首页",
-					// #ifndef H5
-					"navigationStyle": "custom",
-					"app-plus": {
-						"titleView": false
+				{
+					"path": "tk_jhkd/pages/orderdetail",
+					"style": {
+						"navigationBarTitleText": "订单详情"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "tk_jhkd/pages/index",
+					"style": {
+						"navigationBarTitleText": "首页",
+						// #ifndef H5
+						"navigationStyle": "custom",
+						"app-plus": {
+							"titleView": false
+						}
+						// #endif 
 					}
-					// #endif 
-
-				}
-
-			},
-			{
-				"path": "tk_jhkd/pages/member",
-				"style": {
-					"navigationBarTitleText": "个人中心",
-					// #ifndef H5
-					"navigationStyle": "custom",
-					"app-plus": {
-						"titleView": false
-					}
-					// #endif 
-				}
-			},
-			{
-				"path": "tk_jhkd/pages/fenxiao/index",
-				"style": {
-					"navigationBarTitleText": "分销中心"
 				},
-				"needLogin": true
-			},
-			// PAGE_END
+				{
+					"path": "tk_jhkd/pages/member",
+					"style": {
+						"navigationBarTitleText": "个人中心",
+						// #ifndef H5
+						"navigationStyle": "custom",
+						"app-plus": {
+							"titleView": false
+						}
+						// #endif 
+					}
+				},
+				{
+					"path": "tk_jhkd/pages/fenxiao/index",
+					"style": {
+						"navigationBarTitleText": "分销中心"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "tk_jhkd/pages/fenxiao/member",
+					"style": {
+						"navigationBarTitleText": "分销会员"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "tk_jhkd/pages/fenxiao/order",
+					"style": {
+						"navigationBarTitleText": "分销订单"
+					},
+					"needLogin": true
+				},
+				// PAGE_END
 EOT
 ];

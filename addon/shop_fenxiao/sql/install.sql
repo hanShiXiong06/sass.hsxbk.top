@@ -62,9 +62,26 @@ CREATE TABLE `{{prefix}}shop_fenxiao_goods` (
 	`site_id` int NOT NULL DEFAULT 0 COMMENT '站点id',
 	`is_fenxiao` tinyint NOT NULL DEFAULT 1 COMMENT '是否参与分享（1=是，0=否）',
 	`fenxiao_type` tinyint UNSIGNED NOT NULL DEFAULT 1 COMMENT '佣金设置类型',
-	`fenxiao_rule` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '单独设置信息',
+	`fenxiao_rule` text DEFAULT NULL COMMENT '单独设置规则信息',
 	PRIMARY KEY USING BTREE (`fenxiao_goods_id`)
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE utf8mb4_general_ci COMMENT '分销商品表';
+
+
+DROP TABLE IF EXISTS `shop_fenxiao_goods_rule`;
+CREATE TABLE `shop_fenxiao_goods_rule` (
+  `goods_rule_id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `site_id` INT(11) NOT NULL DEFAULT 0 COMMENT '站点id',
+  `goods_id` INT(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '商品id',
+  `sku_id` INT(11) NOT NULL DEFAULT 0 COMMENT '商品sku_id',
+  `level_id` INT(11) NOT NULL DEFAULT 0 COMMENT '分销等级id',
+  `level_name` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '分销等级名称',
+  `one_rate` DECIMAL(10, 2) NOT NULL DEFAULT 0.00 COMMENT '一级佣金比例',
+  `two_rate` DECIMAL(10, 2) NOT NULL DEFAULT 0.00 COMMENT '二级佣金比例',
+  `one_money` DECIMAL(10, 2) NOT NULL DEFAULT 0.00 COMMENT '一级佣金金额',
+  `two_money` DECIMAL(10, 2) NOT NULL DEFAULT 0.00 COMMENT '二级佣金金额',
+  `calculate_price` DECIMAL(10, 2) NOT NULL DEFAULT 0.00 COMMENT '计算金额',
+  PRIMARY KEY (`goods_rule_id`)
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE utf8mb4_general_ci COMMENT '分销商品分佣规则表';
 
 
 DROP TABLE IF EXISTS `{{prefix}}shop_fenxiao_level`;

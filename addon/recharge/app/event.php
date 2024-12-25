@@ -25,6 +25,8 @@ return [
         'WapIndex' => [ 'addon\recharge\app\listener\WapIndexListener' ],
         // 订单创建后
         'AfterRechargeOrderCreate' => ['addon\recharge\app\listener\order\AfterRechargeOrderCreate'],
+        // 会员充值 赠送内容
+        'RechargeGiftContent'=>[],
     ],
     'subscribe' => [
     ],

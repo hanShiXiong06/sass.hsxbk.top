@@ -2,10 +2,8 @@
 
 namespace addon\tk_jhkd\app\dict\delivery;
 
-use app\dict\pay\PayDict;
-
 /**
- *订单相关枚举类
+ * 辛达快递品牌枚举
  */
 class XindaBrandDict
 {
@@ -49,9 +47,21 @@ class XindaBrandDict
                 'name' => '顺丰',
                 'logo' => 'addon/tk_jhkd/logo/sf.png'
             ],
+            '顺心捷达'=>[
+                'name' => '顺心捷达',
+                'logo' => 'addon/tk_jhkd/logo/sxjd.png'
+            ],
+            '壹米滴答'=>[
+                'name' => '壹米滴答',
+                'logo' => 'addon/tk_jhkd/logo/ymdd.png'
+            ],
+            '百世'=>[
+                'name' => '百世快运',
+                'logo' => 'addon/tk_jhkd/logo/bs.png'
+            ],
         ];
-        if ($brand === null || !isset($data[$brand])) {
-            return ['logo' => ''];
+        if ($brand == null || !isset($data[$brand])) {
+            return ['logo' => '','name'=>$brand];
         }
         return $data[$brand];
     }

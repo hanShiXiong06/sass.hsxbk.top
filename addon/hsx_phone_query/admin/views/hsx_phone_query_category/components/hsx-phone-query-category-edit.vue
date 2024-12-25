@@ -1,6 +1,6 @@
 <template>
     <el-dialog v-model="showDialog"
-        :title="formData.site_id ? t('updateHsxPhoneQueryCategory') : t('addHsxPhoneQueryCategory')" width="50%"
+        :title="formData.id ? t('updateHsxPhoneQueryCategory') : t('addHsxPhoneQueryCategory')" width="50%"
         class="diy-dialog-wrap" :destroy-on-close="true">
         <el-form :model="formData" label-width="120px" ref="formRef" :rules="formRules" class="page-form"
             v-loading="loading">
@@ -28,7 +28,7 @@
                 <el-button @click="showDialog = false">{{ t('cancel') }}</el-button>
                 <el-button type="primary" :loading="loading" @click="confirm(formRef)">{{
                     t('confirm')
-                    }}</el-button>
+                }}</el-button>
             </span>
         </template>
     </el-dialog>
@@ -48,8 +48,8 @@ const loading = ref(false)
  * 表单数据
  */
 const initialFormData = {
+    
     id: '',
-    site_id: '',
     type_id: '',
     name: '',
     price: '',
@@ -87,7 +87,7 @@ const emit = defineEmits(['complete'])
  */
 const confirm = async (formEl: FormInstance | undefined) => {
     if (loading.value || !formEl) return
-    let save = formData.site_id ? editHsxPhoneQueryCategory : addHsxPhoneQueryCategory
+    let save = formData.id ? editHsxPhoneQueryCategory : addHsxPhoneQueryCategory
 
     await formEl.validate(async (valid) => {
         if (valid) {
@@ -119,7 +119,7 @@ const setFormData = async (row: any = null) => {
     Object.assign(formData, initialFormData)
     loading.value = true
     if (row) {
-        const data = await (await getHsxPhoneQueryCategoryInfo(row.site_id)).data
+        const data = await (await getHsxPhoneQueryCategoryInfo(row.id)).data
         if (data) Object.keys(formData).forEach((key: string) => {
             if (data[key] != undefined) formData[key] = data[key]
         })

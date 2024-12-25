@@ -7,7 +7,7 @@ import request from '@/utils/request'
  * @returns
  */
 export function getOrderDeliveryList(params: Record<string, any>) {
-    return request.get(`tk_jhkd/orderdelivery`, {params})
+    return request.get(`tk_jhkd/orderdelivery`, { params })
 }
 
 /**

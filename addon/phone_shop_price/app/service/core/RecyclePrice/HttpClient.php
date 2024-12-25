@@ -1,4 +1,5 @@
 <?php
+/*
 namespace addon\phone_shop_price\app\service\core\RecyclePrice;
 
 class HttpClient {
@@ -63,3 +64,4 @@ class HttpClient {
         }
     }
 }
+*/

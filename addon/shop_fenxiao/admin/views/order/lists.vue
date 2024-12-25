@@ -262,7 +262,7 @@ const arraySpanMethod = ({
 
     if (columnIndex <= 2) {
         return [row.goodsRowspan, row.goodsRowspan ? 1 : 0]
-    } else if (columnIndex == 3 || columnIndex > 7) {
+    } else if (columnIndex == 3 || (columnIndex > 7 && columnIndex != 8)) {
         return [row.rowspan, row.rowspan ? 1 : 0]
     } else {
         return [1, 1]

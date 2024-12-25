@@ -79,6 +79,7 @@ class RecycleDeviceService extends BaseAdminService
         $data['site_id'] = $this->site_id;
         $data['status'] = 1;
         $data['check_status'] = 0;
+        $data['site_id']=>$this->site_id;
         
         Db::startTrans();
         try {

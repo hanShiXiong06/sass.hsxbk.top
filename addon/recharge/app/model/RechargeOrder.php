@@ -44,7 +44,6 @@ class RechargeOrder extends BaseModel
         'close_time' => 'timestamp',
     ];
 
-
     /**
      * 登录渠道字段转化
      * @param $value

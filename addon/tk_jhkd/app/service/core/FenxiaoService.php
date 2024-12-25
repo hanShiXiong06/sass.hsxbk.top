@@ -5,13 +5,17 @@
 
 namespace addon\tk_jhkd\app\service\core;
 
+use addon\tk_jhkd\app\dict\order\JhkdOrderDict;
 use addon\tk_jhkd\app\model\fenxiao\FenxiaoOrder;
 use addon\tk_jhkd\app\model\fenxiao\FenxiaoMember;
+use addon\tk_jhkd\app\model\order\Order;
+use addon\tk_jhkd\app\model\orderdelivery\OrderDelivery;
 use app\dict\member\MemberAccountTypeDict;
 use app\model\member\MemberLevel;
 use app\service\core\member\CoreMemberAccountService;
 use app\service\core\member\CoreMemberService;
 use core\base\BaseApiService;
+use think\facade\Log;
 
 /**
  * 分销公共服务层
@@ -22,6 +26,166 @@ class FenxiaoService extends BaseApiService
     {
         parent::__construct();
     }
+    public function getOrderData($where)
+    {
+        $data = [
+            'first_order' => $this->getFirstFenxiaoOrder()['total'],
+            'two_order' => $this->getTwoFenxiaoOrder()['total'],
+        ];
+        return $data;
+    }
+
+    /**
+     * @Notes:获取一级分销会员
+     * getFirstFenxiaoMember
+     * @param $where
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\DbException
+     * 2024/12/20  22:52
+     * author:TK
+     */
+    public function getFirstFenxiaoMember($where)
+    {
+        $fenxiaoModel = new FenxiaoMember();
+        $fenxiaoOrderModel = new FenxiaoOrder();
+        $firstFenxiao = $fenxiaoModel->where(['site_id' => $this->site_id, 'pid' => $this->member_id])
+            ->with(['memberInfo' => function ($query) {
+                $query->field('headimg,nickname,member_id');
+            }]);
+        $list = $this->pageQuery($firstFenxiao);
+        foreach ($list['data'] as $k => $v) {
+            $list['data'][$k]['order_num'] = $fenxiaoOrderModel->where(['site_id' => $this->site_id, 'member_id' => $v['member_id']])->count();
+        }
+        return $list;
+    }
+
+    /**、
+     * @Notes:获取一级分销订单
+     * getFirstFenxiaoOrder
+     * @param $where
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     * 2024/12/20  22:51
+     * author:TK
+     */
+    public function getFirstFenxiaoOrder($where = [])
+    {
+        $fenxiaoModel = new FenxiaoMember();
+        $fenxiaoOrderModel = new FenxiaoOrder();
+        $firstFenxiao = $fenxiaoModel->where(['site_id' => $this->site_id, 'pid' => $this->member_id])
+            ->with(['memberInfo' => function ($query) {
+                $query->field('headimg,nickname,member_id');
+            }])
+            ->select()->toArray();
+        $member_ids = array_column($firstFenxiao, 'member_id');
+        $orderModel = $fenxiaoOrderModel
+            ->where(['site_id' => $this->site_id])
+            ->where('member_id', 'in', $member_ids)
+            ->with(['memberInfo' => function ($query) {
+                $query->field('headimg,nickname,member_id');
+            }]);
+        $list = $this->pageQuery($orderModel);
+        //查询订单信息
+        $orderModel = new Order();
+        $orderDeliveryModel=new OrderDelivery();
+        foreach ($list['data'] as $k => $v) {
+            $list['data'][$k]['order_info'] = $orderModel->where(['order_id' => $v['order_id']])->findOrEmpty();
+            $list['data'][$k]['status_name']=JhkdOrderDict::getStatus($v['status'])['name'];
+            $delivery=$orderDeliveryModel->where(['order_id'=>$v['order_id']])->findOrEmpty();
+            $list['data'][$k]['start_address']=json_decode($delivery['start_address'],true);
+            $list['data'][$k]['end_address']=json_decode($delivery['end_address'],true);
+        }
+        return $list;
+    }
+
+    /**
+     * @Notes:二级分销统计
+     * getTwoFenxiaoOrder
+     * @param $where
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     * 2024/12/21  09:56
+     * author:TK
+     */
+    public function getTwoFenxiaoOrder($where = [])
+    {
+        $fenxiaoModel = new FenxiaoMember();
+        $fenxiaoOrderModel = new FenxiaoOrder();
+        $firstFenxiao = $fenxiaoModel->where(['site_id' => $this->site_id, 'pid' => $this->member_id])
+            ->with(['memberInfo' => function ($query) {
+                $query->field('headimg,nickname,member_id');
+            }])
+            ->select()->toArray();
+        $member_ids = array_column($firstFenxiao, 'member_id');
+        $twoFenxiao = $fenxiaoModel
+            ->where(['site_id' => $this->site_id])
+            ->where('pid', 'in', $member_ids)
+            ->select()->toArray();
+        $member_ids = array_column($twoFenxiao, 'member_id');
+        $orderModel = $fenxiaoOrderModel
+            ->where(['site_id' => $this->site_id])
+            ->where('member_id', 'in', $member_ids)
+            ->with(['memberInfo' => function ($query) {
+                $query->field('headimg,nickname,member_id');
+            }]);
+        $list = $this->pageQuery($orderModel);
+        //查询订单信息
+        $orderModel = new Order();
+        $orderDeliveryModel=new OrderDelivery();
+        foreach ($list['data'] as $k => $v) {
+            $list['data'][$k]['order_info'] = $orderModel->where(['order_id' => $v['order_id']])->findOrEmpty();
+            $list['data'][$k]['status_name']=JhkdOrderDict::getStatus($v['status'])['name'];
+            $delivery=$orderDeliveryModel->where(['order_id'=>$v['order_id']])->findOrEmpty();
+            $list['data'][$k]['start_address']=json_decode($delivery['start_address'],true);
+            $list['data'][$k]['end_address']=json_decode($delivery['end_address'],true);
+        }
+        return $list;
+    }
+
+    /**
+     * @Notes:获取二级会员
+     * getTwoFenxiaoMember
+     * @param $where
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     * 2024/12/20  22:51
+     * author:TK
+     */
+    public function getTwoFenxiaoMember($where)
+    {
+        $fenxiaoModel = new FenxiaoMember();
+        $fenxiaoOrderModel = new FenxiaoOrder();
+        $firstFenxiao = $fenxiaoModel->where(['site_id' => $this->site_id, 'pid' => $this->member_id])
+            ->with(['memberInfo' => function ($query) {
+                $query->field('headimg,nickname,member_id');
+            }])
+            ->select()->toArray();
+        $member_ids = array_column($firstFenxiao, 'member_id');
+        $firstFenxiao = $fenxiaoModel
+            ->where(['site_id' => $this->site_id])
+            ->where('pid', 'in', $member_ids)
+            ->with(['memberInfo' => function ($query) {
+                $query->field('headimg,nickname,member_id');
+            }]);
+        $list = $this->pageQuery($firstFenxiao);
+        foreach ($list['data'] as $k => $v) {
+            $list['data'][$k]['order_num'] = $fenxiaoOrderModel->where(['site_id' => $this->site_id, 'member_id' => $v['member_id']])->count();
+        }
+        return $list;
+    }
+
     public function getFenxiaoInfo()
     {
         $fenxiaoModel=new FenxiaoMember();
@@ -182,5 +346,33 @@ class FenxiaoService extends BaseApiService
         }
         return [];
     }
-
+    public function bindFenxiao($data)
+    {
+        $this->member_id = $data['member_id'];
+        $this->site_id = $data['site_id'];
+        if ($this->member_id == $data['pid']) return [];
+        $fenxiaoMemberModel = new FenxiaoMember();
+        $fenxiaoMemberInfo = $fenxiaoMemberModel->where(['site_id' => $this->site_id, 'member_id' => $this->member_id])->findOrEmpty();
+        //会员分销关系存在不进行管理
+        if (!$fenxiaoMemberInfo->isEmpty()) return [];
+        //上级会员信息及权限判断
+        $p_member_info = (new CoreMemberService())->getInfoByMemberId($this->site_id, $data['pid'], 'nickname, point, member_level');
+        if (empty($p_member_info)) return [];
+        $p_member_info['member_level'] = (new MemberLevel())->where([['level_id', '=', $p_member_info['member_level']]])->field('site_id,level_id,level_benefits')->findOrEmpty()->toArray();
+        if ($p_member_info['member_level'] && !empty($p_member_info['member_level']['level_benefits'])) {
+            $level_benefits = $p_member_info['member_level']['level_benefits'];
+            foreach ($level_benefits as $k => $v) {
+                if ($k == 'tk_jhkd_fenxiao' && $v['is_use'] == 1) {
+                    //等级拥有分销权限
+                    $fenxiaoMemberModel->create([
+                        'site_id' => $this->site_id,
+                        'member_id' => $this->member_id,
+                        'pid' => $data['pid'],
+                        'create_time' => time()
+                    ]);
+                }
+            }
+        }
+        return [];
+    }
 }

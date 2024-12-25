@@ -35,48 +35,51 @@ Route::group('recharge', function() {
     // 添加充值套餐
     Route::post('package', 'addon\recharge\app\adminapi\controller\Recharge@add');
 
-    //编辑充值套餐
+    // 编辑充值套餐
     Route::put('package/:id', 'addon\recharge\app\adminapi\controller\Recharge@edit');
 
-    //获取充值详情
+    // 获取充值详情
     Route::get('package/init', 'addon\recharge\app\adminapi\controller\Recharge@init');
 
-    //删除套餐
+    // 删除套餐
     Route::delete('package/:id', 'addon\recharge\app\adminapi\controller\Recharge@del');
 
-    //修改套餐状态
+    // 修改套餐状态
     Route::put('package/status', 'addon\recharge\app\adminapi\controller\Recharge@modifyStatus');
 
-    //修改排序
+    // 修改排序
     Route::put('package/sort', 'addon\recharge\app\adminapi\controller\Recharge@editSort');
 
+    // 获取套餐赠送规则字典
+    Route::get('dict/package_gift', 'addon\recharge\app\adminapi\controller\Recharge@getPackageGiftDict');
+
     /***************************************************** 充值订单 *************************************************/
-    //订单列表
+    // 订单列表
 
     Route::get('order', 'addon\recharge\app\adminapi\controller\Order@lists');
 
-    //订单详情
+    // 订单详情
     Route::get('order/:order_id', 'addon\recharge\app\adminapi\controller\Order@detail');
 
-    //订单状态
+    // 订单状态
     Route::get('order/status', 'addon\recharge\app\adminapi\controller\Order@status');
 
-    //订单统计
+    // 订单统计
     Route::get('order/stat', 'addon\recharge\app\adminapi\controller\Order@stat');
 
     // 订单发起退款
     Route::put('refund/:order_id', 'addon\recharge\app\adminapi\controller\Order@refund');
 
-    //退款订单列表
+    // 退款订单列表
     Route::get('refund', 'addon\recharge\app\adminapi\controller\Order@refundLists');
 
-    //退款订单详情
+    // 退款订单详情
     Route::get('refund/:refund_id', 'addon\recharge\app\adminapi\controller\Order@refundDetail');
 
-    //退款订单状态
+    // 退款订单状态
     Route::get('refund/status', 'addon\recharge\app\adminapi\controller\Order@refundStatus');
 
-    //退款订单统计
+    // 退款订单统计
     Route::get('refund/stat', 'addon\recharge\app\adminapi\controller\Order@refundStat');
 
 })->middleware([

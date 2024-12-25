@@ -14,7 +14,6 @@ namespace addon\shop_fenxiao\app\service\admin\team;
 
 
 use addon\shop\app\model\order\Order;
-use addon\shop_fenxiao\app\model\fenxiao\FenxiaoMember;
 use addon\shop_fenxiao\app\service\core\fenxiao\CoreFenxiaoService;
 use app\model\member\Member;
 use core\base\BaseAdminService;
@@ -44,37 +43,50 @@ class TeamService extends BaseAdminService
             'indirect_ids' => [],
         ];
         $temp_member_ids = [];
+        $temp_indirect_member_ids = [];
+        $core_fenxiao_service = new CoreFenxiaoService();
         //查询直属下级会员
-        $child_member_list = (new CoreFenxiaoService())->getChildMemberOfOne($this->site_id, $member_id);
+        $child_member_list = $core_fenxiao_service->getChildMemberOfOne($this->site_id, $member_id);
         if (!empty($child_member_list)) {
             $child_member_ids = array_column($child_member_list, 'member_id');
             $temp_member_ids = array_merge($temp_member_ids, $child_member_ids);
             $data['direct_ids'] = $temp_member_ids;
         }
         //查询下级分销商
-        $child_fenxiao_list = (new CoreFenxiaoService())->getChildFenxiaoOfOne($this->site_id, $member_id);
+        $child_fenxiao_list = $core_fenxiao_service->getChildFenxiaoOfOne($this->site_id, $member_id);
         if (!empty($child_fenxiao_list)) {
             $child_fenxiao_column = array_column($child_fenxiao_list, null, 'member_id');
             $child_fenxiao_member_ids = array_column($child_fenxiao_list, 'member_id');
-            $child_fenxiao_member_list = (new FenxiaoMember())->where([['site_id', '=', $this->site_id], ['fenxiao_member_id', 'in', $child_fenxiao_member_ids]])->select()->toArray();
-            if (!empty($child_fenxiao_member_list)) {
-                $child_fenxiao_member_ids = array_merge($child_fenxiao_member_ids, array_column($child_fenxiao_member_list, 'member_id'));
+            //查询下级分销商的下级会员
+            $indirect_child_member_list = $core_fenxiao_service->getIndirectChildMemberOfMany($this->site_id, $child_fenxiao_member_ids);
+            if (!empty($indirect_child_member_list)) {
+                $temp_indirect_member_ids = array_merge($temp_indirect_member_ids, array_column($indirect_child_member_list, 'member_id'));
+            }
+            //查询下级分销商的下级分销商
+            $indirect_child_fenxiao_list = $core_fenxiao_service->getIndirectChildFenxiaoOfMany($this->site_id, $child_fenxiao_member_ids);
+            if (!empty($indirect_child_fenxiao_list)) {
+                $temp_indirect_member_ids = array_merge($temp_indirect_member_ids, array_column($indirect_child_fenxiao_list, 'member_id'));
+                $indirect_child_fenxiao_column = array_column($indirect_child_fenxiao_list, null, 'member_id');
             }
             $temp_member_ids = array_merge($temp_member_ids, $child_fenxiao_member_ids);
-            $data['indirect_ids'] = $child_fenxiao_member_ids;
+            $data['direct_ids'] = $temp_member_ids;
+            $data['indirect_ids'] = $temp_indirect_member_ids;
         }
-        $child_fenxiao_column = $child_fenxiao_column ?? [];
         $condition = [
             ['site_id', '=', $this->site_id],
         ];
         if ($type) {
             if ($type == 'direct') {
                 $condition[] = ['member_id', 'in', $data['direct_ids']];
+                $child_fenxiao_column = $child_fenxiao_column ?? [];
             } else {
                 $condition[] = ['member_id', 'in', $data['indirect_ids']];
+                $child_fenxiao_column = $indirect_child_fenxiao_column ?? [];
             }
         } else {
+            $temp_member_ids = array_merge($data['direct_ids'], $data['indirect_ids']);
             $condition[] = ['member_id', 'in', $temp_member_ids];
+            $child_fenxiao_column = array_merge($child_fenxiao_column ?? [], $indirect_child_fenxiao_column ?? []);
         }
         $field = 'member_id, username, nickname, mobile, headimg';
         $search_model = (new Member())->where($condition)

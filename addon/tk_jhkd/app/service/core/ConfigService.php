@@ -16,7 +16,6 @@ class ConfigService extends BaseAdminService
     public function __construct()
     {
         parent::__construct();
-
     }
 
     /**
@@ -27,13 +26,29 @@ class ConfigService extends BaseAdminService
     public function getConfig()
     {
         $info = (new CoreConfigService())->getConfig($this->site_id, 'TK_JHKD_CONFIG');
-        if ($info) {
-            $info['value']['noticeurl'] = (new CommonService())->getUrl() . '/api/tk_jhkd/yidanotice';
-            //增加云洋回掉URL
-            $info['value']['noticeurlyy'] = (new CommonService())->getUrl() . '/api/tk_jhkd/yunyangnotice';
-            //辛达回掉
-            $info['value']['noticeurlxd'] = (new CommonService())->getUrl() . '/api/tk_jhkd/xindanotice';
-        }
+        $url_data = [
+            [
+                'name' => '易达178',
+                'url' => (new CommonService())->getUrl() . '/api/tk_jhkd/yidanotice',
+            ],
+            [
+                'name' => '云洋',
+                'url' => (new CommonService())->getUrl() . '/api/tk_jhkd/yunyangnotice',
+            ],
+            [
+                'name' => '辛达',
+                'url' => (new CommonService())->getUrl() . '/api/tk_jhkd/xindanotice',
+            ],
+            [
+                'name' => '快递鸟',
+                'url' => (new CommonService())->getUrl() . '/api/tk_jhkd/kdniaonotice',
+            ],
+            [
+                'name' => '亿速',
+                'url' => (new CommonService())->getUrl() . '/api/tk_jhkd/yisunotice',
+            ],
+        ];
+        $info['value']['url_data'] = $url_data;
         return $info;
     }
 

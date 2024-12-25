@@ -5,6 +5,7 @@ namespace addon\phone_shop_price\app\adminapi\controller\recycle_order;
 
 use core\base\BaseAdminController;
 use addon\phone_shop_price\app\service\admin\recycle_order\RecycleOrderService;
+use addon\phone_shop_price\app\dict\RecycleOrderDict;
 
 /**
  * 回收订单控制器
@@ -212,6 +213,11 @@ class RecycleOrder extends BaseAdminController
         
         // $this->validate($data, 'addon\phone_shop_price\app\validate\recycle_order\RecycleOrder.editDevice');
         return (new RecycleOrderService())->editDevice($id, $data);
+    }
+
+    // getStatus 获取订单状态列表
+    public function getStatus(){
+        return success(RecycleOrderDict::ORDER_STATUS_TEXT);
     }
     
 

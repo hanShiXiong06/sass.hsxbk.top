@@ -13,7 +13,7 @@ namespace addon\recharge\app\dict;
 
 
 /**
- *充值套餐相关枚举类
+ * 充值套餐相关枚举类
  * Class RechargePackageDict
  * @package app\dict\order
  */

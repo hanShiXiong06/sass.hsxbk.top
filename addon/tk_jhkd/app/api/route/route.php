@@ -11,6 +11,10 @@ Route::group("tk_jhkd", function () {
     Route::post('yunyangnotice', 'addon\tk_jhkd\app\api\controller\Order@yunyangNotice');
     //辛达回掉通知
     Route::post('xindanotice', 'addon\tk_jhkd\app\api\controller\Order@xindaNotice');
+    //快递鸟回掉通知
+    Route::post('kdniaonotice', 'addon\tk_jhkd\app\api\controller\Order@kdniaoNotice');
+    //亿速回调接口
+    Route::post('yisunotice', 'addon\tk_jhkd\app\api\controller\Order@yisuNotice');
 });
 /**
  * 路由（注意最好group路由名称与插件名称一致，防止路由冲突）
@@ -78,6 +82,12 @@ Route::group("tk_jhkd", function () {
     Route::get('checkaddpay', 'addon\tk_jhkd\app\api\controller\Order@checkAddPay');
     //统计分销订单
     Route::get('fenxiao/getfenxiaofnfo','addon\tk_jhkd\app\api\controller\Fenxiao@getFenxiaoInfo');
+    //2.0分销订单统计
+    Route::get('fenxiao/getorderdata','addon\tk_jhkd\app\api\controller\Fenxiao@getOrderData');
+    //分销会员统一入口
+    Route::get('fenxiao/getfenxiaomember','addon\tk_jhkd\app\api\controller\Fenxiao@getFenxiaoMember');
+    //订单统一入口
+    Route::get('fenxiao/getfenxiaoorder','addon\tk_jhkd\app\api\controller\Fenxiao@getFenxiaoOrder');
 })->middleware(ApiChannel::class)
     ->middleware(ApiCheckToken::class, true)
     ->middleware(ApiLog::class);

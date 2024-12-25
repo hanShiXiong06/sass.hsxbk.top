@@ -5,6 +5,7 @@ namespace addon\tk_jhkd\app\service\api;
 use addon\tk_jhkd\app\dict\order\JhkdOrderDict;
 use addon\tk_jhkd\app\dict\order\OrderRefundLogDict;
 use addon\tk_jhkd\app\model\tkjhkdorder\Tkjhkdorder;
+use addon\tk_jhkd\app\service\core\CommonService;
 use addon\tk_jhkd\app\service\core\OrderLogService;
 use app\dict\pay\RefundDict;
 use app\model\pay\Refund;
@@ -133,6 +134,7 @@ class OrderService extends BaseApiService
         $item=$info;
         $item['orderInfo']['price_rule'] = json_decode($item['orderInfo']['price_rule'], true);
         $item['orderInfo']['original_rule'] = json_decode($item['orderInfo']['original_rule'], true);
+        $item['orderInfo']['delivery_arry'] = (new CommonService())->getBrand($item['orderInfo']['platform'],$item['orderInfo']['delivery_type']);
         $fee_list=json_decode($item['deliveryRealInfo']['fee_blockList'],true);
         $new_fee_list=[];
         if($fee_list!=''){
@@ -155,8 +157,8 @@ class OrderService extends BaseApiService
      */
     public function applyRefund($data)
     {
-        Db::startTrans();
-        try {
+//        Db::startTrans();
+//        try {
             $orderInfo = $this->model->where(['id' => $data['id']])
                 ->with(
                     [
@@ -181,12 +183,12 @@ class OrderService extends BaseApiService
             (new CoreRefundService())->refund($orderInfo['site_id'], $refund_no, $orderInfo['payInfo']['money'], RefundDict::BACK, OrderRefundLogDict::MEMBER, $this->member_id);
             Db::commit();
             return true;
-        } catch (Exception $e) {
-            Db::rollback();
-            Log::write('退款操作失败' . date('Y-m-d H:i:s'));
-            Log::write($e->getMessage());
-            throw new CommonException($e->getMessage());
-        }
+//        } catch (Exception $e) {
+//            Db::rollback();
+//            Log::write('退款操作失败' . date('Y-m-d H:i:s'));
+//            Log::write($e->getMessage());
+//            throw new CommonException($e->getMessage());
+//        }
     }
 
     /**

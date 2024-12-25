@@ -4,6 +4,8 @@ namespace addon\tk_jhkd\app\service\admin\order;
 
 use addon\tk_jhkd\app\dict\order\JhkdOrderDict;
 use addon\tk_jhkd\app\model\order\Order;
+use addon\tk_jhkd\app\model\order\OrderAdd;
+use addon\tk_jhkd\app\service\core\CommonService;
 use addon\tk_jhkd\app\service\core\OrderLogService;
 use app\model\member\Member;
 use addon\tk_jhkd\app\model\orderdelivery\OrderDelivery;
@@ -67,6 +69,13 @@ public function changeStatus($data)
                 ]
             )->field($field)->order($order);
         $list = $this->pageQuery($search_model);
+        $commService=new CommonService();
+        foreach ($list['data'] as $k=>$v){
+            $list['data'][$k]['platform_name'] =$commService->getDriverByType($v['orderInfo']['platform'])['name']??'';
+            $list['data'][$k]['delivery_name']=$commService->getBrand($v['orderInfo']['platform'],$v['orderInfo']['delivery_type'])['name']??'';
+            $list['data'][$k]['start_address']=json_decode($v['orderInfo']['start_address'],true);
+            $list['data'][$k]['end_address']=json_decode($v['orderInfo']['end_address'],true);
+        }
         return $list;
     }
 
@@ -101,6 +110,7 @@ public function changeStatus($data)
         $info['is_pick'] = strval($info['is_pick']);
         $info['orderInfo']['price_rule'] = json_decode($info['orderInfo']['price_rule'], true);
         $info['orderInfo']['original_rule'] = json_decode($info['orderInfo']['original_rule'], true);
+        $info['orderInfo']['delivery_arry'] = (new CommonService())->getBrand($info['orderInfo']['platform'],$info['orderInfo']['delivery_type']);
         $fee_list=json_decode($info['deliveryRealInfo']['fee_blockList'],true);
         $new_fee_list=[];
         if($fee_list!=''){
@@ -154,6 +164,11 @@ public function changeStatus($data)
     {
         $model = $this->model->where([['id', '=', $id], ['site_id', '=', $this->site_id]])->find();
         if ($model['order_status'] == -1 || $model['order_status'] == 0) {
+            //检查补差价订单
+            $addModel = (new OrderAdd())->where(['order_id' => $model['order_id']])->findOrEmpty();
+            if (!$addModel->isEmpty()) {
+                if ($addModel['order_status'] == 0) throw new CommonException('存在未支付补差价订单，禁止删除');
+            }
             $deliveryInfo = (new OrderDelivery())->where(['order_id' => $model['order_id']])->findOrEmpty();
             if (!$deliveryInfo->isEmpty()) {
                 $deliveryInfo->delete();

@@ -349,6 +349,15 @@ class Goods extends BaseModel
     }
 
     /**
+     * 关联分销商品规则
+     * @return \think\model\relation\hasOne
+     */
+    public function fenxiaoGoodsRule()
+    {
+        return $this->hasMany(FenxiaoGoodsRule::class, 'goods_id', 'goods_id');
+    }
+
+    /**
      * 关联商品规格列表
      * @return \think\model\relation\HasMany
      */

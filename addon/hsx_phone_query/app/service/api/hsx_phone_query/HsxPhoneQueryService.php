@@ -37,78 +37,21 @@ class HsxPhoneQueryService extends BaseApiService
         // $this->model = new HsxPhoneQuery();
     }
 
-    /**
-     * 获取分类列表
-     * @param array $where
-     * @return array
-     
-    public function query(array $where = [])
-    {
-        // 获取用户的id $this->member_id 
-        // 通过 member_id 查询 member对象 
-        $member_field = 'point';
-        $member_model = (new Member()) -> where('member_id','=',$this->member_id )->field($member_field)->find()->toArray() ;
-
-        
-        $category_field = 'price';
-        $category_model=  (new HsxPhoneQueryCategory())-> where('id','=',$where['id'] )->field($category_field)->find()->toArray();
-        if($member_model['point'] < $category_model['price']*100){
-            return error( '积分不足' );
-        }
-
-
-
-        // 先通过本地的数据库查询 是否有数据
-       $data =  ( new HsxPhoneQueryInfo())->where( [['sn', '=', $where['imeis']],['type_id','=',$where['id'] ]] )->field('info')->select()->toArray();
-       
-       
-
-       if(!empty($data)){
-            // 消费积分 通过 member_id 查询 member对象 
-            $member_model = (new Member()) -> where('member_id','=',$this->member_id )->find()->toArray() ;
-            $member_model['point'] = $member_model['point'] - $category_model['price']*100;
-            (new Member()) -> where('member_id','=',$this->member_id )->update( $member_model );
-
-
-            return [ 'code'=>200,   'data'=>json_decode( $data[0]['info']) ];
-        }
-        $field = 'appid, Secret';
-
-        $data = (new HsxPhoneQueryConfig())->where([['site_id', '=', $this->site_id]])->field($field)->select()->toArray();
-       
-        if(empty($data)){
-            return error( '请先配置appid和Secret' );
-        }
-        
-
-       $data =   json_decode( $this->call_api( $data[0]['appid'], $data[0]['Secret'], $where['imeis'] , $where['id'] ) , true);
-    
-       if($data['code'] != 200){
-           return $data;
-       }else{
-       // 将$data['data'] 插入数据库 type = $where['id'] , sn = $where['imeis'];
-          $insert_data = [
-             'sn' => $where['imeis'],
-             'type_id' => $where['id'],
-             'info' => json_encode( $data['data'] ),
-             'create_time' => time()
-          ];
-          // 将查询处理的数据插入数据库
-          (new HsxPhoneQueryInfo())->insert( $insert_data );
-          // 消费积分
-          $member_model = (new Member()) -> where('member_id','=',$this->member_id )->find()->toArray() ;
-          $member_model['point'] = $member_model['point'] - $category_model['price']*100;
-          (new Member()) -> where('member_id','=',$this->member_id )->update( $member_model );
-
-           return $data;
-       }
-   
-    }*/
-
-    
+   // watermark
+   public function watermark(){
+    return 'watermark';
+   }
 
     public function query(array $where = [])
     {
+
+        //  如果当前用户查询过 则直接返回
+        // 条件是
+        $data = (new HsxPhoneQueryInfo())->where([['sn', '=', $where['imeis']], ['type_id', '=', $where['id']]])->field('info')->select()->toArray();
+        if (!empty($data)) {
+            return ['code' => 200, 'data' => $data[0]['info']];
+        }
+
         // 根据支付类型设置查询字段
         $payType = $where['payType'] ?? 'point';
         $member_field = $payType === 'point' ? 'point' : 'balance';
@@ -147,7 +90,10 @@ class HsxPhoneQueryService extends BaseApiService
                 'sn' => $where['imeis'],
                 'type_id' => $where['id'],
                 'member_id' => $this->member_id,
-                'info' => json_encode($new_data) // Re-encode the info with the updated member_id
+                'info' => json_encode($new_data), // Re-encode the info with the updated member_id
+                // 又加了两个字段 一个是 is_look 一个是 pid  (父级分类id | 前端传过来的)
+                'is_look' => 0,
+                'pid' => $where['pid']
             ]);
     
             return ['code' => 200, 'data' => $new_data]; // Return the updated info
@@ -172,7 +118,8 @@ class HsxPhoneQueryService extends BaseApiService
                 'type_id' => $where['id'],
                 'info' => json_encode($api_response['data']),
                 'create_time' => time(),
-                'member_id'=>$this->member_id
+                'member_id'=>$this->member_id,
+                'pid' => $where['pid']
             ];
             (new HsxPhoneQueryInfo())->insert($insert_data);
     
@@ -281,32 +228,76 @@ public function call_api($appid, $secret, $code , $id)
     // lists 获取个人用户已经查询后的列表
     public function lists(array $where = [])
     {
-    
-        // 定义需要查询的字段
-        $field = 'id,sn, type_id, info, create_time';
-        // 定义排序规则
-        $order = 'create_time desc';
-    
-        // 构建查询条件，过滤当前用户的记录
-        $search_model =(new HsxPhoneQueryInfo())
-            ->where([['member_id', '=', $this->member_id]])  // 根据用户ID进行过滤
-             ->withSearch(['sn', 'type_id'], $where)  // 使用搜索器根据条件进行过滤，比如 sn 和 type_id
-             ->append(['type_name'])  // 附加 type_name
-            ->field($field)  // 选择需要的字段
-            ->order($order); // 按创建时间倒序排列
-    
-        // 调用分页查询
-        $list = $this->pageQuery($search_model);
-       
+        try {
+            // 定义需要查询的字段
+            $field = 'id,sn,type_id,pid,info,create_time,is_look';
 
-        // 返回查询结果
-        return $list;
+            // 处理时间参数，转换为时间戳
+            if (!empty($where['start_time'])) {
+                $where['start_time'] = strtotime($where['start_time']);
+            }
+            if (!empty($where['end_time'])) {
+                $where['end_time'] = strtotime($where['end_time'] . ' 23:59:59');
+            }
+
+            // 构建基础查询条件
+            $search_model = (new HsxPhoneQueryInfo())->where([
+                ['member_id', '=', $this->member_id]
+            ]);
+
+            // 处理关键词搜索
+            if (!empty($where['keyword'])) {
+                $search_model->where('sn', 'like', "%{$where['keyword']}%");
+            }
+
+            // 处理分类筛选
+            if (!empty($where['pid'])) {
+                $search_model->where('pid', '=', (int)$where['pid']-1);
+            }
+
+            // 处理时间范围
+            if (!empty($where['start_time']) && !empty($where['end_time'])) {
+                $search_model->whereBetween('create_time', [$where['start_time'], $where['end_time']]);
+            }
+
+            // 设置排序规则：未读优先，时间倒序
+            $search_model->order([
+                'is_look' => 'asc',
+                'create_time' => 'desc'
+            ]);
+
+            // 设置查询字段和关联数据
+            $search_model->field($field)->append(['type_name']);
+
+            // 执行分页查询
+            $list = $this->pageQuery($search_model);
+
+            // 格式化数据
+            if (!empty($list['data'])) {
+                foreach ($list['data'] as &$item) {
+                    // 解析JSON数据
+                    if (!empty($item['info'])) {
+                        $item['info'] = json_decode($item['info'], true);
+                    }
+                    // 格式化时间
+                    if (!empty($item['create_time']) && is_numeric($item['create_time'])) {
+                        $item['create_time'] = date('Y-m-d H:i:s', (int)$item['create_time']);
+                    }
+                }
+            }
+
+            return $list;
+        } catch (\Exception $e) {
+            // 记录错误日志
+            \think\facade\Log::error('获取查询记录列表失败：' . $e->getMessage());
+            return ['code' => 0, 'msg' => '获取记录失败'];
+        }
     }
     
     // detail
     public function detail(array $where = [])
     {
-        $field = 'id,sn, type_id, info, create_time';
+        $field = 'id,sn, type_id, info, create_time,is_look';
         $data = (new HsxPhoneQueryInfo())->where([['member_id', '=', $this->member_id]])
             ->where($where)
             ->field($field)
@@ -315,7 +306,31 @@ public function call_api($appid, $secret, $code , $id)
             ->toArray();
         // 将 $data['info'] 字符串转换为数组
         $data['info'] = json_decode($data['info'], true);
+       // 调用这个方法证明用户已查看 则将当前id数据进行更新 is_look = 1
+       // 先查询如果is_look 为 1 则直接返回
+       $is_look = (new HsxPhoneQueryInfo())->where([['id', '=', $data['id']]])->value('is_look');
+       if ($is_look == 1) {
         return $data;
+       }
+
+       (new HsxPhoneQueryInfo())->where([['id', '=', $data['id']]])->update(['is_look' => 1]);
+        
+        return $data;
+    }
+
+    // 获取水印配置
+    public function getWatermark()
+    {
+        $config = (new HsxPhoneQueryConfig())->where([
+            ['site_id', '=', $this->site_id]
+        ])->field('watermark_text, watermark_color, watermark_size, watermark_opacity')->find();
+
+        return [
+            'text' => $config['watermark_text'] ?? '仅供参考',
+            'color' => $config['watermark_color'] ?? 'rgba(0,0,0,0.03)',
+            'size' => $config['watermark_size'] ?? '120',
+            'opacity' => $config['watermark_opacity'] ?? '0.03'
+        ];
     }
 
 }    

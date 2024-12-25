@@ -5,6 +5,7 @@
 
 namespace addon\tk_jhkd\app\model\fenxiao;
 
+use app\model\member\Member;
 use core\base\BaseModel;
 use think\model\concern\SoftDelete;
 use think\model\relation\HasMany;
@@ -31,6 +32,8 @@ class FenxiaoOrder extends BaseModel
      * @var string
      */
     protected $name = 'tkjhkd_fenxiao_order';
-
-    
+    public function memberInfo()
+    {
+        return $this->hasOne(Member::class, 'member_id', 'member_id');
+    }
 }

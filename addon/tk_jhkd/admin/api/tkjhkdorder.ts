@@ -1,34 +1,3 @@
-
-addon
-tk_jhkd
-app
-adminapi
-controller
-order
-Order.php
-route
-route.php
-model
-order
-Order.php
-service
-admin
-order
-OrderService.php
-validate
-order
-Order.php
-admin
-api
-order.ts
-lang
-zh-cn
-order.order.json
-views
-order
-components
-order-edit.vue
-order.vue
 import request from '@/utils/request'
 
 // USER_CODE_BEGIN -- tkjhkd_order
@@ -38,7 +7,7 @@ import request from '@/utils/request'
  * @returns
  */
 export function getOrderList(params: Record<string, any>) {
-    return request.get(`tk_jhkd/order`, {params})
+    return request.get(`tk_jhkd/order`, { params })
 }
 
 /**
@@ -78,8 +47,8 @@ export function deleteOrder(id: number) {
     return request.delete(`tk_jhkd/order/${id}`, { showErrorMessage: true, showSuccessMessage: true })
 }
 
-export function getWithMemberList(params: Record<string,any>){
-    return request.get('tk_jhkd/member', {params})
+export function getWithMemberList(params: Record<string, any>) {
+    return request.get('tk_jhkd/member', { params })
 }
 
 // USER_CODE_END -- tkjhkd_order

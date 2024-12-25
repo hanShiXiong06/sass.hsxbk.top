@@ -28,6 +28,20 @@ return [
                 'action' => 'decorate'
             ],
             [
+                'name' => 'TK_JHKD_MEMBER_FENXIAO_MEMBER',
+                'title' => '分销会员',
+                'url' => '/addon/tk_jhkd/pages/fenxiao/member',
+                'is_share' => 1,
+                'action' => 'decorate'
+            ],
+            [
+                'name' => 'TK_JHKD_MEMBER_FENXIAO_ORDER',
+                'title' => '分销订单',
+                'url' => '/addon/tk_jhkd/pages/fenxiao/order',
+                'is_share' => 1,
+                'action' => 'decorate'
+            ],
+            [
                 'name' => 'TK_JHKD_ORDERSUBMIT',
                 'title' =>'快递下单',
                 'url' => '/addon/tk_jhkd/pages/ordersubmit',

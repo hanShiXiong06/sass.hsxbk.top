@@ -147,10 +147,10 @@ class ChangeNoticeService extends BaseApiService
             //修改订单状态
             $orderInfo->save(['order_status' => JhkdOrderDict::FINISH_PICK]);
             //生成补差价订单
-            $add=3;   //初始续费add
-            if(isset($deliveryInfo['price_rule'])&&$deliveryInfo['price_rule']!=''){
+            $add = 3;   //初始续费add
+            if (isset($deliveryInfo['price_rule']) && $deliveryInfo['price_rule'] != '') {
                 $price_rule = json_decode($deliveryInfo['price_rule'], true);
-                $add=$price_rule['add']??3;
+                $add = $price_rule['add'] ?? 3;
             }
             $price_add = 0;
             if ($info['calcFeeWeight'] > $deliveryInfo['weight']) {
@@ -159,21 +159,21 @@ class ChangeNoticeService extends BaseApiService
             }
             $reduce_price = 0;
             if ($info['calcFeeWeight'] < $deliveryInfo['weight']) {
-                $calc_weight =  $deliveryInfo['weight']-$info['calcFeeWeight'];
+                $calc_weight = $deliveryInfo['weight'] - $info['calcFeeWeight'];
                 $reduce_price = ceil($calc_weight) * $add;
             }
-            $price_add=$price_add-$reduce_price;
+            $price_add = $price_add - $reduce_price;
             //附加费用
             foreach ($info['feeBlockList'] as $k => $v) {
                 if ($v['type'] != 0) {
                     $price_add += $v['fee'];
                 }
             }
-            if($price_add>0){
-                $addModel=new OrderAdd();
-                $addInfo=$addModel->where(['order_id'=>$orderInfo['order_id']])->findOrEmpty();
-                if($addInfo->isEmpty()){
-                     (new OrderAdd())->create([
+            if ($price_add > 0) {
+                $addModel = new OrderAdd();
+                $addInfo = $addModel->where(['order_id' => $orderInfo['order_id']])->findOrEmpty();
+                if ($addInfo->isEmpty()) {
+                    (new OrderAdd())->create([
                         'site_id' => $orderInfo['site_id'],
                         'member_id' => $orderInfo['member_id'],
                         'order_no' => create_no(),
@@ -185,6 +185,7 @@ class ChangeNoticeService extends BaseApiService
                 }
             }
             Db::commit();
+            event('DeliveryUploadShipping', ['site_id' => $orderInfo['site_id'], 'order_id' => $orderInfo['order_id']]);
             return Response::create(['msg' => '接受成功', 'code' => 200, 'success' => true], 'json', 200);
         } catch (Exception $e) {
             Db::rollback();

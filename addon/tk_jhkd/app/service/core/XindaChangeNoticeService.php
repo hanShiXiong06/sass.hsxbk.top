@@ -210,6 +210,7 @@ class XindaChangeNoticeService extends BaseApiService
                 }
             }
             Db::commit();
+            event('DeliveryUploadShipping', ['site_id' => $orderInfo['site_id'], 'order_id' => $orderInfo['order_id']]);
             return Response::create(['msg' => '接受成功', 'code' => 200, 'success' => true], 'json', 200);
         } catch (Exception $e) {
             Db::rollback();

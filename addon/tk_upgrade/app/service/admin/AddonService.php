@@ -383,20 +383,30 @@ class AddonService extends BaseAdminService
         return ['addon_key' => $addon_key, 'version' => $addonArr['version']];
     }
 
-    public function recursiveRemoveDirectory($directory)
-    {
-        foreach (glob("{$directory}/*") as $file) {
-            if (is_dir($file)) {
-                // 如果是目录，递归删除
-                $this->recursiveRemoveDirectory($file);
+    public function recursiveRemoveDirectory($directory) {
+        $directory = realpath($directory);
+        if ($directory === false || !is_dir($directory)) {
+            return false;
+        }
+        $handle = opendir($directory);
+        if (!$handle) {
+            return false;
+        }
+        while (false !== ($entry = readdir($handle))) {
+            if ($entry == '.' ||$entry == '..') {
+                continue;
+            }
+            $entryPath =$directory . DIRECTORY_SEPARATOR . $entry;
+            if (is_dir($entryPath)) {
+                $this->recursiveRemoveDirectory($entryPath);
             } else {
-                // 删除文件
-                unlink($file);
+                unlink($entryPath);
             }
         }
-        // 删除当前目录
-        rmdir($directory);
+        closedir($handle);
+        return rmdir($directory);
     }
+
 
     public function recursiveCopy($source, $destination)
     {

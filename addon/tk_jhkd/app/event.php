@@ -27,8 +27,11 @@ return [
         "DeliverySendOrder"=>['addon\tk_jhkd\app\listener\order\delivery\DeliverySendOrderListener'],
         //取消下单--封装接口
         "DeliveryCancelOrder"=>['addon\tk_jhkd\app\listener\order\delivery\DeliveryCancelOrderListener'],
-        //增加导航
-        'BottomNavigation' => [ 'addon\tk_jhkd\app\listener\BottomNavigationListener' ],
+        //上传小程序发货管理
+        "DeliveryUploadShipping"=>['addon\tk_jhkd\app\listener\order\delivery\DeliveryUploadListener'],
+        "DeliveryUploadShippingAdd"=>['addon\tk_jhkd\app\listener\order\delivery\DeliveryUploadAddListener'],
+        //通知用户确认收货
+        "DeliveryConfirmReceive"=>['addon\tk_jhkd\app\listener\order\delivery\ConfirmReceiveListener'],
         //首页设置
         'WapIndex' => [ 'addon\tk_jhkd\app\listener\WapIndexListener' ],
         //消息通知
@@ -38,11 +41,17 @@ return [
             'addon\tk_jhkd\app\listener\notice_template\OrderAdd',
             'addon\tk_jhkd\app\listener\notice_template\OrderSign',
         ],
+        //增加导航
+        'BottomNavigation' => [ 'addon\tk_jhkd\app\listener\BottomNavigationListener' ],
         //站点创建后事件
         'AddSiteAfter' => ['addon\tk_jhkd\app\listener\AddSiteAfterListener'],
         //获取海报数据
         'GetPosterType' => ['addon\tk_jhkd\app\listener\poster\JhkdPosterType'],
         'GetPosterData' => ['addon\tk_jhkd\app\listener\poster\JhkdPoster'],
+        //2.0平台驱动事件
+        'JhkdPlatformType' => ['addon\tk_jhkd\app\listener\platform\PlatformListener'],
+        //会员注册分销绑定
+        'MemberRegister' => ['addon\tk_jhkd\app\listener\member\MemberRegisterListener'],
     ],
 
     'subscribe' => [

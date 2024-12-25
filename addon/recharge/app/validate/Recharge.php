@@ -11,12 +11,11 @@
 
 namespace addon\recharge\app\validate;
 
-use addon\shop\app\dict\goods\RankDict;
 use core\base\BaseValidate;
 
 /**
  * 充值套餐验证器
- * Class Brand
+ * Class Recharge
  * @package addon\recharge\app\validate
  */
 class Recharge extends BaseValidate

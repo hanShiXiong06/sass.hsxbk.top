@@ -210,6 +210,7 @@ class YunyangChangeNoticeService extends BaseApiService
                     (new NoticeService())->send($orderInfo['site_id'], 'tk_jhkd_order_add', ['order_id' => $orderInfo['order_id']]);
                 }
             }
+            event('DeliveryUploadShipping', ['site_id' => $orderInfo['site_id'], 'order_id' => $orderInfo['order_id']]);
             Db::commit();
             return Response::create(['msg' => '接受成功', 'code' => 200, 'success' => true], 'json', 200);
         } catch (Exception $e) {

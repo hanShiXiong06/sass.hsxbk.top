@@ -1,22 +1,22 @@
 
-DROP TABLE IF EXISTS `{{prefix}}hsx_phone_query_config`;
-CREATE TABLE `{{prefix}}hsx_phone_query_config` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `site_id` int NOT NULL DEFAULT 0 COMMENT '站点id',
-  `appid` varchar(255) NOT NULL DEFAULT '' COMMENT '由系统分配的AppID，在个人中心中查看',
-  `Secret` varchar(255) NOT NULL DEFAULT '' COMMENT '由系统分配的密钥，在个人中心中查看',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci COMMENT='';
+-- DROP TABLE IF EXISTS `{{prefix}}hsx_phone_query_config`;
+-- CREATE TABLE `{{prefix}}hsx_phone_query_config` (
+--   `id` int(11) NOT NULL AUTO_INCREMENT,
+--   `site_id` int NOT NULL DEFAULT 0 COMMENT '站点id',
+--   `appid` varchar(255) NOT NULL DEFAULT '' COMMENT '由系统分配的AppID，在个人中心中查看',
+--   `Secret` varchar(255) NOT NULL DEFAULT '' COMMENT '由系统分配的密钥，在个人中心中查看',
+--   PRIMARY KEY (`id`)
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci COMMENT='';
 
-DROP TABLE IF EXISTS `{{prefix}}hsx_phone_query_category`;
-CREATE TABLE `{{prefix}}hsx_phone_query_category` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `site_id` int NOT NULL DEFAULT 0 COMMENT '站点id',
-  `type_id` int(11) NOT NULL DEFAULT 0 COMMENT '分类id',
-  `name` varchar(255) NOT NULL DEFAULT '' COMMENT '分类名称',
-  `price` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '价格',
-   PRIMARY KEY (`id`, `site_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci COMMENT='';
+-- DROP TABLE IF EXISTS `{{prefix}}hsx_phone_query_category`;
+-- CREATE TABLE `{{prefix}}hsx_phone_query_category` (
+--   `id` int(11) NOT NULL AUTO_INCREMENT,
+--   `site_id` int NOT NULL DEFAULT 0 COMMENT '站点id',
+--   `type_id` int(11) NOT NULL DEFAULT 0 COMMENT '分类id',
+--   `name` varchar(255) NOT NULL DEFAULT '' COMMENT '分类名称',
+--   `price` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '价格',
+--    PRIMARY KEY (`id`, `site_id`)
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci COMMENT='';
 
 /*
 insert into `sass_hsx_phone_query_category` (`id`,`site_id`,`type_id`, `name` , `price`) values
@@ -75,13 +75,13 @@ insert into `sass_hsx_phone_query_category` (`id`,`site_id`,`type_id`, `name` , 
 (90903,100005,9,"IP地址查询",0.01),
 (90904,100005,9,"号码归属地查询",0.01);
 */
-drop TABLE  IF EXISTS `{{prefix}}hsx_phone_query_info`;
-CREATE TABLE `{{prefix}}hsx_phone_query_info` (
-    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '自增主键',
-    `imei` VARCHAR(50) NOT NULL COMMENT 'IMEI码',
-    `member_id` INT UNSIGNED NOT NULL COMMENT '会员id',
-    `sn` VARCHAR(50) NOT NULL COMMENT '序列号',
-    `info` TEXT NOT NULL COMMENT '查询信息，以JSON格式存储',
-    `type_id` INT UNSIGNED NOT NULL COMMENT '类型ID，关联其他表',
-    `create_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='存储HSX手机查询信息的表';
+-- drop TABLE  IF EXISTS `{{prefix}}hsx_phone_query_info`;
+-- CREATE TABLE `{{prefix}}hsx_phone_query_info` (
+--     `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '自增主键',
+--     `imei` VARCHAR(50) NOT NULL COMMENT 'IMEI码',
+--     `member_id` INT UNSIGNED NOT NULL COMMENT '会员id',
+--     `sn` VARCHAR(50) NOT NULL COMMENT '序列号',
+--     `info` TEXT NOT NULL COMMENT '查询信息，以JSON格式存储',
+--     `type_id` INT UNSIGNED NOT NULL COMMENT '类型ID，关联其他表',
+--     `create_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='存储HSX手机查询信息的表';

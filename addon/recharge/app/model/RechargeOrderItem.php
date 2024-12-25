@@ -39,7 +39,7 @@ class RechargeOrderItem extends BaseModel
      */
     public function orderNo()
     {
-        return $this->hasOne(RechargeOrder::class, 'order_id', 'order_id')->joinType('left')->withField('order_id, order_no')->bind(['order_no' => 'order_no']);
+        return $this->hasOne(RechargeOrder::class, 'order_id', 'order_id')->joinType('left')->withField('order_id, order_no')->bind([ 'order_no' => 'order_no' ]);
     }
 
     /**
@@ -50,8 +50,8 @@ class RechargeOrderItem extends BaseModel
      */
     public function getNumAttr($value, $data)
     {
-        if (isset($data['num'])) {
-            return number_format($data['num']);
+        if (isset($data[ 'num' ])) {
+            return number_format($data[ 'num' ]);
         }
     }
 

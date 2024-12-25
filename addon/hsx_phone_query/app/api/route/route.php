@@ -35,6 +35,8 @@ Route::group('hsx_phone_query', function () {
     Route::get('list', 'addon\hsx_phone_query\app\api\controller\hsx_phone_query\HsxPhoneQuery@lists');
     // detail/:id
     Route::get('detail/:id', 'addon\hsx_phone_query\app\api\controller\hsx_phone_query\HsxPhoneQuery@detail');
+    //config/watermark
+    Route::get('config/watermark', 'addon\hsx_phone_query\app\api\controller\hsx_phone_query\HsxPhoneQuery@watermark');
 })
 ->middleware(ApiChannel::class)
 ->middleware(ApiCheckToken::class, true) //表示验证登录

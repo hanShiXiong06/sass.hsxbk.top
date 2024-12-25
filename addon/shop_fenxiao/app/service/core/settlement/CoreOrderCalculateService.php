@@ -98,11 +98,22 @@ class CoreOrderCalculateService extends BaseCoreService
         //计算分销佣金
         $this->order_goods_list = (new OrderGoods())->where([['order_id', '=', $this->order_id]])->column('*', 'goods_id');
         //查询对应分销商品设置
-        $this->fenxiao_goods_list = (new FenxiaoGoods())->where([
+        $fenxiao_goods_list = (new FenxiaoGoods())->where([
             ['site_id', '=', $this->site_id],
             ['goods_id', 'in', array_column($this->order_goods_list, 'goods_id')]
-        ])->column('*', 'goods_id');
-        //初始化分销订单
+        ])->field('*')->with(['goodsRule'])->select()->toArray();
+        foreach ($fenxiao_goods_list as &$value){
+            $goods_sku_list = [];
+            foreach ($value['goodsRule'] as $v){
+                $goods_sku_list[$v['sku_id']][$v['level_id']] = $v;
+                $goods_sku_list[$v['sku_id']]['calculate_price'] = $v['calculate_price'];
+            }
+            $value['fenxiao_rule'] = $goods_sku_list;
+        }
+        $fenxiao_goods_list = array_column($fenxiao_goods_list,null,'goods_id');
+        $this->fenxiao_goods_list = $fenxiao_goods_list;
+
+            //初始化分销订单
         $this->fenxiao_order_data = [
             'order_id' => $this->order_id,
             'order_no' => $this->order_no,

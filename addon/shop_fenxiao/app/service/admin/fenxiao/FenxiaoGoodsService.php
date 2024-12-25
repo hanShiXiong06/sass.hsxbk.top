@@ -13,10 +13,13 @@ namespace addon\shop_fenxiao\app\service\admin\fenxiao;
 
 use addon\shop_fenxiao\app\dict\fenxiao\FenxiaoGoodsDict;
 use addon\shop_fenxiao\app\model\fenxiao\FenxiaoGoods;
+use addon\shop_fenxiao\app\model\fenxiao\FenxiaoGoodsRule;
 use addon\shop_fenxiao\app\model\fenxiao\FenxiaoLevel;
 use addon\shop_fenxiao\app\model\fenxiao\Goods;
 use core\base\BaseAdminService;
 use core\exception\AdminException;
+use core\exception\CommonException;
+use think\facade\Db;
 
 
 /**
@@ -94,29 +97,55 @@ class FenxiaoGoodsService extends BaseAdminService
             'is_fenxiao' => $data['is_fenxiao'],
             'fenxiao_type' => $data['fenxiao_type'],
         ];
+
+        $goods_rule_list = [];
+        if (!empty($data['fenxiao_rule'])){
+            foreach ($data['fenxiao_rule'] as $key=>$value){
+                unset($value['calculate_price']);
+                foreach ($value as $v){
+                    $v['sku_id'] = $v['sku_id'] ?? $key;
+                    $v['goods_id'] = $v['goods_id'] ?? $goods_id;
+                    $v['site_id'] = $v['site_id'] ??  $this->site_id;
+                    $goods_rule_list[] = $v;
+                }
+            }
+        }
         if (!empty($data['skuList'])) {
-            foreach ($data['skuList'] as $value) {
-                $data['fenxiao_rule'][$value['sku_id']]['calculate_price'] = $value['calculate_price'];
+            $sku_list = array_column($data['skuList'],'calculate_price','sku_id');
+            foreach ($goods_rule_list as &$value) {
+                if (isset($value['sku_id'] )){
+                    $value['calculate_price'] = $sku_list[$value['sku_id']] ?? 0;
+                }else{
+                    $value['calculate_price'] = 0;
+                }
             }
-            if (is_array($data['fenxiao_rule']) && !empty($data['fenxiao_rule'])) {
-                $fenxiaoGoods['fenxiao_rule'] = json_encode($data['fenxiao_rule']);
-            } else {
-                $fenxiaoGoods['fenxiao_rule'] = '';
-            }
-        } else {
-            $fenxiaoGoods['fenxiao_rule'] = '';
         }
 
+        $fenxiao_goods_rule_model = (new FenxiaoGoodsRule());
         $info = (new FenxiaoGoods())->where([['site_id', '=', $this->site_id], ['goods_id', '=', $goods_id]])->findOrEmpty()->toArray();
-        if (empty($info)) {
-            $fenxiaoGoods['site_id'] = $this->site_id;
-            $fenxiaoGoods['goods_id'] = $goods_id;
-            (new FenxiaoGoods())->create($fenxiaoGoods);
-        } else {
-            (new FenxiaoGoods())->where([['goods_id', '=', $goods_id], ['site_id', '=', $this->site_id]])->update($fenxiaoGoods);
+        Db::startTrans();
+        try {
+            if (empty($info)) {
+                $fenxiaoGoods['site_id'] = $this->site_id;
+                $fenxiaoGoods['goods_id'] = $goods_id;
+                (new FenxiaoGoods())->create($fenxiaoGoods);
+                $fenxiao_goods_rule_model->saveAll($goods_rule_list);
+            } else {
+                (new FenxiaoGoods())->where([['goods_id', '=', $goods_id], ['site_id', '=', $this->site_id]])->update($fenxiaoGoods);
+                foreach($goods_rule_list as $v){
+                    if (isset($v['goods_rule_id'])){
+                        $fenxiao_goods_rule_model->where([['goods_rule_id','=',$v['goods_rule_id']]])->update($v);
+                    }else{
+                        $fenxiao_goods_rule_model->create($v);
+                    }
+                }
+            }
+            Db::commit();
+            return true;
+        } catch (\Exception $e) {
+            Db::rollback();
+            throw new CommonException($e->getMessage());
         }
-
-        return true;
     }
 
     /**
@@ -130,14 +159,19 @@ class FenxiaoGoodsService extends BaseAdminService
                 'skuList' => function ($query) {
                     $query->field('sku_id, goods_id, price,sku_name');
                 },
+                'goodsRule',
             ])
             ->select()->toArray();
-
+        $fenxiao_goods_id_list = $fenxiao_sku_id_list = [];
         if (!empty($fenxiao_goods_list)) {
             $fenxiao_goods_id_list = array_column($fenxiao_goods_list, 'goods_id');
-        } else {
-            $fenxiao_goods_id_list = [];
-
+            foreach ($fenxiao_goods_list as $item) {
+                if (!empty($item['goodsRule'])) {
+                    foreach ($item['goodsRule'] as $rule) {
+                        $fenxiao_sku_id_list[$rule['goods_id']][] = $rule;
+                    }
+                }
+            }
         }
 
         $fenxiao_goods_list = (new Goods())->where([['site_id', '=', $this->site_id], ['goods_id', 'in', $goods_ids]])
@@ -153,43 +187,66 @@ class FenxiaoGoodsService extends BaseAdminService
         //查询分销等级
         $fenxiaoLevelModel = new FenxiaoLevel();
         $levelList = $fenxiaoLevelModel->field('level_id,level_name,one_rate,two_rate')->where([['site_id', '=', $this->site_id]])->order('level_num asc')->select()->toArray();
-        $skuList = [];
+
+        //组装分销规则数据
         $goods_rule = [];
-        foreach ($fenxiao_goods_list as $key => $value) {
-            $skuList[] = $value['skuList'];
-        }
-        $result = array_reduce($skuList, function ($result, $value) {
-            return array_merge($result, array_values($value));
-        }, array());
-        foreach ($result as $key => &$value) {
-            $value['calculate_price'] = '';
-            $goods_rule[$value['sku_id']] = $value;
-        }
-        foreach ($goods_rule as &$value) {
-            foreach ($levelList as $val) {
-                $val['one_money'] = '0';
-                $val['two_money'] = '0';
-                $value[$val['level_id']] = $val;
+        foreach ($fenxiao_goods_list as $goods) {
+            if (!empty($goods['skuList'])) {
+                $goods_sku_id_list = array_column($goods['skuList'],'sku_id');
+                foreach ($goods['skuList'] as $sku) {
+                    $sku['calculate_price'] = ''; // 初始化计算价格
+                    // 初始化分销等级信息
+                    foreach ($levelList as $level) {
+                        $goods_rule[$goods['goods_id']][] = [
+                            'site_id' => $this->site_id,
+                            'goods_id' => $goods['goods_id'],
+                            'sku_id' => $sku['sku_id'],
+                            'level_id' => $level['level_id'],
+                            'level_name' => $level['level_name'],
+                            'one_rate' => $level['one_rate'],
+                            'two_rate' => $level['two_rate'],
+                            'one_money' => '0',
+                            'two_money' => '0',
+                            'calculate_price' => '0',
+                        ];
+                    }
+                }
             }
         }
-        $result = array_reduce($goods_rule, function ($carry, $item) {
-            if (!isset($carry[$item['goods_id']])) {
-                $carry[$item['goods_id']] = [];
+        $fenxiao_goods_rule_model = (new FenxiaoGoodsRule());
+        Db::startTrans();
+        try {
+            foreach ($goods_id_array as $k => $v) {
+                if (!in_array(intval($v), $fenxiao_goods_id_list)) {
+                    //添加分销商品表
+                    (new FenxiaoGoods())->create(['goods_id' => $v, 'site_id' => $this->site_id, 'fenxiao_type' => 1]);
+                }
+                //添加商品分销规则
+                if (isset($goods_rule[$v])){
+                    $fenxiao_goods_rule_data = $goods_rule[$v];
+                    foreach ($fenxiao_goods_rule_data as $key=>$value){
+                        if (isset($fenxiao_sku_id_list[$v])){
+                            $isInArray = !empty(array_filter($fenxiao_sku_id_list[$v], function ($item) use ($value) {
+                                return $item['level_id'] == $value['level_id'];
+                            }));
+                            if ($isInArray){
+                                unset($fenxiao_goods_rule_data[$key]);
+                            }
+                        }
+                    }
+                    $fenxiao_goods_rule_model->saveAll($fenxiao_goods_rule_data);
+                }
             }
-            $carry[$item['goods_id']][$item['sku_id']] = $item;
-            return $carry;
-        }, []);
 
-        foreach ($goods_id_array as $k => $v) {
+            //整体执行
+            (new FenxiaoGoods())->where([['site_id', '=', $this->site_id], ['goods_id', 'in', $goods_ids]])->update(['is_fenxiao' => $is_fenxiao]);
 
-            if (!in_array(intval($v), $fenxiao_goods_id_list)) {
-                //添加
-                (new FenxiaoGoods())->create(['goods_id' => $v, 'site_id' => $this->site_id, 'fenxiao_type' => 1, 'fenxiao_rule' => json_encode($result[$v])]);
-            }
+            Db::commit();
+            return true;
+        } catch (\Exception $e) {
+            Db::rollback();
+            throw new CommonException($e->getMessage());
         }
-        //整体执行
-        (new FenxiaoGoods())->where([['site_id', '=', $this->site_id], ['goods_id', 'in', $goods_ids]])->update(['is_fenxiao' => $is_fenxiao]);
-        return true;
     }
 
     public function getGoodsCommission($goods_id)
@@ -201,58 +258,63 @@ class FenxiaoGoodsService extends BaseAdminService
             ->field($field)
             ->with([
                 'fenxiaoGoods' => function ($query) {
-                    $query->withField('goods_id, fenxiao_type, fenxiao_rule,is_fenxiao');
+                    $query->withField('goods_id, fenxiao_type, is_fenxiao');
                 },
                 'skuList' => function ($query) {
                     $query->field('sku_id, goods_id, price,sku_name,cost_price');
                 },
+                'fenxiaoGoodsRule',
             ])
             ->append(['goods_type_name', 'goods_edit_path', 'goods_cover_thumb_small'])->findOrEmpty();
         if (!$goodsInfo->isEmpty()) {
             $goodsInfo = $goodsInfo->toArray();
-            if (empty($goodsInfo['fenxiaoGoods'])) {
-                $goodsInfo['is_set_fenxiao'] = 0;
-                $goodsInfo['fenxiao_type'] = 1;
-            } else {
-
-                $goodsInfo['is_set_fenxiao'] = $goodsInfo['fenxiaoGoods']['is_fenxiao'];
-                $goodsInfo['fenxiao_type'] = $goodsInfo['fenxiaoGoods']['fenxiao_type'];
-            }
-
             //查询分销等级
             $fenxiaoLevelModel = new FenxiaoLevel();
             $levelList = $fenxiaoLevelModel->field('level_id,level_name,one_rate,two_rate')->where([['site_id', '=', $this->site_id]])->order('level_num asc')->select()->toArray();
             if (!empty($goodsInfo['fenxiaoGoods'])) {
-                foreach ($goodsInfo['fenxiaoGoods']['fenxiao_rule'] as &$value) {
+                $goodsInfo['is_set_fenxiao'] = $goodsInfo['fenxiaoGoods']['is_fenxiao'];
+                $goodsInfo['fenxiao_type'] = $goodsInfo['fenxiaoGoods']['fenxiao_type'];
+                $goods_sku_list = [];
+                foreach ($goodsInfo['fenxiaoGoodsRule'] as $v){
+                    $goods_sku_list[$v['sku_id']][$v['level_id']] = $v;
+                    $goods_sku_list[$v['sku_id']]['calculate_price'] = $v['calculate_price'];
+                }
 
+                foreach ($goods_sku_list as $key=>&$value) {
                     foreach ($levelList as $val) {
                         if (!isset($value[$val['level_id']])) {
-                            $value[$val['level_id']]['level_name'] = $val['level_name'];
+                            $value[$val['level_id']]['site_id'] = $this->site_id;
+                            $value[$val['level_id']]['sku_id'] = $key;
+                            $value[$val['level_id']]['goods_id'] = $goods_id;
                             $value[$val['level_id']]['level_id'] = $val['level_id'];
+                            $value[$val['level_id']]['level_name'] = $val['level_name'];
                             $value[$val['level_id']]['one_rate'] = $val['one_rate'];
                             $value[$val['level_id']]['two_rate'] = $val['two_rate'];
                             $value[$val['level_id']]['one_money'] = '0';
                             $value[$val['level_id']]['two_money'] = '0';
+                            $value[$val['level_id']]['calculate_price'] = '0';
                         }
                     }
                 }
                 //追加分销计算金额
                 foreach ($goodsInfo['skuList'] as &$value) {
-                    $temp_fenxiao_goods_rule = $goodsInfo['fenxiaoGoods']['fenxiao_rule'][$value['sku_id']] ?? [];
-                    $value['calculate_price'] = $temp_fenxiao_goods_rule['calculate_price'] ?? '';
+                    $temp_fenxiao_goods_rule = $goods_sku_list[$value['sku_id']] ?? [];
+                    $value['calculate_price'] = $temp_fenxiao_goods_rule['calculate_price'] ?? 0;
                 }
-
-                $goodsInfo['fenxiaoGoods']['fenxiao_rule'] = json_encode($goodsInfo['fenxiaoGoods']['fenxiao_rule']);
+                $goodsInfo['fenxiaoGoods']['fenxiao_rule'] = json_encode($goods_sku_list);
             } else {
-
+                $goodsInfo['is_set_fenxiao'] = 1;
+                $goodsInfo['fenxiao_type'] = 1;
                 $goodsInfo['fenxiaoGoods'] = [
                     'goods_id' => $goods_id,
                     'fenxiao_type' => 1,
                     'fenxiao_rule' => [],
-                    'is_fenxiao' => 0
+                    'is_fenxiao' => 0,
+                    'is_set_fenxiao' => 0
                 ];
+
                 foreach ($goodsInfo['skuList'] as &$value) {
-                    $value['calculate_price'] = '';
+                    $value['calculate_price'] = 0;
                 }
             }
 

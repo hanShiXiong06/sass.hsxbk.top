@@ -47,7 +47,7 @@ class RechargeOrderService extends BaseApiService
      */
     public function getRechargeLists()
     {
-        $field = 'recharge_id,recharge_name,face_value,buy_price,point,growth';
+        $field = 'recharge_id,recharge_name,face_value,buy_price,point,growth,gift_json';
         $order = 'sort desc,create_time desc';
         $list = ( new Recharge() )
             ->where([ [ 'site_id', '=', $this->site_id ], [ 'status', '=', RechargePackageDict::ON ] ])
@@ -55,6 +55,20 @@ class RechargeOrderService extends BaseApiService
             ->order($order)
             ->select()
             ->toArray();
+        if (!empty($list)) {
+            foreach ($list as &$value) {
+                $value[ 'gift_content' ] = [];
+                if (!empty($value[ 'gift_json' ])) {
+                    foreach ($value[ 'gift_json' ] as $k => $v) {
+                        $v[ 'key' ] = $k;
+                        $content = event('RechargeGiftContent', $v)[ 0 ];
+                        if (!empty($content)) {
+                            $value[ 'gift_content' ][] = $content;
+                        }
+                    }
+                }
+            }
+        }
         return $list;
     }
 
@@ -69,7 +83,6 @@ class RechargeOrderService extends BaseApiService
         $data[ 'site_id' ] = $this->site_id;
         return ( new CoreRechargeOrderService() )->create($data);
     }
-
 
     /**
      * 充值订单分页列表

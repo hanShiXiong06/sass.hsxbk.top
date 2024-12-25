@@ -37,6 +37,6 @@ class Install extends Command
                 }
             }
         }
-        $output->writeln('install addon all success');
+        $output->writeln('========= install addon all success =======');
     }
 }
