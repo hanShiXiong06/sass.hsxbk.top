@@ -18,9 +18,9 @@ use addon\phone_shop\app\model\goods\GoodsCollect;
 use addon\phone_shop\app\model\goods\Label;
 use addon\phone_shop\app\model\goods\Service;
 use addon\phone_shop\app\model\goods\GoodsSku;
+use addon\phone_shop\app\model\site\Site;
 use addon\phone_shop\app\service\api\marketing\DiscountService;
 use app\model\member\Member;
-use addon\phone_shop\app\model\site\Site;
 use core\base\BaseApiService;
 
 /**
@@ -58,17 +58,6 @@ class GoodsService extends BaseApiService
             ];
         }
 
-        // 添加时间范围过滤
-        if (!empty($where['create_time']) && is_array($where['create_time'])) {
-            $start_time = intval($where['create_time'][0]);
-            $end_time = intval($where['create_time'][1]);
-            trace('时间范围过滤：' . json_encode([
-                '开始时间' => date('Y-m-d H:i:s', $start_time),
-                '结束时间' => date('Y-m-d H:i:s', $end_time)
-            ], JSON_UNESCAPED_UNICODE), 'debug');
-            $sku_where[] = ['goods.create_time', 'between', [$start_time, $end_time]];
-        }
-
         if (!empty($where[ 'keyword' ])) {
             // 如果 keyword中 开头是 # 则说明要通过sku_no 进行查询否则模糊查询
             if (strpos($where[ 'keyword' ], '#') === 0) {
@@ -78,6 +67,19 @@ class GoodsService extends BaseApiService
             }
         }
         
+
+        // 如果 $where 中有 create_time 则 通过 这个添加查询 近 24小时内上传的商品
+        if (!empty($where['create_time'])) {
+              // 获取当前的时间戳
+            $current_time = time();
+
+            // 计算24小时前的时间戳
+            $twenty_four_hours_ago = $current_time - 86400;
+            // 这里不需要再使用 $where['create_time']，因为我们已经计算了24小时前的时间戳
+            $sku_where[] = ['goods.create_time', 'between', [$twenty_four_hours_ago, $current_time]];
+        }
+        
+
 
         if (!empty($where[ 'start_price' ]) && !empty($where[ 'end_price' ])) {
             $money = [ $where[ 'start_price' ], $where[ 'end_price' ] ];
@@ -123,7 +125,7 @@ class GoodsService extends BaseApiService
 
         // 参数过滤
         if (!empty($where[ 'order' ]) && in_array($where[ 'order' ], [ 'sale_num', 'price' ])) {
-            $order = 'goods_category desc '.$where[ 'order' ] . ' ' . $where[ 'sort' ];
+            $order = $where[ 'order' ] . ' ' . $where[ 'sort' ];
         } else {
             $order = 'sort desc,create_time desc';
         }
@@ -133,15 +135,6 @@ class GoodsService extends BaseApiService
             ->field($field)
             ->withJoin([ 'goodsSku' ])
             ->where($sku_where)->order($order)->append([ 'goods_type_name', 'goods_cover_thumb_small', 'goods_cover_thumb_mid' ]);
-
-        // 输出SQL语句和查询条件
-        $debug_info = [
-            'SQL' => $search_model->buildSql(),
-            '查询条件' => $sku_where,
-            '时间范围' => $where['create_time_range'] ?? null
-        ];
-        trace('商品查询调试信息：' . json_encode($debug_info, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), 'debug');
-        
         $list = $this->pageQuery($search_model);
         if (!empty($this->member_id)) {
             $member_info = $this->getMemberInfo();
@@ -150,6 +143,15 @@ class GoodsService extends BaseApiService
                     $v[ 'goodsSku' ][ 'member_price' ] = $this->getMemberPrice($member_info, $v[ 'member_discount' ], $v[ 'goodsSku' ][ 'member_price' ], $v[ 'goodsSku' ][ 'price' ]);
                 }
             }
+        }
+        foreach ($list[ 'data' ] as $k => &$v) {
+            // 替换缩略图字段为cover的值
+            if (isset($v['goods_cover_thumb_small']) && isset($v['goods_cover'])) {  
+               $v['goods_cover_thumb_small'] = $v['goods_cover'];
+           }
+           if (isset($v['goods_cover_thumb_mid']) && isset($v['goods_cover'])) {
+               $v['goods_cover_thumb_mid'] = $v['goods_cover'];
+           }
         }
         return $list;
     }
@@ -161,6 +163,15 @@ class GoodsService extends BaseApiService
      */
     public function getDetail(array $data)
     {
+        if($this->site_id !== 0 ){
+            $sites =  (new Site())-> field('category_status,brand_status,label_status,service_status')->where([['site_id','=', $this->site_id]]) ->findOrEmpty()->toArray();        
+        }
+        
+        $site_id = empty($sites['category_status'] ) ? $this->site_id : $this->site_id.",0";
+        $brand_site_id = empty($sites['brand_status'] ) ? $this->site_id : $this->site_id.",0";
+        $label_site_id = empty($sites['label_status'] ) ? $this->site_id : $this->site_id.",0";
+        $service_site_id = empty($sites['service_status'] ) ? $this->site_id : $this->site_id.",0";
+       
         $sku_id = $data[ 'sku_id' ];
         $goods_id = $data[ 'goods_id' ];
 
@@ -168,7 +179,7 @@ class GoodsService extends BaseApiService
 
         if (empty($sku_id) && !empty($goods_id)) {
             // 查询默认规格项
-            $default_sku_info = $goods_sku_model->where([ [ 'goods_id', '=', $goods_id ], [ 'site_id', 'in', "{$this->site_id},100005" ], [ 'is_default', '=', 1 ] ], 'sku_id')
+            $default_sku_info = $goods_sku_model->where([ [ 'goods_id', '=', $goods_id ], [ 'site_id', 'in', "$site_id" ], [ 'is_default', '=', 1 ] ], 'sku_id')
                 ->field('sku_id')->findOrEmpty()->toArray();
             if (!empty($default_sku_info)) {
                 $sku_id = $default_sku_info[ 'sku_id' ];
@@ -176,8 +187,8 @@ class GoodsService extends BaseApiService
         }
 
         $field = 'sku_id, sku_name, sku_image, sku_no, goods_id, site_id, sku_spec_format, price, market_price, sale_price, stock, weight, volume, sale_num, is_default,member_price';
-
-        $info = $goods_sku_model->where([ [ 'sku_id', '=', $sku_id ], [ 'site_id', 'in', "{$this->site_id},100005" ] ])
+        
+        $info = $goods_sku_model->where([ [ 'sku_id', '=', $sku_id ], [ 'site_id', 'in', "$site_id" ] ])
             ->field($field)
             ->with([
                 'goods' => function($query) {
@@ -201,7 +212,7 @@ class GoodsService extends BaseApiService
                 // 商品服务
                 $goods_service_model = new Service();
                 $info[ 'service' ] = $goods_service_model->where([
-                    [ 'site_id', 'in', "{$this->site_id},100005" ],
+                    [ 'site_id', 'in', "$service_site_id" ],
                     [ 'service_id', 'in', $info[ 'goods' ][ 'service_ids' ] ]
                 ])->field('service_id, service_name, image, desc')
                     ->select()->toArray();
@@ -210,16 +221,16 @@ class GoodsService extends BaseApiService
                 // 商品标签
                 $goods_label_model = new Label();
                 $info[ 'label_info' ] = $goods_label_model->where([
-                    [ 'site_id', 'in', "{$this->site_id},100005" ],
+                    [ 'site_id', 'in', "$label_site_id" ],
                     [ 'label_id', 'in', $info[ 'goods' ][ 'label_ids' ] ]
                 ])->field('label_id, label_name, memo')
                     ->order('sort desc,create_time desc')->select()->toArray();
             }
             if (!empty($info[ 'goods' ][ 'brand_id' ])) {
-                // 商品牌
+                // 商品品牌
                 $goods_brand_model = new Brand();
                 $info[ 'brand_info' ] = $goods_brand_model->where([
-                    [ 'site_id', 'in', "{$this->site_id},100005" ],
+                    [ 'site_id', 'in', "$brand_site_id" ],
                     [ 'brand_id', '=', $info[ 'goods' ][ 'brand_id' ] ]
                 ])->field('brand_id, brand_name, logo, desc')
                     ->order('sort desc,create_time desc')
@@ -238,7 +249,7 @@ class GoodsService extends BaseApiService
 
             if (!empty($this->member_id)) {
                 $goods_collect_model = new GoodsCollect();
-                $collect_info = $goods_collect_model->where([ [ 'site_id', 'in', "{$this->site_id},100005" ], [ 'member_id', '=', $this->member_id ], [ 'goods_id', '=', $info[ 'goods_id' ] ] ])->findOrEmpty()->toArray();
+                $collect_info = $goods_collect_model->where([ [ 'site_id', 'in', "$site_id" ], [ 'member_id', '=', $this->member_id ], [ 'goods_id', '=', $info[ 'goods_id' ] ] ])->findOrEmpty()->toArray();
                 if (!empty($collect_info)) {
                     $info[ 'goods' ][ 'is_collect' ] = 1;
                 } else {
@@ -268,13 +279,20 @@ class GoodsService extends BaseApiService
      * @return array
      */
     public function getSku(int $sku_id)
-    {
+    { 
+        if($this->site_id !== 0 ){
+        $sites =  (new Site())-> field('category_status')->where([['site_id','=', $this->site_id]]) ->findOrEmpty()->toArray();
+        
+         }
+    
+    $site_id = empty($sites['category_status'] ) ? $this->site_id : $this->site_id.",0";
 
         $field = 'site_id,sku_id, sku_name, sku_image, sku_no, goods_id, sku_spec_format, price, market_price, sale_price, stock, weight, volume, sale_num, is_default,member_price';
 
         $goods_sku_model = new GoodsSku();
+        
 
-        $info = $goods_sku_model->where([ [ 'site_id', 'in', "{$this->site_id},100005" ], [ 'sku_id', '=', $sku_id ] ])
+        $info = $goods_sku_model->where([ [ 'site_id', 'in', "$site_id" ], [ 'sku_id', '=', $sku_id ] ])
             ->field($field)
             ->with([
                 // 商品主表
@@ -344,8 +362,22 @@ class GoodsService extends BaseApiService
                 if (!empty($v[ 'goodsSku' ])) {
                     $v[ 'goodsSku' ][ 'member_price' ] = $this->getMemberPrice($member_info, $v[ 'member_discount' ], $v[ 'goodsSku' ][ 'member_price' ], $v[ 'goodsSku' ][ 'price' ]);
                 }
+                
             }
         }
+
+        foreach ($list as $k => &$v) {
+           
+            // 替换缩略图字段为cover的值
+            if (isset($v['goods_cover_thumb_small']) && isset($v['goods_cover'])) {
+               $v['goods_cover_thumb_small'] = $v['goods_cover'];
+           }
+           if (isset($v['goods_cover_thumb_mid']) && isset($v['goods_cover'])) {
+               $v['goods_cover_thumb_mid'] = $v['goods_cover'];
+           }
+            
+        }
+       
         return $list;
     }
 
@@ -368,7 +400,7 @@ class GoodsService extends BaseApiService
     }
 
     /**
-     * 查询商品的员价
+     * 查询商品的会员价
      * @param $member_info
      * @param string $member_discount 会员等级折扣，不参与：空，会员折扣：discount，指定会员价：fixed_price
      * @param string $member_price 会员价，json格式，指定会员价，数据结构为：{"level_12":"92.00","level_13":"72.00","level_14":"66.00","level_15":"45.00"}
@@ -427,7 +459,7 @@ class GoodsService extends BaseApiService
     public function getMemberPriceByList($member_info, $member_discount, &$sku_list)
     {
 
-        // 是否按照原价回
+        // 是否按照原价返回
         $is_default = false;
 
         if (empty($member_discount)) {
@@ -439,7 +471,7 @@ class GoodsService extends BaseApiService
             $is_default = true;
         }
 
-        // 没有会���等级，排除
+        // 没有会员等级，排除
         if (!empty($member_info) && empty($member_info[ 'member_level' ])) {
             $is_default = true;
         }
@@ -482,7 +514,7 @@ class GoodsService extends BaseApiService
 
     /**
      * operationGoods
-     * 操作商品的上架
+     * 操作商品的上下架
      * 参数是 goods_id
      * @param $goods_id
      * @return array

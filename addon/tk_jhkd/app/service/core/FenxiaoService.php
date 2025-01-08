@@ -26,6 +26,7 @@ class FenxiaoService extends BaseApiService
     {
         parent::__construct();
     }
+
     public function getOrderData($where)
     {
         $data = [
@@ -47,16 +48,69 @@ class FenxiaoService extends BaseApiService
     public function getFirstFenxiaoMember($where)
     {
         $fenxiaoModel = new FenxiaoMember();
-        $fenxiaoOrderModel = new FenxiaoOrder();
-        $firstFenxiao = $fenxiaoModel->where(['site_id' => $this->site_id, 'pid' => $this->member_id])
-            ->with(['memberInfo' => function ($query) {
-                $query->field('headimg,nickname,member_id');
-            }]);
-        $list = $this->pageQuery($firstFenxiao);
-        foreach ($list['data'] as $k => $v) {
-            $list['data'][$k]['order_num'] = $fenxiaoOrderModel->where(['site_id' => $this->site_id, 'member_id' => $v['member_id']])->count();
+        $query = $fenxiaoModel
+            ->alias('fm')
+            ->leftJoin('member m', 'm.member_id = fm.member_id')
+            ->leftJoin('tkjhkd_fenxiao_order fo', 'fo.member_id = fm.member_id AND fo.site_id = fm.site_id')
+            ->where([
+                ['fm.site_id', '=', $this->site_id],
+                ['fm.pid', '=', $this->member_id]
+            ])
+            ->field([
+                'fm.member_id',
+                'fm.pid',
+                'fm.site_id',
+                'fm.create_time',
+                'm.headimg',
+                'm.nickname',
+                'COUNT(DISTINCT fo.order_id) as order_num'
+            ])
+            ->group('fm.member_id');
+        if (!empty($where) && is_array($where)) {
+            foreach ($where as $key => $value) {
+                if (strpos($key, '.') === false) {
+                    $key = 'fm.' . $key;
+                }
+                $allowedFields = ['fm.member_id', 'fm.pid', 'fm.site_id', 'fm.status', 'fm.create_time', 'fm.update_time'];
+                if (in_array($key, $allowedFields) && $value !== null && $value !== '') {
+                    $query->where($key, $value);
+                }
+            }
         }
-        return $list;
+
+        $total = $fenxiaoModel
+            ->alias('fm')
+            ->where([
+                ['fm.site_id', '=', $this->site_id],
+                ['fm.pid', '=', $this->member_id]
+            ])
+            ->count();
+        $pageSize = request()->param('limit', 10);
+        $currentPage = request()->param('page', 1);
+        $list = $query->page($currentPage, $pageSize)->select();
+        $result = [
+            'total' => $total,
+            'per_page' => intval($pageSize),
+            'current_page' => intval($currentPage),
+            'data' => []
+        ];
+        if ($list) {
+            $result['data'] = array_map(function ($item) {
+                return [
+                    'member_id' => $item['member_id'],
+                    'pid' => $item['pid'],
+                    'site_id' => $item['site_id'],
+                    'create_time' => $item['create_time'],
+                    'memberInfo' => [
+                        'member_id' => $item['member_id'],
+                        'headimg' => $item['headimg'] ?? '',
+                        'nickname' => $item['nickname'] ?? '',
+                    ],
+                    'order_num' => intval($item['order_num'])
+                ];
+            }, $list->toArray());
+        }
+        return $result;
     }
 
     /**、
@@ -75,30 +129,52 @@ class FenxiaoService extends BaseApiService
     public function getFirstFenxiaoOrder($where = [])
     {
         $fenxiaoModel = new FenxiaoMember();
-        $fenxiaoOrderModel = new FenxiaoOrder();
-        $firstFenxiao = $fenxiaoModel->where(['site_id' => $this->site_id, 'pid' => $this->member_id])
-            ->with(['memberInfo' => function ($query) {
-                $query->field('headimg,nickname,member_id');
-            }])
-            ->select()->toArray();
-        $member_ids = array_column($firstFenxiao, 'member_id');
-        $orderModel = $fenxiaoOrderModel
-            ->where(['site_id' => $this->site_id])
-            ->where('member_id', 'in', $member_ids)
-            ->with(['memberInfo' => function ($query) {
-                $query->field('headimg,nickname,member_id');
-            }]);
-        $list = $this->pageQuery($orderModel);
-        //查询订单信息
-        $orderModel = new Order();
-        $orderDeliveryModel=new OrderDelivery();
-        foreach ($list['data'] as $k => $v) {
-            $list['data'][$k]['order_info'] = $orderModel->where(['order_id' => $v['order_id']])->findOrEmpty();
-            $list['data'][$k]['status_name']=JhkdOrderDict::getStatus($v['status'])['name'];
-            $delivery=$orderDeliveryModel->where(['order_id'=>$v['order_id']])->findOrEmpty();
-            $list['data'][$k]['start_address']=json_decode($delivery['start_address'],true);
-            $list['data'][$k]['end_address']=json_decode($delivery['end_address'],true);
+        $firstLevelIds = $fenxiaoModel
+            ->where(['site_id' => $this->site_id, 'pid' => $this->member_id])
+            ->column('member_id');
+
+        if (empty($firstLevelIds)) {
+            return ['data' => [], 'total' => 0];
         }
+        $fenxiaoOrderModel = new FenxiaoOrder();
+        $orderQuery = $fenxiaoOrderModel
+            ->where(['site_id' => $this->site_id])
+            ->whereIn('member_id', $firstLevelIds)
+            ->order('create_time', 'desc')
+            ->with([
+                'memberInfo' => function ($query) {
+                    $query->field('headimg,nickname,member_id');
+                }
+            ]);
+
+        $list = $this->pageQuery($orderQuery);
+
+        if (!empty($list['data'])) {
+            $orderIds = array_column($list['data'], 'order_id');
+
+            $orderModel = new Order();
+            $orders = $orderModel->whereIn('order_id', $orderIds)
+                ->column('*', 'order_id');
+
+            $orderDeliveryModel = new OrderDelivery();
+            $deliveries = $orderDeliveryModel->whereIn('order_id', $orderIds)
+                ->column('*', 'order_id');
+
+            foreach ($list['data'] as $k => $v) {
+                $orderId = $v['order_id'];
+                $orderInfo = $orders[$orderId] ?? [];
+                $delivery = $deliveries[$orderId] ?? [];
+
+                $list['data'][$k]['order_info'] = $orderInfo;
+                $list['data'][$k]['status_name'] = !empty($orderInfo) ?
+                    JhkdOrderDict::getStatus($orderInfo['order_status'])['name'] : '';
+                $list['data'][$k]['start_address'] = !empty($delivery['start_address']) ?
+                    json_decode($delivery['start_address'], true) : [];
+                $list['data'][$k]['end_address'] = !empty($delivery['end_address']) ?
+                    json_decode($delivery['end_address'], true) : [];
+            }
+        }
+
         return $list;
     }
 
@@ -118,35 +194,53 @@ class FenxiaoService extends BaseApiService
     public function getTwoFenxiaoOrder($where = [])
     {
         $fenxiaoModel = new FenxiaoMember();
-        $fenxiaoOrderModel = new FenxiaoOrder();
-        $firstFenxiao = $fenxiaoModel->where(['site_id' => $this->site_id, 'pid' => $this->member_id])
-            ->with(['memberInfo' => function ($query) {
-                $query->field('headimg,nickname,member_id');
-            }])
-            ->select()->toArray();
-        $member_ids = array_column($firstFenxiao, 'member_id');
-        $twoFenxiao = $fenxiaoModel
+        $firstLevelIds = $fenxiaoModel
+            ->where(['site_id' => $this->site_id, 'pid' => $this->member_id])
+            ->column('member_id');
+        $secondLevelIds = $fenxiaoModel
             ->where(['site_id' => $this->site_id])
-            ->where('pid', 'in', $member_ids)
-            ->select()->toArray();
-        $member_ids = array_column($twoFenxiao, 'member_id');
-        $orderModel = $fenxiaoOrderModel
-            ->where(['site_id' => $this->site_id])
-            ->where('member_id', 'in', $member_ids)
-            ->with(['memberInfo' => function ($query) {
-                $query->field('headimg,nickname,member_id');
-            }]);
-        $list = $this->pageQuery($orderModel);
-        //查询订单信息
-        $orderModel = new Order();
-        $orderDeliveryModel=new OrderDelivery();
-        foreach ($list['data'] as $k => $v) {
-            $list['data'][$k]['order_info'] = $orderModel->where(['order_id' => $v['order_id']])->findOrEmpty();
-            $list['data'][$k]['status_name']=JhkdOrderDict::getStatus($v['status'])['name'];
-            $delivery=$orderDeliveryModel->where(['order_id'=>$v['order_id']])->findOrEmpty();
-            $list['data'][$k]['start_address']=json_decode($delivery['start_address'],true);
-            $list['data'][$k]['end_address']=json_decode($delivery['end_address'],true);
+            ->whereIn('pid', $firstLevelIds)
+            ->column('member_id');
+
+        if (empty($secondLevelIds)) {
+            return ['data' => [], 'total' => 0];
         }
+        $fenxiaoOrderModel = new FenxiaoOrder();
+        $orderQuery = $fenxiaoOrderModel
+            ->order('create_time', 'desc')
+            ->where(['site_id' => $this->site_id])
+            ->whereIn('member_id', $secondLevelIds)
+            ->with([
+                'memberInfo' => function ($query) {
+                    $query->field('headimg,nickname,member_id');
+                }
+            ]);
+
+        $list = $this->pageQuery($orderQuery);
+        if (!empty($list['data'])) {
+            $orderIds = array_column($list['data'], 'order_id');
+            $orderModel = new Order();
+            $orders = $orderModel->whereIn('order_id', $orderIds)
+                ->column('*', 'order_id');
+
+            $orderDeliveryModel = new OrderDelivery();
+            $deliveries = $orderDeliveryModel->whereIn('order_id', $orderIds)
+                ->column('*', 'order_id');
+            foreach ($list['data'] as $k => $v) {
+                $orderId = $v['order_id'];
+                $orderInfo = $orders[$orderId] ?? [];
+                $delivery = $deliveries[$orderId] ?? [];
+
+                $list['data'][$k]['order_info'] = $orderInfo;
+                $list['data'][$k]['status_name'] = !empty($orderInfo) ?
+                    JhkdOrderDict::getStatus($orderInfo['order_status'])['name'] : '';
+                $list['data'][$k]['start_address'] = !empty($delivery['start_address']) ?
+                    json_decode($delivery['start_address'], true) : [];
+                $list['data'][$k]['end_address'] = !empty($delivery['end_address']) ?
+                    json_decode($delivery['end_address'], true) : [];
+            }
+        }
+
         return $list;
     }
 
@@ -167,52 +261,63 @@ class FenxiaoService extends BaseApiService
     {
         $fenxiaoModel = new FenxiaoMember();
         $fenxiaoOrderModel = new FenxiaoOrder();
-        $firstFenxiao = $fenxiaoModel->where(['site_id' => $this->site_id, 'pid' => $this->member_id])
-            ->with(['memberInfo' => function ($query) {
-                $query->field('headimg,nickname,member_id');
-            }])
-            ->select()->toArray();
-        $member_ids = array_column($firstFenxiao, 'member_id');
-        $firstFenxiao = $fenxiaoModel
+        $firstLevelIds = $fenxiaoModel
+            ->where(['site_id' => $this->site_id, 'pid' => $this->member_id])
+            ->column('member_id');
+        $secondLevel = $fenxiaoModel
             ->where(['site_id' => $this->site_id])
-            ->where('pid', 'in', $member_ids)
+            ->whereIn('pid', $firstLevelIds)
             ->with(['memberInfo' => function ($query) {
                 $query->field('headimg,nickname,member_id');
             }]);
-        $list = $this->pageQuery($firstFenxiao);
-        foreach ($list['data'] as $k => $v) {
-            $list['data'][$k]['order_num'] = $fenxiaoOrderModel->where(['site_id' => $this->site_id, 'member_id' => $v['member_id']])->count();
+
+        $list = $this->pageQuery($secondLevel);
+        if (!empty($list['data'])) {
+            $memberIds = array_column($list['data'], 'member_id');
+            $orderCounts = $fenxiaoOrderModel
+                ->where(['site_id' => $this->site_id])
+                ->whereIn('member_id', $memberIds)
+                ->group('member_id')
+                ->column('count(*)', 'member_id');
+            foreach ($list['data'] as $k => $v) {
+                $list['data'][$k]['order_num'] = $orderCounts[$v['member_id']] ?? 0;
+            }
         }
+
         return $list;
     }
 
     public function getFenxiaoInfo()
     {
-        $fenxiaoModel=new FenxiaoMember();
+        $fenxiaoModel = new FenxiaoMember();
         $fenxiaoOrderModel = new FenxiaoOrder();
-        $firstFenxiao=$fenxiaoModel->where(['site_id'=>$this->site_id,'pid'=>$this->member_id])->select();
-        $firstNum=count($firstFenxiao);
-        $secondNum=0;
-        $firstOrderNum=0;
-        $secondOrderNum=0;
-        foreach ($firstFenxiao as $k => $v){
-            //$v['member_id']
-            $twoFenxiao=$fenxiaoModel->where(['site_id'=>$this->site_id,'pid'=>$v['member_id']])->select();
-            $secondNum=$secondNum+count($twoFenxiao);
-            $firstOrder=$fenxiaoOrderModel->where(['site_id'=>$this->site_id,'member_id'=>$v['member_id']])->select();
-            $firstOrderNum=$firstOrderNum+count($firstOrder);
-            foreach ($twoFenxiao as $k2 => $v2){
-                $secondOrder=$fenxiaoOrderModel->where(['site_id'=>$this->site_id,'member_id'=>$v2['member_id']])->select();
-                $secondOrderNum=$secondOrderNum+count($secondOrder);
-            }
-        }
-        $numData=[
-            'first_num'=>$firstNum,
-            'second_num'=>$secondNum,
-            'first_order_num'=>$firstOrderNum,
-            'second_order_num'=>$secondOrderNum
+        $firstFenxiao = $fenxiaoModel
+            ->where(['site_id' => $this->site_id, 'pid' => $this->member_id])
+            ->column('member_id');
+        $firstNum = count($firstFenxiao);
+        $secondNum = $fenxiaoModel
+            ->where(['site_id' => $this->site_id])
+            ->whereIn('pid', $firstFenxiao)
+            ->count();
+        $firstOrderNum = $fenxiaoOrderModel
+            ->where(['site_id' => $this->site_id])
+            ->whereIn('member_id', $firstFenxiao)
+            ->count();
+        $secondLevelMembers = $fenxiaoModel
+            ->where(['site_id' => $this->site_id])
+            ->whereIn('pid', $firstFenxiao)
+            ->column('member_id');
+        $secondOrderNum = $fenxiaoOrderModel
+            ->where(['site_id' => $this->site_id])
+            ->whereIn('member_id', $secondLevelMembers)
+            ->count();
+
+        return [
+            'first_num' => $firstNum,
+            'second_num' => $secondNum,
+            'first_order_num' => $firstOrderNum,
+            'second_order_num' => $secondOrderNum
         ];
-        return $numData;
     }
 
     /**
@@ -231,7 +336,7 @@ class FenxiaoService extends BaseApiService
         $fenxiaoOrderModel = new FenxiaoOrder();
         $fenxiaoModelInfo = $fenxiaoOrderModel->where(['order_id' => $orderInfo['order_id']])->findOrEmpty();
         if ($fenxiaoModelInfo->isEmpty()) {
-            $fenxiaoOrderModel->save([
+            $fenxiaoOrderModel->create([
                 'order_id' => $orderInfo['order_id'],
                 'site_id' => $orderInfo['site_id'],
                 'member_id' => $orderInfo['member_id'],
@@ -242,16 +347,28 @@ class FenxiaoService extends BaseApiService
         }
         //查询是否有上级会员
         $fenxiaoMemberInfo = $fenxiaoMemberModel->where(['site_id' => $site_id, 'member_id' => $member_id])->findOrEmpty();
-        if ($fenxiaoMemberInfo->isEmpty()) return true;
+        if ($fenxiaoMemberInfo->isEmpty()) {
+            $fenxiaoOrderModel->where(['order_id' => $orderInfo['order_id']])->update([
+                'status' => 1,
+                'update_time' => time()
+            ]);
+            return true;
+        }
         //获取一级分销会员信息
         $p_member_info = (new CoreMemberService())->getInfoByMemberId($site_id, $fenxiaoMemberInfo['pid'], 'nickname, point, member_level');
-        if (empty($p_member_info)) return true;
+        if (empty($p_member_info)) {
+            $fenxiaoOrderModel->where(['order_id' => $orderInfo['order_id']])->update([
+                'status' => 1,
+                'update_time' => time()
+            ]);
+            return true;
+        }
         $p_member_info['member_level'] = (new MemberLevel())->where([['level_id', '=', $p_member_info['member_level']]])->field('site_id,level_id,level_benefits')->findOrEmpty()->toArray();
         if ($p_member_info['member_level'] && !empty($p_member_info['member_level']['level_benefits'])) {
             $level_benefits = $p_member_info['member_level']['level_benefits'];
             foreach ($level_benefits as $k => $v) {
                 if ($k == 'tk_jhkd_fenxiao' && $v['is_use'] == 1) {
-                    $commission=0;
+                    $commission = 0;
                     //比列
                     if ($v['fenxiao_type'] == 0 && $v['first_rate'] > 0) {
                         $commission = $v['first_rate'] / 100 * $orderInfo['order_money'];
@@ -276,17 +393,27 @@ class FenxiaoService extends BaseApiService
         }
         //获取二级分销信息
         $pp_fenxiaoMemberInfo = $fenxiaoMemberModel->where(['site_id' => $site_id, 'member_id' => $fenxiaoMemberInfo['pid']])->findOrEmpty();
-        if ($pp_fenxiaoMemberInfo->isEmpty()) return true;
+        if ($pp_fenxiaoMemberInfo->isEmpty()) {
+            $fenxiaoOrderModel->where(['order_id' => $orderInfo['order_id']])->update([
+                'status' => 1,
+                'update_time' => time()
+            ]);
+            return true;
+        }
         $pp_member_info = (new CoreMemberService())->getInfoByMemberId($site_id, $pp_fenxiaoMemberInfo['pid'], 'nickname, point, member_level');
-        if (empty($p_member_info)) return true;
+        if (empty($p_member_info)) {
+            $fenxiaoOrderModel->where(['order_id' => $orderInfo['order_id']])->update([
+                'status' => 1,
+                'update_time' => time()
+            ]);
+            return true;
+        }
         $pp_member_info['member_level'] = (new MemberLevel())->where([['level_id', '=', $pp_member_info['member_level']]])->field('site_id,level_id,level_benefits')->findOrEmpty()->toArray();
-
         if ($pp_member_info['member_level'] && !empty($pp_member_info['member_level']['level_benefits'])) {
             $level_benefits = $pp_member_info['member_level']['level_benefits'];
-
             foreach ($level_benefits as $k => $v) {
                 if ($k == 'tk_jhkd_fenxiao' && $v['is_use'] == 1) {
-                    $commission=0;
+                    $commission = 0;
                     //比列
                     if ($v['fenxiao_type'] == 0 && $v['second_rate'] > 0) {
                         $commission = $v['second_rate'] / 100 * $orderInfo['order_money'];
@@ -300,7 +427,6 @@ class FenxiaoService extends BaseApiService
                     $orderFenxiao = $fenxiaoOrderModel->where(['order_id' => $orderInfo['order_id']])->update([
                         'two_commission' => $commission,
                     ]);
-
                     (new CoreMemberAccountService())->addLog($orderInfo['site_id'], $pp_fenxiaoMemberInfo['pid'], MemberAccountTypeDict::COMMISSION, $commission, 'jhkd_award', '聚合快递二级分销激励');
                     $fenxiaoOrderModel->where(['order_id' => $orderInfo['order_id']])->update([
                         'status' => 1,
@@ -309,8 +435,13 @@ class FenxiaoService extends BaseApiService
                 }
             }
         }
+        $fenxiaoOrderModel->where(['order_id' => $orderInfo['order_id']])->update([
+            'status' => 1,
+            'update_time' => time()
+        ]);
         return true;
     }
+
     /**
      * @Notes:分销绑定
      * @Interface checkFenxiao
@@ -334,6 +465,16 @@ class FenxiaoService extends BaseApiService
             $level_benefits = $p_member_info['member_level']['level_benefits'];
             foreach ($level_benefits as $k => $v) {
                 if ($k == 'tk_jhkd_fenxiao' && $v['is_use'] == 1) {
+                    //锁定PID入库
+                    $hs_fxiao = $fenxiaoMemberModel->where(['site_id' => $this->site_id, 'member_id' => $data['pid']])->findOrEmpty();
+                    if ($hs_fxiao->isEmpty()) {
+                        $fenxiaoMemberModel->create([
+                            'site_id' => $this->site_id,
+                            'member_id' => $data['pid'],
+                            'pid' => 0,
+                            'create_time' => time()
+                        ]);
+                    }
                     //等级拥有分销权限
                     $fenxiaoMemberModel->create([
                         'site_id' => $this->site_id,
@@ -346,6 +487,7 @@ class FenxiaoService extends BaseApiService
         }
         return [];
     }
+
     public function bindFenxiao($data)
     {
         $this->member_id = $data['member_id'];
@@ -363,7 +505,17 @@ class FenxiaoService extends BaseApiService
             $level_benefits = $p_member_info['member_level']['level_benefits'];
             foreach ($level_benefits as $k => $v) {
                 if ($k == 'tk_jhkd_fenxiao' && $v['is_use'] == 1) {
-                    //等级拥有分销权限
+                    //锁定PID入库
+                    $hs_fxiao = $fenxiaoMemberModel->where(['site_id' => $this->site_id, 'member_id' => $data['pid']])->findOrEmpty();
+                    if ($hs_fxiao->isEmpty()) {
+                        $fenxiaoMemberModel->create([
+                            'site_id' => $this->site_id,
+                            'member_id' => $data['pid'],
+                            'pid' => 0,
+                            'create_time' => time()
+                        ]);
+                    }
+                    //锁定会员绑定信息
                     $fenxiaoMemberModel->create([
                         'site_id' => $this->site_id,
                         'member_id' => $this->member_id,

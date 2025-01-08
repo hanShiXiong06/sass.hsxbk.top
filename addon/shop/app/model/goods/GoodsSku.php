@@ -278,4 +278,14 @@ class GoodsSku extends BaseModel
         return $this->hasMany(GoodsSpec::class, 'goods_id', 'goods_id');
     }
 
+    /**
+     * 关联商品主表
+     * @return \think\model\relation\HasOne
+     */
+    public function goodsInfo()
+    {
+        return $this->hasOne(Goods::class, 'goods_id', 'goods_id')
+            ->joinType('left');
+    }
+
 }

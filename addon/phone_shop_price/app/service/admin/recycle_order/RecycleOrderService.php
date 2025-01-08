@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace addon\phone_shop_price\app\service\admin\recycle_order;
 
 use core\base\BaseAdminService;
-use addon\phone_shop_price\app\model\phone_shop_recycle_order\PhoneShopRecycleOrder;
-use addon\phone_shop_price\app\model\phone_shop_recycle_order\PhoneShopRecycleOrderDevice;
+use addon\phone_shop_price\app\model\recycle_order\RecycleOrder;
+use addon\phone_shop_price\app\model\recycle_order\RecycleOrderDevice;
 
 /**
  * 回收订单服务层
@@ -17,7 +17,7 @@ class RecycleOrderService extends BaseAdminService
     public function __construct()
     {
         parent::__construct();
-        $this->model = new PhoneShopRecycleOrder();
+        $this->model = new RecycleOrder();
     }
 
     /**
@@ -159,7 +159,7 @@ class RecycleOrderService extends BaseAdminService
      */
     public function updateDeviceStatus(int $device_id, array $status)
     {
-        $device_model = new PhoneShopRecycleOrderDevice();
+        $device_model = new RecycleOrderDevice();
         $device = $device_model->where([['site_id', '=', $this->site_id]])->find($device_id);
         if (empty($device)) {
             return $this->error('设备不存在');
@@ -193,7 +193,7 @@ class RecycleOrderService extends BaseAdminService
      */
     public function updateDeviceFinalPrice(int $device_id, float $final_price, string $remark = '')
     {
-        $device_model = new PhoneShopRecycleOrderDevice();
+        $device_model = new RecycleOrderDevice();
         $device = $device_model->where([['site_id', '=', $this->site_id]])->find($device_id);
         if (empty($device)) {
             return $this->error('设备不存在');
@@ -223,7 +223,7 @@ class RecycleOrderService extends BaseAdminService
      */
     public function updateDeviceReturn(int $device_id, array $data)
     {
-        $device_model = new PhoneShopRecycleOrderDevice();
+        $device_model = new RecycleOrderDevice();
         $device = $device_model->where([['site_id', '=', $this->site_id]])->find($device_id);
         if (empty($device)) {
             return $this->error('设备不存在');
@@ -254,7 +254,7 @@ class RecycleOrderService extends BaseAdminService
      */
     public function getDeviceDetail(int $device_id)
     {
-        $device_model = new PhoneShopRecycleOrderDevice();
+        $device_model = new RecycleOrderDevice();
         $device = $device_model->where([['site_id', '=', $this->site_id]])
             ->with(['order'])
             ->find($device_id);
@@ -272,7 +272,7 @@ class RecycleOrderService extends BaseAdminService
      */
     private function updateOrderStatus(int $order_id)
     {
-        $device_model = new PhoneShopRecycleOrderDevice();
+        $device_model = new RecycleOrderDevice();
         
         // 查询该订单下是否还有未完成质检的设备(status != 3)
         $unfinished_count = $device_model->where([
@@ -310,7 +310,7 @@ class RecycleOrderService extends BaseAdminService
      */
     public function addDevice(array $data)
     {
-        $device_model = new PhoneShopRecycleOrderDevice();
+        $device_model = new RecycleOrderDevice();
         
         // 检查订单是否存在
         $order = $this->model->where([['id', '=', $data['order_id']], ['site_id', '=', $this->site_id]])->find();
@@ -351,7 +351,7 @@ class RecycleOrderService extends BaseAdminService
     public function deleteDevice(int $id)
     {
         // return $id;
-        $device_model = new PhoneShopRecycleOrderDevice();
+        $device_model = new RecycleOrderDevice();
         $device = $device_model->where([['id', '=', $id], ['site_id', '=', $this->site_id]])->find();
         
         if (empty($device)) {
@@ -381,7 +381,7 @@ class RecycleOrderService extends BaseAdminService
      */
     public function editDevice(int $id, array $data)
     {
-        $device_model = new PhoneShopRecycleOrderDevice();
+        $device_model = new RecycleOrderDevice();
         $device = $device_model->where([['id', '=', $id], ['site_id', '=', $this->site_id]])->find();
         
         if (empty($device)) {

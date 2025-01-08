@@ -15,8 +15,13 @@
       <el-form-item label="appkey" prop="appkey">
         <el-input v-model="formData.appkey" placeholder="appkey" class="input-width" clearable />
       </el-form-item>
+      <el-form-item label="常用导航">
+        <el-button>
+          <a href="http://admin.yisuopen.com" target="_blank">亿速开放平台</a>
+        </el-button>
+      </el-form-item>
       <el-form-item label="">
-        <div class="text-red">暂不允许自助注册，请联系客服注册</div>
+        <div class="text-[#E43C30]">暂不允许自助注册，请联系客服注册</div>
       </el-form-item>
     </el-form>
 

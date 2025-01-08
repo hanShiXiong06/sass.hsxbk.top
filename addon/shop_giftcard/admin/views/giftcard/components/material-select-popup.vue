@@ -53,7 +53,7 @@ import materialSelect from '@/addon/shop_giftcard/views/giftcard/components/mate
 import { img } from '@/utils/common'
 import Sortable from 'sortablejs'
 import { t } from '@/lang'
-
+import { ElMessage } from 'element-plus'
 const prop = defineProps({
     type: {
         type: String,
@@ -135,14 +135,18 @@ const confirmSelect = (data: Record<string, any>) => {
         data && images.data.push(data.url)
     } else {
         data.forEach((item: any) => {
-            if (images.data.length < prop.limit) images.data.push(item.url)
+            if (images.data.includes(item.url)) {
+                ElMessage.warning(t('coverTips')) 
+            } else if (images.data.length < prop.limit) {
+                images.data.push(item.url)
+            }
         })
         nextTick(() => {
             rowDrop()
         })
     }
     setValue()
-     
+
     nextTick(() => {
         emit('change', value.value)
     })

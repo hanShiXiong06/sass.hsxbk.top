@@ -9,12 +9,12 @@ return [
         'calculate' =>'',
         'content' => [
             'admin' => function($site_id, $config) {
-                return "聚合快递订单完成后可获得{$config['growth']}成长值";
+                return "订单完成后可获得{$config['growth']}成长值";
             },
             'task' => function($site_id, $config) {
                 return [
                     'icon' => '/addon/tk_jhkd/rule/growth-rule-cart.png',
-                    'title' => '聚合快递订单完成',
+                    'title' => '订单完成',
                     'desc' => "快递寄件完成后可获得{$config['growth']}成长值",
                     'button' => [
                         'text' => '去寄件',

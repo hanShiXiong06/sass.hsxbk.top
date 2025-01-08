@@ -105,5 +105,18 @@ class Goods extends BaseAdminController
         return success((new GoodsService())->getPageHsx($data));
     }
 
+    // 批量更新二手机价格
+    public function importRecycleCategory()
+    {
+        $data = $this->request->params([
+            ['file_url', ''],
+        ]);
+        
+        if (empty($data['file_url'])) {
+            throw new CommonException('请上传文件');
+        }
+        
+        return (new GoodsService())->importRecycleCategory($data);
+    }
 
 }

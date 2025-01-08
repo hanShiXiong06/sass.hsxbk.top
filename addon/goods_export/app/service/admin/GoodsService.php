@@ -19,6 +19,7 @@ use addon\goods_export\app\model\spdrlist\SpdrList;
 use think\facade\Cache;
 use think\facade\Db;
 use think\facade\Log;
+use addon\phone_shop_price\app\model\recycle_category\RecycleCategory;
 
 /**
  * 商品服务层
@@ -746,6 +747,89 @@ class GoodsService extends BaseAdminService
         ];
 
         (new CoreExportService())->export($this->site_id, 'spdr_export_goods', $data_column, $data);
+    }
+
+    /**
+     * 批量导入更新二手机图片
+     * @param array $data
+     * @return true
+     */
+    public function importRecycleCategory($data)
+    {
+        try {
+            Log::write('开始导入处理，接收到的数据：' . json_encode($data), 'debug');
+            
+            if (empty($data['file_url'])) {
+                throw new CommonException('文件不存在');
+            }
+
+            $file_path = public_path() . ltrim($data['file_url'], '/');
+            Log::write('文件完整路径：' . $file_path, 'debug');
+            
+            if (!file_exists($file_path)) {
+                throw new CommonException('文件不存在');
+            }
+
+            // 读取Excel文件
+            $spreadsheet = IOFactory::load($file_path);
+            $worksheet = $spreadsheet->getActiveSheet();
+            $highestRow = $worksheet->getHighestRow();
+            Log::write('Excel文件总行数：' . $highestRow, 'debug');
+
+            // 开始事务
+            Db::startTrans();
+            try {
+                $successCount = 0;
+                $failCount = 0;
+                
+                // 从第二行开始读取数据（第一行是标题）
+                for ($row = 2; $row <= $highestRow; $row++) {
+                    $category_id = trim($worksheet->getCellByColumnAndRow(4, $row)->getValue());  // 第一列是分类ID
+                    $image = trim($worksheet->getCellByColumnAndRow(6, $row)->getValue());  // 第三列是图片路径
+
+                    Log::write('处理第' . $row . '行数据：分类ID=' . $category_id . ', 图片=' . $image, 'debug');
+
+                    // 验证数据
+                    if (empty($category_id) || empty($image)) {
+                        Log::write('第' . $row . '行数据无效，分类ID或图片为空，跳过', 'debug');
+                        $failCount++;
+                        continue;
+                    }
+
+                    // 直接更新数据
+                    $result = RecycleCategory::where('category_id', $category_id)->update([
+                        'images' => $image,
+                        'update_time' => time()
+                    ]);
+                    Log::write('更新结果：' . ($result ? '成功' : '失败') . '，SQL：' . Db::getLastSql(), 'debug');
+                    
+                    if ($result) {
+                        $successCount++;
+                    } else {
+                        $failCount++;
+                    }
+                }
+
+                // 提交事务
+                Db::commit();
+                Log::write('导入完成，成功：' . $successCount . '条，失败：' . $failCount . '条', 'debug');
+                return success('导入成功，成功：' . $successCount . '条，失败：' . $failCount . '条');
+            } catch (\Exception $e) {
+                // 回滚事务
+                Db::rollback();
+                Log::write('导入异常：' . $e->getMessage(), 'error');
+                throw new CommonException($e->getMessage());
+            }
+        } catch (\Exception $e) {
+            Log::write('导入失败：' . $e->getMessage(), 'error');
+            throw new CommonException($e->getMessage());
+        } finally {
+            // 删除临时文件
+            if (isset($file_path) && file_exists($file_path)) {
+                @unlink($file_path);
+                Log::write('清理临时文件：' . $file_path, 'debug');
+            }
+        }
     }
 
 }

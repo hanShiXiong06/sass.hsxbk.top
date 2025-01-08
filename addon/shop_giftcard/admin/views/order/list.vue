@@ -154,6 +154,7 @@
 
         </el-card>
 		<order-notes ref="orderNotesDialog" @complete="loadOrderList" />
+        <order-detail ref="orderDetailDialog"  @load="loadOrderList()"></order-detail>
     </div>
 </template>
 
@@ -166,6 +167,7 @@ import { img } from '@/utils/common'
 import { ElMessageBox,FormInstance } from 'element-plus'
 import { useRoute,useRouter } from 'vue-router'
 import { cloneDeep } from 'lodash-es'
+import orderDetail from '@/addon/shop_giftcard/views/order/components/order-detail.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -174,6 +176,7 @@ const activeName:any = ref(route.query.status || '')
 
 const statusData = ref([])
 const payTypeData = ref<any[]>([])
+const orderDetailDialog: Record<string, any> | null = ref(null)
 
 const setFormData = async () => {
     statusData.value = await (await getOrderStatus()).data
@@ -304,7 +307,9 @@ const resetForm = (formEl: FormInstance | undefined) => {
 
 // 订单详情
 const detailEvent = (data: any) => {
-    router.push('/shop_giftcard/order/detail?order_id=' + data.order_id)
+    let parameter = {id: data.order_id};
+    orderDetailDialog.value.setFormData(parameter);
+    orderDetailDialog.value.showDialog = true;
 }
 
 const orderNotesDialog: Record<string, any> | null = ref(null)

@@ -9,7 +9,7 @@
 // | Author: Niucloud Team
 // +----------------------------------------------------------------------
 
-namespace addon\shop\app\service\core\delivery\electronic_sheet;
+namespace addon\phone_shop\app\service\core\delivery\electronic_sheet;
 
 use core\loader\Storage;
 

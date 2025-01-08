@@ -30,6 +30,7 @@
   "canExchangeNum": "可兑换数量",
   "hasExchangeNum": "已兑换数量",
   "notExchangeNum": "未兑换数量",
+  "invalidNum": "已失效数量",
   "goodsSkuListTitle": "商品列表",
   "goodsName": "商品名称",
   "price": "价格",

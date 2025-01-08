@@ -18,6 +18,7 @@ use core\dict\DictLoader;
 use think\facade\Db;
 use think\facade\Log;
 use addon\tk_jhkd\app\model\tkjhkdorder\Tkjhkdorder;
+
 /**
  * 订单完成
  */
@@ -33,18 +34,18 @@ class OrderFinishService extends BaseApiService
      */
     public function orderFinish($orderInfo)
     {
-        try{
+        try {
             //进行成长值发放
             $this->sendGrowth($orderInfo['site_id'], $orderInfo['member_id'], 'tk_jhkd_order', ['from_type' => 'tk_jhkd_order']);
             //积分发放
             $this->sendPoint($orderInfo['site_id'], $orderInfo['member_id'], 'tk_jhkd_order', ['from_type' => 'tk_jhkd_order']);
             //会员等级激励发放
-            $this->sendLevel($orderInfo['site_id'], $orderInfo['member_id']);
+           // $this->sendLevel($orderInfo['site_id'], $orderInfo['member_id']);
             //进行分销结算
             (new FenxiaoService())->fenxiaoEvent($orderInfo);
             return true;
-        }catch (\Exception $e){
-            Log::write('-------聚合快递订单完成事件错误-------'.date('Y-m-d H:i:s', time()));
+        } catch (\Exception $e) {
+            Log::write('-------聚合快递订单完成事件错误-------' . date('Y-m-d H:i:s', time()));
             Log::write($e->getMessage());
             return false;
         }
@@ -66,7 +67,7 @@ class OrderFinishService extends BaseApiService
         if ($member_info['member_level'] && !empty($member_info['member_level']['level_benefits'])) {
             $level_benefits = $member_info['member_level']['level_benefits'];
             foreach ($level_benefits as $k => $v) {
-                if ($k == 'tk_jhkd_fenxiao' && $v['is_use'] == 1 && $v['expand'] > 0) {
+                if ($k == 'tk_jhkd_fenxiao' && $v['is_use'] == 1 && isset($v['expand']) && $v['expand'] > 0) {
                     (new CoreMemberAccountService())->addLog($site_id, $member_id, MemberAccountTypeDict::MONEY, $v['expand'], 'bwc_award', '霸王餐等级单单激励');
                 }
             }
@@ -88,7 +89,7 @@ class OrderFinishService extends BaseApiService
     public static function sendPoint(int $site_id, int $member_id, string $key, array $param = [])
     {
         $config = (new CoreMemberConfigService())->getPointRuleConfig($site_id)['grant'] ?? [];
-        if (!isset($config[$key]) || empty($config[$key]) || (isset($config[$key]['is_use'])&&!$config[$key]['is_use'])) return true;
+        if (!isset($config[$key]) || empty($config[$key]) || (isset($config[$key]['is_use']) && !$config[$key]['is_use'])) return true;
 
         $config = $config[$key];
 
@@ -126,7 +127,7 @@ class OrderFinishService extends BaseApiService
     public static function sendGrowth(int $site_id, int $member_id, string $key, array $param = [])
     {
         $config = (new CoreMemberConfigService())->getGrowthRuleConfig($site_id);
-        if (!isset($config[$key]) || empty($config[$key]) || (isset($config[$key]['is_use'])&&!$config[$key]['is_use'])) return true;
+        if (!isset($config[$key]) || empty($config[$key]) || (isset($config[$key]['is_use']) && !$config[$key]['is_use'])) return true;
 
         $config = $config[$key];
 

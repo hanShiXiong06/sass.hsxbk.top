@@ -204,7 +204,7 @@
                 <!-- 商品列表 -->
                 <el-card class="box-card !border-none relative" shadow="never" v-if="formData.card_right_type == 'goods'">
                     <h3 class="panel-title">{{ t('goodsSkuListTitle') }}</h3>
-                    <el-table :data="formData.goods_sku_list" size="large" border max-height="400" style="max-width: 850px;">
+                    <el-table :data="formData.goods_sku_list" size="large" border max-height="400" style="max-width: 950px;">
                         <el-table-column :label="t('goodsName')" align="left" width="350">
                             <template #default="{ row }">
                                 <div class="flex">
@@ -235,7 +235,12 @@
                         </el-table-column>
                         <el-table-column :label="t('notExchangeNum')" min-width="120" align="center" v-if="formData.card_goods_type == 'all'">
                             <template #default="{ row }">
-                                <span class="text-[14px]">{{ row.total_num - row.use_num }}</span>
+                                <span class="text-[14px]">{{ row.not_use_num }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column :label="t('invalidNum')" min-width="120" align="center" v-if="formData.card_goods_type == 'all'">
+                            <template #default="{ row }">
+                              <span class="text-[14px]">{{ row.invalid_num }}</span>
                             </template>
                         </el-table-column>
                     </el-table>

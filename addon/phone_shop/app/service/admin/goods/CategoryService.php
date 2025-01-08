@@ -41,7 +41,7 @@ class CategoryService extends BaseAdminService
      */
     public function getPage(array $where = [])
     {
-        $field = 'category_id,category_name,image,level,pid,category_full_name,is_show,sort';
+        $field = 'category_id,category_name,image,level,pid,category_full_name,memory_group,is_show,sort';
         $order = 'create_time desc';
         
         if($this->site_id !== 0 ){
@@ -63,14 +63,12 @@ class CategoryService extends BaseAdminService
      * @param string $field
      * @return array
      */
-    public function getList(array $where = [], $field = 'category_id,category_name,image,level,pid,category_full_name,is_show,sort')
+    public function getList(array $where = [], $field = 'category_id,category_name,image,level,pid,memory_group,category_full_name,is_show,sort')
     {
         $order = 'sort desc,create_time desc';
         if($this->site_id !== 0 ){
-            $sites =  (new Site())-> field('category_status')->where([['site_id','=', $this->site_id]]) ->findOrEmpty()->toArray();
-            
+            $sites =  (new Site())-> field('category_status')->where([['site_id','=', $this->site_id]]) ->findOrEmpty()->toArray();   
         }
-        
         $site_id = empty($sites['category_status'] ) ? $this->site_id : $this->site_id.",0";
         return $this->model->where([ [ 'site_id', 'in', "{$site_id}" ]  ])->withSearch([ "category_name", 'level' ], $where)->field($field)->order($order)->select()->toArray();
     }
@@ -81,21 +79,21 @@ class CategoryService extends BaseAdminService
      * @param string $order
      * @return array
      */
-    public function getTree()
+ 
+    public function getTree(array $params = [])
     {
        
         if($this->site_id !== 0 ){
-            $sites =  (new Site())->where([['site_id','=', $this->site_id]]) -> field('category_status')->find();
-         
-        }
-        if($this->site_id !== 0 ){
             $sites =  (new Site())-> field('category_status')->where([['site_id','=', $this->site_id]]) ->findOrEmpty()->toArray();
-            
+           
         }
-        
+    
         $site_id = empty($sites['category_status'] ) ? $this->site_id : $this->site_id.",0";
-        return ( new CoreGoodsCategoryService() )->getTree([ [ 'site_id', 'in', "$site_id" ]  ]);
+        $params['site_id'] =$this->site_id;
+        return ( new CoreGoodsCategoryService() )->getTree([ [ 'site_id', 'in', "$site_id" ] ], $params  );
+        
     }
+
 
     /**
      * 获取商品分类信息
@@ -104,7 +102,7 @@ class CategoryService extends BaseAdminService
      */
     public function getInfo(int $id)
     {
-        $field = 'category_id,site_id,category_name,image,level,pid,category_full_name,is_show,sort';
+        $field = 'category_id,site_id,category_name,image,level,pid,category_full_name,memory_group,is_show,sort';
         
 
         if($this->site_id !== 0 ){
@@ -140,7 +138,8 @@ class CategoryService extends BaseAdminService
 
         $condition = [
             [ 'site_id', '=', $this->site_id ],
-            [ 'category_name', '=', $data[ 'category_name' ] ]
+            [ 'category_name', '=', $data[ 'category_name' ] ],
+            [ 'memory_group', '=', $data[ 'memory_group' ] ]
         ];
         if ($data[ 'pid' ] > 0) {
             $condition[] = [ 'pid', '=', $data[ 'pid' ] ];
@@ -182,6 +181,7 @@ class CategoryService extends BaseAdminService
         }
 
         $data[ 'category_full_name' ] = $data[ 'category_name' ];
+        $data[ 'memory_group' ] = $data[ 'memory_group' ];
         $data[ 'level' ] = 1;
         if ($data[ 'pid' ] > 0) {
             $info = $this->model->field("category_id, category_name")->where([ [ 'category_id', '=', $data[ 'pid' ] ] ])->findOrEmpty();

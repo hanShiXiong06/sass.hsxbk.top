@@ -12,6 +12,7 @@
 namespace addon\phone_shop\app\service\admin\goods;
 
 use addon\phone_shop\app\model\goods\Attr;
+use addon\phone_shop\app\model\site\Site;
 use core\base\BaseAdminService;
 
 
@@ -42,7 +43,13 @@ class AttrService extends BaseAdminService
         if (!empty($where[ 'order' ])) {
             $order = $where[ 'order' ] . ' ' . $where[ 'sort' ];
         }
-        $site_id = $this->site_id ==0  ? $this->site_id : $this->site_id.",0";
+        if($this->site_id !== 0 ){
+            $sites =  (new Site())-> field('brand_status')->where([['site_id','=', $this->site_id]]) ->findOrEmpty()->toArray();
+            
+        }
+        
+        $site_id = empty($sites['brand_status'] ) ? $this->site_id : $this->site_id.",0";
+       
         $search_model = $this->model->where([ [ 'site_id', 'in', "{$site_id}" ] ])->withSearch([ "attr_id", "attr_name" ], $where)->field($field)->order($order);
         $list = $this->pageQuery($search_model);
         return $list;
@@ -60,7 +67,12 @@ class AttrService extends BaseAdminService
         if (!empty($where[ 'order' ])) {
             $order = $where[ 'order' ] . ' ' . $where[ 'sort' ];
         }
-        $site_id = $this->site_id ==0  ? $this->site_id : $this->site_id.",0";
+           if($this->site_id !== 0 ){
+            $sites =  (new Site())-> field('brand_status')->where([['site_id','=', $this->site_id]]) ->findOrEmpty()->toArray();
+            
+        }
+        
+        $site_id = empty($sites['brand_status'] ) ? $this->site_id : $this->site_id.",0";
         return $this->model->where([ [ 'site_id', 'in', "{$site_id}" ] ])->withSearch([ "attr_id", "attr_name" ], $where)->field($field)->order($order)->select()->toArray();
     }
 

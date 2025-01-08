@@ -115,7 +115,6 @@ class OrderService extends BaseApiService
     public function getInfo(int $id)
     {
         $field = 'id,site_id,member_id,order_from,order_id,order_money,order_discount_money,is_send,is_pick,order_status,out_trade_no,remark,pay_time,create_time,close_reason,is_enable_refund,close_time,ip,update_time,delete_time';
-
         $info = $this->model->field($field)
             ->where([['id', '=', $id], ['site_id', '=', $this->site_id]])
             ->with(

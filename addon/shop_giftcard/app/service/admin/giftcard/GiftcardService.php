@@ -140,19 +140,35 @@ class GiftcardService extends BaseAdminService
         $giftcard_goods_model = new GiftcardGoods();
         $giftcard_goods = $giftcard_goods_model->field('goods_id,sku_id')->where([ [ 'giftcard_id', "=", $giftcard_id ] ])->with([ 'goods', 'sku' ])->select()->toArray();
         $card_goods_model = new CardGoods();
-        $field = 'total_num,use_num';
         foreach ($giftcard_goods as &$item) {
             $where = [ [ 'goods_id', '=', $item[ 'goods_id' ] ], [ 'sku_id', '=', $item[ 'sku_id' ] ] ];
-            $card_where = [ [ 'status', 'in', [ CardDict::TO_USE, CardDict::CAN_USE ] ] ];
-            $item[ 'total_num' ] = $card_goods_model->field($field)->where($where)
-                    ->where([ 'card_goods.giftcard_id' => $giftcard_id ])
-                    ->withJoin([
-                        'card' => function(Query $query) use ($card_where) {
-                            $query->where($card_where);
-                        }
-                    ], 'left')
-                    ->sum('card_goods.total_num') ?? 0;
-            $item[ 'use_num' ] = $card_goods_model->field($field)->where($where)->where([ 'giftcard_id' => $giftcard_id ])->sum('use_num') ?? 0;
+            $item[ 'total_num' ] = $card_goods_model->where($where)
+                ->where([ 'card_goods.giftcard_id' => $giftcard_id ])
+                ->withJoin([
+                    'card' => function(Query $query) {
+                        $query->where([ [ 'status', '<>', CardDict::TO_ACTIVATE ] ]);
+                    }
+                ], 'left')
+                ->sum('card_goods.total_num') ?? 0;
+            $item[ 'use_num' ] = $card_goods_model->where($where)->where([ 'giftcard_id' => $giftcard_id ])->sum('use_num') ?? 0;
+            $invalid_total_num = $card_goods_model->where($where)
+                ->where([ 'card_goods.giftcard_id' => $giftcard_id ])
+                ->withJoin([
+                    'card' => function(Query $query) {
+                        $query->where([ [ 'status', '=', CardDict::INVALID ] ]);
+                    }
+                ], 'left')
+                ->sum('card_goods.total_num') ?? 0;
+            $invalid_use_num = $card_goods_model->where($where)
+                ->where([ 'card_goods.giftcard_id' => $giftcard_id ])
+                ->withJoin([
+                    'card' => function(Query $query) {
+                        $query->where([ [ 'status', '=', CardDict::INVALID ] ]);
+                    }
+                ], 'left')
+                ->sum('card_goods.use_num') ?? 0;
+            $item[ 'invalid_num' ] = max($invalid_total_num - $invalid_use_num, 0);
+            $item[ 'not_use_num' ] = max($item['total_num'] - $item['use_num'] - $item['invalid_num'], 0);
         }
         return $giftcard_goods;
     }

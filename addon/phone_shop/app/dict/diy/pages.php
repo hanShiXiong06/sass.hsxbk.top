@@ -1380,1602 +1380,1442 @@ return [
             'desc' => '', // 页面描述
             'mode' => 'diy', // 页面模式：diy：自定义，fixed：固定
             "data" =>[
-                "global" => [
-                    "title" =>"首页",
-                    "pageStartBgColor" =>"rgba(246, 246, 246, 1)",
-                    "pageEndBgColor" =>"",
-                    "pageGradientAngle" =>"to bottom",
-                    "bgUrl" =>"",
-                    "bgHeightScale" =>0,
-                    "imgWidth" =>"",
-                    "imgHeight" =>"",
-                    "topStatusBar" => [
-                        "isShow" =>false,
-                        "bgColor" =>"#ffffff",
-                        "style" =>"style-6",
-                        "styleName" =>"风格1",
-                        "textColor" =>"#333333",
-                        "textAlign" =>"center",
-                        "inputPlaceholder" =>"请输入搜索关键词",
-                        "imgUrl" =>"",
-                        "link" => [
-                            "parent" =>"SHOP_LINK",
-                            "name" =>"PHONE_SHOP_GOODS_SEARCH",
-                            "title" =>"商品搜索",
-                            "url" =>"/addon/phone_shop/pages/goods/search",
-                            "action" =>""
-                        ],
-                        "rollBgColor" =>"#ffffff",
-                        "rollTextColor" =>"#333333"
-                    ],
-                    "bottomTabBarSwitch" =>true,
-                    "popWindow" => [
-                        "imgUrl" =>"",
-                        "imgWidth" =>"",
-                        "imgHeight" =>"",
-                        "count" =>-1,
-                        "show" =>0,
-                        "link" => [
-                            "name" =>""
-                        ]
-                    ],
-                    "template" => [
-                        "textColor" =>"#303133",
-                        "pageStartBgColor" =>"",
-                        "pageEndBgColor" =>"",
-                        "pageGradientAngle" =>"to bottom",
-                        "componentBgUrl" =>"",
-                        "componentBgAlpha" =>2,
-                        "componentStartBgColor" =>"",
-                        "componentEndBgColor" =>"",
-                        "componentGradientAngle" =>"to bottom",
-                        "topRounded" =>0,
-                        "bottomRounded" =>0,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>0,
-                            "bottom" =>0,
-                            "both" =>0
-                        ]
-                    ]
+    "global" => [
+        "title" =>"首页",
+        "pageStartBgColor" =>"rgba(246, 246, 246, 1)",
+        "pageEndBgColor" =>"",
+        "pageGradientAngle" =>"to bottom",
+        "bgUrl" =>"",
+        "bgHeightScale" =>0,
+        "imgWidth" =>"",
+        "imgHeight" =>"",
+        "topStatusBar" => [
+            "isShow" =>false,
+            "bgColor" =>"#ffffff",
+            "style" =>"style-1",
+            "styleName" =>"风格1",
+            "textColor" =>"#333333",
+            "textAlign" =>"left",
+            "inputPlaceholder" =>"请输入搜索关键词",
+            "imgUrl" =>"",
+            "link" => [
+                "parent" =>"SHOP_LINK",
+                "name" =>"PHONE_SHOP_GOODS_SEARCH",
+                "title" =>"商品搜索",
+                "url" =>"/addon/phone_shop/pages/goods/search",
+                "action" =>""
+            ],
+            "rollBgColor" =>"#ffffff",
+            "rollTextColor" =>"#333333"
+        ],
+        "bottomTabBarSwitch" =>true,
+        "popWindow" => [
+            "imgUrl" =>"",
+            "imgWidth" =>"",
+            "imgHeight" =>"",
+            "count" =>-1,
+            "show" =>0,
+            "link" => [
+                "name" =>""
+            ]
+        ],
+        "template" => [
+            "textColor" =>"#303133",
+            "pageStartBgColor" =>"",
+            "pageEndBgColor" =>"",
+            "pageGradientAngle" =>"to bottom",
+            "componentBgUrl" =>"",
+            "componentBgAlpha" =>2,
+            "componentStartBgColor" =>"",
+            "componentEndBgColor" =>"",
+            "componentGradientAngle" =>"to bottom",
+            "topRounded" =>0,
+            "bottomRounded" =>0,
+            "elementBgColor" =>"",
+            "topElementRounded" =>0,
+            "bottomElementRounded" =>0,
+            "margin" => [
+                "top" =>0,
+                "bottom" =>0,
+                "both" =>0
+            ]
+        ]
+    ],
+    "value" =>[
+        [
+            "path" =>"edit-carousel-search",
+            "uses" =>1,
+            "position" =>"top_fixed",
+            "id" =>"5p19tddhbso0",
+            "componentName" =>"CarouselSearch",
+            "componentTitle" =>"轮播搜索",
+            "ignore" =>[
+                "componentBgColor",
+                "componentBgUrl",
+                "marginTop",
+                "marginBottom",
+                "topRounded",
+                "bottomRounded",
+                "pageBgColor",
+                "marginBoth"
+            ],
+            "positionWay" =>"fixed",
+            "fixedBgColor" =>"",
+            "bgGradient" =>false,
+            "search" => [
+                "logo" =>"https://vip.123pan.cn/1832133965/tiantai/17301689687480b0f93206cfc6fb259e72a4703f82_ott.png",
+                "text" =>"请输入搜索关键词",
+                "link" => [
+                    "parent" =>"PHONE_SHOP_LINK",
+                    "name" =>"PHONE_SHOP_GOODS_LIST",
+                    "title" =>"商品列表",
+                    "url" =>"/addon/phone_shop/pages/goods/list",
+                    "action" =>""
                 ],
-                "value" =>[
+                "style" =>"style-1",
+                "styleName" =>"风格一",
+                "subTitle" => [
+                    "text" =>"本地好价·优选生活",
+                    "textColor" =>"#000000",
+                    "startColor" =>"rgba(255,255,255,0.7)",
+                    "endColor" =>""
+                ],
+                "positionColor" =>"#ffffff",
+                "hotWord" => [
+                    "interval" =>3,
+                    "list" =>[]
+                ],
+                "color" =>"#999999",
+                "btnColor" =>"#ffffff",
+                "bgColor" =>"#ffffff",
+                "btnBgColor" =>"#ff3434"
+            ],
+            "tab" => [
+                "control" =>false,
+                "noColor" =>"",
+                "selectColor" =>"",
+                "fixedNoColor" =>"",
+                "fixedSelectColor" =>"",
+                "list" =>[
                     [
-                        "path" =>"edit-carousel-search",
-                        "uses" =>1,
-                        "position" =>"top_fixed",
-                        "id" =>"5763sz17z680",
-                        "componentName" =>"CarouselSearch",
-                        "componentTitle" =>"轮播搜索",
-                        "ignore" =>[
-                            "componentBgColor",
-                            "componentBgUrl",
-                            "marginTop",
-                            "marginBottom",
-                            "topRounded",
-                            "bottomRounded",
-                            "pageBgColor",
-                            "marginBoth"
-                        ],
-                        "positionWay" =>"fixed",
-                        "fixedBgColor" =>"rgba(255, 69, 0, 0.68)",
-                        "bgGradient" =>true,
-                        "search" => [
-                            "logo" =>"",
-                            "text" =>"请输入搜索关键词",
-                            "link" => [
-                                "parent" =>"SHOP_LINK",
-                                "name" =>"PHONE_SHOP_GOODS_SEARCH",
-                                "title" =>"商品搜索",
-                                "url" =>"/addon/phone_shop/pages/goods/search",
-                                "action" =>""
-                            ],
-                            "hotWord" => [
-                                "interval" =>3,
-                                "list" =>[
-                                    [
-                                        "id" =>"54gbww0dbxo0",
-                                        "text" =>"苹果15"
-                                    ],
-                                    [
-                                        "id" =>"7h1iz8makng0",
-                                        "text" =>"华为X5"
-                                    ],
-                                    [
-                                        "id" =>"3w95hsvlpf00",
-                                        "text" =>"fold"
-                                    ],
-                                    [
-                                        "id" =>"50i5czl746c0",
-                                        "text" =>"折叠屏"
-                                    ]
-                                ]
-                            ]
-                        ],
-                        "tab" => [
-                            "control" =>false,
-                            "noColor" =>"",
-                            "selectColor" =>"",
-                            "fixedNoColor" =>"",
-                            "fixedSelectColor" =>"",
-                            "list" =>[
-                                [
-                                    "text" =>"分类名称",
-                                    "source" =>"diy_page",
-                                    "diy_id" =>"",
-                                    "diy_title" =>"",
-                                    "id" =>"ja6rvvqq5nc"
-                                ]
-                            ]
-                        ],
-                        "swiper" => [
-                            "control" =>true,
-                            "interval" =>5,
-                            "indicatorColor" =>"rgba(0, 0, 0, 0.3)",
-                            "indicatorActiveColor" =>"#FF0E0E",
-                            "indicatorStyle" =>"style-1",
-                            "indicatorAlign" =>"center",
-                            "swiperStyle" =>"style-1",
-                            "imageHeight" =>146,
-                            "topRounded" =>0,
-                            "bottomRounded" =>0,
-                            "list" =>[
-                                [
-                                    "id" =>"ebyuyo6xi5s",
-                                    "imageUrl" =>"https://vip.123pan.cn/1832133965/tiantai/1721216530e186c7135fd9774dfc6a3a4140485364_ott.png",
-                                    "imgWidth" =>1386,
-                                    "imgHeight" =>590,
-                                    "link" => [
-                                        "parent" =>"SHOP_LINK",
-                                        "name" =>"PHONE_SHOP_COUPON_LIST",
-                                        "title" =>"优惠券列表",
-                                        "url" =>"/addon/phone_shop/pages/coupon/list",
-                                        "action" =>""
-                                    ],
-                                    "width" =>345,
-                                    "height" =>146.86147186147184
-                                ],
-                                [
-                                    "imageUrl" =>"https://vip.123pan.cn/1832133965/tiantai/172181197140763882be171dbb16eef6d6599ac656_ott.png",
-                                    "imgWidth" =>751,
-                                    "imgHeight" =>350,
-                                    "link" => [
-                                        "parent" =>"DIY_PAGE",
-                                        "name" =>"DIY_PAGE",
-                                        "title" =>"交易必看",
-                                        "url" =>"",
-                                        "action" =>"decorate"
-                                    ],
-                                    "id" =>"46mq3o9fkag0",
-                                    "width" =>345,
-                                    "height" =>160.7856191744341
-                                ],
-                                
-                            ]
-                        ],
-                        "textColor" =>"#303133",
-                        "pageStartBgColor" =>"",
-                        "pageEndBgColor" =>"",
-                        "pageGradientAngle" =>"to bottom",
-                        "componentBgUrl" =>"",
-                        "componentBgAlpha" =>2,
-                        "componentStartBgColor" =>"",
-                        "componentEndBgColor" =>"",
-                        "componentGradientAngle" =>"to bottom",
-                        "topRounded" =>0,
-                        "bottomRounded" =>0,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>0,
-                            "bottom" =>0,
-                            "both" =>0
-                        ]
+                        "text" =>"分类名称",
+                        "source" =>"diy_page",
+                        "diy_id" =>"",
+                        "diy_title" =>"",
+                        "id" =>"2ju1lm7a98w0"
                     ],
                     [
-                        "path" =>"edit-float-btn",
-                        "uses" =>1,
-                        "position" =>"fixed",
-                        "id" =>"50q0xnyu8vg0",
-                        "componentName" =>"FloatBtn",
-                        "componentTitle" =>"浮动按钮",
-                        "ignore" =>[],
-                        "imageSize" =>42,
-                        "aroundRadius" =>0,
-                        "bottomPosition" =>"lowerRight",
-                        "list" =>[
-                            [
-                                "imageUrl" =>"https://vip.123pan.cn/1832133965/tiantai/17160044167a3977bbe391ee7cd403e19e94142861_ott.jpg",
-                                "link" => [
-                                    "parent" =>"DIY_PAGE",
-                                    "name" =>"DIY_PAGE",
-                                    "title" =>"联系客服",
-                                    "action" =>"decorate",
-                                    "url" =>"/app/pages/index/diy?id=59"
-                                ],
-                                "id" =>"5uuerfecr980"
-                            ]
-                        ],
-                        "offset" =>0,
-                        "textColor" =>"#303133",
-                        "pageStartBgColor" =>"",
-                        "pageEndBgColor" =>"",
-                        "pageGradientAngle" =>"to bottom",
-                        "componentBgUrl" =>"",
-                        "componentBgAlpha" =>2,
-                        "componentStartBgColor" =>"",
-                        "componentEndBgColor" =>"",
-                        "componentGradientAngle" =>"to bottom",
-                        "topRounded" =>0,
-                        "bottomRounded" =>0,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>0,
-                            "bottom" =>0,
-                            "both" =>0
-                        ],
-                        "pageStyle" =>"padding-top:2rpx;padding-bottom:0rpx;padding-right:0rpx;padding-left:0rpx;"
+                        "text" =>"分类名称",
+                        "source" =>"diy_page",
+                        "diy_id" =>"",
+                        "diy_title" =>"",
+                        "id" =>"388qjg8pqiw0"
                     ],
                     [
-                        "path" =>"edit-notice",
-                        "uses" =>0,
-                        "id" =>"5gwu1el1qfk0",
-                        "componentName" =>"Notice",
-                        "componentTitle" =>"公告",
-                        "ignore" =>[],
-                        "noticeType" =>"text",
-                        "imgType" =>"system",
-                        "systemUrl" =>"style_2",
-                        "imageUrl" =>"",
-                        "showType" =>"popup",
-                        "scrollWay" =>"upDown",
-                        "fontSize" =>13,
-                        "fontWeight" =>"bold",
-                        "noticeTitle" =>"提示:",
-                        "list" =>[
-                            [
-                                "text" =>"为了将提高效率,减少沟通成本,将增加更精准报价模块,报价价格照单全收",
-                                "link" => [
-                                    "parent" =>"DIY_LINK",
-                                    "name" =>"DIY_LINK",
-                                    "title" =>"我的签到",
-                                    "url" =>"/app/pages/member/sign_in",
-                                    "action" =>""
-                                ],
-                                "id" =>"1rz6s4buaxc0"
-                            ],
-                            [
-                                "id" =>"i8vbxclt4iw",
-                                "text" =>"线上下单,领券包邮",
-                                "link" => [
-                                    "name" =>""
-                                ]
-                            ]
-                        ],
-                        "textColor" =>"#303133",
-                        "pageStartBgColor" =>"",
-                        "pageEndBgColor" =>"",
-                        "pageGradientAngle" =>"to bottom",
-                        "componentBgUrl" =>"",
-                        "componentBgAlpha" =>2,
-                        "componentStartBgColor" =>"rgba(255, 255, 255, 1)",
-                        "componentEndBgColor" =>"rgba(248, 243, 243, 1)",
-                        "componentGradientAngle" =>"to bottom",
-                        "topRounded" =>6,
-                        "bottomRounded" =>6,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>5,
-                            "bottom" =>0,
-                            "both" =>10
-                        ],
-                        "pageStyle" =>"padding-top:10rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
+                        "text" =>"分类名称",
+                        "source" =>"diy_page",
+                        "diy_id" =>"",
+                        "diy_title" =>"",
+                        "id" =>"46b7dia5ua00"
                     ],
                     [
-                        "path" =>"edit-horz-blank",
-                        "uses" =>0,
-                        "id" =>"5ip4qagya500",
-                        "componentName" =>"HorzBlank",
-                        "componentTitle" =>"辅助空白",
-                        "ignore" =>[
-                            "pageBgColor",
-                            "componentBgUrl"
-                        ],
-                        "height" =>10,
-                        "textColor" =>"#303133",
-                        "pageStartBgColor" =>"",
-                        "pageEndBgColor" =>"",
-                        "pageGradientAngle" =>"to bottom",
-                        "componentBgUrl" =>"",
-                        "componentBgAlpha" =>2,
-                        "componentStartBgColor" =>"rgba(90, 175, 245, 1)",
-                        "componentEndBgColor" =>"rgba(90, 175, 245, 0.9)",
-                        "componentGradientAngle" =>"to bottom",
-                        "topRounded" =>10,
-                        "bottomRounded" =>0,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>5,
-                            "bottom" =>0,
-                            "both" =>10
-                        ],
-                        "pageStyle" =>"padding-top:10rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
-                    ],
-                    [
-                        "path" =>"edit-horz-blank",
-                        "uses" =>0,
-                        "id" =>"2gafnr64psu8",
-                        "componentName" =>"HorzBlank",
-                        "componentTitle" =>"辅助空白",
-                        "ignore" =>[
-                            "pageBgColor",
-                            "componentBgUrl"
-                        ],
-                        "height" =>10,
-                        "textColor" =>"#303133",
-                        "pageStartBgColor" =>"",
-                        "pageEndBgColor" =>"",
-                        "pageGradientAngle" =>"to bottom",
-                        "componentBgUrl" =>"",
-                        "componentBgAlpha" =>2,
-                        "componentStartBgColor" =>"rgba(248, 220, 74, 1)",
-                        "componentEndBgColor" =>"rgba(245, 221, 94, 1)",
-                        "componentGradientAngle" =>"to bottom",
-                        "topRounded" =>10,
-                        "bottomRounded" =>0,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>5,
-                            "bottom" =>0,
-                            "both" =>10
-                        ],
-                        "pageStyle" =>"padding-top:10rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
-                    ],
-                    [
-                        "path" =>"edit-text",
-                        "uses" =>0,
-                        "position" =>"",
-                        "id" =>"4tbz59920oa0",
-                        "componentName" =>"Text",
-                        "componentTitle" =>"标题",
-                        "ignore" =>[],
-                        "style" =>"style-2",
-                        "styleName" =>"风格2",
-                        "text" =>"销售专区",
-                        "link" => [
-                            "parent" =>"DIY_LINK",
-                            "url" =>"/addon/phone_shop/pages/goods/category?category_id=60",
-                            "title" =>"商品分类",
-                            "name" =>"DIY_LINK",
-                            "action" =>""
-                        ],
-                        "textColor" =>"#272829",
-                        "fontSize" =>16,
-                        "fontWeight" =>"bold",
-                        "textAlign" =>"center",
-                        "subTitle" => [
-                            "text" =>"",
-                            "color" =>"#999999",
-                            "fontSize" =>14,
-                            "control" =>true,
-                            "fontWeight" =>"normal"
-                        ],
-                        "more" => [
-                            "text" =>"更多",
-                            "control" =>true,
-                            "isShow" =>true,
-                            "link" => [
-                                "parent" =>"DIY_LINK",
-                                "name" =>"DIY_LINK",
-                                "title" =>"商品列表",
-                                "url" =>"/addon/phone_shop/pages/goods/category?category_id=60",
-                                "action" =>""
-                            ],
-                            "color" =>"#4E4949"
-                        ],
-                        "pageStartBgColor" =>"rgba(255, 255, 255, 0)",
-                        "pageEndBgColor" =>"",
-                        "pageGradientAngle" =>"to bottom",
-                        "componentBgUrl" =>"",
-                        "componentBgAlpha" =>2,
-                        "componentStartBgColor" =>"rgba(245, 221, 94, 1)",
-                        "componentEndBgColor" =>"rgba(244, 226, 135, 1)",
-                        "componentGradientAngle" =>"to bottom",
-                        "topRounded" =>0,
-                        "bottomRounded" =>0,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>0,
-                            "bottom" =>0,
-                            "both" =>10
-                        ],
-                        "pageStyle" =>"background-color:rgba(255, 255, 255, 0);padding-top:2rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
-                    ],
-                    [
-                        "path" =>"edit-graphic-nav",
-                        "uses" =>0,
-                        "id" =>"4ca5gkm14e40",
-                        "componentName" =>"GraphicNav",
-                        "componentTitle" =>"图文导航",
-                        "ignore" =>[],
-                        "layout" =>"horizontal",
-                        "mode" =>"graphic",
-                        "showStyle" =>"fixed",
-                        "rowCount" =>5,
-                        "pageCount" =>2,
-                        "carousel" => [
-                            "type" =>"circle",
-                            "color" =>"#FFFFFF"
-                        ],
-                        "imageSize" =>40,
-                        "aroundRadius" =>25,
-                        "font" => [
-                            "size" =>12,
-                            "weight" =>"normal",
-                            "color" =>"#303133"
-                        ],
-                        "list" =>[
-                            [
-                                "title" =>"苹果手机",
-                                "link" => [
-                                    "parent" =>"DIY_LINK",
-                                    "name" =>"DIY_LINK",
-                                    "title" =>"苹果分类",
-                                    "url" =>"/addon/phone_shop/pages/goods/category?category_id=60",
-                                    "action" =>""
-                                ],
-                                "imageUrl" =>"upload/attachment/image/100005/202404/08/17125877274d654b641e14041310e1c637cfb0f51d_local.png",
-                                "label" => [
-                                    "control" =>false,
-                                    "text" =>"热门",
-                                    "textColor" =>"#FFFFFF",
-                                    "bgColorStart" =>"#F83287",
-                                    "bgColorEnd" =>"#FE3423"
-                                ],
-                                "id" =>"6j719grozdc0",
-                                "imgWidth" =>256,
-                                "imgHeight" =>256
-                            ],
-                            [
-                                "title" =>"华为手机",
-                                "link" => [
-                                    "parent" =>"DIY_LINK",
-                                    "url" =>"/addon/phone_shop/pages/goods/category?category_id=61",
-                                    "title" =>"华为分类",
-                                    "name" =>"DIY_LINK",
-                                    "action" =>""
-                                ],
-                                "imageUrl" =>"upload/attachment/image/100005/202404/08/171258772688385b7dfabe17b78a70d4d750367751_local.png",
-                                "label" => [
-                                    "control" =>false,
-                                    "text" =>"热门",
-                                    "textColor" =>"#FFFFFF",
-                                    "bgColorStart" =>"#F83287",
-                                    "bgColorEnd" =>"#FE3423"
-                                ],
-                                "id" =>"4qa395za6qk0",
-                                "imgWidth" =>166,
-                                "imgHeight" =>166
-                            ],
-                            [
-                                "title" =>"小米手机",
-                                "link" => [
-                                    "parent" =>"DIY_LINK",
-                                    "url" =>"/addon/phone_shop/pages/goods/category?category_id=62",
-                                    "title" =>"小米分类",
-                                    "name" =>"DIY_LINK",
-                                    "action" =>""
-                                ],
-                                "imageUrl" =>"upload/attachment/image/100005/202404/08/17125877271880f54ab886d86de98e05d990de8350_local.png",
-                                "label" => [
-                                    "control" =>false,
-                                    "text" =>"热门",
-                                    "textColor" =>"#FFFFFF",
-                                    "bgColorStart" =>"#F83287",
-                                    "bgColorEnd" =>"#FE3423"
-                                ],
-                                "id" =>"75lukh3svkk0",
-                                "imgWidth" =>1024,
-                                "imgHeight" =>1024
-                            ],
-                            [
-                                "title" =>"三星手机",
-                                "link" => [
-                                    "parent" =>"DIY_LINK",
-                                    "url" =>"/addon/phone_shop/pages/goods/category?category_id=124",
-                                    "title" =>"三星分类",
-                                    "name" =>"DIY_LINK",
-                                    "action" =>""
-                                ],
-                                "imageUrl" =>"upload/attachment/image/100005/202404/08/1712587727c363beee9ecccbc35d50a847a9d819ca_local.png",
-                                "label" => [
-                                    "control" =>false,
-                                    "text" =>"热门",
-                                    "textColor" =>"#FFFFFF",
-                                    "bgColorStart" =>"#F83287",
-                                    "bgColorEnd" =>"#FE3423"
-                                ],
-                                "id" =>"4gbz5ymzrca0",
-                                "imgWidth" =>500,
-                                "imgHeight" =>500
-                            ],
-                            [
-                                "id" =>"37c58jym6g20",
-                                "title" =>"OPPO手机",
-                                "imageUrl" =>"upload/attachment/image/100005/202404/08/1712588592937f746d99c606d3e99cb29a35f5efcb_local.png",
-                                "imgWidth" =>292,
-                                "imgHeight" =>292,
-                                "link" => [
-                                    "parent" =>"DIY_LINK",
-                                    "url" =>"/addon/phone_shop/pages/goods/category?category_id=128",
-                                    "title" =>"oppo分类",
-                                    "name" =>"DIY_LINK",
-                                    "action" =>""
-                                ],
-                                "label" => [
-                                    "control" =>false,
-                                    "text" =>"热门",
-                                    "textColor" =>"#FFFFFF",
-                                    "bgColorStart" =>"#F83287",
-                                    "bgColorEnd" =>"#FE3423"
-                                ]
-                            ],
-                            [
-                                "id" =>"c128kzvii6",
-                                "title" =>"ViVO手机",
-                                "imageUrl" =>"https://vip.123pan.cn/1832133965/tiantai/1716651374225028ec04f98ca7a9292c13ea5fb840_ott.png",
-                                "imgWidth" =>700,
-                                "imgHeight" =>700,
-                                "link" => [
-                                    "parent" =>"DIY_LINK",
-                                    "url" =>"/addon/phone_shop/pages/goods/category?category_id=129",
-                                    "title" =>"vivo分类",
-                                    "name" =>"DIY_LINK",
-                                    "action" =>""
-                                ],
-                                "label" => [
-                                    "control" =>false,
-                                    "text" =>"热门",
-                                    "textColor" =>"#FFFFFF",
-                                    "bgColorStart" =>"#F83287",
-                                    "bgColorEnd" =>"#FE3423"
-                                ]
-                            ],
-                            [
-                                "id" =>"1esouqhf2exs",
-                                "title" =>"荣耀手机",
-                                "imageUrl" =>"https://vip.123pan.cn/1832133965/tiantai/17166515497e15775d47da7a7f98f37db8acad31d0_ott.png",
-                                "imgWidth" =>292,
-                                "imgHeight" =>292,
-                                "link" => [
-                                    "parent" =>"DIY_LINK",
-                                    "url" =>"/addon/phone_shop/pages/goods/category?category_id=127",
-                                    "title" =>"荣耀分类",
-                                    "name" =>"DIY_LINK",
-                                    "action" =>""
-                                ],
-                                "label" => [
-                                    "control" =>false,
-                                    "text" =>"热门",
-                                    "textColor" =>"#FFFFFF",
-                                    "bgColorStart" =>"#F83287",
-                                    "bgColorEnd" =>"#FE3423"
-                                ]
-                            ],
-                            [
-                                "id" =>"78o86kakdkc0",
-                                "title" =>"平板专区",
-                                "imageUrl" =>"https://vip.123pan.cn/1832133965/tiantai/17166159557d71724e688f62ae6b65fb00a993bee6_ott.png",
-                                "imgWidth" =>300,
-                                "imgHeight" =>340,
-                                "link" => [
-                                    "parent" =>"DIY_LINK",
-                                    "url" =>"/addon/phone_shop/pages/goods/category?category_id=27",
-                                    "title" =>"平板专区",
-                                    "name" =>"DIY_LINK",
-                                    "action" =>""
-                                ],
-                                "label" => [
-                                    "control" =>false,
-                                    "text" =>"热门",
-                                    "textColor" =>"#FFFFFF",
-                                    "bgColorStart" =>"#F83287",
-                                    "bgColorEnd" =>"#FE3423"
-                                ]
-                            ],
-                            [
-                                "id" =>"3fh69zi6pte0",
-                                "title" =>"特价商品",
-                                "imageUrl" =>"https://vip.123pan.cn/1832133965/tiantai/1716615094578db0fa323b0a69bbc75a5e962657ec_ott.png",
-                                "imgWidth" =>256,
-                                "imgHeight" =>256,
-                                "link" => [
-                                    "parent" =>"DIY_LINK",
-                                    "title" =>"特价商品",
-                                    "url" =>"/addon/phone_shop/pages/goods/category?category_id=44",
-                                    "name" =>"DIY_LINK",
-                                    "action" =>""
-                                ],
-                                "label" => [
-                                    "control" =>false,
-                                    "text" =>"热门",
-                                    "textColor" =>"#FFFFFF",
-                                    "bgColorStart" =>"#F83287",
-                                    "bgColorEnd" =>"#FE3423"
-                                ]
-                            ],
-                            [
-                                "id" =>"45ml6yv4r5s0",
-                                "title" =>"更多",
-                                "imageUrl" =>"https://vip.123pan.cn/1832133965/tiantai/171600236498656511c36551e83cf6a7d3413e16bd_ott.png",
-                                "imgWidth" =>256,
-                                "imgHeight" =>256,
-                                "link" => [
-                                    "parent" =>"SHOP_LINK",
-                                    "name" =>"PHONE_SHOP_GOODS_CATEGORY",
-                                    "title" =>"商品分类",
-                                    "url" =>"/addon/phone_shop/pages/goods/category",
-                                    "action" =>""
-                                ],
-                                "label" => [
-                                    "control" =>false,
-                                    "text" =>"热门",
-                                    "textColor" =>"#FFFFFF",
-                                    "bgColorStart" =>"#F83287",
-                                    "bgColorEnd" =>"#FE3423"
-                                ]
-                            ]
-                        ],
-                        "textColor" =>"#303133",
-                        "pageStartBgColor" =>"",
-                        "pageEndBgColor" =>"",
-                        "pageGradientAngle" =>"to bottom",
-                        "componentBgUrl" =>"",
-                        "componentBgAlpha" =>2,
-                        "componentStartBgColor" =>"rgba(244, 226, 135, 1)",
-                        "componentEndBgColor" =>"rgba(255, 255, 255, 1)",
-                        "componentGradientAngle" =>"to bottom",
-                        "topRounded" =>0,
-                        "bottomRounded" =>10,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>0,
-                            "bottom" =>0,
-                            "both" =>10
-                        ],
-                        "pageStyle" =>"padding-top:2rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
-                    ],
-                    [
-                        "path" =>"edit-horz-blank",
-                        "uses" =>0,
-                        "id" =>"1mo9lnu1knds",
-                        "componentName" =>"HorzBlank",
-                        "componentTitle" =>"辅助空白",
-                        "ignore" =>[
-                            "pageBgColor",
-                            "componentBgUrl"
-                        ],
-                        "height" =>10,
-                        "textColor" =>"#303133",
-                        "pageStartBgColor" =>"",
-                        "pageEndBgColor" =>"",
-                        "pageGradientAngle" =>"to bottom",
-                        "componentBgUrl" =>"",
-                        "componentBgAlpha" =>2,
-                        "componentStartBgColor" =>"rgba(255, 255, 255, 1)",
-                        "componentEndBgColor" =>"",
-                        "componentGradientAngle" =>"to bottom",
-                        "topRounded" =>10,
-                        "bottomRounded" =>0,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>5,
-                            "bottom" =>0,
-                            "both" =>10
-                        ],
-                        "pageStyle" =>"padding-top:10rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
-                    ],
-                    [
-                        "path" =>"edit-text",
-                        "uses" =>0,
-                        "position" =>"",
-                        "id" =>"3j48a0t88ne0",
-                        "componentName" =>"Text",
-                        "componentTitle" =>"标题",
-                        "ignore" =>[],
-                        "style" =>"style-2",
-                        "styleName" =>"风格2",
-                        "text" =>"上新专区",
-                        "link" => [
-                            "name" =>""
-                        ],
-                        "textColor" =>"#303133",
-                        "fontSize" =>17,
-                        "fontWeight" =>"bold",
-                        "textAlign" =>"center",
-                        "subTitle" => [
-                            "text" =>"",
-                            "color" =>"#FFFFFF",
-                            "fontSize" =>14,
-                            "control" =>true,
-                            "fontWeight" =>"normal"
-                        ],
-                        "more" => [
-                            "text" =>"查看更多",
-                            "control" =>true,
-                            "isShow" =>true,
-                            "link" => [
-                                "parent" =>"SHOP_LINK",
-                                "name" =>"PHONE_SHOP_GOODS_CATEGORY",
-                                "title" =>"商品分类",
-                                "url" =>"/addon/phone_shop/pages/goods/category",
-                                "action" =>""
-                            ],
-                            "color" =>"#666060"
-                        ],
-                        "pageStartBgColor" =>"",
-                        "pageEndBgColor" =>"",
-                        "pageGradientAngle" =>"to bottom",
-                        "componentBgUrl" =>"",
-                        "componentBgAlpha" =>2,
-                        "componentStartBgColor" =>"rgba(255, 255, 255, 1)",
-                        "componentEndBgColor" =>"",
-                        "componentGradientAngle" =>"to bottom",
-                        "topRounded" =>0,
-                        "bottomRounded" =>0,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>0,
-                            "bottom" =>0,
-                            "both" =>10
-                        ],
-                        "pageStyle" =>"padding-top:2rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
-                    ],
-                    [
-                        "path" =>"edit-phone-many-goods-list",
-                        "uses" =>0,
-                        "id" =>"5tr7yw13ze40",
-                        "componentName" =>"PhoneManyGoodsList",
-                        "componentTitle" =>"多商品组",
-                        "ignore" =>[
-                            "componentBgUrl"
-                        ],
-                        "style" =>"style-2",
-                        "num" =>6,
-                        "sortWay" =>"default",
-                        "headStyle" =>"style-2",
-                        "aroundRadius" =>25,
-                        "source" =>"custom",
-                        "goods_category" =>"",
-                        "goods_category_name" =>"请选择",
-                        "goodsNameStyle" => [
-                            "color" =>"rgba(99, 91, 91, 1)",
-                            "control" =>true,
-                            "fontWeight" =>"normal"
-                        ],
-                        "priceStyle" => [
-                            "mainColor" =>"#FF4142",
-                            "mainControl" =>true,
-                            "lineColor" =>"#999CA7",
-                            "lineControl" =>true
-                        ],
-                        "saleStyle" => [
-                            "color" =>"rgba(255, 255, 255, 1)",
-                            "control" =>true
-                        ],
-                        "list" =>[
-                            [
-                                "id" =>"4fkencea6460",
-                                "title" =>"苹果",
-                                "desc" =>"分类描述",
-                                "source" =>"category",
-                                "goods_category" =>60,
-                                "goods_category_name" =>"苹果",
-                                "goods_ids" =>[],
-                                "imageUrl" =>""
-                            ],
-                            [
-                                "id" =>"2ri8hn1byzs0",
-                                "title" =>"华为",
-                                "desc" =>"分类描述",
-                                "source" =>"category",
-                                "goods_category" =>61,
-                                "goods_category_name" =>"华为",
-                                "goods_ids" =>[],
-                                "imageUrl" =>""
-                            ],
-                            [
-                                "id" =>"6q4fzxjakuo0",
-                                "title" =>"三星",
-                                "desc" =>"分类描述",
-                                "source" =>"category",
-                                "goods_category" =>124,
-                                "goods_category_name" =>"三星",
-                                "goods_ids" =>[],
-                                "imageUrl" =>""
-                            ],
-                            [
-                                "title" =>"OPPO",
-                                "desc" =>"猜你喜欢",
-                                "source" =>"category",
-                                "goods_category" =>128,
-                                "goods_category_name" =>"OPPO",
-                                "goods_ids" =>[],
-                                "imageUrl" =>"",
-                                "id" =>"18u8hk05ub4w"
-                            ],
-                            [
-                                "id" =>"87lt5bpsyc4",
-                                "title" =>"vivo",
-                                "desc" =>"分类描述",
-                                "source" =>"category",
-                                "goods_category" =>129,
-                                "goods_category_name" =>"VIVO",
-                                "goods_ids" =>[],
-                                "imageUrl" =>""
-                            ],
-                            [
-                                "id" =>"45eiizgggnm0",
-                                "title" =>"小米",
-                                "desc" =>"分类描述",
-                                "source" =>"category",
-                                "goods_category" =>62,
-                                "goods_category_name" =>"小米",
-                                "goods_ids" =>[],
-                                "imageUrl" =>""
-                            ],
-                            [
-                                "id" =>"3tbeh9q76100",
-                                "title" =>"红米",
-                                "desc" =>"分类描述",
-                                "source" =>"category",
-                                "goods_category" =>130,
-                                "goods_category_name" =>"红米",
-                                "goods_ids" =>[],
-                                "imageUrl" =>""
-                            ],
-                            [
-                                "id" =>"3zyo3zm7rwo0",
-                                "title" =>"荣耀",
-                                "desc" =>"分类描述",
-                                "source" =>"category",
-                                "goods_category" =>127,
-                                "goods_category_name" =>"荣耀",
-                                "goods_ids" =>[],
-                                "imageUrl" =>""
-                            ]
-                        ],
-                        "textColor" =>"#303133",
-                        "pageStartBgColor" =>"",
-                        "pageEndBgColor" =>"",
-                        "pageGradientAngle" =>"to bottom",
-                        "componentBgUrl" =>"",
-                        "componentBgAlpha" =>2,
-                        "componentStartBgColor" =>"rgba(255, 255, 255, 1)",
-                        "componentEndBgColor" =>"rgba(196, 185, 185, 0.09)",
-                        "componentGradientAngle" =>"to bottom",
-                        "topRounded" =>0,
-                        "bottomRounded" =>0,
-                        "elementBgColor" =>"rgba(255, 255, 255, 1)",
-                        "topElementRounded" =>9,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>0,
-                            "bottom" =>10,
-                            "both" =>10
-                        ],
-                        "pageStyle" =>"padding-top:2rpx;padding-bottom:20rpx;padding-right:20rpx;padding-left:20rpx;"
-                    ],
-                    [
-                        "path" =>"edit-horz-blank",
-                        "uses" =>0,
-                        "id" =>"4z9jltfk8jc0",
-                        "componentName" =>"HorzBlank",
-                        "componentTitle" =>"辅助空白",
-                        "ignore" =>[
-                            "pageBgColor",
-                            "componentBgUrl"
-                        ],
-                        "textColor" =>"#303133",
-                        "pageStartBgColor" =>"",
-                        "pageEndBgColor" =>"",
-                        "pageGradientAngle" =>"to bottom",
-                        "componentBgUrl" =>"",
-                        "componentBgAlpha" =>2,
-                        "componentStartBgColor" =>"rgba(214, 120, 235, 1)",
-                        "componentEndBgColor" =>"rgba(222, 157, 237, 1)",
-                        "componentGradientAngle" =>"to bottom",
-                        "topRounded" =>6,
-                        "bottomRounded" =>0,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>5,
-                            "bottom" =>0,
-                            "both" =>10
-                        ],
-                        "height" =>10,
-                        "pageStyle" =>"padding-top:10rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
-                    ],
-                    [
-                        "path" =>"edit-text",
-                        "uses" =>0,
-                        "position" =>"",
-                        "id" =>"65qaokgbzg80",
-                        "componentName" =>"Text",
-                        "componentTitle" =>"标题",
-                        "ignore" =>[],
-                        "style" =>"style-2",
-                        "styleName" =>"风格2",
-                        "text" =>"平板系列",
-                        "link" => [
-                            "name" =>""
-                        ],
-                        "textColor" =>"#FFFFFF",
-                        "fontSize" =>16,
-                        "fontWeight" =>"bold",
-                        "textAlign" =>"center",
-                        "subTitle" => [
-                            "text" =>"一机一检 售后无忧",
-                            "color" =>"#FFFFFF",
-                            "fontSize" =>13,
-                            "control" =>true,
-                            "fontWeight" =>"normal"
-                        ],
-                        "more" => [
-                            "text" =>"查看更多",
-                            "control" =>true,
-                            "isShow" =>true,
-                            "link" => [
-                                "parent" =>"DIY_LINK",
-                                "name" =>"DIY_LINK",
-                                "title" =>"商品分类",
-                                "url" =>"/addon/phone_shop/pages/goods/category?category_id=27",
-                                "action" =>""
-                            ],
-                            "color" =>"#FFFFFF"
-                        ],
-                        "pageStartBgColor" =>"",
-                        "pageEndBgColor" =>"",
-                        "pageGradientAngle" =>"to bottom",
-                        "componentBgUrl" =>"",
-                        "componentBgAlpha" =>2,
-                        "componentStartBgColor" =>"rgba(222, 157, 237, 1)",
-                        "componentEndBgColor" =>"rgba(202, 86, 227, 0.61)",
-                        "componentGradientAngle" =>"to bottom",
-                        "topRounded" =>0,
-                        "bottomRounded" =>0,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>0,
-                            "bottom" =>0,
-                            "both" =>10
-                        ],
-                        "pageStyle" =>"padding-top:2rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
-                    ],
-                    [
-                        "path" =>"edit-phone-goods-list",
-                        "uses" =>0,
-                        "id" =>"6ca0pekfuwc0",
-                        "componentName" =>"PhoneGoodsList",
-                        "componentTitle" =>"商品列表",
-                        "ignore" =>[],
-                        "style" =>"style-1",
-                        "source" =>"category",
-                        "num" =>6,
-                        "goods_category" =>27,
-                        "goods_category_name" =>"平板",
-                        "goods_ids" =>[],
-                        "sortWay" =>"default",
-                        "goodsNameStyle" => [
-                            "color" =>"#303133",
-                            "control" =>true,
-                            "fontWeight" =>"normal"
-                        ],
-                        "priceStyle" => [
-                            "mainColor" =>"#FF4142",
-                            "mainControl" =>true,
-                            "lineColor" =>"#999CA7",
-                            "lineControl" =>true
-                        ],
-                        "saleStyle" => [
-                            "color" =>"#999999",
-                            "control" =>true
-                        ],
-                        "textColor" =>"#303133",
-                        "pageStartBgColor" =>"",
-                        "pageEndBgColor" =>"",
-                        "pageGradientAngle" =>"to bottom",
-                        "componentBgUrl" =>"",
-                        "componentBgAlpha" =>2,
-                        "componentStartBgColor" =>"rgba(202, 86, 227, 0.6)",
-                        "componentEndBgColor" =>"rgba(64, 12, 186, 0.79)",
-                        "componentGradientAngle" =>"to bottom",
-                        "topRounded" =>0,
-                        "bottomRounded" =>10,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>0,
-                            "bottom" =>0,
-                            "both" =>10
-                        ],
-                        "pageStyle" =>"padding-top:2rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
-                    ],
-                    [
-                        "path" =>"edit-horz-blank",
-                        "uses" =>0,
-                        "id" =>"5jdg9st0xgo0",
-                        "componentName" =>"HorzBlank",
-                        "componentTitle" =>"辅助空白",
-                        "ignore" =>[
-                            "pageBgColor",
-                            "componentBgUrl"
-                        ],
-                        "height" =>10,
-                        "textColor" =>"#303133",
-                        "pageStartBgColor" =>"",
-                        "pageEndBgColor" =>"",
-                        "pageGradientAngle" =>"to bottom",
-                        "componentBgUrl" =>"",
-                        "componentBgAlpha" =>2,
-                        "componentStartBgColor" =>"rgba(255, 255, 255, 1)",
-                        "componentEndBgColor" =>"",
-                        "componentGradientAngle" =>"to bottom",
-                        "topRounded" =>10,
-                        "bottomRounded" =>0,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>10,
-                            "bottom" =>0,
-                            "both" =>10
-                        ],
-                        "pageStyle" =>"padding-top:20rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
-                    ],
-                    [
-                        "path" =>"edit-text",
-                        "uses" =>0,
-                        "position" =>"",
-                        "id" =>"4mev1j2d9oc0",
-                        "componentName" =>"Text",
-                        "componentTitle" =>"标题",
-                        "ignore" =>[],
-                        "style" =>"style-2",
-                        "styleName" =>"风格2",
-                        "text" =>"笔记本专区",
-                        "link" => [
-                            "parent" =>"SHOP_LINK",
-                            "name" =>"PHONE_SHOP_GOODS_CATEGORY",
-                            "title" =>"商品分类",
-                            "url" =>"/addon/phone_shop/pages/goods/category",
-                            "action" =>""
-                        ],
-                        "textColor" =>"#303133",
-                        "fontSize" =>16,
-                        "fontWeight" =>"normal",
-                        "textAlign" =>"left",
-                        "subTitle" => [
-                            "text" =>"",
-                            "color" =>"#999999",
-                            "fontSize" =>14,
-                            "control" =>true,
-                            "fontWeight" =>"normal"
-                        ],
-                        "more" => [
-                            "text" =>"查看更多",
-                            "control" =>true,
-                            "isShow" =>true,
-                            "link" => [
-                                "parent" =>"DIY_LINK",
-                                "name" =>"DIY_LINK",
-                                "title" =>"商品分类",
-                                "url" =>"/addon/phone_shop/pages/goods/category?category_id=26",
-                                "action" =>""
-                            ],
-                            "color" =>"#999999"
-                        ],
-                        "pageStartBgColor" =>"",
-                        "pageEndBgColor" =>"",
-                        "pageGradientAngle" =>"to bottom",
-                        "componentBgUrl" =>"",
-                        "componentBgAlpha" =>2,
-                        "componentStartBgColor" =>"rgba(255, 255, 255, 1)",
-                        "componentEndBgColor" =>"",
-                        "componentGradientAngle" =>"to bottom",
-                        "topRounded" =>0,
-                        "bottomRounded" =>0,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>0,
-                            "bottom" =>0,
-                            "both" =>10
-                        ],
-                        "pageStyle" =>"padding-top:2rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
-                    ],
-                    [
-                        "path" =>"edit-phone-many-goods-list",
-                        "uses" =>0,
-                        "id" =>"17fff4qw7nr4",
-                        "componentName" =>"PhoneManyGoodsList",
-                        "componentTitle" =>"多商品组",
-                        "ignore" =>[
-                            "componentBgUrl"
-                        ],
-                        "style" =>"style-2",
-                        "num" =>6,
-                        "sortWay" =>"default",
-                        "headStyle" =>"style-3",
-                        "aroundRadius" =>24,
-                        "source" =>"custom",
-                        "goods_category" =>26,
-                        "goods_category_name" =>"笔记本",
-                        "goodsNameStyle" => [
-                            "color" =>"#303133",
-                            "control" =>true,
-                            "fontWeight" =>"normal"
-                        ],
-                        "priceStyle" => [
-                            "mainColor" =>"#FF4142",
-                            "mainControl" =>true,
-                            "lineColor" =>"#999CA7",
-                            "lineControl" =>true
-                        ],
-                        "saleStyle" => [
-                            "color" =>"rgba(78, 75, 75, 1)",
-                            "control" =>true
-                        ],
-                        "list" =>[
-                            [
-                                "title" =>"苹果",
-                                "desc" =>"猜你喜欢",
-                                "source" =>"category",
-                                "goods_category" =>51,
-                                "goods_category_name" =>"苹果",
-                                "goods_ids" =>[],
-                                "imageUrl" =>"upload/attachment/image/100005/202404/08/17125877274d654b641e14041310e1c637cfb0f51d_local.png",
-                                "id" =>"1pmsyymfxtsw"
-                            ],
-                            [
-                                "id" =>"76wiragd5zg0",
-                                "title" =>"华为",
-                                "desc" =>"分类描述",
-                                "source" =>"category",
-                                "goods_category" =>52,
-                                "goods_category_name" =>"华为",
-                                "goods_ids" =>[],
-                                "imageUrl" =>"upload/attachment/image/100005/202404/08/171258772688385b7dfabe17b78a70d4d750367751_local.png"
-                            ],
-                            [
-                                "id" =>"149wdjvcdups",
-                                "title" =>"其他PC",
-                                "desc" =>"分类描述",
-                                "source" =>"category",
-                                "goods_category" =>26,
-                                "goods_category_name" =>"笔记本",
-                                "goods_ids" =>[],
-                                "imageUrl" =>"https://vip.123pan.cn/1832133965/tiantai/1714718469ea4817c16b440e5fd6370c4d106770bb_ott.jpg"
-                            ]
-                        ],
-                        "textColor" =>"#303133",
-                        "pageStartBgColor" =>null,
-                        "pageEndBgColor" =>"",
-                        "pageGradientAngle" =>"to bottom",
-                        "componentBgUrl" =>"",
-                        "componentBgAlpha" =>2,
-                        "componentStartBgColor" =>"rgba(255, 255, 255, 1)",
-                        "componentEndBgColor" =>"rgba(255, 255, 255, 1)",
-                        "componentGradientAngle" =>"to bottom",
-                        "topRounded" =>0,
-                        "bottomRounded" =>0,
-                        "elementBgColor" =>"rgba(255, 255, 255, 1)",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>0,
-                            "bottom" =>0,
-                            "both" =>10
-                        ],
-                        "pageStyle" =>"padding-top:2rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
-                    ],
-                    [
-                        "path" =>"edit-horz-blank",
-                        "uses" =>0,
-                        "id" =>"57ointxd8ks0",
-                        "componentName" =>"HorzBlank",
-                        "componentTitle" =>"辅助空白",
-                        "ignore" =>[
-                            "pageBgColor",
-                            "componentBgUrl"
-                        ],
-                        "height" =>10,
-                        "textColor" =>"#303133",
-                        "pageStartBgColor" =>"",
-                        "pageEndBgColor" =>"",
-                        "pageGradientAngle" =>"to bottom",
-                        "componentBgUrl" =>"",
-                        "componentBgAlpha" =>2,
-                        "componentStartBgColor" =>"rgba(255, 255, 255, 1)",
-                        "componentEndBgColor" =>"",
-                        "componentGradientAngle" =>"to bottom",
-                        "topRounded" =>10,
-                        "bottomRounded" =>0,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>10,
-                            "bottom" =>0,
-                            "both" =>10
-                        ],
-                        "pageStyle" =>"padding-top:20rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
-                    ],
-                    [
-                        "path" =>"edit-text",
-                        "uses" =>0,
-                        "position" =>"",
-                        "id" =>"4q188b3mwfs0",
-                        "componentName" =>"Text",
-                        "componentTitle" =>"标题",
-                        "ignore" =>[],
-                        "style" =>"style-2",
-                        "styleName" =>"风格2",
-                        "text" =>"智能产品",
-                        "link" => [
-                            "name" =>""
-                        ],
-                        "textColor" =>"#303133",
-                        "fontSize" =>16,
-                        "fontWeight" =>"normal",
-                        "textAlign" =>"center",
-                        "subTitle" => [
-                            "text" =>"手表｜手写笔｜耳机",
-                            "color" =>"#999999",
-                            "fontSize" =>12,
-                            "control" =>true,
-                            "fontWeight" =>"normal"
-                        ],
-                        "more" => [
-                            "text" =>"查看更多",
-                            "control" =>true,
-                            "isShow" =>true,
-                            "link" => [
-                                "parent" =>"DIY_LINK",
-                                "name" =>"DIY_LINK",
-                                "title" =>"商品分类",
-                                "url" =>"/addon/phone_shop/pages/goods/category?category_id=53",
-                                "action" =>""
-                            ],
-                            "color" =>"#999999"
-                        ],
-                        "pageStartBgColor" =>"",
-                        "pageEndBgColor" =>"",
-                        "pageGradientAngle" =>"to bottom",
-                        "componentBgUrl" =>"",
-                        "componentBgAlpha" =>2,
-                        "componentStartBgColor" =>"rgba(255, 255, 255, 1)",
-                        "componentEndBgColor" =>"",
-                        "componentGradientAngle" =>"to bottom",
-                        "topRounded" =>0,
-                        "bottomRounded" =>0,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>0,
-                            "bottom" =>0,
-                            "both" =>10
-                        ],
-                        "pageStyle" =>"padding-top:2rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
-                    ],
-                    [
-                        "path" =>"edit-phone-goods-list",
-                        "uses" =>0,
-                        "id" =>"3u3k9jlctlk0",
-                        "componentName" =>"PhoneGoodsList",
-                        "componentTitle" =>"商品列表",
-                        "ignore" =>[],
-                        "style" =>"style-1",
-                        "source" =>"category",
-                        "num" =>3,
-                        "goods_category" =>53,
-                        "goods_category_name" =>"手表",
-                        "goods_ids" =>[],
-                        "sortWay" =>"default",
-                        "goodsNameStyle" => [
-                            "color" =>"#303133",
-                            "control" =>true,
-                            "fontWeight" =>"normal"
-                        ],
-                        "priceStyle" => [
-                            "mainColor" =>"#FF4142",
-                            "mainControl" =>true,
-                            "lineColor" =>"#999CA7",
-                            "lineControl" =>true
-                        ],
-                        "saleStyle" => [
-                            "color" =>"#999999",
-                            "control" =>true
-                        ],
-                        "textColor" =>"#303133",
-                        "pageStartBgColor" =>"rgba(255, 255, 255, 0)",
-                        "pageEndBgColor" =>"",
-                        "pageGradientAngle" =>"to bottom",
-                        "componentBgUrl" =>"",
-                        "componentBgAlpha" =>2,
-                        "componentStartBgColor" =>"rgba(255, 255, 255, 1)",
-                        "componentEndBgColor" =>"",
-                        "componentGradientAngle" =>"to bottom",
-                        "topRounded" =>0,
-                        "bottomRounded" =>0,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>0,
-                            "bottom" =>0,
-                            "both" =>10
-                        ],
-                        "pageStyle" =>"background-color:rgba(255, 255, 255, 0);padding-top:2rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
-                    ],
-                    [
-                        "path" =>"edit-phone-goods-list",
-                        "uses" =>0,
-                        "id" =>"5k9ne220r440",
-                        "componentName" =>"PhoneGoodsList",
-                        "componentTitle" =>"商品列表",
-                        "ignore" =>[],
-                        "style" =>"style-1",
-                        "source" =>"category",
-                        "num" =>3,
-                        "goods_category" =>28,
-                        "goods_category_name" =>"配件",
-                        "goods_ids" =>[],
-                        "sortWay" =>"default",
-                        "goodsNameStyle" => [
-                            "color" =>"#303133",
-                            "control" =>true,
-                            "fontWeight" =>"normal"
-                        ],
-                        "priceStyle" => [
-                            "mainColor" =>"#FF4142",
-                            "mainControl" =>true,
-                            "lineColor" =>"#999CA7",
-                            "lineControl" =>true
-                        ],
-                        "saleStyle" => [
-                            "color" =>"#999999",
-                            "control" =>true
-                        ],
-                        "textColor" =>"#303133",
-                        "pageStartBgColor" =>"",
-                        "pageEndBgColor" =>"",
-                        "pageGradientAngle" =>"to bottom",
-                        "componentBgUrl" =>"",
-                        "componentBgAlpha" =>2,
-                        "componentStartBgColor" =>"rgba(255, 255, 255, 1)",
-                        "componentEndBgColor" =>"",
-                        "componentGradientAngle" =>"to bottom",
-                        "topRounded" =>0,
-                        "bottomRounded" =>10,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>0,
-                            "bottom" =>0,
-                            "both" =>10
-                        ],
-                        "pageStyle" =>"padding-top:2rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
-                    ],
-                    [
-                        "path" =>"edit-horz-blank",
-                        "uses" =>0,
-                        "id" =>"2flbrapw9z40",
-                        "componentName" =>"HorzBlank",
-                        "componentTitle" =>"辅助空白",
-                        "ignore" =>[
-                            "pageBgColor",
-                            "componentBgUrl"
-                        ],
-                        "height" =>10,
-                        "textColor" =>"#303133",
-                        "pageStartBgColor" =>"",
-                        "pageEndBgColor" =>"",
-                        "pageGradientAngle" =>"to bottom",
-                        "componentBgUrl" =>"",
-                        "componentBgAlpha" =>2,
-                        "componentStartBgColor" =>"rgba(255, 255, 255, 1)",
-                        "componentEndBgColor" =>"",
-                        "componentGradientAngle" =>"to bottom",
-                        "topRounded" =>10,
-                        "bottomRounded" =>0,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>10,
-                            "bottom" =>0,
-                            "both" =>10
-                        ],
-                        "pageStyle" =>"padding-top:20rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
-                    ],
-                    [
-                        "path" =>"edit-text",
-                        "uses" =>0,
-                        "position" =>"",
-                        "id" =>"62vegu2hf900",
-                        "componentName" =>"Text",
-                        "componentTitle" =>"标题",
-                        "ignore" =>[],
-                        "style" =>"style-1",
-                        "styleName" =>"风格1",
-                        "text" =>"热门问题",
-                        "link" => [
-                            "name" =>""
-                        ],
-                        "textColor" =>"#303133",
-                        "fontSize" =>18,
-                        "fontWeight" =>"bold",
-                        "textAlign" =>"center",
-                        "subTitle" => [
-                            "text" =>"副标题",
-                            "color" =>"#999999",
-                            "fontSize" =>14,
-                            "control" =>false,
-                            "fontWeight" =>"normal"
-                        ],
-                        "more" => [
-                            "text" =>"查看更多",
-                            "control" =>false,
-                            "isShow" =>true,
-                            "link" => [
-                                "name" =>""
-                            ],
-                            "color" =>"#999999"
-                        ],
-                        "pageStartBgColor" =>"",
-                        "pageEndBgColor" =>"",
-                        "pageGradientAngle" =>"to bottom",
-                        "componentBgUrl" =>"",
-                        "componentBgAlpha" =>2,
-                        "componentStartBgColor" =>"rgba(255, 255, 255, 1)",
-                        "componentEndBgColor" =>"",
-                        "componentGradientAngle" =>"to bottom",
-                        "topRounded" =>0,
-                        "bottomRounded" =>0,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>0,
-                            "bottom" =>0,
-                            "both" =>10
-                        ],
-                        "pageStyle" =>"padding-top:2rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
-                    ],
-                    [
-                        "path" =>"edit-article",
-                        "uses" =>0,
-                        "id" =>"45wj7h9nnd80",
-                        "componentName" =>"Article",
-                        "componentTitle" =>"文章",
-                        "ignore" =>[],
-                        "sources" =>"initial",
-                        "count" =>8,
-                        "articleIds" =>[],
-                        "textColor" =>"#303133",
-                        "pageStartBgColor" =>"",
-                        "pageEndBgColor" =>"",
-                        "pageGradientAngle" =>"to bottom",
-                        "componentBgUrl" =>"",
-                        "componentBgAlpha" =>2,
-                        "componentStartBgColor" =>"rgba(255, 255, 255, 1)",
-                        "componentEndBgColor" =>"",
-                        "componentGradientAngle" =>"to bottom",
-                        "topRounded" =>0,
-                        "bottomRounded" =>10,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>0,
-                            "bottom" =>0,
-                            "both" =>10
-                        ],
-                        "pageStyle" =>"padding-top:2rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
-                    ],
-                   
-                
-                    [
-                        "path" =>"edit-horz-blank",
-                        "uses" =>0,
-                        "id" =>"423dfo881gc0",
-                        "componentName" =>"HorzBlank",
-                        "componentTitle" =>"辅助空白",
-                        "ignore" =>[
-                            "pageBgColor",
-                            "componentBgUrl"
-                        ],
-                        "height" =>10,
-                        "textColor" =>"#303133",
-                        "pageStartBgColor" =>"",
-                        "pageEndBgColor" =>"",
-                        "pageGradientAngle" =>"to bottom",
-                        "componentBgUrl" =>"",
-                        "componentBgAlpha" =>2,
-                        "componentStartBgColor" =>"rgba(255, 255, 255, 1)",
-                        "componentEndBgColor" =>"",
-                        "componentGradientAngle" =>"to bottom",
-                        "topRounded" =>10,
-                        "bottomRounded" =>0,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>10,
-                            "bottom" =>0,
-                            "both" =>10
-                        ],
-                        "pageStyle" =>"padding-top:20rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
-                    ],
-                    [
-                        "path" =>"edit-rich-text",
-                        "uses" =>0,
-                        "id" =>"5fwsoc3tmj00",
-                        "componentName" =>"RichText",
-                        "componentTitle" =>"富文本",
-                        "ignore" =>[],
-                        "html" =>"<p dir=\"ltr\" style=\"text-align: center;\">&nbsp;</p>",
-                        "textColor" =>"#303133",
-                        "pageStartBgColor" =>"rgba(239, 239, 239, 0)",
-                        "pageEndBgColor" =>"",
-                        "pageGradientAngle" =>"to bottom",
-                        "componentBgUrl" =>"",
-                        "componentBgAlpha" =>2,
-                        "componentStartBgColor" =>"rgba(255, 255, 255, 1)",
-                        "componentEndBgColor" =>"",
-                        "componentGradientAngle" =>"to bottom",
-                        "topRounded" =>0,
-                        "bottomRounded" =>10,
-                        "elementBgColor" =>"",
-                        "topElementRounded" =>0,
-                        "bottomElementRounded" =>0,
-                        "margin" => [
-                            "top" =>0,
-                            "bottom" =>10,
-                            "both" =>10
-                        ],
-                        "pageStyle" =>"background-color:rgba(239, 239, 239, 0);padding-top:2rpx;padding-bottom:20rpx;padding-right:20rpx;padding-left:20rpx;"
+                        "text" =>"分类名称",
+                        "source" =>"diy_page",
+                        "diy_id" =>"",
+                        "diy_title" =>"",
+                        "id" =>"4psre4excty0"
                     ]
                 ]
+            ],
+            "swiper" => [
+                "control" =>true,
+                "interval" =>5,
+                "indicatorColor" =>"rgba(0, 0, 0, 0.3)",
+                "indicatorActiveColor" =>"#FF0E0E",
+                "indicatorStyle" =>"style-1",
+                "indicatorAlign" =>"center",
+                "swiperStyle" =>"style-1",
+                "imageHeight" =>147,
+                "topRounded" =>10,
+                "bottomRounded" =>10,
+                "list" =>[
+                    [
+                        "imageUrl" =>"https://vip.123pan.cn/1832133965/tiantai/172700160816188b1d81b95069f643e50166ae526e_ott.png",
+                        "imgWidth" =>1281,
+                        "imgHeight" =>548,
+                        "link" => [
+                            "name" =>""
+                        ],
+                        "id" =>"4eyjq9qxmu80",
+                        "width" =>345,
+                        "height" =>147.5878220140515
+                    ]
+                ]
+            ],
+            "textColor" =>"#303133",
+            "pageStartBgColor" =>"",
+            "pageEndBgColor" =>"",
+            "pageGradientAngle" =>"to bottom",
+            "componentBgUrl" =>"",
+            "componentBgAlpha" =>2,
+            "componentStartBgColor" =>"",
+            "componentEndBgColor" =>"",
+            "componentGradientAngle" =>"to bottom",
+            "topRounded" =>0,
+            "bottomRounded" =>0,
+            "elementBgColor" =>"",
+            "topElementRounded" =>0,
+            "bottomElementRounded" =>0,
+            "margin" => [
+                "top" =>0,
+                "bottom" =>0,
+                "both" =>0
             ]
+        ],
+        [
+            "path" =>"edit-float-btn",
+            "uses" =>1,
+            "position" =>"fixed",
+            "id" =>"4kwida26odk0",
+            "componentName" =>"FloatBtn",
+            "componentTitle" =>"浮动按钮",
+            "ignore" =>[
+                "pageBgColor",
+                "marginTop",
+                "marginBottom",
+                "marginBoth"
+            ],
+            "imageSize" =>45,
+            "aroundRadius" =>3,
+            "style" =>"style-1",
+            "styleName" =>"风格一",
+            "bottomPosition" =>"lowerRight",
+            "list" =>[
+                [
+                    "imageUrl" =>"https://vip.123pan.cn/1832133965/tiantai/1723396516b1de0ae6c8b2d7dce85e680aff6c6239_ott.png",
+                    "link" => [
+                        "parent" =>"MEMBER_LINK",
+                        "name" =>"MEMBER_CONTACT",
+                        "title" =>"客服",
+                        "url" =>"/app/pages/member/contact",
+                        "action" =>""
+                    ],
+                    "id" =>"3mrz3fcom1e0"
+                ]
+            ],
+            "offset" =>0,
+            "textColor" =>"#303133",
+            "pageStartBgColor" =>"",
+            "pageEndBgColor" =>"",
+            "pageGradientAngle" =>"to bottom",
+            "componentBgUrl" =>"",
+            "componentBgAlpha" =>0,
+            "componentStartBgColor" =>null,
+            "componentEndBgColor" =>null,
+            "componentGradientAngle" =>"to bottom",
+            "topRounded" =>0,
+            "bottomRounded" =>0,
+            "elementBgColor" =>"",
+            "topElementRounded" =>0,
+            "bottomElementRounded" =>0,
+            "margin" => [
+                "top" =>0,
+                "bottom" =>0,
+                "both" =>0
+            ],
+            "pageStyle" =>"padding-top:2rpx;padding-bottom:0rpx;padding-right:0rpx;padding-left:0rpx;"
+        ],
+        [
+            "path" =>"edit-horz-blank",
+            "uses" =>0,
+            "id" =>"qtgfr9pemuo",
+            "componentName" =>"HorzBlank",
+            "componentTitle" =>"辅助空白",
+            "ignore" =>[
+                "pageBgColor",
+                "componentBgUrl"
+            ],
+            "height" =>10,
+            "textColor" =>"#303133",
+            "pageStartBgColor" =>"",
+            "pageEndBgColor" =>"",
+            "pageGradientAngle" =>"to bottom",
+            "componentBgUrl" =>"",
+            "componentBgAlpha" =>2,
+            "componentStartBgColor" =>"rgba(0, 0, 0, 1)",
+            "componentEndBgColor" =>"",
+            "componentGradientAngle" =>"to bottom",
+            "topRounded" =>10,
+            "bottomRounded" =>0,
+            "elementBgColor" =>"",
+            "topElementRounded" =>0,
+            "bottomElementRounded" =>0,
+            "margin" => [
+                "top" =>10,
+                "bottom" =>0,
+                "both" =>10
+            ],
+            "pageStyle" =>"padding-top:2rpx;padding-bottom:0rpx;padding-right:0rpx;padding-left:0rpx;"
+        ],
+        [
+            "path" =>"edit-text",
+            "uses" =>0,
+            "position" =>"",
+            "id" =>"4uw76brts8a0",
+            "componentName" =>"Text",
+            "componentTitle" =>"标题",
+            "ignore" =>[],
+            "style" =>"style-1",
+            "styleName" =>"风格1",
+            "text" =>"官方验机 一机一价 售后保障",
+            "link" => [
+                "name" =>""
+            ],
+            "textColor" =>"#FFFFFF",
+            "fontSize" =>15,
+            "fontWeight" =>"bold",
+            "textAlign" =>"center",
+            "subTitle" => [
+                "text" =>"副标题",
+                "color" =>"#999999",
+                "fontSize" =>14,
+                "control" =>false,
+                "fontWeight" =>"normal"
+            ],
+            "more" => [
+                "text" =>"更多",
+                "control" =>false,
+                "isShow" =>true,
+                "link" => [
+                    "name" =>""
+                ],
+                "color" =>"#999999"
+            ],
+            "pageStartBgColor" =>"",
+            "pageEndBgColor" =>"",
+            "pageGradientAngle" =>"to bottom",
+            "componentBgUrl" =>"",
+            "componentBgAlpha" =>2,
+            "componentStartBgColor" =>"rgba(0, 0, 0, 1)",
+            "componentEndBgColor" =>"",
+            "componentGradientAngle" =>"to bottom",
+            "topRounded" =>0,
+            "bottomRounded" =>0,
+            "elementBgColor" =>"",
+            "topElementRounded" =>0,
+            "bottomElementRounded" =>0,
+            "margin" => [
+                "top" =>-1,
+                "bottom" =>0,
+                "both" =>10
+            ],
+            "pageStyle" =>"padding-top:2rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
+        ],
+        [
+            "path" =>"edit-horz-blank",
+            "uses" =>0,
+            "id" =>"1ms3um55m98g",
+            "componentName" =>"HorzBlank",
+            "componentTitle" =>"辅助空白",
+            "ignore" =>[
+                "pageBgColor",
+                "componentBgUrl"
+            ],
+            "height" =>10,
+            "textColor" =>"#303133",
+            "pageStartBgColor" =>"",
+            "pageEndBgColor" =>"",
+            "pageGradientAngle" =>"to bottom",
+            "componentBgUrl" =>"",
+            "componentBgAlpha" =>2,
+            "componentStartBgColor" =>"rgba(0, 0, 0, 1)",
+            "componentEndBgColor" =>"",
+            "componentGradientAngle" =>"to bottom",
+            "topRounded" =>0,
+            "bottomRounded" =>10,
+            "elementBgColor" =>"",
+            "topElementRounded" =>0,
+            "bottomElementRounded" =>0,
+            "margin" => [
+                "top" =>-1,
+                "bottom" =>0,
+                "both" =>10
+            ],
+            "pageStyle" =>"padding-top:2rpx;padding-bottom:0rpx;padding-right:0rpx;padding-left:0rpx;"
+        ],
+        [
+            "path" =>"edit-rubik-cube",
+            "uses" =>0,
+            "id" =>"411k9tiqqq80",
+            "componentName" =>"RubikCube",
+            "componentTitle" =>"魔方",
+            "ignore" =>[],
+            "mode" =>"row1-lt-of2-rt",
+            "imageGap" =>10,
+            "list" =>[
+                [
+                    "imageUrl" =>"https://vip.123pan.cn/1832133965/tiantai/1725200557fbe6b8ad1c9a14d6c237bb9eb1007c30_ott.jpg",
+                    "imgWidth" =>449,
+                    "imgHeight" =>665,
+                    "link" => [
+                        "parent" =>"PHONE_SHOP_PRICE_LINK",
+                        "name" =>"PHONE_SHOP_PRICE_INDEX",
+                        "title" =>"报价系统",
+                        "url" =>"/addon/phone_shop_price/pages/index",
+                        "action" =>""
+                    ],
+                    "pageItemStyle" =>"border-top-left-radius:20rpx;border-top-right-radius:20rpx;border-bottom-left-radius:20rpx;border-bottom-right-radius:20rpx;border-top-left-radius:20rpx;border-top-right-radius:20rpx;border-bottom-left-radius:20rpx;border-bottom-right-radius:20rpx;"
+                ],
+                [
+                    "imageUrl" =>"https://vip.123pan.cn/1832133965/tiantai/17252010876ecbe2fe19fb8a1b060fbe108b238f56_ott.jpg",
+                    "imgWidth" =>449,
+                    "imgHeight" =>331,
+                    "link" => [
+                        "parent" =>"HSX_PHONE_QUERY_LINK",
+                        "name" =>"HSX_PHONE_QUERY_INDEX",
+                        "title" =>"手机信息查询",
+                        "url" =>"/addon/hsx_phone_query/pages/index",
+                        "action" =>""
+                    ],
+                    "pageItemStyle" =>"border-top-left-radius:20rpx;border-top-right-radius:20rpx;border-bottom-left-radius:20rpx;border-bottom-right-radius:20rpx;border-top-left-radius:20rpx;border-top-right-radius:20rpx;border-bottom-left-radius:20rpx;border-bottom-right-radius:20rpx;border-top-left-radius:20rpx;border-top-right-radius:20rpx;border-bottom-left-radius:20rpx;border-bottom-right-radius:20rpx;"
+                ],
+                [
+                    "imageUrl" =>"https://vip.123pan.cn/1832133965/tiantai/17252014876d6c44f0736fbfc9cda715c5c54b81b2_ott.jpg",
+                    "imgWidth" =>453,
+                    "imgHeight" =>327,
+                    "link" => [
+                        "parent" =>"MEMBER_LINK",
+                        "name" =>"MEMBER_CONTACT",
+                        "title" =>"客服",
+                        "url" =>"/app/pages/member/contact",
+                        "action" =>""
+                    ],
+                    "pageItemStyle" =>"border-top-left-radius:20rpx;border-top-right-radius:20rpx;border-bottom-left-radius:20rpx;border-bottom-right-radius:20rpx;border-top-left-radius:20rpx;border-top-right-radius:20rpx;border-bottom-left-radius:20rpx;border-bottom-right-radius:20rpx;border-top-left-radius:20rpx;border-top-right-radius:20rpx;border-bottom-left-radius:20rpx;border-bottom-right-radius:20rpx;"
+                ]
+            ],
+            "textColor" =>"#303133",
+            "pageStartBgColor" =>"",
+            "pageEndBgColor" =>"",
+            "pageGradientAngle" =>"to bottom",
+            "componentBgUrl" =>"",
+            "componentBgAlpha" =>2,
+            "componentStartBgColor" =>null,
+            "componentEndBgColor" =>"",
+            "componentGradientAngle" =>"to bottom",
+            "topRounded" =>0,
+            "bottomRounded" =>0,
+            "elementBgColor" =>"",
+            "topElementRounded" =>10,
+            "bottomElementRounded" =>10,
+            "margin" => [
+                "top" =>10,
+                "bottom" =>0,
+                "both" =>10
+            ],
+            "pageStyle" =>"padding-top:20rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
+        ],
+        [
+            "path" =>"edit-horz-blank",
+            "uses" =>0,
+            "id" =>"hq5u7stzo54",
+            "componentName" =>"HorzBlank",
+            "componentTitle" =>"辅助空白",
+            "ignore" =>[
+                "pageBgColor",
+                "componentBgUrl"
+            ],
+            "height" =>10,
+            "textColor" =>"#303133",
+            "pageStartBgColor" =>"",
+            "pageEndBgColor" =>"",
+            "pageGradientAngle" =>"to bottom",
+            "componentBgUrl" =>"",
+            "componentBgAlpha" =>2,
+            "componentStartBgColor" =>"rgba(248, 220, 74, 1)",
+            "componentEndBgColor" =>"rgba(245, 221, 94, 1)",
+            "componentGradientAngle" =>"to bottom",
+            "topRounded" =>10,
+            "bottomRounded" =>0,
+            "elementBgColor" =>"",
+            "topElementRounded" =>0,
+            "bottomElementRounded" =>0,
+            "margin" => [
+                "top" =>5,
+                "bottom" =>0,
+                "both" =>10
+            ],
+            "pageStyle" =>"padding-top:10rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
+        ],
+        [
+            "path" =>"edit-text",
+            "uses" =>0,
+            "position" =>"",
+            "id" =>"2cxirji9sgcg",
+            "componentName" =>"Text",
+            "componentTitle" =>"标题",
+            "ignore" =>[],
+            "style" =>"style-2",
+            "styleName" =>"风格2",
+            "text" =>"销售专区",
+            "link" => [
+                "parent" =>"DIY_LINK",
+                "url" =>"/addon/phone_shop/pages/goods/category?category_id=60",
+                "title" =>"商品分类",
+                "name" =>"DIY_LINK",
+                "action" =>""
+            ],
+            "textColor" =>"#272829",
+            "fontSize" =>16,
+            "fontWeight" =>"bold",
+            "textAlign" =>"center",
+            "subTitle" => [
+                "text" =>"联系客服开通VIP价更低",
+                "color" =>"#FF0000",
+                "fontSize" =>14,
+                "control" =>true,
+                "fontWeight" =>"normal"
+            ],
+            "more" => [
+                "text" =>"更多",
+                "control" =>true,
+                "isShow" =>true,
+                "link" => [
+                    "parent" =>"DIY_LINK",
+                    "name" =>"DIY_LINK",
+                    "title" =>"商品列表",
+                    "url" =>"/addon/phone_shop/pages/goods/category?category_id=60",
+                    "action" =>""
+                ],
+                "color" =>"#4E4949"
+            ],
+            "pageStartBgColor" =>"rgba(255, 255, 255, 0)",
+            "pageEndBgColor" =>"",
+            "pageGradientAngle" =>"to bottom",
+            "componentBgUrl" =>"",
+            "componentBgAlpha" =>2,
+            "componentStartBgColor" =>"rgba(245, 221, 94, 1)",
+            "componentEndBgColor" =>"rgba(244, 226, 135, 1)",
+            "componentGradientAngle" =>"to bottom",
+            "topRounded" =>0,
+            "bottomRounded" =>0,
+            "elementBgColor" =>"",
+            "topElementRounded" =>0,
+            "bottomElementRounded" =>0,
+            "margin" => [
+                "top" =>0,
+                "bottom" =>0,
+                "both" =>10
+            ],
+            "pageStyle" =>"background-color:rgba(255, 255, 255, 0);padding-top:2rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
+        ],
+        [
+            "path" =>"edit-graphic-nav",
+            "uses" =>0,
+            "id" =>"7fjde5bztis0",
+            "componentName" =>"GraphicNav",
+            "componentTitle" =>"图文导航",
+            "ignore" =>[],
+            "layout" =>"horizontal",
+            "mode" =>"graphic",
+            "showStyle" =>"fixed",
+            "rowCount" =>5,
+            "pageCount" =>2,
+            "carousel" => [
+                "type" =>"circle",
+                "color" =>"#FFFFFF"
+            ],
+            "imageSize" =>40,
+            "aroundRadius" =>25,
+            "font" => [
+                "size" =>12,
+                "weight" =>"normal",
+                "color" =>"#303133"
+            ],
+            "list" =>[
+                [
+                    "title" =>"苹果手机",
+                    "link" => [
+                        "parent" =>"DIY_LINK",
+                        "name" =>"DIY_LINK",
+                        "title" =>"苹果分类",
+                        "url" =>"/addon/phone_shop/pages/goods/category?category_id=60",
+                        "action" =>""
+                    ],
+                    "imageUrl" =>"upload/attachment/image/100005/202404/08/17125877274d654b641e14041310e1c637cfb0f51d_local.png",
+                    "label" => [
+                        "control" =>false,
+                        "text" =>"热门",
+                        "textColor" =>"#FFFFFF",
+                        "bgColorStart" =>"#F83287",
+                        "bgColorEnd" =>"#FE3423"
+                    ],
+                    "id" =>"6j719grozdc0",
+                    "imgWidth" =>256,
+                    "imgHeight" =>256
+                ],
+                [
+                    "title" =>"华为手机",
+                    "link" => [
+                        "parent" =>"DIY_LINK",
+                        "url" =>"/addon/phone_shop/pages/goods/category?category_id=61",
+                        "title" =>"华为分类",
+                        "name" =>"DIY_LINK",
+                        "action" =>""
+                    ],
+                    "imageUrl" =>"upload/attachment/image/100005/202404/08/171258772688385b7dfabe17b78a70d4d750367751_local.png",
+                    "label" => [
+                        "control" =>false,
+                        "text" =>"热门",
+                        "textColor" =>"#FFFFFF",
+                        "bgColorStart" =>"#F83287",
+                        "bgColorEnd" =>"#FE3423"
+                    ],
+                    "id" =>"4qa395za6qk0",
+                    "imgWidth" =>166,
+                    "imgHeight" =>166
+                ],
+                [
+                    "title" =>"小米手机",
+                    "link" => [
+                        "parent" =>"DIY_LINK",
+                        "url" =>"/addon/phone_shop/pages/goods/category?category_id=62",
+                        "title" =>"小米分类",
+                        "name" =>"DIY_LINK",
+                        "action" =>""
+                    ],
+                    "imageUrl" =>"upload/attachment/image/100005/202404/08/17125877271880f54ab886d86de98e05d990de8350_local.png",
+                    "label" => [
+                        "control" =>false,
+                        "text" =>"热门",
+                        "textColor" =>"#FFFFFF",
+                        "bgColorStart" =>"#F83287",
+                        "bgColorEnd" =>"#FE3423"
+                    ],
+                    "id" =>"75lukh3svkk0",
+                    "imgWidth" =>1024,
+                    "imgHeight" =>1024
+                ],
+                [
+                    "title" =>"三星手机",
+                    "link" => [
+                        "parent" =>"DIY_LINK",
+                        "url" =>"/addon/phone_shop/pages/goods/category?category_id=124",
+                        "title" =>"三星分类",
+                        "name" =>"DIY_LINK",
+                        "action" =>""
+                    ],
+                    "imageUrl" =>"upload/attachment/image/100005/202404/08/1712587727c363beee9ecccbc35d50a847a9d819ca_local.png",
+                    "label" => [
+                        "control" =>false,
+                        "text" =>"热门",
+                        "textColor" =>"#FFFFFF",
+                        "bgColorStart" =>"#F83287",
+                        "bgColorEnd" =>"#FE3423"
+                    ],
+                    "id" =>"4gbz5ymzrca0",
+                    "imgWidth" =>500,
+                    "imgHeight" =>500
+                ],
+                [
+                    "id" =>"37c58jym6g20",
+                    "title" =>"OPPO手机",
+                    "imageUrl" =>"upload/attachment/image/100005/202404/08/1712588592937f746d99c606d3e99cb29a35f5efcb_local.png",
+                    "imgWidth" =>292,
+                    "imgHeight" =>292,
+                    "link" => [
+                        "parent" =>"DIY_LINK",
+                        "url" =>"/addon/phone_shop/pages/goods/category?category_id=128",
+                        "title" =>"oppo分类",
+                        "name" =>"DIY_LINK",
+                        "action" =>""
+                    ],
+                    "label" => [
+                        "control" =>false,
+                        "text" =>"热门",
+                        "textColor" =>"#FFFFFF",
+                        "bgColorStart" =>"#F83287",
+                        "bgColorEnd" =>"#FE3423"
+                    ]
+                ],
+                [
+                    "id" =>"c128kzvii6",
+                    "title" =>"ViVO手机",
+                    "imageUrl" =>"https://vip.123pan.cn/1832133965/tiantai/1716651374225028ec04f98ca7a9292c13ea5fb840_ott.png",
+                    "imgWidth" =>700,
+                    "imgHeight" =>700,
+                    "link" => [
+                        "parent" =>"DIY_LINK",
+                        "url" =>"/addon/phone_shop/pages/goods/category?category_id=129",
+                        "title" =>"vivo分类",
+                        "name" =>"DIY_LINK",
+                        "action" =>""
+                    ],
+                    "label" => [
+                        "control" =>false,
+                        "text" =>"热门",
+                        "textColor" =>"#FFFFFF",
+                        "bgColorStart" =>"#F83287",
+                        "bgColorEnd" =>"#FE3423"
+                    ]
+                ],
+                [
+                    "id" =>"1esouqhf2exs",
+                    "title" =>"荣耀手机",
+                    "imageUrl" =>"https://vip.123pan.cn/1832133965/tiantai/17166515497e15775d47da7a7f98f37db8acad31d0_ott.png",
+                    "imgWidth" =>292,
+                    "imgHeight" =>292,
+                    "link" => [
+                        "parent" =>"DIY_LINK",
+                        "url" =>"/addon/phone_shop/pages/goods/category?category_id=127",
+                        "title" =>"荣耀分类",
+                        "name" =>"DIY_LINK",
+                        "action" =>""
+                    ],
+                    "label" => [
+                        "control" =>false,
+                        "text" =>"热门",
+                        "textColor" =>"#FFFFFF",
+                        "bgColorStart" =>"#F83287",
+                        "bgColorEnd" =>"#FE3423"
+                    ]
+                ],
+                [
+                    "id" =>"78o86kakdkc0",
+                    "title" =>"平板专区",
+                    "imageUrl" =>"https://vip.123pan.cn/1832133965/tiantai/17166159557d71724e688f62ae6b65fb00a993bee6_ott.png",
+                    "imgWidth" =>300,
+                    "imgHeight" =>340,
+                    "link" => [
+                        "parent" =>"DIY_LINK",
+                        "url" =>"/addon/phone_shop/pages/goods/category?category_id=27",
+                        "title" =>"平板专区",
+                        "name" =>"DIY_LINK",
+                        "action" =>""
+                    ],
+                    "label" => [
+                        "control" =>false,
+                        "text" =>"热门",
+                        "textColor" =>"#FFFFFF",
+                        "bgColorStart" =>"#F83287",
+                        "bgColorEnd" =>"#FE3423"
+                    ]
+                ],
+                [
+                    "id" =>"3fh69zi6pte0",
+                    "title" =>"特价商品",
+                    "imageUrl" =>"https://vip.123pan.cn/1832133965/tiantai/1716615094578db0fa323b0a69bbc75a5e962657ec_ott.png",
+                    "imgWidth" =>256,
+                    "imgHeight" =>256,
+                    "link" => [
+                        "parent" =>"DIY_LINK",
+                        "title" =>"特价商品",
+                        "url" =>"/addon/phone_shop/pages/goods/category?category_id=44",
+                        "name" =>"DIY_LINK",
+                        "action" =>""
+                    ],
+                    "label" => [
+                        "control" =>false,
+                        "text" =>"热门",
+                        "textColor" =>"#FFFFFF",
+                        "bgColorStart" =>"#F83287",
+                        "bgColorEnd" =>"#FE3423"
+                    ]
+                ],
+                [
+                    "id" =>"45ml6yv4r5s0",
+                    "title" =>"更多",
+                    "imageUrl" =>"https://vip.123pan.cn/1832133965/tiantai/171600236498656511c36551e83cf6a7d3413e16bd_ott.png",
+                    "imgWidth" =>256,
+                    "imgHeight" =>256,
+                    "link" => [
+                        "parent" =>"SHOP_LINK",
+                        "name" =>"PHONE_SHOP_GOODS_CATEGORY",
+                        "title" =>"商品分类",
+                        "url" =>"/addon/phone_shop/pages/goods/category",
+                        "action" =>""
+                    ],
+                    "label" => [
+                        "control" =>false,
+                        "text" =>"热门",
+                        "textColor" =>"#FFFFFF",
+                        "bgColorStart" =>"#F83287",
+                        "bgColorEnd" =>"#FE3423"
+                    ]
+                ]
+            ],
+            "textColor" =>"#303133",
+            "pageStartBgColor" =>"",
+            "pageEndBgColor" =>"",
+            "pageGradientAngle" =>"to bottom",
+            "componentBgUrl" =>"",
+            "componentBgAlpha" =>2,
+            "componentStartBgColor" =>"rgba(244, 226, 135, 1)",
+            "componentEndBgColor" =>"rgba(255, 255, 255, 1)",
+            "componentGradientAngle" =>"to bottom",
+            "topRounded" =>0,
+            "bottomRounded" =>10,
+            "elementBgColor" =>"",
+            "topElementRounded" =>0,
+            "bottomElementRounded" =>0,
+            "margin" => [
+                "top" =>0,
+                "bottom" =>0,
+                "both" =>10
+            ],
+            "pageStyle" =>"padding-top:2rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
+        ],
+        [
+            "path" =>"edit-horz-blank",
+            "uses" =>0,
+            "id" =>"1iu4dvbg7bvk",
+            "componentName" =>"HorzBlank",
+            "componentTitle" =>"辅助空白",
+            "ignore" =>[
+                "pageBgColor",
+                "componentBgUrl"
+            ],
+            "height" =>10,
+            "textColor" =>"#303133",
+            "pageStartBgColor" =>"",
+            "pageEndBgColor" =>"",
+            "pageGradientAngle" =>"to bottom",
+            "componentBgUrl" =>"",
+            "componentBgAlpha" =>2,
+            "componentStartBgColor" =>"rgba(255, 255, 255, 1)",
+            "componentEndBgColor" =>"",
+            "componentGradientAngle" =>"to bottom",
+            "topRounded" =>10,
+            "bottomRounded" =>0,
+            "elementBgColor" =>"",
+            "topElementRounded" =>0,
+            "bottomElementRounded" =>0,
+            "margin" => [
+                "top" =>5,
+                "bottom" =>0,
+                "both" =>10
+            ],
+            "pageStyle" =>"padding-top:10rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
+        ],
+        [
+            "path" =>"edit-text",
+            "uses" =>0,
+            "position" =>"",
+            "id" =>"25q2gwmamnxc",
+            "componentName" =>"Text",
+            "componentTitle" =>"标题",
+            "ignore" =>[],
+            "style" =>"style-2",
+            "styleName" =>"风格2",
+            "text" =>"上新专区",
+            "link" => [
+                "name" =>""
+            ],
+            "textColor" =>"#303133",
+            "fontSize" =>17,
+            "fontWeight" =>"bold",
+            "textAlign" =>"center",
+            "subTitle" => [
+                "text" =>"15天包换",
+                "color" =>"#000000",
+                "fontSize" =>14,
+                "control" =>true,
+                "fontWeight" =>"normal"
+            ],
+            "more" => [
+                "text" =>"查看更多",
+                "control" =>true,
+                "isShow" =>true,
+                "link" => [
+                    "parent" =>"SHOP_LINK",
+                    "name" =>"PHONE_SHOP_GOODS_CATEGORY",
+                    "title" =>"商品分类",
+                    "url" =>"/addon/phone_shop/pages/goods/category",
+                    "action" =>""
+                ],
+                "color" =>"#666060"
+            ],
+            "pageStartBgColor" =>"",
+            "pageEndBgColor" =>"",
+            "pageGradientAngle" =>"to bottom",
+            "componentBgUrl" =>"",
+            "componentBgAlpha" =>2,
+            "componentStartBgColor" =>"rgba(255, 255, 255, 1)",
+            "componentEndBgColor" =>"",
+            "componentGradientAngle" =>"to bottom",
+            "topRounded" =>0,
+            "bottomRounded" =>0,
+            "elementBgColor" =>"",
+            "topElementRounded" =>0,
+            "bottomElementRounded" =>0,
+            "margin" => [
+                "top" =>0,
+                "bottom" =>0,
+                "both" =>10
+            ],
+            "pageStyle" =>"padding-top:2rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
+        ],
+        [
+            "path" =>"edit-phone-many-goods-list",
+            "uses" =>0,
+            "id" =>"4emfq8s5c7c0",
+            "componentName" =>"PhoneManyGoodsList",
+            "componentTitle" =>"多商品组",
+            "ignore" =>[
+                "componentBgUrl"
+            ],
+            "style" =>"style-2",
+            "num" =>6,
+            "sortWay" =>"default",
+            "headStyle" =>"style-2",
+            "aroundRadius" =>25,
+            "source" =>"custom",
+            "goods_category" =>"",
+            "goods_category_name" =>"请选择",
+            "goodsNameStyle" => [
+                "color" =>"rgba(99, 91, 91, 1)",
+                "control" =>true,
+                "fontWeight" =>"normal"
+            ],
+            "priceStyle" => [
+                "mainColor" =>"#FF4142",
+                "mainControl" =>true,
+                "lineColor" =>"#999CA7",
+                "lineControl" =>true
+            ],
+            "saleStyle" => [
+                "color" =>"rgba(255, 255, 255, 1)",
+                "control" =>true
+            ],
+            "list" =>[
+                [
+                    "id" =>"4fkencea6460",
+                    "title" =>"苹果",
+                    "desc" =>"分类描述",
+                    "source" =>"category",
+                    "goods_category" =>60,
+                    "goods_category_name" =>"苹果",
+                    "goods_ids" =>[],
+                    "imageUrl" =>""
+                ],
+                [
+                    "id" =>"2ri8hn1byzs0",
+                    "title" =>"华为",
+                    "desc" =>"分类描述",
+                    "source" =>"category",
+                    "goods_category" =>61,
+                    "goods_category_name" =>"华为",
+                    "goods_ids" =>[],
+                    "imageUrl" =>""
+                ],
+                [
+                    "id" =>"6q4fzxjakuo0",
+                    "title" =>"三星",
+                    "desc" =>"分类描述",
+                    "source" =>"category",
+                    "goods_category" =>124,
+                    "goods_category_name" =>"三星",
+                    "goods_ids" =>[],
+                    "imageUrl" =>""
+                ],
+                [
+                    "title" =>"OPPO",
+                    "desc" =>"猜你喜欢",
+                    "source" =>"category",
+                    "goods_category" =>128,
+                    "goods_category_name" =>"OPPO",
+                    "goods_ids" =>[],
+                    "imageUrl" =>"",
+                    "id" =>"18u8hk05ub4w"
+                ],
+                [
+                    "id" =>"87lt5bpsyc4",
+                    "title" =>"vivo",
+                    "desc" =>"分类描述",
+                    "source" =>"category",
+                    "goods_category" =>129,
+                    "goods_category_name" =>"VIVO",
+                    "goods_ids" =>[],
+                    "imageUrl" =>""
+                ],
+                [
+                    "id" =>"45eiizgggnm0",
+                    "title" =>"小米",
+                    "desc" =>"分类描述",
+                    "source" =>"category",
+                    "goods_category" =>62,
+                    "goods_category_name" =>"小米",
+                    "goods_ids" =>[],
+                    "imageUrl" =>""
+                ],
+                [
+                    "id" =>"3tbeh9q76100",
+                    "title" =>"红米",
+                    "desc" =>"分类描述",
+                    "source" =>"category",
+                    "goods_category" =>130,
+                    "goods_category_name" =>"红米",
+                    "goods_ids" =>[],
+                    "imageUrl" =>""
+                ],
+                [
+                    "id" =>"3zyo3zm7rwo0",
+                    "title" =>"荣耀",
+                    "desc" =>"分类描述",
+                    "source" =>"category",
+                    "goods_category" =>127,
+                    "goods_category_name" =>"荣耀",
+                    "goods_ids" =>[],
+                    "imageUrl" =>""
+                ]
+            ],
+            "textColor" =>"#303133",
+            "pageStartBgColor" =>"",
+            "pageEndBgColor" =>"",
+            "pageGradientAngle" =>"to bottom",
+            "componentBgUrl" =>"",
+            "componentBgAlpha" =>2,
+            "componentStartBgColor" =>"rgba(255, 255, 255, 1)",
+            "componentEndBgColor" =>"rgba(196, 185, 185, 0.09)",
+            "componentGradientAngle" =>"to bottom",
+            "topRounded" =>0,
+            "bottomRounded" =>0,
+            "elementBgColor" =>"rgba(255, 255, 255, 1)",
+            "topElementRounded" =>9,
+            "bottomElementRounded" =>0,
+            "margin" => [
+                "top" =>0,
+                "bottom" =>10,
+                "both" =>10
+            ],
+            "pageStyle" =>"padding-top:2rpx;padding-bottom:20rpx;padding-right:20rpx;padding-left:20rpx;"
+        ],
+        [
+            "path" =>"edit-horz-blank",
+            "uses" =>0,
+            "id" =>"3o8r22gujj60",
+            "componentName" =>"HorzBlank",
+            "componentTitle" =>"辅助空白",
+            "ignore" =>[
+                "pageBgColor",
+                "componentBgUrl"
+            ],
+            "textColor" =>"#303133",
+            "pageStartBgColor" =>"",
+            "pageEndBgColor" =>"",
+            "pageGradientAngle" =>"to bottom",
+            "componentBgUrl" =>"",
+            "componentBgAlpha" =>2,
+            "componentStartBgColor" =>"rgba(214, 120, 235, 1)",
+            "componentEndBgColor" =>"rgba(222, 157, 237, 1)",
+            "componentGradientAngle" =>"to bottom",
+            "topRounded" =>6,
+            "bottomRounded" =>0,
+            "elementBgColor" =>"",
+            "topElementRounded" =>0,
+            "bottomElementRounded" =>0,
+            "margin" => [
+                "top" =>5,
+                "bottom" =>0,
+                "both" =>10
+            ],
+            "height" =>10,
+            "pageStyle" =>"padding-top:10rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
+        ],
+        [
+            "path" =>"edit-text",
+            "uses" =>0,
+            "position" =>"",
+            "id" =>"6sy24x6kmcw0",
+            "componentName" =>"Text",
+            "componentTitle" =>"标题",
+            "ignore" =>[],
+            "style" =>"style-2",
+            "styleName" =>"风格2",
+            "text" =>"平板系列",
+            "link" => [
+                "name" =>""
+            ],
+            "textColor" =>"#FFFFFF",
+            "fontSize" =>16,
+            "fontWeight" =>"bold",
+            "textAlign" =>"center",
+            "subTitle" => [
+                "text" =>"一机一检 售后无忧",
+                "color" =>"#FFFFFF",
+                "fontSize" =>13,
+                "control" =>true,
+                "fontWeight" =>"normal"
+            ],
+            "more" => [
+                "text" =>"查看更多",
+                "control" =>true,
+                "isShow" =>true,
+                "link" => [
+                    "parent" =>"DIY_LINK",
+                    "name" =>"DIY_LINK",
+                    "title" =>"商品分类",
+                    "url" =>"/addon/phone_shop/pages/goods/category?category_id=27",
+                    "action" =>""
+                ],
+                "color" =>"#FFFFFF"
+            ],
+            "pageStartBgColor" =>"",
+            "pageEndBgColor" =>"",
+            "pageGradientAngle" =>"to bottom",
+            "componentBgUrl" =>"",
+            "componentBgAlpha" =>2,
+            "componentStartBgColor" =>"rgba(222, 157, 237, 1)",
+            "componentEndBgColor" =>"rgba(202, 86, 227, 0.61)",
+            "componentGradientAngle" =>"to bottom",
+            "topRounded" =>0,
+            "bottomRounded" =>0,
+            "elementBgColor" =>"",
+            "topElementRounded" =>0,
+            "bottomElementRounded" =>0,
+            "margin" => [
+                "top" =>0,
+                "bottom" =>0,
+                "both" =>10
+            ],
+            "pageStyle" =>"padding-top:2rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
+        ],
+        [
+            "path" =>"edit-phone-goods-list",
+            "uses" =>0,
+            "id" =>"739uxtpib8s0",
+            "componentName" =>"PhoneGoodsList",
+            "componentTitle" =>"商品列表",
+            "ignore" =>[],
+            "style" =>"style-1",
+            "source" =>"category",
+            "num" =>6,
+            "goods_category" =>27,
+            "goods_category_name" =>"平板",
+            "goods_ids" =>[],
+            "sortWay" =>"default",
+            "goodsNameStyle" => [
+                "color" =>"#303133",
+                "control" =>true,
+                "fontWeight" =>"normal"
+            ],
+            "priceStyle" => [
+                "mainColor" =>"#FF4142",
+                "mainControl" =>true,
+                "lineColor" =>"#999CA7",
+                "lineControl" =>true
+            ],
+            "saleStyle" => [
+                "color" =>"#999999",
+                "control" =>true
+            ],
+            "textColor" =>"#303133",
+            "pageStartBgColor" =>"",
+            "pageEndBgColor" =>"",
+            "pageGradientAngle" =>"to bottom",
+            "componentBgUrl" =>"",
+            "componentBgAlpha" =>2,
+            "componentStartBgColor" =>"rgba(202, 86, 227, 0.6)",
+            "componentEndBgColor" =>"rgba(64, 12, 186, 0.79)",
+            "componentGradientAngle" =>"to bottom",
+            "topRounded" =>0,
+            "bottomRounded" =>10,
+            "elementBgColor" =>"",
+            "topElementRounded" =>0,
+            "bottomElementRounded" =>0,
+            "margin" => [
+                "top" =>0,
+                "bottom" =>0,
+                "both" =>10
+            ],
+            "pageStyle" =>"padding-top:2rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
+        ],
+        [
+            "path" =>"edit-horz-blank",
+            "uses" =>0,
+            "id" =>"5h4ij20nn9o0",
+            "componentName" =>"HorzBlank",
+            "componentTitle" =>"辅助空白",
+            "ignore" =>[
+                "pageBgColor",
+                "componentBgUrl"
+            ],
+            "height" =>10,
+            "textColor" =>"#303133",
+            "pageStartBgColor" =>"",
+            "pageEndBgColor" =>"",
+            "pageGradientAngle" =>"to bottom",
+            "componentBgUrl" =>"",
+            "componentBgAlpha" =>2,
+            "componentStartBgColor" =>"rgba(255, 255, 255, 1)",
+            "componentEndBgColor" =>"",
+            "componentGradientAngle" =>"to bottom",
+            "topRounded" =>10,
+            "bottomRounded" =>0,
+            "elementBgColor" =>"",
+            "topElementRounded" =>0,
+            "bottomElementRounded" =>0,
+            "margin" => [
+                "top" =>10,
+                "bottom" =>0,
+                "both" =>10
+            ],
+            "pageStyle" =>"padding-top:20rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
+        ],
+        [
+            "path" =>"edit-text",
+            "uses" =>0,
+            "position" =>"",
+            "id" =>"1hhdr8plf0ao",
+            "componentName" =>"Text",
+            "componentTitle" =>"标题",
+            "ignore" =>[],
+            "style" =>"style-2",
+            "styleName" =>"风格2",
+            "text" =>"智能产品",
+            "link" => [
+                "name" =>""
+            ],
+            "textColor" =>"#303133",
+            "fontSize" =>16,
+            "fontWeight" =>"normal",
+            "textAlign" =>"center",
+            "subTitle" => [
+                "text" =>"手表｜手写笔｜耳机",
+                "color" =>"#999999",
+                "fontSize" =>12,
+                "control" =>true,
+                "fontWeight" =>"normal"
+            ],
+            "more" => [
+                "text" =>"查看更多",
+                "control" =>true,
+                "isShow" =>true,
+                "link" => [
+                    "parent" =>"DIY_LINK",
+                    "name" =>"DIY_LINK",
+                    "title" =>"商品分类",
+                    "url" =>"/addon/phone_shop/pages/goods/category?category_id=53",
+                    "action" =>""
+                ],
+                "color" =>"#999999"
+            ],
+            "pageStartBgColor" =>"",
+            "pageEndBgColor" =>"",
+            "pageGradientAngle" =>"to bottom",
+            "componentBgUrl" =>"",
+            "componentBgAlpha" =>2,
+            "componentStartBgColor" =>"rgba(255, 255, 255, 1)",
+            "componentEndBgColor" =>"",
+            "componentGradientAngle" =>"to bottom",
+            "topRounded" =>0,
+            "bottomRounded" =>0,
+            "elementBgColor" =>"",
+            "topElementRounded" =>0,
+            "bottomElementRounded" =>0,
+            "margin" => [
+                "top" =>0,
+                "bottom" =>0,
+                "both" =>10
+            ],
+            "pageStyle" =>"padding-top:2rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
+        ],
+        [
+            "path" =>"edit-phone-goods-list",
+            "uses" =>0,
+            "id" =>"47vtkt1radk0",
+            "componentName" =>"PhoneGoodsList",
+            "componentTitle" =>"商品列表",
+            "ignore" =>[],
+            "style" =>"style-1",
+            "source" =>"category",
+            "num" =>3,
+            "goods_category" =>53,
+            "goods_category_name" =>"手表",
+            "goods_ids" =>[],
+            "sortWay" =>"default",
+            "goodsNameStyle" => [
+                "color" =>"#303133",
+                "control" =>true,
+                "fontWeight" =>"normal"
+            ],
+            "priceStyle" => [
+                "mainColor" =>"#FF4142",
+                "mainControl" =>true,
+                "lineColor" =>"#999CA7",
+                "lineControl" =>true
+            ],
+            "saleStyle" => [
+                "color" =>"#999999",
+                "control" =>true
+            ],
+            "textColor" =>"#303133",
+            "pageStartBgColor" =>"rgba(255, 255, 255, 0)",
+            "pageEndBgColor" =>"",
+            "pageGradientAngle" =>"to bottom",
+            "componentBgUrl" =>"",
+            "componentBgAlpha" =>2,
+            "componentStartBgColor" =>"rgba(255, 255, 255, 1)",
+            "componentEndBgColor" =>"",
+            "componentGradientAngle" =>"to bottom",
+            "topRounded" =>0,
+            "bottomRounded" =>0,
+            "elementBgColor" =>"",
+            "topElementRounded" =>0,
+            "bottomElementRounded" =>0,
+            "margin" => [
+                "top" =>0,
+                "bottom" =>0,
+                "both" =>10
+            ],
+            "pageStyle" =>"background-color:rgba(255, 255, 255, 0);padding-top:2rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
+        ],
+        [
+            "path" =>"edit-phone-goods-list",
+            "uses" =>0,
+            "id" =>"eoo4mbnvv74",
+            "componentName" =>"PhoneGoodsList",
+            "componentTitle" =>"商品列表",
+            "ignore" =>[],
+            "style" =>"style-1",
+            "source" =>"category",
+            "num" =>3,
+            "goods_category" =>28,
+            "goods_category_name" =>"配件",
+            "goods_ids" =>[],
+            "sortWay" =>"default",
+            "goodsNameStyle" => [
+                "color" =>"#303133",
+                "control" =>true,
+                "fontWeight" =>"normal"
+            ],
+            "priceStyle" => [
+                "mainColor" =>"#FF4142",
+                "mainControl" =>true,
+                "lineColor" =>"#999CA7",
+                "lineControl" =>true
+            ],
+            "saleStyle" => [
+                "color" =>"#999999",
+                "control" =>true
+            ],
+            "textColor" =>"#303133",
+            "pageStartBgColor" =>"",
+            "pageEndBgColor" =>"",
+            "pageGradientAngle" =>"to bottom",
+            "componentBgUrl" =>"",
+            "componentBgAlpha" =>2,
+            "componentStartBgColor" =>"rgba(255, 255, 255, 1)",
+            "componentEndBgColor" =>"",
+            "componentGradientAngle" =>"to bottom",
+            "topRounded" =>0,
+            "bottomRounded" =>10,
+            "elementBgColor" =>"",
+            "topElementRounded" =>0,
+            "bottomElementRounded" =>0,
+            "margin" => [
+                "top" =>0,
+                "bottom" =>0,
+                "both" =>10
+            ],
+            "pageStyle" =>"padding-top:2rpx;padding-bottom:0rpx;padding-right:20rpx;padding-left:20rpx;"
+        ],
+        [
+            "path" =>"edit-horz-line",
+            "uses" =>0,
+            "id" =>"2nc6d5593vo0",
+            "componentName" =>"HorzLine",
+            "componentTitle" =>"辅助线",
+            "ignore" =>[
+                "pageBgColor",
+                "componentBgColor",
+                "componentBgUrl",
+                "topRounded",
+                "bottomRounded"
+            ],
+            "borderWidth" =>1,
+            "borderColor" =>"rgba(255, 255, 255, 1)",
+            "borderStyle" =>"solid",
+            "textColor" =>"#303133",
+            "pageStartBgColor" =>"",
+            "pageEndBgColor" =>"",
+            "pageGradientAngle" =>"to bottom",
+            "componentBgUrl" =>"",
+            "componentBgAlpha" =>2,
+            "componentStartBgColor" =>"",
+            "componentEndBgColor" =>"",
+            "componentGradientAngle" =>"to bottom",
+            "topRounded" =>0,
+            "bottomRounded" =>0,
+            "elementBgColor" =>"",
+            "topElementRounded" =>0,
+            "bottomElementRounded" =>0,
+            "margin" => [
+                "top" =>10,
+                "bottom" =>0,
+                "both" =>0
+            ],
+            "pageStyle" =>"padding-top:20rpx;padding-bottom:0rpx;padding-right:0rpx;padding-left:0rpx;"
+        ],
+        [
+            "path" =>"edit-text",
+            "uses" =>0,
+            "position" =>"",
+            "id" =>"76ad7crrk140",
+            "componentName" =>"Text",
+            "componentTitle" =>"标题",
+            "ignore" =>[],
+            "style" =>"style-1",
+            "styleName" =>"风格1",
+            "text" =>"我要开店",
+            "link" => [
+                "parent" =>"DIY_PAGE",
+                "name" =>"DIY_PAGE",
+                "title" =>"开发者介绍",
+                "url" =>"/app/pages/index/diy?id=100",
+                "action" =>"decorate"
+            ],
+            "textColor" =>"#386ACE",
+            "fontSize" =>14,
+            "fontWeight" =>"normal",
+            "textAlign" =>"center",
+            "subTitle" => [
+                "text" =>"副标题",
+                "color" =>"#999999",
+                "fontSize" =>14,
+                "control" =>false,
+                "fontWeight" =>"normal"
+            ],
+            "more" => [
+                "text" =>"更多",
+                "control" =>false,
+                "isShow" =>true,
+                "link" => [
+                    "name" =>""
+                ],
+                "color" =>"#999999"
+            ],
+            "pageStartBgColor" =>"",
+            "pageEndBgColor" =>"",
+            "pageGradientAngle" =>"to bottom",
+            "componentBgUrl" =>"",
+            "componentBgAlpha" =>2,
+            "componentStartBgColor" =>"",
+            "componentEndBgColor" =>"",
+            "componentGradientAngle" =>"to bottom",
+            "topRounded" =>0,
+            "bottomRounded" =>0,
+            "elementBgColor" =>"",
+            "topElementRounded" =>0,
+            "bottomElementRounded" =>0,
+            "margin" => [
+                "top" =>10,
+                "bottom" =>0,
+                "both" =>0
+            ],
+            "pageStyle" =>"padding-top:20rpx;padding-bottom:0rpx;padding-right:0rpx;padding-left:0rpx;"
+        ]
+    ]
+]
         ],
         'phone_shop_index' => [ // 页面标识
             "title" => "手机商城首页2", // 页面名称

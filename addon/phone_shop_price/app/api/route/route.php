@@ -15,6 +15,14 @@ use app\api\middleware\ApiChannel;
 use think\facade\Route;
 
 
+Route::group('tk_vip', function() {
+    /***************************************************** vip 登录接口 ****************************************************/
+    //获取开启等级权益的会员等级
+    Route::get('member/level', 'addon\tk_vip\app\api\controller\member\Level@lists');
+    
+})->middleware(ApiChannel::class)
+    ->middleware(ApiCheckToken::class, true) //false表示不验证登录
+    ->middleware(ApiLog::class);
 /**
  * 二手机报价
  */
@@ -25,6 +33,7 @@ Route::group('phone_shop_price', function() {
      Route::get('recycle_category_tree', 'addon\phone_shop_price\app\api\controller\recycle_category\RecycleCategory@tree');
      // phone_shop_price/recycle_address_list 获取商家的回收地址
      Route::get('address_list','addon\phone_shop_price\app\api\controller\recycle_category\RecycleCategory@address_list');
+  
 
     // 回收订单相关接口
     Route::group('recycle_order', function() {
@@ -49,6 +58,9 @@ Route::group('phone_shop_price', function() {
         
     });
 
+    // Banner相关接口
+    Route::get('recycle_banner', 'addon\phone_shop_price\app\api\controller\recycle_category\RecycleBanner@lists');
+
 })->middleware(ApiChannel::class)
     ->middleware(ApiCheckToken::class, false) //false表示不验证登录
     ->middleware(ApiLog::class);
@@ -62,6 +74,7 @@ Route::group('recycle_price', function() {
     Route::put('payment/update/:id', 'addon\phone_shop_price\app\api\controller\payment\Payment@edit');
     Route::delete('payment/delete/:id', 'addon\phone_shop_price\app\api\controller\payment\Payment@del');
     Route::put('payment/set_default/:id', 'addon\phone_shop_price\app\api\controller\payment\Payment@setDefault');
+    // Route::get('member/level', 'addon\phone_shop_price\app\api\controller\payment\Level@lists');
 })->middleware(ApiChannel::class)
     ->middleware(ApiCheckToken::class, true) //表示验证登录
     ->middleware(ApiLog::class);

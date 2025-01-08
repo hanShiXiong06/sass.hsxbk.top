@@ -27,6 +27,8 @@ Route::group('goods_export', function () {
     Route::get('checkshop', 'addon\goods_export\app\adminapi\controller\spdr\Goods@checkShop');
     Route::post('goods/import','addon\goods_export\app\adminapi\controller\spdr\Goods@import');
     Route::post('goods/importadmin','addon\goods_export\app\adminapi\controller\spdr\Goods@importadmin');
+    // 批量更新二手机价格
+    Route::post('goods/import/recycle_category', 'addon\goods_export\app\adminapi\controller\spdr\Goods@importRecycleCategory');
 })->middleware([
     AdminCheckToken::class,
     AdminCheckRole::class,

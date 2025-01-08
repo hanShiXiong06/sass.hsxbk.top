@@ -10,6 +10,8 @@
 // +----------------------------------------------------------------------
 
 namespace addon\phone_shop\app\model\goods;
+// 引入memory_group模型
+use addon\phone_shop\app\model\goods\MemoryGroup;
 
 use core\base\BaseModel;
 
@@ -78,7 +80,7 @@ class Category extends BaseModel
  * @param array $categoryIds
  * @return int
  */
-public function calcCount($categoryIds)
+public function calcCount($categoryIds, $site_id)
 {
     // 如果 $categoryIds 不是数组，则将其转换为数组
     if (!is_array($categoryIds)) {
@@ -87,7 +89,7 @@ public function calcCount($categoryIds)
 
     // 处理多个分类 ID 的情况
     return $this->table('sass_phone_shop_goods')
-                ->where([['status', '=', 1] ]) 
+                ->where([['status', '=', 1 ] , ['site_id','=',$site_id] ]) 
                 ->where(function($query) use ($categoryIds) {
                     
                     // 添加第一个 whereRaw 使用 JSON_CONTAINS
@@ -100,6 +102,11 @@ public function calcCount($categoryIds)
                 })
                 ->count();
 }
+    // 处理 内存分组
+    public function getMemoryGroup($memory_group)
+    {
+        return MemoryGroup::where('group_id', $memory_group)->value('group_name');
+    }
 
 
 

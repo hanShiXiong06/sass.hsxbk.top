@@ -26,4 +26,32 @@ return [
         'class' => 'addon\tk_jhkd\app\job\order\AddPay',
         'function' => ''
     ],
+    [
+        'key' => 'jhkd_order_commission_order',
+        'name' => '聚合快递结算佣金单',
+        'desc' => '',
+        'time' => [
+            'type' => 'day',
+            'day' => 1,
+            'hour' => 4,
+            'minute' => 0,
+            'second' => 0
+        ],
+        'class' => 'addon\tk_jhkd\app\job\order\JsOrder',
+        'function' => ''
+    ],
+    [
+        'key' => 'jhkd_order_commission_close_order',
+        'name' => '聚合快递佣金单关闭',
+        'desc' => '',
+        'time' => [
+            'type' => 'day',
+            'day' => 1,
+            'hour' => 3,
+            'minute' => 0,
+            'second' => 0
+        ],
+        'class' => 'addon\tk_jhkd\app\job\order\CloseOrderCommission',
+        'function' => ''
+    ],
 ];

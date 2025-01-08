@@ -110,6 +110,12 @@ return [
                 'url' => '/addon/phone_shop/pages/discount/list',
                 'is_share' => 1,
                 'action' => ''
+            ],[
+                'name' => 'PHONE_SHOP_DISCOUNT_NEW_ARRIVALS',
+                'title' => '每日上新',
+                'url' => '/addon/phone_shop/pages/goods/new_arrivals',
+                'is_share' => 1,
+                'action' => ''
             ],
         ]
     ],

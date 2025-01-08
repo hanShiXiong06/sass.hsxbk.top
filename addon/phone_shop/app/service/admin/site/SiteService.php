@@ -12,7 +12,7 @@
 namespace addon\phone_shop\app\service\admin\site;
 
 use addon\phone_shop\app\model\site\Site;
-use addon\phone_shop\app\dict\site\SiteDict;
+
 use core\base\BaseAdminService;
 
 
@@ -36,7 +36,7 @@ class SiteService extends BaseAdminService
      */
     public function getPage(array $where = [])
     {
-        $field = 'id,site_id,site_name,client,category_status,brand_status,label_group_status,label_status,service_status';
+        $field = 'id,site_id,site_name,client,category_status,brand_status,label_group_status,label_status,service_status,price_status';
         $order = '';
 
         $search_model = $this->model->where([ ])->withSearch(["id","site_name","client"], $where)->field($field)->order($order);
@@ -51,15 +51,15 @@ class SiteService extends BaseAdminService
      */
     public function getInfo(int $id)
     {
-        $field = 'id,site_id,site_name,client,category_status,brand_status,label_group_status,label_status,service_status';
+        $field = 'id,site_id,site_name,client,category_status,brand_status,label_group_status,label_status,service_status,price_status';
 
         $info = $this->model->field($field)->where([['id', "=", $id]])->findOrEmpty()->toArray();
-        $info['category_status'] = strval($info['category_status']);
-        $info['brand_status'] = strval($info['brand_status']);
-        $info['label_group_status'] = strval($info['label_group_status']);
-        $info['label_status'] = strval($info['label_status']);
-        $info['service_status'] = strval($info['service_status']);
-        $info['site_id'] = strval($info['site_id']);
+        $info['category_status'] = ($info['category_status']);
+        $info['brand_status'] = ($info['brand_status']);
+        $info['label_group_status'] =($info['label_group_status']);
+        $info['label_status'] = ($info['label_status']);
+        $info['service_status'] = ($info['service_status']);
+        $info['site_id'] = ($info['site_id']);
         return $info;
     }
 
@@ -70,7 +70,12 @@ class SiteService extends BaseAdminService
      */
     public function add(array $data)
     {
-        
+        // 查询是否已经创建相关站点的配置 如果 是则提示 只能创建一次
+        $result =  $this->model->where([['site_id', '=', $data['site_id']]])->find();
+        if($result){
+            throw new \Exception('该站点已创建相关配置，只能创建一次');
+        }
+
         $res = $this->model->create($data);
         return $res->id;
 
@@ -100,13 +105,5 @@ class SiteService extends BaseAdminService
         $res = $model->delete();
         return $res;
     }
-    // getStatus
-    /**
-     * 充值订单状态
-     * @return array|array[]|string
-     */
-    public function getStatus()
-    {
-        return SiteDict::getType();
-    }
+    
 }

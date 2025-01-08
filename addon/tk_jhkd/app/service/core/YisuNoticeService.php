@@ -78,7 +78,7 @@ class YisuNoticeService extends BaseApiService
                 if ($orderInfo['order_status'] == JhkdOrderDict::FINISH) return true;
                 $orderInfo->save(['order_status' => JhkdOrderDict::FINISH]);
                 (new NoticeService())->send($orderInfo['site_id'], 'tk_jhkd_order_sign', ['order_id' => $orderInfo['order_id']]);
-                event('JhkdOrderFinish', $orderInfo);
+                (new OrderFinishService())->orderFinish($orderInfo);
             }
             //快递方取消订单同步发起退款
             if ($data['data']['status'] == 6 || $data['data']['status'] == 7 || $data['data']['status'] == 8 || $data['data']['status'] == 9) {
@@ -90,7 +90,6 @@ class YisuNoticeService extends BaseApiService
                     "close_reason" => $data['data']['status'] ?? '快递方取消订单'
                 ];
                 (new ApiOrderService())->applyRefund($data);
-                event('CancelOrder', $data);
             }
             Db::commit();
 

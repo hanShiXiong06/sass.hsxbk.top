@@ -10,7 +10,7 @@
 // +----------------------------------------------------------------------
 namespace core\sms;
 
-use addon\shop\app\service\core\delivery\delivery_search\BaseDeliverySearch;
+use addon\phone_shop\app\service\core\delivery\delivery_search\BaseDeliverySearch;
 
 
 class Kd100DeliverySearch extends BaseDeliverySearch

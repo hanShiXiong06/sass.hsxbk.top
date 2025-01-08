@@ -47,3 +47,8 @@ export function getGoodsType() {
 export function getCategoryTree() {
   return request.get(`phone_shop/goods/tree`);
 }
+
+// 批量更新二手机价格
+export function importRecycleCategory(param: any) {
+  return request.post(`goods_export/goods/import/recycle_category`, param);
+}

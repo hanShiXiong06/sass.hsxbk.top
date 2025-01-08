@@ -102,7 +102,7 @@
                                 <goods-select-popup ref="goodsSelectPopupRef" v-model="formData.goodsSkuIds" @goodsSelect="goodsSelect" mode="sku" :min="1" :max="99" />
                             </el-form-item>
                             <el-form-item v-if="formData.goodsSkuList && formData.goodsSkuList.length">
-                                <div class="">
+                                <div>
                                     <el-table class="sku_list !w-[1400px]"  ref="goods_listTableRef" :data="formData.goodsSkuList" size="large" max-height="480" @selection-change="handleSelectionChange">
                                         <el-table-column type="selection" width="55" />
                                         <el-table-column :label="t('goodsSelectPopupGoodsInfo')" min-width="300">
@@ -182,7 +182,7 @@
                 </el-tab-pane>
                 <el-tab-pane :label="t('bannerList')" name="banner"> -->
                     <!-- <el-form class="page-form" :model="formData" label-width="120px" ref="bannerFormRef"> -->
-                        
+
                         <!-- <div class="flex w-full justify-center">
                             <el-button class="w-[400px]" @click="addConfigList">{{ t('addConfigList') }}</el-button>
                         </div> -->
@@ -238,7 +238,7 @@ const regExp = {
 
 const formRules = computed(() => {
     return {
-        appoint_time: [ 
+        appoint_time: [
             { required: true, message: t('appointTimePlaceholder'), trigger: 'change' }
         ],
         validity_day: [
@@ -248,9 +248,9 @@ const formRules = computed(() => {
                 }else if(parseInt(value)<=0){
                     callback(t('validityDayTips'))
                 }else {
-                    callback() 
+                    callback()
                 }
-                
+
             }, trigger: 'blur' }
         ],
         validity_time: [
@@ -266,9 +266,9 @@ const formRules = computed(() => {
                         callback()
                     }
                 }else {
-                    callback() 
+                    callback()
                 }
-                
+
             }, trigger: 'change' }
         ],
         goodsSkuIds: [
@@ -293,6 +293,7 @@ const formRules = computed(() => {
         // ]
     }
 })
+
 const formRef = ref<FormInstance>()
 const bannerFormRef = ref<FormInstance>()
 // 商品选择回调
@@ -409,7 +410,7 @@ const getActiveNewcomerConfigFn = () => {
             return item
         });
         loading.value = false;
-        
+
     }).catch(() => {
         loading.value = false
     })
@@ -439,7 +440,7 @@ const onSave = async () => {
                 preventDuplication.value = false
             })
         }
-    })  
+    })
 
 }
 /**

@@ -69,6 +69,7 @@ DROP TABLE IF EXISTS `{{prefix}}phone_shop_active`;
 
 DROP TABLE IF EXISTS `{{prefix}}phone_shop_active_goods`;
 
+
 DROP TABLE IF EXISTS `{{prefix}}phone_shop_delivery_electronic_sheet`;
 DROP TABLE IF EXISTS `{{prefix}}phone_shop_goods_label_group`;
 DROP TABLE IF EXISTS `{{prefix}}phone_shop_newcomer_member_records`;
@@ -76,5 +77,10 @@ DROP TABLE IF EXISTS `{{prefix}}phone_shop_order_batch_delivery`;
 
 
 DROP TABLE IF EXISTS `{{prefix}}phone_shop_site`;
+
+
+
+
+
 
 

@@ -348,6 +348,24 @@ Route::group('phone_shop', function() {
     // 修改商品参数值
     Route::put('goods/attr/attr_value', 'addon\phone_shop\app\adminapi\controller\goods\Attr@modifyAttrValueFormat');
 
+    
+        Route::get('goods/memory_group', 'addon\phone_shop\app\adminapi\controller\goods\MemoryGroup@lists');                    // 获取列表
+        Route::get('goods/memory_group/:id', 'addon\phone_shop\app\adminapi\controller\goods\MemoryGroup@detail');               // 获取详情
+        Route::post('goods/memory_group', 'addon\phone_shop\app\adminapi\controller\goods\MemoryGroup@add');                    // 添加
+        Route::put('goods/memory_group/:id', 'addon\phone_shop\app\adminapi\controller\goods\MemoryGroup@edit');                 // 编辑
+        Route::delete('goods/memory_group/:id', 'addon\phone_shop\app\adminapi\controller\goods\MemoryGroup@delete');            // 删除
+        Route::get('goods/memory', 'addon\phone_shop\app\adminapi\controller\goods\Memory@list');                        // 获取列表
+        Route::get('goods/memorys', 'addon\phone_shop\app\adminapi\controller\goods\Memory@lists');                        // 获取列表
+        Route::get('goods/memory/:id', 'addon\phone_shop\app\adminapi\controller\goods\Memory@detail');                    // 获取详情
+        Route::post('goods/memory', 'addon\phone_shop\app\adminapi\controller\goods\Memory@add');                         // 添加
+        Route::put('goods/memory/:id', 'addon\phone_shop\app\adminapi\controller\goods\Memory@edit');                      // 编辑
+        Route::delete('goods/memory/:id', 'addon\phone_shop\app\adminapi\controller\goods\Memory@delete');                 // 删除
+        Route::get('goods/memory_group/:group_id', 'addon\phone_shop\app\adminapi\controller\goods\Memory@getListByGroupId');  // 根据分组获取列表
+    
+    
+
+
+
     /************************************************** 订单相关接口 *****************************************************/
     //交易配置
     Route::post('order/config', 'addon\phone_shop\app\adminapi\controller\order\Config@setConfig');
@@ -626,11 +644,58 @@ Route::group('phone_shop', function () {
     Route::put('site/:id', 'addon\phone_shop\app\adminapi\controller\site\Site@edit');
     //删除站点(二手)管理
     Route::delete('site/:id', 'addon\phone_shop\app\adminapi\controller\site\Site@del');
-    Route::get('site/status', 'addon\phone_shop\app\adminapi\controller\site\Site@getStatus');
-    
+     //-----------------------------------------------------------------------------------------
+    // 回收商相关的CURD
+    // 添加回收商
+    Route::post('recycler', 'addon\phone_shop\app\adminapi\controller\site\PhoneShopRecycler@add');
+    // 查询回收商信息
+    Route::get('recycler', 'addon\phone_shop\app\adminapi\controller\site\PhoneShopRecycler@info');
+    // 更新回收商信息
+    Route::put('recycler/:id', 'addon\phone_shop\app\adminapi\controller\site\PhoneShopRecycler@update');
+    // 删除回收商
+    Route::delete('recycler/:id', 'addon\phone_shop\app\adminapi\controller\site\PhoneShopRecycler@delete');
+    // role
+    Route::get('recycler/role' ,'addon\phone_shop\app\adminapi\controller\site\PhoneShopRecycler@role' );
+    //-----------------------------------------------------------------------------------------
+    // 回收商价格配置
+    // 添加回收商价格配置
+    Route::post('recycler/price/config', 'addon\phone_shop\app\adminapi\controller\site\PhoneShopRecyclerPriceConfig@add');
+    // 查询回收商价格配置
+    // Route::get('recycler/price/config', 'addon\phone_shop\app\adminapi\controller\site\PhoneShopRecyclerPriceConfig@info');
+    // 更新回收商价格配置
+    Route::put('recycler/price/config/:id', 'addon\phone_shop\app\adminapi\controller\site\PhoneShopRecyclerPriceConfig@update');
+    // 删除回收商价格配置
+    Route::delete('recycler/price/config/:id', 'addon\phone_shop\app\adminapi\controller\site\PhoneShopRecyclerPriceConfig@delete');
+
+    // phone_shop/recycler/price/config/1 获取回收商价格配置
+    Route::get('recycler/price/config/:id', 'addon\phone_shop\app\adminapi\controller\site\PhoneShopRecyclerPriceConfig@info');
+    // phone_shop/recycler/price/config 设置回收商价格配置
+    Route::put('recycler/price/config', 'addon\phone_shop\app\adminapi\controller\site\PhoneShopRecyclerPriceConfig@price_update');
+    // phone_shop/recycler/price/config/1 删除回收商价格配置
+    Route::delete('recycler/price/config/:id', 'addon\phone_shop\app\adminapi\controller\site\PhoneShopRecyclerPriceConfig@price_delete');
+    // 根据site_id 获取回收商价格配置
+    Route::get('recycler/price/config/site', 'addon\phone_shop\app\adminapi\controller\site\PhoneShopRecyclerPriceConfig@getRecyclerPriceConfigBySiteId');
+
+     //-----------------------------------------------------------------------------------------
+    // phone_shop_recycler_price_range
+    // 回收商价格区间
+
+
+    // 站点代理相关路由
+        Route::group('site_agent', function () {
+            Route::get('lists', 'addon\phone_shop\app\adminapi\controller\site\SiteAgent@lists');
+            Route::get('available', 'addon\phone_shop\app\adminapi\controller\site\SiteAgent@getAvailableSites');
+            Route::post('add', 'addon\phone_shop\app\adminapi\controller\site\SiteAgent@add');
+            Route::put('modify_status', 'addon\phone_shop\app\adminapi\controller\site\SiteAgent@modifyStatus');
+            Route::delete('del/:id', 'addon\phone_shop\app\adminapi\controller\site\SiteAgent@del');
+        });
+  
 })->middleware([
     AdminCheckToken::class,
     AdminCheckRole::class,
     AdminLog::class
 ]);
 // USER_CODE_END -- phone_shop_site
+
+
+

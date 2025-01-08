@@ -29,6 +29,21 @@ return [
                 'status' => '1',
                 'is_show' => '1',
             ],
+            // banner 
+            [
+                'menu_name' => '轮播管理',
+                'menu_key' => 'recycle_banner',
+                'menu_short_name' => '轮播',
+                'menu_type' => '1',
+                'icon' => '',
+                'api_url' => 'phone_shop_price/recycle_banner',
+                'router_path' => 'recycle_banner',
+                'view_path' => 'recycle_category/banner',
+                'methods' => 'get',
+                'sort' => '90',
+                'status' => '1',
+                'is_show' => '1',
+            ],
             [
                 'menu_name' => '分类列表等级获取',
                 'menu_key' => 'phone_shop_price_phone_shop_recycle_category_recycle_category_recycle_category',

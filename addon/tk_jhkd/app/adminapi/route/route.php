@@ -107,6 +107,8 @@ Route::group('tk_jhkd', function () {
     Route::get('order', 'addon\tk_jhkd\app\adminapi\controller\order\Order@lists');
     //订单列详情
     Route::get('order/:id', 'addon\tk_jhkd\app\adminapi\controller\order\Order@info');
+    //订单佣金手动触发
+    Route::post('order/commissionorder/:id', 'addon\tk_jhkd\app\adminapi\controller\order\Order@commissionOrder');
     //订单备注
     Route::post('remark', 'addon\tk_jhkd\app\adminapi\controller\order\Order@remark');
     //发单
@@ -150,7 +152,6 @@ Route::group('tk_jhkd', function () {
     Route::put('orderadd/:id', 'addon\tk_jhkd\app\adminapi\controller\order\OrderAdd@edit');
     //删除订单列
     Route::delete('orderadd/:id', 'addon\tk_jhkd\app\adminapi\controller\order\OrderAdd@del');
-
     Route::get('member', 'addon\tk_jhkd\app\adminapi\controller\order\OrderAdd@getMemberAll');
 
 })->middleware([

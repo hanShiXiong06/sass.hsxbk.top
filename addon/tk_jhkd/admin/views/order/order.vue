@@ -111,12 +111,29 @@
 
           <el-table-column prop="order_money" label="常规信息" min-width="120" :show-overflow-tooltip="true">
             <template #default="{ row }">
-              <el-tag class="p-1">{{ row.delivery_name }}</el-tag>
+              <el-tag class="p-1" v-if="row.delivery_name">{{ row.delivery_name }}</el-tag>
               <div class="p-1">下单重量:{{ row.orderInfo.weight }}kg</div>
               <div class="p-1">订单金额:{{ row.order_money }}</div>
             </template>
           </el-table-column>
-
+          <el-table-column prop="order_money" label="订单佣金" min-width="120" :show-overflow-tooltip="true">
+            <template #default="{ row }">
+              <template v-if="row.fenxiao_order != []">
+                <div v-if="row.fenxiao_order.first_commission > 0" class="">
+                  一级佣金: {{ row.fenxiao_order.first_commission }}
+                </div>
+                <div v-if="row.fenxiao_order.two_commission > 0" class="">
+                  二级佣金: {{ row.fenxiao_order.two_commission }}
+                </div>
+                <div v-if="row.fenxiao_order.status" class="flex items-center">
+                  佣金状态
+                  <el-tag :type="row.fenxiao_order.status.type ? row.fenxiao_order.status.type : 'info'" class="ml-1">
+                    {{ row.fenxiao_order.status.name ? row.fenxiao_order.status.name : '未知' }}
+                  </el-tag>
+                </div>
+              </template>
+            </template>
+          </el-table-column>
           <!-- <el-table-column
             prop="order_discount_money"
             label="优惠金额"
@@ -192,6 +209,9 @@
               <el-button type="primary" v-if="row.order_status == 1 && row.is_send == 0" link
                 @click="sendEvent(row.order_id)">发单</el-button>
               <el-button type="primary" v-if="row.order_status == 1" link @click="cancelEvent(row.id)">取消</el-button>
+              <el-button type="primary"
+                v-if="row.fenxiao_order != [] && row.order_status == 10 && row.fenxiao_order.status && row.fenxiao_order.status.status == 0"
+                link @click="commissionEvent(row.id)">佣金结算</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -238,7 +258,7 @@ import {
   sendOrder,
   cancelOrder,
   getLink,
-  remarkOrder,
+  remarkOrder, commissionOrder
 } from "@/addon/tk_jhkd/api/order";
 import { img } from "@/utils/common";
 import { ElMessageBox, ElTag, FormInstance } from "element-plus";
@@ -288,6 +308,10 @@ const payTypeData = ref<any[]>([]);
 const orderFromData = ref([]);
 const sendEvent = async (order_id) => {
   await sendOrder(order_id);
+  loadOrderList();
+};
+const commissionEvent = async (id) => {
+  await commissionOrder(id);
   loadOrderList();
 };
 const cancelEvent = async (id) => {

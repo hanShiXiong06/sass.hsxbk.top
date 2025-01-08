@@ -8,7 +8,7 @@
 // +----------------------------------------------------------------------
 // | Author: Niucloud Team
 // +----------------------------------------------------------------------
-namespace addon\shop\app\service\core\delivery\electronic_sheet;
+namespace addon\phone_shop\app\service\core\delivery\electronic_sheet;
 
 
 use addon\shop\app\service\core\delivery\electronic_sheet\sdk\Kdbird;

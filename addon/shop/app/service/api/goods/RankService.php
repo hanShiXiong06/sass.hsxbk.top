@@ -87,7 +87,8 @@ class RankService extends BaseApiService
     {
         $rank_id = $data[ 'rank_id' ];
         $where[] = [
-            [ 'site_id', '=', $this->site_id ]
+            [ 'site_id', '=', $this->site_id ],
+            [ 'status', '=', RankDict::ON ]
         ];
         $order = '';
         if ($rank_id > 0) {
@@ -152,7 +153,6 @@ class RankService extends BaseApiService
                 ->whereBetweenTime('date_time', $date_start, $date_end)
                 ->join('shop_goods_stat stat', 'goods.goods_id = stat.goods_id', 'left')
                 ->group('goods.goods_id')
-                ->limit($limit)
                 ->append([ 'goods_cover_thumb_mid' ])
                 ->select()
                 ->toArray();
@@ -188,7 +188,7 @@ class RankService extends BaseApiService
                     'data' => $list,
                 ];
             } else {
-                $goods_list = $list;
+                $goods_list = array_slice($list, 0, 3);
             }
 
         } elseif ($rank_info[ 'goods_source' ] == RankDict::CATEGORY) {

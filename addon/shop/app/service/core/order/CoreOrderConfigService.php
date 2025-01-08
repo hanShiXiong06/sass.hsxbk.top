@@ -117,7 +117,7 @@ class CoreOrderConfigService extends BaseCoreService
                 'finish_length' => 14
             ];
             $data[ 'refund' ] = [
-                'no_allow_refund' => true,
+                'no_allow_refund' => 1,
                 'refund_length' => 7
             ];
         } else {
@@ -184,7 +184,7 @@ class CoreOrderConfigService extends BaseCoreService
         $data = ( new CoreConfigService() )->getConfigValue($site_id, 'SHOP_ORDER_CONFIG');
         if (empty($data)) {
             $refundOrderInfo = [
-                'no_allow_refund' => true,
+                'no_allow_refund' => 1,
                 'refund_length' => 7
             ];
         } else {

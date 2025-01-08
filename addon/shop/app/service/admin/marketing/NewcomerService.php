@@ -149,7 +149,7 @@ class NewcomerService extends BaseAdminService
         $active_goods = $active_goods_model->field('goods_id,sku_id,active_goods_value')->where([
             [ 'site_id', '=', $this->site_id ],
             [ 'active_class', '=', ActiveDict::NEWCOMER_DISCOUNT ],
-            [ 'active_goods_status', '=', ActiveDict::ACTIVE ]
+//            [ 'active_goods_status', '=', ActiveDict::ACTIVE ]
         ])->select()->toArray();
         $active_goods_ids = array_unique(array_column($active_goods, 'goods_id'));
         $active_sku_ids = array_column($active_goods, 'sku_id');
@@ -262,12 +262,11 @@ class NewcomerService extends BaseAdminService
         $active_goods = $active_goods_model->field('goods_id,sku_id,active_goods_value')->where([
             [ 'site_id', '=', $this->site_id ],
             [ 'active_class', '=', ActiveDict::NEWCOMER_DISCOUNT ],
-            [ 'active_goods_status', '=', ActiveDict::ACTIVE ]
+//            [ 'active_goods_status', '=', ActiveDict::ACTIVE ]
         ])->select()->toArray();
         $active_goods_ids = array_unique(array_column($active_goods, 'goods_id'));
         $active_sku_ids = array_column($active_goods, 'sku_id');
         $active_goods = array_column($active_goods, null, 'sku_id');
-
         $field = 'site_id, goods_id, goods_name, goods_type, goods_cover, stock';
         $order = 'sort desc,create_time desc';
 

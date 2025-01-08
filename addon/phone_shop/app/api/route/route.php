@@ -45,12 +45,10 @@ Route::group('phone_shop', function() {
 
     // 获取商品列表供组件调用
     Route::get('goods/components', 'addon\phone_shop\app\api\controller\goods\Goods@components');
-
+    
     //商品品牌列表
-    Route::get('goods/brand/list', 'addon\phone_shop\app\adminapi\controller\goods\Brand@lists');
+    Route::get('goods/brand/list', 'addon\phone_shop\app\api\controller\goods\Brand@lists');
 
-    //商品标签列表
-    Route::get('goods/label/list', 'addon\phone_shop\app\adminapi\controller\goods\Label@lists');
     /***************************************************** 评价 ****************************************************/
     // 获取 评价设置
     Route::get('goods/evaluate/config', 'addon\phone_shop\app\api\controller\Config@evaluate');

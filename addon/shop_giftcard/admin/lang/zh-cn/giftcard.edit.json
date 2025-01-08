@@ -20,6 +20,7 @@
   "sortTips": "排序号格式输入错误",
   "cover": "封面图",
   "coverPlaceholder": "请上传封面图",
+  "coverTips": "请勿重复选择图片",
   "isGive": "是否允许转赠",
   "isGiveTips": "转赠开启后，用户可以将自己的礼品卡赠送给其他用户",
   "receiveValidityTime": "领取有效期",

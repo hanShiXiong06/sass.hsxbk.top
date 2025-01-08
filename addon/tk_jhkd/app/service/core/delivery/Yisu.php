@@ -79,7 +79,7 @@ class Yisu extends BaseDelivery
                         [
                             "add" => 0,
                             "end" => 0,
-                            "first" => $v['originalFee']??0,
+                            "first" => $v['originalFee'] ?? 0,
                             "start" => 1,
                         ]
                     ],
@@ -123,19 +123,19 @@ class Yisu extends BaseDelivery
      */
     public function sendOrder($params)
     {
-        $data=[
-            "productCode" =>$params['deliveryType'],
-            "senderPhone" =>$params['senderMobile'],
-            "senderName" =>$params['senderName'],
-            "guaranteeValueAmount" =>$params['guaranteeValueAmount'],
-            "senderAddress" =>$params['senderProvince'] . $params['senderCity'] . $params['senderDistrict'] . $params['senderAddress'],
-            "receiveAddress" =>$params['receiveProvince'] . $params['receiveCity'] . $params['receiveDistrict'] . $params['receiveAddress'],
-            "receivePhone" =>$params['receiveMobile'],
-            "receiveName" =>$params['receiveName'],
-            "goods" =>$params['goods'],
-            "packageNum" =>$params['packageCount'],
-            "volume" =>(int)$params['vloumLong']/100 * $params['vloumWidth']/100 * $params['vloumHeight']/100,
-            "weight" =>$params['weight'],
+        $data = [
+            "productCode" => $params['deliveryType'],
+            "senderPhone" => $params['senderMobile'],
+            "senderName" => $params['senderName'],
+            "guaranteeValueAmount" => $params['guaranteeValueAmount'],
+            "senderAddress" => $params['senderProvince'] . $params['senderCity'] . $params['senderDistrict'] . $params['senderAddress'],
+            "receiveAddress" => $params['receiveProvince'] . $params['receiveCity'] . $params['receiveDistrict'] . $params['receiveAddress'],
+            "receivePhone" => $params['receiveMobile'],
+            "receiveName" => $params['receiveName'],
+            "goods" => $params['goods'],
+            "packageNum" => $params['packageCount'],
+            "volume" => (int)$params['vloumLong'] / 100 * $params['vloumWidth'] / 100 * $params['vloumHeight'] / 100,
+            "weight" => $params['weight'],
         ];
         $resInfo = $this->execute('/openApi/doOrder', $data);
         if ($resInfo['code'] != 0) {
@@ -211,8 +211,8 @@ class Yisu extends BaseDelivery
     {
         $resInfo = $this->execute('/openApi/fund', []);
         if ($resInfo['code'] != 0) {
-            return $resInfo['msg']??'未查询到信息';
-        }else{
+            return $resInfo['msg'] ?? '未查询到信息';
+        } else {
             return $resInfo['data']['balance'] ?? '未查询到信息';
         }
     }
@@ -229,9 +229,9 @@ class Yisu extends BaseDelivery
      */
     public function execute($url, $data = [])
     {
-        $appid = 'DEA82R';
-        $app_secret = '0d2a81e348bcbb1e21868654d9cb91a5';
-        $baseUrl = 'http://yisu.wanhuida888.com/ht';
+        $appid = $this->config['appid'];
+        $app_secret = $this->config['appkey'];
+        $baseUrl = 'http://open.yisuopen.com';
         $timeStamp = time();
         $version = 'V1.0';
         $sign = $this->getSign($appid, $version, $timeStamp, $app_secret);

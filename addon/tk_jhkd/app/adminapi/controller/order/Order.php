@@ -29,6 +29,9 @@ use think\Response;
  */
 class Order extends BaseAdminController
 {
+    public function commissionOrder($id){
+        return success('操作成功',(new OrderService())->commissionOrder($id));
+    }
     public function getLink()
     {
         return success((new OrderService())->getLink());

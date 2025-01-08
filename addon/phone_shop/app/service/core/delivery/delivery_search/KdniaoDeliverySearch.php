@@ -8,9 +8,9 @@
 // +----------------------------------------------------------------------
 // | Author: Niucloud Team
 // +----------------------------------------------------------------------
-namespace addon\shop\app\service\core\delivery\delivery_search;
+namespace addon\phone_shop\app\service\core\delivery\delivery_search;
 
-use addon\shop\app\service\core\delivery\delivery_search\sdk\Kdbird;
+use addon\phone_shop\app\service\core\delivery\delivery_search\sdk\Kdbird;
 
 
 class KdniaoDeliverySearch extends BaseDeliverySearch

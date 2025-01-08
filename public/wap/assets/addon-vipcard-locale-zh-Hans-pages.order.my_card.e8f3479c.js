@@ -1,1 +1,0 @@
-const e="创建时间：",a="卡项次数：不限次数",t="卡项次数：",c="已使用",m="去使用",r={createTime:e,cardNumNoLimit:a,cardNum:t,cardUseNum:"已使用",toUse:"去使用"};export{t as cardNum,a as cardNumNoLimit,c as cardUseNum,e as createTime,r as default,m as toUse};

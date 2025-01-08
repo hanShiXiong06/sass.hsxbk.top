@@ -203,7 +203,7 @@ return [
                             "bottomRounded" => 0,
                             "list" => [
                                 [
-                                    "imageUrl" => "addon/shop/diy/index/style3/banner3.jpg",
+                                    "imageUrl" => "addon/shop/diy/index/style3/banner1.jpg",
                                     "imgWidth" => 750,
                                     "imgHeight" => 580,
                                     "link" => [
@@ -212,7 +212,8 @@ return [
                                     "id" => "397htiaqung0",
                                     "width" => 355,
                                     "height" => 274.53
-                                ],[
+                                ],
+                                [
                                     "imageUrl" => "addon/shop/diy/index/style3/banner2.jpg",
                                     "imgWidth" => 750,
                                     "imgHeight" => 580,
@@ -247,36 +248,36 @@ return [
                         "pageStyle" => "padding-top:2rpx;padding-bottom:0rpx;padding-right:0rpx;padding-left:0rpx;"
                     ],
                     [
-                        "path"=> "edit-horz-blank",
-                        "uses"=> 0,
-                        "id"=> "4wk9nzocm3c",
-                        "componentName"=> "HorzBlank",
-                        "componentTitle"=> "辅助空白",
-                        "ignore"=> [
+                        "path" => "edit-horz-blank",
+                        "uses" => 0,
+                        "id" => "4wk9nzocm3c",
+                        "componentName" => "HorzBlank",
+                        "componentTitle" => "辅助空白",
+                        "ignore" => [
                             "pageBgColor",
                             "componentBgUrl"
                         ],
-                        "height"=> 22,
-                        "textColor"=> "#303133",
-                        "pageStartBgColor"=> "",
-                        "pageEndBgColor"=> "",
-                        "pageGradientAngle"=> "to bottom",
-                        "componentBgUrl"=> "",
-                        "componentBgAlpha"=> 2,
-                        "componentStartBgColor"=> "rgba(246, 246, 246, 1)",
-                        "componentEndBgColor"=> "",
-                        "componentGradientAngle"=> "to bottom",
-                        "topRounded"=> 17,
-                        "bottomRounded"=> 0,
-                        "elementBgColor"=> "",
-                        "topElementRounded"=> 0,
-                        "bottomElementRounded"=> 0,
-                        "margin"=> [
-                            "top"=> -21,
-                            "bottom"=> 0,
-                            "both"=> 0
+                        "height" => 22,
+                        "textColor" => "#303133",
+                        "pageStartBgColor" => "",
+                        "pageEndBgColor" => "",
+                        "pageGradientAngle" => "to bottom",
+                        "componentBgUrl" => "",
+                        "componentBgAlpha" => 2,
+                        "componentStartBgColor" => "rgba(246, 246, 246, 1)",
+                        "componentEndBgColor" => "",
+                        "componentGradientAngle" => "to bottom",
+                        "topRounded" => 17,
+                        "bottomRounded" => 0,
+                        "elementBgColor" => "",
+                        "topElementRounded" => 0,
+                        "bottomElementRounded" => 0,
+                        "margin" => [
+                            "top" => -21,
+                            "bottom" => 0,
+                            "both" => 0
                         ],
-                        "pageStyle"=> "padding-top:2rpx;padding-bottom:0rpx;padding-right:0rpx;padding-left:0rpx;"
+                        "pageStyle" => "padding-top:2rpx;padding-bottom:0rpx;padding-right:0rpx;padding-left:0rpx;"
                     ],
                     [
                         "path" => "edit-graphic-nav",
@@ -1257,47 +1258,47 @@ return [
                         "indicatorActiveColor" => "rgba(255, 255, 255, 1)"
                     ],
                     [
-                        "path"=> "edit-image-ads",
-                        "uses"=> 0,
-                        "id"=> "1kfmhruhijgg",
-                        "componentName"=> "ImageAds",
-                        "componentTitle"=> "图片广告",
-                        "ignore"=> [
+                        "path" => "edit-image-ads",
+                        "uses" => 0,
+                        "id" => "1kfmhruhijgg",
+                        "componentName" => "ImageAds",
+                        "componentTitle" => "图片广告",
+                        "ignore" => [
 
                         ],
-                        "imageHeight"=> 89,
-                        "isSameScreen"=> false,
-                        "list"=> [
+                        "imageHeight" => 89,
+                        "isSameScreen" => false,
+                        "list" => [
                             [
-                                "link"=> [
-                                    "name"=> ""
+                                "link" => [
+                                    "name" => ""
                                 ],
-                                "imageUrl"=> "addon/shop/diy/index/style3/discount_img.png",
-                                "imgWidth"=> 710,
-                                "imgHeight"=> 170,
-                                "id"=> "6eo9vdo9xtc0",
-                                "width"=> 375,
-                                "height"=> 89.78873239436619
+                                "imageUrl" => "addon/shop/diy/index/style3/discount_img.png",
+                                "imgWidth" => 710,
+                                "imgHeight" => 170,
+                                "id" => "6eo9vdo9xtc0",
+                                "width" => 375,
+                                "height" => 89.78873239436619
                             ]
                         ],
-                        "textColor"=> "#303133",
-                        "pageStartBgColor"=> "",
-                        "pageEndBgColor"=> "",
-                        "pageGradientAngle"=> "to bottom",
-                        "componentBgUrl"=> "",
-                        "componentBgAlpha"=> 2,
-                        "componentStartBgColor"=> "",
-                        "componentEndBgColor"=> "",
-                        "componentGradientAngle"=> "to bottom",
-                        "topRounded"=> 0,
-                        "bottomRounded"=> 0,
-                        "elementBgColor"=> "",
-                        "topElementRounded"=> 0,
-                        "bottomElementRounded"=> 0,
-                        "margin"=> [
-                            "top"=> 10,
-                            "bottom"=> 10,
-                            "both"=> 10
+                        "textColor" => "#303133",
+                        "pageStartBgColor" => "",
+                        "pageEndBgColor" => "",
+                        "pageGradientAngle" => "to bottom",
+                        "componentBgUrl" => "",
+                        "componentBgAlpha" => 2,
+                        "componentStartBgColor" => "",
+                        "componentEndBgColor" => "",
+                        "componentGradientAngle" => "to bottom",
+                        "topRounded" => 0,
+                        "bottomRounded" => 0,
+                        "elementBgColor" => "",
+                        "topElementRounded" => 0,
+                        "bottomElementRounded" => 0,
+                        "margin" => [
+                            "top" => 10,
+                            "bottom" => 10,
+                            "both" => 10
                         ]
                     ],
                     [
@@ -1337,17 +1338,17 @@ return [
                             "control" => true,
                             "isShow" => true
                         ],
-                        "btnStyle" =>  [
-                            "fontWeight" =>  false,
-                            "padding" =>  0,
-                            "aroundRadius" =>  25,
-                            "cartEvent" =>  "detail",
-                            "text" =>  "购买",
-                            "textColor" =>  "#FFFFFF",
-                            "startBgColor" =>  "#FF4142",
-                            "endBgColor" =>  "#FF4142",
-                            "style" =>  "nc-icon-gouwuche1",
-                            "control" =>  true
+                        "btnStyle" => [
+                            "fontWeight" => false,
+                            "padding" => 0,
+                            "aroundRadius" => 25,
+                            "cartEvent" => "detail",
+                            "text" => "购买",
+                            "textColor" => "#FFFFFF",
+                            "startBgColor" => "#FF4142",
+                            "endBgColor" => "#FF4142",
+                            "style" => "nc-icon-gouwuche1",
+                            "control" => true
                         ],
                         "list" => [
                             [
@@ -2477,17 +2478,17 @@ return [
                             "control" => true,
                             "isShow" => true
                         ],
-                        "btnStyle" =>  [
-                            "fontWeight" =>  false,
-                            "padding" =>  0,
-                            "aroundRadius" =>  25,
-                            "cartEvent" =>  "detail",
-                            "text" =>  "购买",
-                            "textColor" =>  "#FFFFFF",
-                            "startBgColor" =>  "#FF4142",
-                            "endBgColor" =>  "#FF4142",
-                            "style" =>  "button",
-                            "control" =>  true
+                        "btnStyle" => [
+                            "fontWeight" => false,
+                            "padding" => 0,
+                            "aroundRadius" => 25,
+                            "cartEvent" => "detail",
+                            "text" => "购买",
+                            "textColor" => "#FFFFFF",
+                            "startBgColor" => "#FF4142",
+                            "endBgColor" => "#FF4142",
+                            "style" => "button",
+                            "control" => true
                         ],
                         "textColor" => "#303133",
                         'pageStartBgColor' => '',
@@ -2627,17 +2628,17 @@ return [
                             "control" => true,
                             "isShow" => true
                         ],
-                        "btnStyle" =>  [
-                            "fontWeight" =>  false,
-                            "padding" =>  0,
-                            "aroundRadius" =>  25,
-                            "cartEvent" =>  "detail",
-                            "text" =>  "购买",
-                            "textColor" =>  "#FFFFFF",
-                            "startBgColor" =>  "#FF4142",
-                            "endBgColor" =>  "#FF4142",
-                            "style" =>  "button",
-                            "control" =>  true
+                        "btnStyle" => [
+                            "fontWeight" => false,
+                            "padding" => 0,
+                            "aroundRadius" => 25,
+                            "cartEvent" => "detail",
+                            "text" => "购买",
+                            "textColor" => "#FFFFFF",
+                            "startBgColor" => "#FF4142",
+                            "endBgColor" => "#FF4142",
+                            "style" => "button",
+                            "control" => true
                         ],
                         "textColor" => "#303133",
                         'pageStartBgColor' => '',
@@ -2746,17 +2747,17 @@ return [
                             "control" => true,
                             "isShow" => true
                         ],
-                        "btnStyle" =>  [
-                            "fontWeight" =>  false,
-                            "padding" =>  0,
-                            "aroundRadius" =>  25,
-                            "cartEvent" =>  "detail",
-                            "text" =>  "购买",
-                            "textColor" =>  "#FFFFFF",
-                            "startBgColor" =>  "#FF4142",
-                            "endBgColor" =>  "#FF4142",
-                            "style" =>  "button",
-                            "control" =>  true
+                        "btnStyle" => [
+                            "fontWeight" => false,
+                            "padding" => 0,
+                            "aroundRadius" => 25,
+                            "cartEvent" => "detail",
+                            "text" => "购买",
+                            "textColor" => "#FFFFFF",
+                            "startBgColor" => "#FF4142",
+                            "endBgColor" => "#FF4142",
+                            "style" => "button",
+                            "control" => true
                         ],
                         "textColor" => "#303133",
                         'pageStartBgColor' => '',
@@ -2811,17 +2812,17 @@ return [
                             "control" => true,
                             "isShow" => true
                         ],
-                        "btnStyle" =>  [
-                            "fontWeight" =>  false,
-                            "padding" =>  0,
-                            "aroundRadius" =>  25,
-                            "cartEvent" =>  "detail",
-                            "text" =>  "购买",
-                            "textColor" =>  "#FFFFFF",
-                            "startBgColor" =>  "#FF4142",
-                            "endBgColor" =>  "#FF4142",
-                            "style" =>  "button",
-                            "control" =>  true
+                        "btnStyle" => [
+                            "fontWeight" => false,
+                            "padding" => 0,
+                            "aroundRadius" => 25,
+                            "cartEvent" => "detail",
+                            "text" => "购买",
+                            "textColor" => "#FFFFFF",
+                            "startBgColor" => "#FF4142",
+                            "endBgColor" => "#FF4142",
+                            "style" => "button",
+                            "control" => true
                         ],
                         "list" => [
                             [
@@ -3002,7 +3003,7 @@ return [
                         "componentTitle" => "图片广告",
                         "ignore" => [],
                         "imageHeight" => 160,
-                        "isSameScreen"=> false,
+                        "isSameScreen" => false,
                         "list" => [
                             [
                                 "link" => [
@@ -3436,17 +3437,17 @@ return [
                             "control" => true,
                             "isShow" => true
                         ],
-                        "btnStyle" =>  [
-                            "fontWeight" =>  false,
-                            "padding" =>  0,
-                            "aroundRadius" =>  25,
-                            "cartEvent" =>  "detail",
-                            "text" =>  "购买",
-                            "textColor" =>  "#FFFFFF",
-                            "startBgColor" =>  "#FF4142",
-                            "endBgColor" =>  "#FF4142",
-                            "style" =>  "button",
-                            "control" =>  true
+                        "btnStyle" => [
+                            "fontWeight" => false,
+                            "padding" => 0,
+                            "aroundRadius" => 25,
+                            "cartEvent" => "detail",
+                            "text" => "购买",
+                            "textColor" => "#FFFFFF",
+                            "startBgColor" => "#FF4142",
+                            "endBgColor" => "#FF4142",
+                            "style" => "button",
+                            "control" => true
                         ],
                         "textColor" => "#303133",
                         'pageStartBgColor' => '',

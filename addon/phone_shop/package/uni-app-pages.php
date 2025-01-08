@@ -205,6 +205,11 @@ return [
 					"style": {
 						"navigationBarTitleText": "操作台"
 					}
+				},{
+					"path": "phone_shop/pages/goods/new_arrivals",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.goods.new_arrivals%"
+					}
 				},
 				// PAGE_END
 EOT

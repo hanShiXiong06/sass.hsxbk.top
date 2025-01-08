@@ -59,3 +59,32 @@ Route::group('phone_shop_price', function () {
     AdminLog::class
 ]);
 // USER_CODE_END -- phone_shop_price_recycle_order
+
+// USER_CODE_BEGIN -- phone_shop_price_recycle_banner
+Route::group('phone_shop_price', function () {
+    // Banner管理
+    Route::get('recycle_banner', 'addon\phone_shop_price\app\adminapi\controller\recycle_category\RecycleBanner@lists');
+    Route::get('recycle_banner/:id', 'addon\phone_shop_price\app\adminapi\controller\recycle_category\RecycleBanner@info');
+    Route::post('recycle_banner', 'addon\phone_shop_price\app\adminapi\controller\recycle_category\RecycleBanner@add');
+    Route::put('recycle_banner/:id', 'addon\phone_shop_price\app\adminapi\controller\recycle_category\RecycleBanner@edit');
+    Route::delete('recycle_banner/:id', 'addon\phone_shop_price\app\adminapi\controller\recycle_category\RecycleBanner@del');
+    Route::put('recycle_banner/change_sort/:id/:sort', 'addon\phone_shop_price\app\adminapi\controller\recycle_category\RecycleBanner@changeSort');
+})->middleware([
+    AdminCheckToken::class,
+    AdminCheckRole::class,
+    AdminLog::class
+]);
+// USER_CODE_END -- phone_shop_price_recycle_banner
+
+// USER_CODE_BEGIN -- phone_shop_price_recycle_category_config
+Route::group('phone_shop_price', function () {
+    // 回收分类配置
+    Route::get('recycle_category_config', 'addon\phone_shop_price\app\adminapi\controller\recycle_category\RecycleCategoryConfig@getConfig');
+    Route::put('recycle_category_config', 'addon\phone_shop_price\app\adminapi\controller\recycle_category\RecycleCategoryConfig@setConfig');
+})->middleware([
+    AdminCheckToken::class,
+    AdminCheckRole::class,
+    AdminLog::class
+]);
+// USER_CODE_END -- phone_shop_price_recycle_category_config
+

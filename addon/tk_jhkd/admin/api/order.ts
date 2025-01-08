@@ -40,6 +40,14 @@ export function cancelOrder(params: Record<string, any>) {
     return request.post('tk_jhkd/cancelorder', params, { showErrorMessage: true, showSuccessMessage: true })
 }
 /**
+ * 手动结算佣金
+ * @param id 
+ * @returns 
+ */
+export function commissionOrder(id) {
+    return request.post(`tk_jhkd/order/commissionorder/${id}`, { showErrorMessage: true, showSuccessMessage: true })
+}
+/**
  * 获取订单列详情
  * @param id 订单列id
  * @returns

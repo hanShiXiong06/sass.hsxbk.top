@@ -295,12 +295,16 @@ class Goods extends BaseModel
     public function searchGoodsCategoryAttr(Query $query, $value, $data)
     {
         if ($value) {
-            if (is_array($value)) {
-                $temp_where = array_map(function($item) { return '%"' . $item . '"%'; }, $value);
-            } else {
-                $temp_where = [ '%"' . $value . '"%' ];
-            }
-            $query->where('goods_category', 'like', $temp_where, 'or');
+            // 将传入的分类ID字符串转为数组
+            $category_ids = is_array($value) ? $value : explode(',', $value);
+            
+            // 构建查询条件
+            $query->where(function ($query) use ($category_ids) {
+                foreach ($category_ids as $category_id) {
+                    // 使用 JSON_CONTAINS 函数查询，支持精确匹配数组中的值
+                    $query->whereOr("JSON_CONTAINS(goods_category, '\"$category_id\"')");
+                }
+            });
         }
     }
 

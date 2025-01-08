@@ -43,9 +43,9 @@
         <!-- 快捷操作区 -->
 
         <view class="quick-actions">
-            <view class="action-item" @click="toAddOrder">
-                <up-icon name="file-text" size="24" color="#007AFF"></up-icon>
-                <text>立即报单</text>
+            <view class="action-item floating-btn" @click="toAddOrder">
+                <up-icon name="file-text" size="24" color="#ffffff"></up-icon>
+                <text>立即下单</text>
             </view>
             <view class="action-item" @click="redirect({ url: '/addon/phone_shop_price/pages/order/list' })">
                 <up-icon name="order" size="24" color="#007AFF"></up-icon>
@@ -140,8 +140,8 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch, nextTick } from 'vue';
-import { getCategoryTree } from '@/addon/phone_shop_price/api/recycle';
-import { getMemberLevel } from '@/addon/tk_vip/api/member';
+import { getCategoryTree ,getMemberLevel } from '@/addon/phone_shop_price/api/recycle';
+// import { getMemberLevel } from '@/addon/tk_vip/api/member';
 
 import { img, redirect } from '@/utils/common';
 import useMemberStore from "@/stores/member";
@@ -153,10 +153,10 @@ const userInfo = computed(() => memberStore.info);
 // Banner数据
 const bannerList = ref([
     {
-        image: 'https://vip.123pan.cn/1832133965/tiantai/172700160816188b1d81b95069f643e50166ae526e_ott.png'
+        image: 'https://vip.123pan.cn/1832133965/tiantai/1.png'
     },
     {
-        image: 'https://vip.123pan.cn/1832133965/tiantai/172700160816188b1d81b95069f643e50166ae526e_ott.png'
+        image: 'https://vip.123pan.cn/1832133965/tiantai/2.png'
     }
 ]);
 const currentBannerIndex = ref(0);
@@ -529,6 +529,7 @@ watch(() => currentLevel.value, (newVal) => {
         position: sticky;
         top: 0;
         z-index: 100;
+        box-sizing: border-box;
 
         .nav-items {
             display: flex;
@@ -570,96 +571,91 @@ watch(() => currentLevel.value, (newVal) => {
     }
 }
 
-.grid-item {
-    .grid-item-content {
-        position: relative;
-        padding: 20rpx;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 12rpx;
-        transition: all 0.3s;
-
-        // VIP徽标
-        .vip-badge {
-            position: absolute;
-            top: 10rpx;
-            right: 10rpx;
-            background: rgba(0, 0, 0, 0.6);
-            border-radius: 20rpx;
-            padding: 4rpx 8rpx;
-            z-index: 2;
-
-            .up-icon {
-                filter: drop-shadow(0 0 4rpx rgba(255, 215, 0, 0.5));
-            }
-        }
-
-        .brand-icon {
-            width: 88rpx;
-            height: 88rpx;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: transparent;
-            border-radius: 16rpx;
-            transition: all 0.3s;
-            position: relative;
-
-            &.vip-locked {
-                opacity: 0.7;
-            }
-
-            // 锁定遮罩
-            .lock-mask {
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(0, 0, 0, 0.5);
-                backdrop-filter: blur(2px);
-                border-radius: 16rpx;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-
-                .up-icon {
-                    filter: drop-shadow(0 0 4rpx rgba(255, 215, 0, 0.5));
-                }
-            }
-        }
-
-        .brand-name {
-            font-size: 26rpx;
-            color: #000;
-            text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            width: 100%;
-            padding: 0 10rpx;
-            box-sizing: border-box;
-            font-weight: normal;
-        }
-
-        // VIP提示文本
-        .vip-tip {
-            font-size: 20rpx;
-            color: #FFD700;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 4rpx 12rpx;
-            border-radius: 20rpx;
-            margin-top: -6rpx;
-            text-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.3);
-        }
-
-        // 点击效果
-        &:active {
-            transform: scale(0.96);
-        }
-    }
+.grid-item-content {
+    position: relative;
+    padding: 20rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12rpx;
+    transition: all 0.3s;
 }
+
+.vip-badge {
+    position: absolute;
+    top: 10rpx;
+    right: 10rpx;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 20rpx;
+    padding: 4rpx 8rpx;
+    z-index: 2;
+}
+
+.vip-badge .up-icon {
+    filter: drop-shadow(0 0 4rpx rgba(255, 215, 0, 0.5));
+}
+
+.brand-icon {
+    width: 88rpx;
+    height: 88rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border-radius: 16rpx;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.brand-icon.vip-locked {
+    opacity: 0.7;
+}
+
+.brand-icon .lock-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    border-radius: 16rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.grid-item-content .brand-icon .lock-mask .up-icon {
+    filter: drop-shadow(0 0 4rpx rgba(255, 215, 0, 0.5));
+}
+
+.brand-name {
+    font-size: 23rpx;
+    color: #000;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    padding: 0 10rpx;
+    box-sizing: border-box;
+    font-weight: normal;
+}
+
+.grid-item .grid-item-content .vip-tip {
+    font-size: 20rpx;
+    color: #FFD700;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 4rpx 12rpx;
+    border-radius: 20rpx;
+    margin-top: -6rpx;
+    text-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.3);
+}
+
+.grid-item .grid-item-content:active {
+    transform: scale(0.96);
+}
+
 
 // VIP弹窗样式优化
 .vip-modal-content {
@@ -1013,5 +1009,54 @@ watch(() => currentLevel.value, (newVal) => {
             }
         }
     }
+}
+
+// 悬浮按钮样式
+.floating-btn {
+    position: fixed;
+    bottom: 40rpx;
+    left: 40rpx;
+    right: 40rpx;
+    background: linear-gradient(135deg, #007AFF, #0056b3);
+    padding: 24rpx;
+    border-radius: 100rpx;
+    box-shadow: 0 6rpx 20rpx rgba(0, 122, 255, 0.3);
+    z-index: 999;
+    animation: breathing 2s ease-in-out infinite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12rpx;
+
+    .up-icon {
+        margin: 0;
+    }
+
+    text {
+        color: #ffffff !important;
+        font-size: 32rpx;
+        font-weight: 600;
+    }
+}
+
+// 呼吸动画
+@keyframes breathing {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 6rpx 20rpx rgba(0, 122, 255, 0.3);
+    }
+    50% {
+        transform: scale(1.02);
+        box-shadow: 0 8rpx 30rpx rgba(0, 122, 255, 0.5);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 6rpx 20rpx rgba(0, 122, 255, 0.3);
+    }
+}
+
+// 为底部添加空间
+.category-section {
+    margin-bottom: 120rpx;
 }
 </style>

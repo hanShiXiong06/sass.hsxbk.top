@@ -12,7 +12,6 @@
 namespace addon\phone_shop\app\service\api\goods;
 
 use addon\phone_shop\app\model\goods\GoodsCollect;
-
 use core\base\BaseApiService;
 use core\exception\CommonException;
 

@@ -240,10 +240,12 @@ class CoreOrderBatchDeliveryService extends BaseCoreService
                                         'site_id' => $site_id,
                                         'order_id' => $item_order_id,//订单编号
                                         'order_goods_ids' => $item_order_goods_ids,//订单项ids
-                                        'delivery_type' => $delivery_type,//发货方式
+                                        'delivery_type' => $delivery_type,//配送方式
+                                        'delivery_way' => 'manual_write',//发货方式，manual_write：手动填写，electronic_sheet：电子面单
                                         'express_company_id' => $item_express_company_id,//物流公司
                                         'express_number' => $express_number,//物流单号
-                                        'remark' => ''
+                                        'remark' => '',
+                                        'electronic_sheet_id' => ''//电子面单模板
                                     ]);
 
                                 } else {
@@ -268,10 +270,12 @@ class CoreOrderBatchDeliveryService extends BaseCoreService
                                         'site_id' => $site_id,
                                         'order_id' => $item_order_id,//订单编号
                                         'order_goods_ids' => [ $item_data[ 1 ] ],//订单项ids
-                                        'delivery_type' => $delivery_type,//发货方式
+                                        'delivery_type' => $delivery_type,//配送方式
+                                        'delivery_way' => 'manual_write',//发货方式，manual_write：手动填写，electronic_sheet：电子面单
                                         'express_company_id' => $item_express_company_id,//物流公司
                                         'express_number' => $express_number,//物流单号
-                                        'remark' => ''
+                                        'remark' => '',
+                                        'electronic_sheet_id' => ''//电子面单模板
                                     ]);
 
                                 }

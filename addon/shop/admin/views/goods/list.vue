@@ -66,6 +66,7 @@
                     <el-button @click="batchGoodsStatus(1)" size="small" v-if="goodsTable.searchParam.status != '1'">{{ t('batchOnGoods') }}</el-button>
                     <el-button @click="batchGoodsStatus(0)" size="small" v-if="goodsTable.searchParam.status != '0'">{{ t('batchOffGoods') }}</el-button>
                     <el-button @click="batchDeleteGoods" size="small">{{ t('batchDeleteGoods') }}</el-button>
+                    <el-button @click="batchSetGoods" size="small">{{ t('batchSetting') }}</el-button>
                 </div>
 
                 <el-table :data="goodsTable.data" size="large" v-loading="goodsTable.loading" ref="goodsListTableRef" @sort-change="sortChange" @selection-change="handleSelectionChange">
@@ -177,13 +178,16 @@
 
         <!-- 会员价弹出框 -->
         <goods-member-price-popup ref="memberPricePopupRef" @load="loadGoodsList" />
+
+        <!-- 批量设置弹出框 -->
+        <goods-batch-settings-popup ref="goodsBatchSettingPopupRef" @load="loadGoodsList" />
     </div>
 </template>
 
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import { t } from '@/lang'
-import { debounce, img, filterDigit,setTablePageStorage,getTablePageStorage } from '@/utils/common'
+import { debounce, img, filterDigit, setTablePageStorage, getTablePageStorage } from '@/utils/common'
 import { ElMessage, ElMessageBox, FormInstance } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router'
 import { cloneDeep } from 'lodash-es'
@@ -191,6 +195,7 @@ import goodsMemberPricePopup from '@/addon/shop/views/goods/components/goods-mem
 import goodsStockEditPopup from '@/addon/shop/views/goods/components/goods-stock-edit-popup.vue'
 import goodsPriceEditPopup from '@/addon/shop/views/goods/components/goods-price-edit-popup.vue'
 import goodsSpreadPopup from '@/addon/shop/views/goods/components/goods-spread-popup.vue'
+import goodsBatchSettingsPopup from '@/addon/shop/views/goods/components/goods-batch-settings-popup.vue'
 import { getGoodsPageList, getCategoryTree, getGoodsType, getBrandList, getLabelList, editGoodsSort, editGoodsStatus, copyGoods, deleteGoods } from '@/addon/shop/api/goods'
 import { getMemberLevelAll } from '@/app/api/member'
 
@@ -341,7 +346,7 @@ const handleSelectionChange = (val: []) => {
         isIndeterminate.value = false
     }
 
-    if (multipleSelection.value.length == goodsTable.data.length) {
+    if (multipleSelection.value.length == goodsTable.data.length && goodsTable.data.length && multipleSelection.value.length) {
         toggleCheckbox.value = true
     }
 }
@@ -421,6 +426,20 @@ const batchGoodsStatus = (status: any) => {
         loadGoodsList()
     })
 }
+/** ***************** 批量设置-start *************************/
+const goodsBatchSettingPopupRef = ref()
+const batchSetGoods = () => {
+    if (multipleSelection.value.length == 0) {
+        ElMessage({
+            type: 'warning',
+            message: `${t('batchEmptySelectedGoodsTips')}`
+        })
+        return
+    }
+    goodsBatchSettingPopupRef.value.show(multipleSelection.value)
+}
+/** ***************** 批量设置-end *************************/
+
 
 const batchDeleteGoods = () => {
     if (multipleSelection.value.length == 0) {
@@ -536,9 +555,8 @@ const loadGoodsList = (page: number = 1) => {
         goodsTable.loading = false
         goodsTable.data = res.data.data
         goodsTable.total = res.data.total
-        multipleSelection.value = [];
-        toggleCheckbox.value = false;
-        setTablePageStorage(goodsTable.page,goodsTable.limit,searchData);
+        multipleSelection.value = []
+        setTablePageStorage(goodsTable.page, goodsTable.limit, searchData)
     }).catch(() => {
         goodsTable.loading = false
     })

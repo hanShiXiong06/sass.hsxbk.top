@@ -133,7 +133,7 @@ trait CoreOrderCreateTrait
     {
         $sku_list = ( new GoodsSku() )->field('sku_id,goods_id,sku_name,stock')->where([ [ 'site_id', '=', $this->site_id ], [ 'sku_id', 'in', array_column($order_goods_data, 'sku_id') ] ])
             ->with([
-                'goods' => function ($query) {
+                'goods' => function($query) {
                     $query->field('goods_id,goods_name');
                 }
             ])->select()->toArray();
@@ -141,16 +141,16 @@ trait CoreOrderCreateTrait
         // todo 赠品库存校验
         $sku_num = [];
         foreach ($order_goods_data as $v) {
-            if (isset($sku_num[ 'num_'  . $v[ 'sku_id' ] ])) {
-                $sku_num[ 'num_'  . $v[ 'sku_id' ] ] += $v[ 'num' ];
+            if (isset($sku_num[ 'num_' . $v[ 'sku_id' ] ])) {
+                $sku_num[ 'num_' . $v[ 'sku_id' ] ] += $v[ 'num' ];
             } else {
-                $sku_num[ 'num_'  . $v[ 'sku_id' ] ] = $v[ 'num' ];
+                $sku_num[ 'num_' . $v[ 'sku_id' ] ] = $v[ 'num' ];
             }
         }
 
         foreach ($sku_list as $v) {
-            $goods_name = count($sku_list) > 1 ? '“'. $v[ 'goods' ][ 'goods_name' ] . $v[ 'sku_name' ] . '”' : '';
-            if ($v[ 'stock' ] < $sku_num[ 'num_'  . $v[ 'sku_id' ] ]) throw new CommonException('商品' . $goods_name . '库存不足');
+            $goods_name = count($sku_list) > 1 ? '“' . $v[ 'goods' ][ 'goods_name' ] . $v[ 'sku_name' ] . '”' : '';
+            if ($v[ 'stock' ] < $sku_num[ 'num_' . $v[ 'sku_id' ] ]) throw new CommonException('商品' . $goods_name . '库存不足');
         }
     }
 
@@ -298,13 +298,12 @@ trait CoreOrderCreateTrait
         //查询积分优惠
 //        $this->getPoint();
         //查询可用优惠券
-        $this->getCoupon();
+//        $this->getCoupon();
     }
 
     /**
      * 获取有效的优惠券
      * @param $data
-     * @return void
      */
     public function getCoupon($data)
     {
@@ -404,7 +403,6 @@ trait CoreOrderCreateTrait
      */
     public function calculateCoupon()
     {
-
         $coupon_id = $this->param[ 'discount' ][ 'coupon_id' ] ?? 0;//使用优惠券id
 
         if ($coupon_id > 0) {
@@ -415,7 +413,6 @@ trait CoreOrderCreateTrait
             if ($time > strtotime($coupon_data[ 'expire_time' ])) {
                 throw new CommonException('SHOP_ORDER_COUPON_EXPIRE');//优惠券已使用或不存在
             }
-
             $type = (int) $coupon_data[ 'type' ];
             $goods_data = $coupon_data[ 'goods' ];
             $min_condition_money = $coupon_data[ 'min_condition_money' ];
@@ -456,7 +453,6 @@ trait CoreOrderCreateTrait
 
                     break;
             }
-
             if (empty($match_goods_list)) {
                 $this->setError(get_lang('SHOP_ORDER_COUPON_NOT_SUPPORT_GOODS'));//没有支持可用的商品
             } else {
@@ -469,8 +465,8 @@ trait CoreOrderCreateTrait
                     }
                     $surplus_money = $coupon_money;
                     $match_goods_list = array_values($match_goods_list);
-                    $match_goods_list = array_filter($match_goods_list, function($item){
-                        return ($item[ 'goods_money' ] - $item[ 'discount_money' ]) !== 0;
+                    $match_goods_list = array_filter($match_goods_list, function($item) {
+                        return ( $item[ 'goods_money' ] - $item[ 'discount_money' ] ) != 0;
                     });
                     $match_count = count($match_goods_list);
                     //根据商品金额计算个订单项享受的优惠
@@ -487,11 +483,12 @@ trait CoreOrderCreateTrait
                                 if ($item_coupon_money == 0) {
                                     $item_coupon_money = $item_order_goods_money;
                                 }
-                                if($item_coupon_money > $surplus_money){
+                                if ($item_coupon_money > $surplus_money) {
                                     $item_coupon_money = $surplus_money;
                                 }
                             }
                         }
+
                         $this->goods_data[ $item_sku_id ][ 'discount_money' ] += $item_coupon_money;
 //                        $this->goods_data[$item_sku_id]['order_goods_money'] = $this->calculateOrderGoodsMoney($this->goods_data[$item_sku_id]);
 
@@ -590,7 +587,6 @@ trait CoreOrderCreateTrait
     public function useCoupon($data)
     {
 
-
     }
 
     /**
@@ -651,23 +647,22 @@ trait CoreOrderCreateTrait
             //选中收货地址
             $this->selectTakeAddress();
 
-                switch ($delivery_type) {
-                    case OrderDeliveryDict::EXPRESS://快递
-                        CoreExpressService::calculate($this);
-                        break;
-                    case OrderDeliveryDict::LOCAL_DELIVERY://配送
-                        CoreLocalDeliveryService::calculate($this);
-                        break;
-                    case OrderDeliveryDict::STORE://自提
-                        CoreStoreService::calculate($this);
-                        break;
-                }
-
+            switch ($delivery_type) {
+                case OrderDeliveryDict::EXPRESS://快递
+                    CoreExpressService::calculate($this);
+                    break;
+                case OrderDeliveryDict::LOCAL_DELIVERY://配送
+                    CoreLocalDeliveryService::calculate($this);
+                    break;
+                case OrderDeliveryDict::STORE://自提
+                    CoreStoreService::calculate($this);
+                    break;
+            }
 
             if (!empty($this->extend_data) && isset($this->extend_data[ 'delivery_money' ])) {
                 $this->basic[ 'delivery_money' ] = $this->extend_data[ 'delivery_money' ];
             } else {
-                $this->basic[ 'delivery_money' ] = round($this->basic[ 'delivery_money' ] ?? 0);
+                $this->basic[ 'delivery_money' ] = round($this->basic[ 'delivery_money' ] ?? 0, 2);
             }
 
         }
@@ -728,7 +723,7 @@ trait CoreOrderCreateTrait
      */
     public function calculateManjian()
     {
-        (new CoreManjianService())->calculate($this);
+        ( new CoreManjianService() )->calculate($this);
     }
 
     /**

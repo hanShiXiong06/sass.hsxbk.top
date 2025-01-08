@@ -91,7 +91,7 @@ class YunyangChangeNoticeService extends BaseApiService
                 if($orderInfo['order_status']==JhkdOrderDict::FINISH) return true;
                 $orderInfo->save(['order_status' => JhkdOrderDict::FINISH]);
                 (new NoticeService())->send($orderInfo['site_id'], 'tk_jhkd_order_sign', ['order_id' => $orderInfo['order_id']]);
-                event('JhkdOrderFinish',$orderInfo);
+                (new OrderFinishService())->orderFinish($orderInfo);
             }
             //取消订单
             if ($type == 99) {
@@ -108,7 +108,6 @@ class YunyangChangeNoticeService extends BaseApiService
                     "close_reason" => "运单取消退款"
                 ];
                 (new ApiOrderService())->applyRefund($data);
-                event('CancelOrder', $data);
             }
             //订单运输中，同步计费信息，更改为已揽收
             if($type==2){
@@ -171,7 +170,7 @@ class YunyangChangeNoticeService extends BaseApiService
             ]);
             $orderInfo = $this->orderModel->where(['order_id' => $deliveryInfo['order_id']])->findOrEmpty();
             //修改订单状态
-            $orderInfo->save(['order_status' => JhkdOrderDict::FINISH_PICK]);
+            $orderInfo->save(['order_status' => JhkdOrderDict::FINISH_PICK,'is_send'=>1]);
 
             //生成补差价订单
             $add=3;   //初始续费add

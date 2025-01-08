@@ -434,5 +434,5 @@ return [
         'sort' => '0',
         'status' => '1',
         'is_show' => '0',
-    ],
+    ]
 ];

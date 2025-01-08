@@ -1,1 +1,0 @@
-ALTER TABLE cpsbwc_order MODIFY finishedTime VARCHAR(255);

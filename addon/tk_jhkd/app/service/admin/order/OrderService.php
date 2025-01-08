@@ -2,10 +2,13 @@
 
 namespace addon\tk_jhkd\app\service\admin\order;
 
+use addon\tk_jhkd\app\dict\order\CommissionStatusDict;
 use addon\tk_jhkd\app\dict\order\JhkdOrderDict;
+use addon\tk_jhkd\app\model\fenxiao\FenxiaoOrder;
 use addon\tk_jhkd\app\model\order\Order;
 use addon\tk_jhkd\app\model\order\OrderAdd;
 use addon\tk_jhkd\app\service\core\CommonService;
+use addon\tk_jhkd\app\service\core\OrderFinishService;
 use addon\tk_jhkd\app\service\core\OrderLogService;
 use app\model\member\Member;
 use addon\tk_jhkd\app\model\orderdelivery\OrderDelivery;
@@ -14,6 +17,7 @@ use core\base\BaseAdminService;
 use core\exception\CommonException;
 use addon\tk_jhkd\app\model\OrderDeliveryReal;
 use addon\tk_jhkd\app\model\order\OrderLog;
+
 /**
  * 订单列服务层
  * Class OrderService
@@ -26,10 +30,23 @@ class OrderService extends BaseAdminService
         parent::__construct();
         $this->model = new Order();
     }
+
+    public function commissionOrder($id)
+    {
+        $order_info = $this->model->where(['id' => $id])->findOrEmpty();
+        if ($order_info->isEmpty()) throw new CommonException('订单不存在');
+        $fenxiaoOrderModel = new FenxiaoOrder();
+        $fenxiao_order_info = $fenxiaoOrderModel->where(['order_id' => $order_info->order_id])->findOrEmpty();
+        if ($fenxiao_order_info->isEmpty()) throw new CommonException('分销订单不存在');
+        if ($fenxiao_order_info['status'] != 0) throw new CommonException('订单已结算/关闭');
+        (new OrderFinishService())->orderFinish($order_info);
+        return [];
+    }
+
     public function getLink()
     {
         $wap_url = (new CoreSysConfigService())->getSceneDomain($this->site_id)['wap_url'];
-        return $wap_url.'/addon/tk_jhkd/pages/ordersubmit';
+        return $wap_url . '/addon/tk_jhkd/pages/ordersubmit';
     }
 
     /**
@@ -40,11 +57,12 @@ class OrderService extends BaseAdminService
      * @author: TK
      * @Time: 2024/7/25   下午9:55
      */
-public function changeStatus($data)
-{
-    $this->model->where([['order_id', '=', $data['order_id']], ['site_id', '=', $this->site_id]])->update($data);
-    return true;
-}
+    public function changeStatus($data)
+    {
+        $this->model->where([['order_id', '=', $data['order_id']], ['site_id', '=', $this->site_id]])->update($data);
+        return true;
+    }
+
     /**
      * 获取订单列列表
      * @param array $where
@@ -55,7 +73,7 @@ public function changeStatus($data)
         $field = 'id,site_id,member_id,order_from,order_id,order_money,order_discount_money,is_send,is_pick,order_status,refund_status,out_trade_no,remark,pay_time,create_time,close_reason,is_enable_refund,close_time,ip,update_time,delete_time,send_log,remark';
         $order = 'id desc';
         $search_model = $this->model->where([['site_id', "=", $this->site_id]])
-            ->withSearch(["member_id", "order_from", "order_id","out_trade_no", "is_send", "order_status", "refund_status", "remark", "create_time"], $where)
+            ->withSearch(["member_id", "order_from", "order_id", "out_trade_no", "is_send", "order_status", "refund_status", "remark", "create_time"], $where)
             ->with(
                 [
                     'orderInfo',
@@ -65,16 +83,24 @@ public function changeStatus($data)
                             ->append(['status_name', 'type_name']);
                     },
                     'deliveryRealInfo',
-                    'addorderInfo','member'
+                    'addorderInfo', 'member'
                 ]
             )->field($field)->order($order);
         $list = $this->pageQuery($search_model);
-        $commService=new CommonService();
-        foreach ($list['data'] as $k=>$v){
-            $list['data'][$k]['platform_name'] =$commService->getDriverByType($v['orderInfo']['platform'])['name']??'';
-            $list['data'][$k]['delivery_name']=$commService->getBrand($v['orderInfo']['platform'],$v['orderInfo']['delivery_type'])['name']??'';
-            $list['data'][$k]['start_address']=json_decode($v['orderInfo']['start_address'],true);
-            $list['data'][$k]['end_address']=json_decode($v['orderInfo']['end_address'],true);
+        $commService = new CommonService();
+        $fenxiaoOrderModel = new FenxiaoOrder();
+        foreach ($list['data'] as $k => $v) {
+            $list['data'][$k]['platform_name'] = $commService->getDriverByType($v['orderInfo']['platform'])['name'] ?? '';
+            $list['data'][$k]['delivery_name'] = $commService->getBrand($v['orderInfo']['platform'], $v['orderInfo']['delivery_type'])['name'] ?? '';
+            $list['data'][$k]['start_address'] = json_decode($v['orderInfo']['start_address'], true);
+            $list['data'][$k]['end_address'] = json_decode($v['orderInfo']['end_address'], true);
+            $fenxiao_info = $fenxiaoOrderModel->where(['site_id' => $this->site_id, 'order_id' => $v['order_id']])->findOrEmpty();
+            if ($fenxiao_info->isEmpty()) {
+                $list['data'][$k]['fenxiao_order'] = [];
+            } else {
+                $list['data'][$k]['fenxiao_order'] = $fenxiao_info;
+                $list['data'][$k]['fenxiao_order']['status'] = CommissionStatusDict::getStatus($fenxiao_info['status']);
+            }
         }
         return $list;
     }
@@ -97,7 +123,7 @@ public function changeStatus($data)
             ->where([['id', "=", $id]])
             ->with(
                 [
-                    'orderInfo','addorderInfo','deliveryRealInfo',
+                    'orderInfo', 'addorderInfo', 'deliveryRealInfo',
                     'payInfo' => function ($query) {
                         $query->field('trade_id,status,pay_time,cancel_time,fail_reason,type,trade_type')->append(['status_name', 'type_name']);
                     },
@@ -110,22 +136,22 @@ public function changeStatus($data)
         $info['is_pick'] = strval($info['is_pick']);
         $info['orderInfo']['price_rule'] = json_decode($info['orderInfo']['price_rule'], true);
         $info['orderInfo']['original_rule'] = json_decode($info['orderInfo']['original_rule'], true);
-        $info['orderInfo']['delivery_arry'] = (new CommonService())->getBrand($info['orderInfo']['platform'],$info['orderInfo']['delivery_type']);
-        $fee_list=json_decode($info['deliveryRealInfo']['fee_blockList'],true);
-        $new_fee_list=[];
-        if($fee_list!=''){
-            foreach ($fee_list as $fee){
-                if($fee['type']!=0){
-                    $new_fee_list[]=[
-                        'fee'=>$fee['fee'],
-                        'type'=>$fee['type'],
-                        'name'=>$fee['name']
+        $info['orderInfo']['delivery_arry'] = (new CommonService())->getBrand($info['orderInfo']['platform'], $info['orderInfo']['delivery_type']);
+        $fee_list = json_decode($info['deliveryRealInfo']['fee_blockList'], true);
+        $new_fee_list = [];
+        if ($fee_list != '') {
+            foreach ($fee_list as $fee) {
+                if ($fee['type'] != 0) {
+                    $new_fee_list[] = [
+                        'fee' => $fee['fee'],
+                        'type' => $fee['type'],
+                        'name' => $fee['name']
                     ];
                 }
             }
         }
 
-        $info['deliveryRealInfo']['fee_blockList']=$new_fee_list;
+        $info['deliveryRealInfo']['fee_blockList'] = $new_fee_list;
         return $info;
     }
 
@@ -173,7 +199,7 @@ public function changeStatus($data)
             if (!$deliveryInfo->isEmpty()) {
                 $deliveryInfo->delete();
             }
-            $realInfo=(new OrderDeliveryReal())->where(['order_id' => $model['order_id']])->findOrEmpty();
+            $realInfo = (new OrderDeliveryReal())->where(['order_id' => $model['order_id']])->findOrEmpty();
             if (!$realInfo->isEmpty()) {
                 $realInfo->delete();
             }

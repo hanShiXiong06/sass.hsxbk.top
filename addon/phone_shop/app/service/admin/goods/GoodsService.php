@@ -54,7 +54,7 @@ class GoodsService extends BaseAdminService
 
         if (!empty($params[ 'goods_id' ])) {
             // 查询商品信息，用于编辑
-            $field = 'goods_id,goods_name,sub_title,goods_type,goods_cover,goods_image,goods_desc,brand_id,goods_category,label_ids,service_ids,unit,stock,virtual_sale_num,status,sort,delivery_type,is_free_shipping,fee_type,delivery_money,delivery_template_id,supplier_id,attr_id,attr_format,member_discount,poster_id';
+            $field = 'goods_id,goods_name,sub_title,goods_type,goods_cover,goods_image,is_proxy,goods_desc,brand_id,goods_category,label_ids, memory_ids, service_ids,unit,stock,virtual_sale_num,status,sort,delivery_type,is_free_shipping,fee_type,delivery_money,delivery_template_id,supplier_id,attr_id,attr_format,member_discount,poster_id';
             $goods_info = $this->model->field($field)->where([ [ 'goods_id', '=', $params[ 'goods_id' ] ] ])->findOrEmpty()->toArray();
             if (!empty($goods_info)) {
 
@@ -108,6 +108,8 @@ class GoodsService extends BaseAdminService
                 }
 
                 $goods_info[ 'status' ] = (string) $goods_info[ 'status' ];
+                // 是否可以代理商品 处理为 0 和 1
+                $goods_info[ 'is_proxy' ] = (int) $goods_info[ 'is_proxy' ];
 
                 // 运费模板，处理数据类型
                 if (empty($goods_info[ 'delivery_template_id' ])) {
@@ -170,7 +172,7 @@ class GoodsService extends BaseAdminService
     public function getPage(array $where = [])
     {
 
-        $field = 'goods_id,sub_title,site_id,goods_name,goods_type,brand_id, source, goods_cover,stock,sale_num,status,sort,create_time,update_time,member_discount';
+        $field = 'goods_id,sub_title,site_id,goods_name,goods_type,brand_id, memory_ids, source, goods_cover,stock,sale_num,status,sort,create_time,update_time,member_discount';
         $order = 'sort asc, create_time desc , update_time desc';
         if($where['status']=='' ){
             $sku_where = [
@@ -225,7 +227,7 @@ class GoodsService extends BaseAdminService
         })->withSearch([ "goods_name", "goods_type", "brand_id", "goods_category", "label_ids", 'service_ids', "sale_num", "status"  ], $where)
         ->field($field)
         ->withJoin([
-            'goodsSku' => ['sku_id', 'goods_id', 'price','sale_price', 'member_price', 'sku_no']
+            'goodsSku' => ['sku_id', 'goods_id', 'price','sale_price', 'market_price', 'member_price', 'sku_no']
         ])
         ->where($sku_where)
         ->order($order)
@@ -246,7 +248,7 @@ class GoodsService extends BaseAdminService
      */
     public function getInfo(int $id)
     {
-        $field = 'goods_id,site_id,goods_name,sub_title,goods_type,goods_cover,goods_image,goods_desc,brand_id,goods_category,label_ids,service_ids,unit,stock,sale_num,virtual_sale_num,status,sort,delivery_type,is_free_shipping,fee_type,delivery_money,delivery_template_id,supplier_id,create_time,update_time,member_discount,poster_id';
+        $field = 'goods_id,site_id,goods_name,sub_title,goods_type,goods_cover, memory_ids, goods_image,goods_desc,brand_id,goods_category,label_ids,service_ids,unit,stock,sale_num,virtual_sale_num,status,sort,delivery_type,is_free_shipping,fee_type,delivery_money,delivery_template_id,supplier_id,create_time,update_time,member_discount,poster_id';
         $info = $this->model->field($field)->where([ [ 'goods_id', '=', $id ], [ 'site_id', '=', $this->site_id ] ])->findOrEmpty()->toArray();
         return $info;
     }
@@ -296,6 +298,8 @@ class GoodsService extends BaseAdminService
                 'supplier_id' => $data[ 'supplier_id' ],
                 'member_discount' => $data[ 'member_discount' ],
                 'poster_id' => $data[ 'poster_id' ],
+                'is_proxy' => $data[ 'is_proxy' ],
+                'memory_ids' => $data[ 'memory_ids' ],
                 'create_time' => time()
             ];
             // 如果站点的id == 100005 那么 member_discount = fixed_price
@@ -467,6 +471,8 @@ class GoodsService extends BaseAdminService
                 'supplier_id' => $data[ 'supplier_id' ],
                 'member_discount' => $data[ 'member_discount' ],
                 'poster_id' => $data[ 'poster_id' ],
+                'is_proxy' => $data[ 'is_proxy' ],
+                'memory_ids' => $data[ 'memory_ids' ],
                 'update_time' => time()
             ];
 
@@ -820,7 +826,7 @@ class GoodsService extends BaseAdminService
             $goods_spec_model = new GoodsSpec();
 
             // 查询商品信息
-            $field = 'goods_name,site_id,sub_title,goods_type,goods_cover,goods_image,goods_desc,brand_id,goods_category,label_ids,service_ids,unit,stock,virtual_sale_num,status,sort,delivery_type,is_free_shipping,fee_type,delivery_money,delivery_template_id,supplier_id,attr_id,attr_format,virtual_auto_delivery,virtual_receive_type,virtual_verify_type,virtual_indate,poster_id';
+            $field = 'goods_name,site_id,sub_title,goods_type, memory_ids,goods_cover,goods_image,goods_desc,brand_id,goods_category,label_ids,service_ids,unit,stock,virtual_sale_num,status,sort,delivery_type,is_free_shipping,fee_type,delivery_money,delivery_template_id,supplier_id,attr_id,attr_format,virtual_auto_delivery,virtual_receive_type,virtual_verify_type,virtual_indate,poster_id';
 
             $goods_data = $this->model->field($field)->where([ [ 'goods_id', '=', $goods_id ], [ 'site_id', '=', $this->site_id ] ])->findOrEmpty()->toArray();
             if (empty($goods_data)) {
@@ -1102,6 +1108,14 @@ class GoodsService extends BaseAdminService
             // 查询商品参与营销活动的数量
             $active_goods_count = $this->getActiveGoodsCount($goods_info[ 'goods_id' ]);
 
+            // 更新商品表中的时间
+            $this->model->where([
+                [ 'goods_id', '=', $params[ 'goods_id' ] ],
+                [ 'site_id', '=', $this->site_id ]
+            ])->update([
+                'update_time' => time()
+            ]);
+
             $sku_list = $params[ 'sku_list' ];
             if (!empty($sku_list)) {
                 $goods_sku_model = new GoodsSku();
@@ -1234,6 +1248,7 @@ class GoodsService extends BaseAdminService
     }
 
     // 一键同步 100005站点的商品 到当前站点
+    
     public function syncGoodsList($siteId=null)
     {
         // 定义当前站点ID
@@ -1242,15 +1257,14 @@ class GoodsService extends BaseAdminService
         if ($siteId == '100005') {
             return '不能同步自己的商品';
         }
-        $sites = [ 100012];
+        $sites = [ 100010,100022,100023,100024,100026];
         // 如果你$sites 中 没有有 当前的 $siteId  直接返回 无权限
         if (!in_array($siteId, $sites)) {
-            return '没有权限';
+            return '没有权限'.$siteId;
         }
  
-
         // 查询站点100005的商品
-        $list = $this->model->where('site_id', '=', '100005')->select()->toArray();
+        $list = $this->model->where([['site_id', '=', '100005'],['goods_type','=','real']])->select()->toArray();
         
         $updateCount = 0;
         $syncCount = 0;
@@ -1260,7 +1274,6 @@ class GoodsService extends BaseAdminService
                 // 去查询一下表中有没有当前站点ID的商品通过字段的 'goods_no' 来查询如果没有则插入如果有则更新
                 $goods_no = $goods['goods_no'];
                 $goods_info = $this->model->where([['goods_no', '=', $goods_no], ['site_id', '=', $siteId]])->find();
-                
                 
                 if (empty($goods_info)) {
                     // 如果 这个商品的状态已经是 下架了直接 返回
@@ -1283,10 +1296,12 @@ class GoodsService extends BaseAdminService
                     $newGoods = $this->model->create($goods);
                     $newGoodsId = $newGoods['goods_id'];
 
-                    
                     // 查询旧商品ID对应的SKU列表
                     $goodsSkuModel = new GoodsSku();
-                    $skuList = $goodsSkuModel->where('goods_id', '=', $before_goods_id)->select()->toArray();
+                    $skuList = $goodsSkuModel->where([
+                        ['goods_id', '=', $before_goods_id],
+                        ['site_id', '=', '100005']
+                    ])->select()->toArray();
                     
                     // 遍历SKU列表，更新站点ID和商品ID
                     foreach ($skuList as &$sku) {
@@ -1308,35 +1323,50 @@ class GoodsService extends BaseAdminService
 
                     // 查询一下 $before_goods_id 这个值在 new GoodsSpec 表里是否有这个商品ID 如果有这将这条数据 插入到 new GoodsSpec 表里 将 goods_id 替换为新的商品ID
                     $goodsSpecModel = new GoodsSpec();
-                    $goodsSpec = $goodsSpecModel->where('goods_id', '=', $before_goods_id)->find();
+                    $goodsSpec = $goodsSpecModel->where([
+                        ['goods_id', '=', $before_goods_id],
+                        ['site_id', '=', '100005']
+                    ])->find();
                     //   $goodsSpec 为一条 数据 将goods_id 插入为新的商品ID 并把 spec_id 删除
                     if ($goodsSpec) {
                          $newGoodsSpec = $goodsSpec->toArray();
                          $newGoodsSpec['goods_id'] = $newGoodsId;
+                         $newGoodsSpec['site_id'] = $siteId;
                          unset($newGoodsSpec['spec_id']);
                          $goodsSpecModel->insert($newGoodsSpec);
-                    }
-
-                    
-
-                    
+                    }                    
                     $syncCount++;
                 } else {
-
                     //如果商品的状态不一样则进行更新 $goods['status'] 是参考的状态 $goods_info['status'] 是代理站点商品的状态
                     if($goods['status'] != $goods_info['status'] || $goods['stock'] !== $goods_info['stock'] ||  $goods['update_time'] !== $goods_info['update_time'] ){
                         // 进行更新只更新商品的状态及库存其他的保持不变
                         $update_goods['status'] = $goods['status'];
                         $update_goods['stock'] = $goods['stock'];
                         $update_goods['update_time'] = strtotime( $goods['update_time']);
-                        $this->model->where('goods_no', '=', $goods_no)->update($update_goods);
+                        $this->model->where([
+                            ['goods_no', '=', $goods_no],
+                            ['site_id', '=', $siteId]
+                        ])->update($update_goods);
                         
-                        // 通过 goods_id 查询sku表后更新sku的库存
+                        // 通过 goods_no 查询100005站点的sku信息
                         $goods_sku = new GoodsSku();
-                        // 如果 100005的价格发生变化 那么 更新sku表
-                        // $goods['goods_no'] 来查询 100005的sku表 中的 价格 
-                        $goods_sku_info = $goods_sku->where('goods_id', '=', $goods['goods_id'])->find();
-                        $goods_sku->where('goods_id', '=', $goods_info['goods_id'])->update(['stock' => $goods['stock'],'cost_price' => $goods_sku_info['sale_price' ] , 'price' => $goods_sku_info['price'] ]);
+                        $source_sku = $goods_sku->where([
+                            ['goods_id', '=', $goods['goods_id']],
+                            ['site_id', '=', '100005']
+                        ])->select()->toArray();
+
+                        // 更新当前站点的sku信息
+                        foreach($source_sku as $sku) {
+                            $goods_sku->where([
+                                ['goods_id', '=', $goods_info['goods_id']],
+                                ['site_id', '=', $siteId],
+                                ['sku_no', '=', $sku['sku_no']]  // 通过sku_no匹配具体规格
+                            ])->update([
+                                'stock' => $sku['stock'],
+                                'cost_price' => $sku['sale_price'],
+                                'price' => $sku['price']
+                            ]);
+                        }
                         
                         $updateCount++;
                     }
@@ -1344,7 +1374,7 @@ class GoodsService extends BaseAdminService
             }
         }
         
-        return "更新成功: $updateCount 条， 同步成功: $syncCount 条";
+        return "更新成功: $updateCount 条， 同步成功: $syncCount 条".$siteId;
     }
  
 

@@ -15,9 +15,9 @@ use addon\phone_shop_price\app\model\recycle_category\RecycleCategory;
 use addon\phone_shop_price\app\service\core\RecycleCategory\CoreRecycleCategoryService;
 use addon\phone_shop\app\model\shop_address\ShopAddress;
 use addon\phone_shop\app\model\goods\Goods;
+use addon\phone_shop_price\app\model\recycle_category\RecycleCategoryConfig;
 use core\base\BaseApiService;
 use app\model\member\Member;
-
 
 /**
  * 二手机分类服务层
@@ -30,14 +30,11 @@ class RecycleCategoryService extends BaseApiService
     {
         parent::__construct();
         $this->model = new RecycleCategory();
-        $this->Address =  new ShopAddress();
+        $this->Address = new ShopAddress();
     }
-
 
     /**
      * 查询商品分类树结构
-     * @param string $field
-     * @param string $order
      * @return array
      */
     public function getTree()
@@ -46,28 +43,41 @@ class RecycleCategoryService extends BaseApiService
         $getMemberInfo = $this->getMemberInfo();
         $is_use = !empty($getMemberInfo['memberLevelData']['level_benefits']['hsx_quote']['is_use']) ? 1 : 0;
         
-        return ( new CoreRecycleCategoryService() )->getTree([ [ 'site_id', 'in', "{$this->site_id}" ],[ 'is_show', '=', 1 ]  ] , $is_use );
+        if($this->site_id !== 0) {
+            $config = (new RecycleCategoryConfig())->where([
+                ['site_id', '=', $this->site_id]
+            ])->findOrEmpty()->toArray();
+        }
         
+        $site_id = empty($config) || empty($config['is_enable']) ? $this->site_id : $this->site_id.",0";
+        return (new CoreRecycleCategoryService())->getTree([['site_id', 'in', "{$site_id}"], ['is_show', '=', 1]], $is_use);
     }
-    // address_list 获取商家的收货地址
-    public function address_list(){
-     
+
+    /**
+     * 获取商家的收货地址列表
+     * @return array
+     */
+    public function address_list()
+    {
         $field = 'id,contact_name,mobile,province_id,city_id,district_id,address,full_address,lat,lng,is_delivery_address,is_refund_address,is_default_delivery,is_default_refund';
         $order = '';
-
-        $search_model = $this->Address->where([ ['site_id', '=', $this->site_id] ])->field($field)->order($order);
+        
+        $search_model = $this->Address->where([['site_id', '=', $this->site_id]])->field($field)->order($order);
         $list = $this->pageQuery($search_model);
         return $list;
-    
     }
 
+    /**
+     * 获取会员信息
+     * @return array
+     */
     public function getMemberInfo()
     {
         $member_model = new Member();
         $member_field = 'member_level';
         $member_info = $member_model->where([
-            [ 'site_id', '=', $this->site_id ],
-            [ 'member_id', '=', $this->member_id ]
+            ['site_id', '=', $this->site_id],
+            ['member_id', '=', $this->member_id]
         ])->field($member_field)
             ->with([
                 // 会员等级

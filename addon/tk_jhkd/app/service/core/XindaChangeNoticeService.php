@@ -20,6 +20,7 @@ use think\facade\Log;
 use think\Response;
 use addon\tk_jhkd\app\model\shop_order\ShopOrder;
 use addon\tk_jhkd\app\service\admin\shop\OrderService;
+
 /**
  * 辛达回掉接口对接
  */
@@ -41,29 +42,29 @@ class XindaChangeNoticeService extends BaseApiService
         Db::startTrans();
         try {
             $order_no = $data['orderNo'];
-            $type=$data['pushType'];
+            $type = $data['pushType'];
             //增加商城发单情况
             $shopDelivery = (new ShopOrder())->where(['yida_order_no' => $order_no])->findOrEmpty();
             if (!$shopDelivery->isEmpty()) {
-               if($type == 2){
-                   $shopDelivery->is_pick = 1;
-                   $shopDelivery->is_send = 1;
-                   $shopDelivery->order_status_name='揽收完成';
-                   $shopDelivery->save();
-               }
-                if($type == 3){
+                if ($type == 2) {
                     $shopDelivery->is_pick = 1;
                     $shopDelivery->is_send = 1;
-                    $shopDelivery->order_status_name='运单完成';
+                    $shopDelivery->order_status_name = '揽收完成';
                     $shopDelivery->save();
                 }
-                if($type == 4){
+                if ($type == 3) {
+                    $shopDelivery->is_pick = 1;
+                    $shopDelivery->is_send = 1;
+                    $shopDelivery->order_status_name = '运单完成';
+                    $shopDelivery->save();
+                }
+                if ($type == 4) {
                     $shopDelivery->is_pick = 0;
                     $shopDelivery->is_send = 0;
-                    $shopDelivery->order_status_name='快递取消订单';
+                    $shopDelivery->order_status_name = '快递取消订单';
                     $shopDelivery->save();
                     //取消订单更改商城发货状态更改
-                    (new OrderService())->yidaCancel(['order_no'=>$shopDelivery['order_no']]);
+                    (new OrderService())->yidaCancel(['order_no' => $shopDelivery['order_no']]);
                 }
             }
             $deliveryInfo = $this->deliveryModel->where(['order_no' => $order_no])->findOrEmpty();
@@ -72,7 +73,7 @@ class XindaChangeNoticeService extends BaseApiService
             }
 
             //待揽收
-            if ($type==1) {
+            if ($type == 1) {
                 $orderStatuaData = [
                     'order_status' => 1,
                     'order_status_name' => '待揽收'
@@ -88,10 +89,10 @@ class XindaChangeNoticeService extends BaseApiService
                 ];
                 $deliveryInfo->save($orderStatuaData);
                 $orderInfo = $this->orderModel->where(['order_id' => $deliveryInfo['order_id']])->findOrEmpty();
-                if($orderInfo['order_status']==JhkdOrderDict::FINISH) return true;
+                if ($orderInfo['order_status'] == JhkdOrderDict::FINISH) return true;
                 $orderInfo->save(['order_status' => JhkdOrderDict::FINISH]);
                 (new NoticeService())->send($orderInfo['site_id'], 'tk_jhkd_order_sign', ['order_id' => $orderInfo['order_id']]);
-                event('JhkdOrderFinish',$orderInfo);
+                (new OrderFinishService())->orderFinish($orderInfo);
             }
             //取消订单
             if ($type == 4) {
@@ -108,30 +109,29 @@ class XindaChangeNoticeService extends BaseApiService
                     "close_reason" => "运单取消退款"
                 ];
                 (new ApiOrderService())->applyRefund($data);
-                event('CancelOrder', $data);
             }
             //订单运输中，同步计费信息，更改为已揽收
-            if($type==2){
+            if ($type == 2) {
                 $orderStatuaData = [
-                    'order_status' =>2,
+                    'order_status' => 2,
                     'order_status_name' => '运输中'
                 ];
                 $deliveryInfo->save($orderStatuaData);
                 $this->changeWeight($data);
             }
-            if($type==5){
+            if ($type == 5) {
                 $orderStatuaData = [
-                    'order_status' =>4,
+                    'order_status' => 4,
                     'order_status_name' => '拒收退回'
                 ];
                 $deliveryInfo->save($orderStatuaData);
                 $this->changeOrder($data);
             }
             Db::commit();
-            return Response::create(['msg' => '推送成功', 'code' => 0,'data'=>''], 'json', 200);
+            return Response::create(['msg' => '推送成功', 'code' => 0, 'data' => ''], 'json', 200);
         } catch (Exception $e) {
             Db::rollback();
-            return Response::create(['msg' => '推送成功', 'code' => 0,'data'=>''], 'json', 200);
+            return Response::create(['msg' => '推送成功', 'code' => 0, 'data' => ''], 'json', 200);
         }
     }
 
@@ -171,12 +171,12 @@ class XindaChangeNoticeService extends BaseApiService
             ]);
             $orderInfo = $this->orderModel->where(['order_id' => $deliveryInfo['order_id']])->findOrEmpty();
             //修改订单状态
-            $orderInfo->save(['order_status' => JhkdOrderDict::FINISH_PICK]);
+            $orderInfo->save(['order_status' => JhkdOrderDict::FINISH_PICK,'is_send'=>1]);
             //生成补差价订单
-            $add=3;   //初始续费add
-            if(isset($deliveryInfo['price_rule'])&&$deliveryInfo['price_rule']!=''){
+            $add = 3;   //初始续费add
+            if (isset($deliveryInfo['price_rule']) && $deliveryInfo['price_rule'] != '') {
                 $price_rule = json_decode($deliveryInfo['price_rule'], true);
-                $add=$price_rule['add']??3;
+                $add = $price_rule['add'] ?? 3;
             }
             $price_add = 0;
             if ($info['calcFeeWeight'] > $deliveryInfo['weight']) {
@@ -185,19 +185,19 @@ class XindaChangeNoticeService extends BaseApiService
             }
             $reduce_price = 0;
             if ($info['calcFeeWeight'] < $deliveryInfo['weight']) {
-                $calc_weight =  $deliveryInfo['weight']-$info['calcFeeWeight'];
+                $calc_weight = $deliveryInfo['weight'] - $info['calcFeeWeight'];
                 $reduce_price = ceil($calc_weight) * $add;
             }
-            $price_add=$price_add-$reduce_price;
+            $price_add = $price_add - $reduce_price;
             foreach ($info['feeBlockList'] as $k => $v) {
                 if ($v['type'] != 0) {
                     $price_add += $v['fee'];
                 }
             }
-            if($price_add>0){
-                $addModel=new OrderAdd();
-                $addInfo=$addModel->where(['order_id'=>$orderInfo['order_id']])->findOrEmpty();
-                if($addInfo->isEmpty()){
+            if ($price_add > 0) {
+                $addModel = new OrderAdd();
+                $addInfo = $addModel->where(['order_id' => $orderInfo['order_id']])->findOrEmpty();
+                if ($addInfo->isEmpty()) {
                     (new OrderAdd())->create([
                         'site_id' => $orderInfo['site_id'],
                         'member_id' => $orderInfo['member_id'],
@@ -228,7 +228,7 @@ class XindaChangeNoticeService extends BaseApiService
         if (!$shopDelivery->isEmpty()) {
             $shopDelivery->is_pick = 0;
             $shopDelivery->is_send = 1;
-            $shopDelivery->order_status_name='揽收通知';
+            $shopDelivery->order_status_name = '揽收通知';
             $shopDelivery->save();
         }
         $deliveryInfo = $this->deliveryModel->where(['order_no' => $order_no])->findOrEmpty();
@@ -236,8 +236,8 @@ class XindaChangeNoticeService extends BaseApiService
             return Response::create(['message' => '推送成功', 'code' => 1], 'json', 200);
         }
         $deliveryInfo->save(['courier_context' => json_encode([
-            'courierName'=>$info['courierName'],
-            'courierPhone'=>$info['courierPhone']
+            'courierName' => $info['courierName'],
+            'courierPhone' => $info['courierPhone']
         ])]);
         //订单揽收状态更新
         return Response::create(['message' => '推送成功', 'code' => 1], 'json', 200);

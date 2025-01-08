@@ -1,7 +1,7 @@
 <?php
 return [
     'pages' => <<<EOT
-                // PAGE_BEGIN
+        // PAGE_BEGIN
                 // *********************************** hello world ***********************************
                {
 					"path": "phone_shop_price/pages/index",
@@ -14,6 +14,12 @@ return [
 					"path": "phone_shop_price/pages/order/order",
 					"style": {
 						"navigationBarTitleText": "立即下单"
+					},
+					"needLogin": true
+				},{
+					"path": "phone_shop_price/pages/order/list",
+					"style": {
+						"navigationBarTitleText": "订单列表"
 					},
 					"needLogin": true
 				},

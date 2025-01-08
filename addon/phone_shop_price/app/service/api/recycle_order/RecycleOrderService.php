@@ -425,6 +425,10 @@ class RecycleOrderService extends BaseApiService
     // updateStatus
     public function updateStatus(int $id, array $data)
     {
+        // 优先判断是否是删除订单
+        if($data['action'] == 'delete'){
+            return $this->deleteOrder($id);
+        }
         try {
             // 开启事务
             $this->model->startTrans();
@@ -465,11 +469,7 @@ class RecycleOrderService extends BaseApiService
                     $data['status'] = RecycleOrderDict::ORDER_STATUS['RETURNED']; // 9
                     break;
                 
-                case 'delete':
-                    $data['delete_at'] = time();
-                    $result = $this->model->where([['id', '=', $id], ['site_id', '=', $this->site_id]])->update(['delete_at' => $data['delete_at']]);
-                    \think\facade\Log::info('删除订单结果:', ['result' => $result]);
-                    return true;
+               
             }
 
             // 更新订单状态
@@ -677,6 +677,18 @@ class RecycleOrderService extends BaseApiService
             throw new \Exception($e->getMessage());
         }
     }
-
+    
+    // deleteOrder  
+    protected function deleteOrder($id)
+    {
+        // 开启事务
+        $this->model->startTrans();
+        $this->model->where([['id', '=', $id], ['site_id', '=', $this->site_id]])->delete();
+        $deviceModel = new PhoneShopRecycleOrderDevice();
+        $deviceModel->where([['order_id', '=', $id], ['site_id', '=', $this->site_id]])->delete();
+        // 提交事务
+        $this->model->commit();
+        return true;
+    }
 }
 

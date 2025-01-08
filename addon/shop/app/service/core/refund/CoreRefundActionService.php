@@ -207,7 +207,7 @@ class CoreRefundActionService extends BaseCoreService
                 'order_goods_id' => $order_goods_info['order_goods_id'],
                 'order_refund_no' => $order_refund_no,
                 'refund_type' => OrderRefundDict::ONLY_REFUND,
-                'reason' => '',
+                'reason' => get_lang('dict_shop_order_refund_action.shop_active_refund'),
                 'member_id' => $order_goods_info['member_id'],
                 'apply_money' => $order_goods_info['item_refund_money'],
                 'money' => $order_goods_info['item_refund_money'],

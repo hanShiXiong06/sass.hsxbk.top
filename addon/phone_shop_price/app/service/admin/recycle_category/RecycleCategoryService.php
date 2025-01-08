@@ -13,9 +13,8 @@ namespace addon\phone_shop_price\app\service\admin\recycle_category;
 
 use addon\phone_shop_price\app\model\recycle_category\RecycleCategory;
 use addon\phone_shop_price\app\service\core\RecycleCategory\CoreRecycleCategoryService;
-
+use addon\phone_shop_price\app\model\recycle_category\RecycleCategoryConfig;
 use core\base\BaseAdminService;
-
 
 /**
  * 二手机分类服务层
@@ -47,13 +46,18 @@ class RecycleCategoryService extends BaseAdminService
 
     /**
      * 查询商品分类树结构
-     * @param string $field
-     * @param string $order
      * @return array
      */
     public function getTree()
     {
-        return ( new CoreRecycleCategoryService() )->getTree([ [ 'site_id', 'in', "{$this->site_id}" ]  ]);
+        if($this->site_id !== 0) {
+            $config = (new RecycleCategoryConfig())->where([
+                ['site_id', '=', $this->site_id]
+            ])->findOrEmpty()->toArray();
+        }
+        
+        $site_id = empty($config) || empty($config['is_enable']) ? $this->site_id : $this->site_id.",0";
+        return (new CoreRecycleCategoryService())->getTree([['site_id', 'in', "{$site_id}"]]);
     }
 
     /**
@@ -162,5 +166,4 @@ class RecycleCategoryService extends BaseAdminService
         $res = $model->delete();
         return $res;
     }
-    
 }

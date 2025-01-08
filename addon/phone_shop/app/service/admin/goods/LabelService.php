@@ -98,13 +98,13 @@ class LabelService extends BaseAdminService
         }
         
         $site_id = empty($sites['label_status'] ) ? $this->site_id : $this->site_id.",0";
-        $info = $this->model->field($field)->where([ [ 'label_id', 'in', $site_id  ], [ 'site_id', '=', $this->site_id ] ])
+        $info = $this->model->field($field)->where([ [ 'label_id', '=', $id  ], [ 'site_id', 'in', $site_id ] ])
             ->with([
                 'group' => function($query) {
                     $query->field('group_id, group_name');
                 },
             ])->findOrEmpty()->toArray();
-        return $info;
+        return  $info;
     }
 
     /**

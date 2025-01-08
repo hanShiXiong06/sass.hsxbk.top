@@ -9,7 +9,7 @@
 // | Author: Niucloud Team
 // +----------------------------------------------------------------------
 
-namespace addon\shop\app\service\core\delivery\delivery_search;
+namespace addon\phone_shop\app\service\core\delivery\delivery_search;
 
 use core\loader\Loader;
 

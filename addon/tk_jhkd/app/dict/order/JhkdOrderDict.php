@@ -55,7 +55,6 @@ class JhkdOrderDict
     public static function getStatus($status = '')
     {
         $data = [
-
             self::WAIT_PAY => [
                 'name' => '待支付',
                 'status' => self::WAIT_PAY,

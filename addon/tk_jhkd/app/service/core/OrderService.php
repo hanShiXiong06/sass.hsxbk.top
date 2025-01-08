@@ -2,6 +2,7 @@
 
 namespace addon\tk_jhkd\app\service\core;
 
+use addon\tk_jhkd\app\dict\order\CommissionStatusDict;
 use addon\tk_jhkd\app\dict\order\JhkdOrderAddDict;
 use addon\tk_jhkd\app\dict\order\JhkdOrderDict;
 use addon\tk_jhkd\app\dict\order\OrderRefundLogDict;
@@ -42,7 +43,6 @@ class OrderService extends BaseApiService
         $this->deliveryModel = new OrderDelivery();
         $this->yidaService = new YidaService();
         $this->config = $this->getConfig();
-        if (!$this->config) throw new CommonException('基础配置未完成，请联系管理员');
     }
 
     public function checkAddPay()
@@ -182,6 +182,7 @@ class OrderService extends BaseApiService
      */
     public function preOrder($params)
     {
+        if (!$this->config) throw new CommonException('基础配置未完成，请联系管理员');
         $startArr = explode("-", $params['startAddress']['address']);
         $endArr = explode("-", $params['endAddress']['address']);
         //必填参数校验
@@ -471,6 +472,11 @@ class OrderService extends BaseApiService
             }
             Db::commit();
             $deliveryInfo = $this->deliveryModel->where(['order_id' => $orderInfo['order_id']])->findOrEmpty();
+            //分销订单关闭
+            $fenxiao_order = (new FenxiaoOrder())->where(['order_id' => $orderInfo['order_id'], 'site_id' => $site_id])->findOrEmpty();
+            if (!$fenxiao_order->isEmpty()) {
+                (new FenxiaoOrder())->where(['order_id' => $orderInfo['order_id'], 'site_id' => $site_id])->update(['status' => CommissionStatusDict::CLOSE]);
+            }
             $order_no = $deliveryInfo['order_no'];
             (new OrderLogService())->writeOrderLog(
                 $orderInfo['site_id'],

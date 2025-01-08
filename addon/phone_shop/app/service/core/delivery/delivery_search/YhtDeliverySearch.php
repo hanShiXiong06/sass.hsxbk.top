@@ -1,6 +1,6 @@
 <?php
 
-namespace addon\shop\app\service\core\delivery\delivery_search;
+namespace addon\phone_shop\app\service\core\delivery\delivery_search;
 
 use addon\tk_yht\app\service\core\ExprService;
 use think\Exception;

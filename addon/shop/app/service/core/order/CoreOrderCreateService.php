@@ -182,7 +182,7 @@ class CoreOrderCreateService extends BaseCoreService
         //查看会员信息
         $member_id = $this->param[ 'member_id' ];
         $this->member_id = $member_id;
-        $member_info = ( new CoreMemberService() )->getInfoByMemberId($this->site_id, $member_id, 'nickname, point, member_level');
+        $member_info = ( new CoreMemberService() )->getInfoByMemberId($this->site_id, $member_id, 'nickname, headimg, balance, point, member_level');
 
         if (empty($member_info)) throw new CommonException('SHOP_ORDER_BUYER_NOT_FOUND');//无效的账号
 

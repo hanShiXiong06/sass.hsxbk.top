@@ -53,7 +53,11 @@ class Category extends BaseAdminController
      */
     public function tree()
     {
-        return success(( new CategoryService() )->getTree());
+        $data = $this->request->params([
+            [ "flag", 0 ],
+           
+        ]);
+        return success(( new CategoryService() )->getTree( $data ));
     }
 
     /**
@@ -77,7 +81,8 @@ class Category extends BaseAdminController
             [ "image", "" ],
             [ "pid", 0 ],
             [ "is_show", 0 ],
-            [ "sort", 0 ]
+            [ "sort", 0 ],
+            [ "memory_group", 0 ]
         ]);
         $this->validate($data, 'addon\phone_shop\app\validate\goods\Category.add');
         $id = ( new CategoryService() )->add($data);
@@ -96,7 +101,8 @@ class Category extends BaseAdminController
             [ "image", "" ],
             [ "pid", 0 ],
             [ "is_show", 0 ],
-            [ "sort", '' ]
+            [ "sort", '' ],
+            [ "memory_group", '' ]
         ]);
         $this->validate($data, 'addon\phone_shop\app\validate\goods\Category.edit');
         ( new CategoryService() )->edit($id, $data);

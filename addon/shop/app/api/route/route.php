@@ -107,11 +107,6 @@ Route::group('shop', function() {
     //获取用户当前积分数供组件调用
     Route::get('exchange/point', 'addon\shop\app\api\controller\exchange\Exchange@getPointInfo');
 
-    //积分商城订单计算
-    Route::get('exchange_order/calculate', 'addon\shop\app\api\controller\exchange\OrderCreate@calculate');
-
-    //积分商城订单创建
-    Route::post('exchange_order/create', 'addon\shop\app\api\controller\exchange\OrderCreate@create');
 
     /***************************************************** 新人专享 ****************************************************/
 
@@ -278,6 +273,12 @@ Route::group('shop', function() {
 
     // 退款方式
     Route::get('order/refund/type', 'addon\shop\app\api\controller\refund\Refund@getRefundType');
+
+    //积分商城订单计算
+    Route::get('exchange_order/calculate', 'addon\shop\app\api\controller\exchange\OrderCreate@calculate');
+
+    //积分商城订单创建
+    Route::post('exchange_order/create', 'addon\shop\app\api\controller\exchange\OrderCreate@create');
 
 })->middleware(ApiChannel::class)
     ->middleware(ApiCheckToken::class, true)//表示验证登录

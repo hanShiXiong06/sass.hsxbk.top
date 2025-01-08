@@ -24,7 +24,7 @@ class Upgrade
             if (empty($value[ 'fenxiao_rule' ])) continue;
             foreach ($value[ 'fenxiao_rule' ] as $v) {
                 foreach ($v as $item) {
-                    if (is_array($item) && !empty($v[ 'goods_id' ] ) && !empty($v[ 'sku_id' ]) ) {
+                    if (is_array($item)) {
                         $save_data[] = [
                             'site_id' => $value[ 'site_id' ],
                             'goods_id' => $v[ 'goods_id' ],

@@ -33,9 +33,11 @@ use addon\shop\app\service\core\order\CoreOrderFinishService;
 use addon\shop\app\service\core\order\CoreOrderService;
 use app\dict\common\ChannelDict;
 use app\dict\pay\PayDict;
+use app\model\member\Member;
 use app\model\pay\Pay;
 use app\service\admin\pay\PayChannelService;
 use app\service\api\weapp\WeappDeliveryService;
+use app\service\core\pay\CorePayChannelService;
 use core\base\BaseApiService;
 use core\exception\ApiException;
 
@@ -148,7 +150,7 @@ class OrderService extends BaseApiService
                     'order_goods' => function($query) {
                         $query->field('extend,order_goods_id, site_id, order_id, member_id, goods_id, sku_id, goods_name, sku_name, goods_image, sku_image, price, num, goods_money, discount_money, is_enable_refund, status, order_refund_no, delivery_status, verify_count, verify_expire_time, is_verify, goods_type, is_gift')->append([ 'goods_image_thumb_small' ]);
                     },
-                    'order_discount' => function ($query) {
+                    'order_discount' => function($query) {
                         $query->field('order_id,discount_type,money');
                     }
                 ]
@@ -164,8 +166,17 @@ class OrderService extends BaseApiService
 
             if ($info[ 'out_trade_no' ]) {
                 $info[ 'pay' ] = ( new Pay() )->where([ [ 'out_trade_no', '=', $info[ 'out_trade_no' ] ] ])
-                    ->field('out_trade_no, type, pay_time')->append([ 'type_name' ])
+                    ->field('main_id, out_trade_no, type, pay_time, status')->append([ 'type_name' ])
                     ->findOrEmpty()->toArray();
+                if (!empty($info[ 'pay' ])) {
+                    if ($info[ 'member_id' ] != $info[ 'pay' ][ 'main_id' ]) {
+                        $member_info = ( new Member() )->field('nickname,headimg')->where([ [ 'site_id', '=', $this->site_id ], [ 'member_id', '=', $info[ 'pay' ][ 'main_id' ] ] ])->findOrEmpty()->toArray();
+                        if (!empty($member_info)) {
+                            $info[ 'pay' ][ 'pay_member' ] = $member_info['nickname'];
+                            $info[ 'pay' ][ 'pay_member_headimg' ] = $member_info['headimg'];
+                        }
+                    }
+                }
             }
 
             if ($info[ 'delivery_type' ] == DeliveryDict::EXPRESS) {

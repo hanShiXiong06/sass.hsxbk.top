@@ -45,3 +45,6 @@ export function getPrice(data: any) {
 export function sendOrderInfo(data: any) {
   return request.post("recycle_price/phone_shop_recycle_order", data);
 }
+export function getMemberLevel() {
+	return request.get(`tk_vip/member/level`);
+}

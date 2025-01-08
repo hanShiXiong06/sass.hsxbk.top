@@ -276,30 +276,51 @@ class StatisticsService extends BaseAdminService
      */
     public function syncStatGoods($date = [])
     {
-        $goods_list = ( new Goods() )->field('site_id,goods_id')->select()->toArray();
-        $goods_ids = array_column($goods_list, 'goods_id');
+        $pageSize = 100;
+        $page = 1;
 
         if (empty($date)) {
             $date[] = date('Y-m-d');
         }
-        $data = [];
 
-        foreach ($date as $value) {
-            $stat_goods_ids = $this->model->where([ [ 'date', '=', $value ], [ 'goods_id', 'in', $goods_ids ] ])->column('goods_id');
-            foreach ($goods_list as $v) {
-                if (!in_array($v[ 'goods_id' ], $stat_goods_ids)) {
-                    $data[] = [
-                        'site_id' => $v[ 'site_id' ],
-                        'date' => $value,
-                        'date_time' => strtotime($value),
-                        'goods_id' => $v[ 'goods_id' ],
-                    ];
+        while (true) {
+            $goods_list = (new Goods())
+                ->field('site_id,goods_id')
+                ->limit(($page - 1) * $pageSize, $pageSize)
+                ->select()
+                ->toArray();
+
+            if (empty($goods_list)) {
+                break; // 没有更多商品时退出循环
+            }
+
+            $goods_ids = array_column($goods_list, 'goods_id');
+
+            $data = [];
+            foreach ($date as $value) {
+                $stat_goods_ids = $this->model
+                    ->where([
+                        ['date', '=', $value],
+                        ['goods_id', 'in', $goods_ids]
+                    ])
+                    ->column('goods_id');
+
+                foreach ($goods_list as $v) {
+                    if (!in_array($v['goods_id'], $stat_goods_ids)) {
+                        $data[] = [
+                            'site_id' => $v['site_id'],
+                            'date' => $value,
+                            'date_time' => strtotime($value),
+                            'goods_id' => $v['goods_id'],
+                        ];
+                    }
                 }
             }
-        }
+            if (!empty($data)) {
+                $this->model->saveAll($data);
+            }
 
-        if (!empty($data)) {
-            $this->model->saveAll($data);
+            $page++;
         }
         return true;
     }

@@ -89,6 +89,9 @@ class Goods extends BaseAdminController
             [ "sort", 0 ],
             [ 'attr_id', 0 ],
             [ 'attr_format', '' ],
+            // 是否可以代理商品
+            [ 'is_proxy', 1 ],
+            [ 'memory_ids', '' ],
 
             // 规格类型，single：单规格，multi：多规格
             [ 'spec_type', '' ],
@@ -151,6 +154,8 @@ class Goods extends BaseAdminController
             [ "sort", 0 ],
             [ 'attr_id', 0 ],
             [ 'attr_format', '' ],
+            [ 'is_proxy', 1 ],
+            [ 'memory_ids', '' ],
 
             // 规格类型，single：单规格，multi：多规格
             [ 'spec_type', '' ],

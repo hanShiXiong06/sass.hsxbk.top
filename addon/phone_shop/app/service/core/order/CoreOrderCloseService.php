@@ -41,21 +41,26 @@ class CoreOrderCloseService extends BaseCoreService
      */
     public function close(array $data)
     {
+      
         try {
             $order_data = $this->model->where([
                 ['order_id', '=', $data['order_id']],
                 ['site_id', '=', $data['site_id']]
             ])->findOrEmpty()->toArray();
+             
             if (empty($order_data)) throw new CommonException('SHOP_ORDER_NOT_FOUND');//订单不存在
             if ($order_data['status'] == OrderDict::CLOSE) throw new CommonException('SHOP_ORDER_IS_CLOSED');
+            
             if ($data['close_type'] != OrderDict::REFUND_CLOSE) {
-                //关闭相关的支付  todo  封装订单专用的关闭支付相关
+                //   return OrderDict::TYPE; 
+                //关闭相关的支付  todo  封装订单专用的关闭支付相关 OrderDict::TYPE
                 try {
-                    (new CorePayService())->closeByTrade($data['site_id'], OrderDict::TYPE, $order_data['order_id']);
+                    (new CorePayService())->closeByTrade((int)$order_data['site_id'], 'shop', $order_data['order_id']);
                 } catch ( \Exception $e ) {
 
                 }
             }
+           
 
             //关闭订单
             $this->model->where([

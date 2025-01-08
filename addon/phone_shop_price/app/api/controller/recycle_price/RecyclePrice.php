@@ -1,5 +1,4 @@
 <?php
-/*
 namespace addon\phone_shop_price\app\api\controller\recycle_price;
 
 use app\api\controller\BaseAdminController;

@@ -2,10 +2,10 @@
   "title": "二手商城导入导出",
   "desc": "商品批量导入导出",
   "key": "goods_export",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "hsx",
   "type": "addon",
   "support_app": "",
-  "support_version": "0.5.2",
-  "compile": []
+  "compile":[],
+  "support_version": "0.5.6"
 }

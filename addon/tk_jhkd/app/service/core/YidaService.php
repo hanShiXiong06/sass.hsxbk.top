@@ -21,11 +21,7 @@ class YidaService extends BaseApiService
     public function __construct()
     {
         parent::__construct();
-        $this->config = $this->getConfig();
-        if(!$this->config) throw new CommonException('基础配置未完成，请联系管理员');
-        $this->config = $this->config['value'];
         $this->changeService = new ChangeNoticeService();
-
     }
     /**
      * 账户余额查询

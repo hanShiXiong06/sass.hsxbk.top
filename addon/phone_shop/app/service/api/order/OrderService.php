@@ -198,13 +198,15 @@ class OrderService extends BaseApiService
      */
     public function close(int $order_id)
     {
+      
         $data[ 'main_type' ] = OrderLogDict::MEMBER;
         $data[ 'main_id' ] = $this->member_id;
         $data[ 'close_type' ] = OrderDict::SHOP_CLOSE;
         $data[ 'order_id' ] = $order_id;
         $data[ 'site_id' ] = $this->site_id;
-        ( new CoreOrderCloseService() )->close($data);
-        return true;
+          
+       return ( new CoreOrderCloseService() )->close($data);
+         // true;
     }
 
 

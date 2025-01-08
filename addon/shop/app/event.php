@@ -5,6 +5,10 @@ return [
 
     ],
     'listen' => [
+        // 手机端初始化加载事件
+        'initWap' => [
+            'addon\shop\app\listener\config\initWapListener'
+        ],
 
         // 添加/编辑商品之后的事件
         'AfterGoodsEdit' => [
@@ -60,6 +64,7 @@ return [
         //支付
         'PayCreate' => [ 'addon\shop\app\listener\pay\PayCreateListener' ],
         'PaySuccess' => [ 'addon\shop\app\listener\pay\PaySuccessListener' ],
+        'PayTradeInfo' => [ 'addon\shop\app\listener\order\ShopOrderTradeInfoListener' ],   //订单交易信息
         'RefundSuccess' => [ 'addon\shop\app\listener\pay\RefundSuccessListener' ],
 
         'NoticeData' => [
@@ -130,6 +135,12 @@ return [
         'NewcomerActiveJoin' => [ 'addon\shop\app\listener\marketing\NewcomerActiveJoinListener' ],
         //会员登录后事件
         'MemberLoginAfter' => [ 'addon\shop\app\listener\MemberLoginAfterListener' ],
+
+        // 会员充值 赠送内容
+        'RechargeGiftContent'=>['addon\shop\app\listener\recharge\GiftContentListener'],
+        // 会员充值成功后的事件
+        'RechargeAfterListener' =>['addon\shop\app\listener\recharge\RechargeAfterListener']
+
     ],
     'subscribe' => [
     ],
