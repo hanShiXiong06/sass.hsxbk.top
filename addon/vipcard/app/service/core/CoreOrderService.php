@@ -241,6 +241,9 @@ class  CoreOrderService extends BaseCoreService
 
         Db::startTrans();
         try {
+            //关闭相关的支付
+            (new CorePayService())->closeByTrade($order['site_id'], $order['order_type'], $order['order_id']);
+
             $order->order_status = OrderDict::CLOSE;
             $order->close_time = time();
             $order->is_enable_refund = 0;

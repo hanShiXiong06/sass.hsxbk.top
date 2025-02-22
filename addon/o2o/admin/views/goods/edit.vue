@@ -29,7 +29,7 @@
                             <el-input v-model.trim="formData.virtually_sale" clearable :placeholder="t('virtualSaleNumPlaceholder')" class="input-width" />
                         </el-form-item>
                         <el-form-item :label="t('sort')" prop="sort">
-                            <el-input v-model.trim="formData.sort" clearable :placeholder="t('sortPlaceholder')" class="input-width" show-word-limit maxlength="10" />
+                            <el-input v-model.trim="formData.sort" clearable :placeholder="t('sortPlaceholder')" class="input-width" show-word-limit maxlength="8" />
                         </el-form-item>
                         <el-form-item :label="t('status')" >
                             <el-radio-group v-model="formData.status" class="ml-4">

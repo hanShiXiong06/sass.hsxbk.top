@@ -6,7 +6,7 @@ return [
         'menu_short_name' => '会员卡',
         'parent_key' => '',
         'menu_type' => '0',
-        'icon' => 'iconfont iconyingyongshichang',
+        'icon' => 'iconfont iconhuiyuanka',
         'api_url' => '',
         'router_path' => '',
         'view_path' => '',

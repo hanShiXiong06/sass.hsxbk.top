@@ -229,7 +229,7 @@ class CoreOrderCreateService extends BaseCoreService
             [ 'sku_id', 'in', $sku_ids ],
             [ 'site_id', '=', $this->site_id ]
         );
-        $sku_list = ( new  GoodsSku() )->where($sku_condition)->with([ 'goods' ])->field('sku_id, site_id, sku_name, sku_image,  sku_no,goods_id, price, stock, weight, volume,sku_id, sku_spec_format,member_price, sale_price')->select()->toArray();
+        $sku_list = ( new  GoodsSku() )->where($sku_condition)->with([ 'goods' ])->field('sku_id, site_id, sku_name, sku_image,  sku_no,goods_id, price, stock, weight, volume,sku_id, sku_spec_format,member_price, sale_price,market_price')->select()->toArray();
         $sku_list = array_column($sku_list, null, 'sku_id');
         //商品数据  查询商品列表
 
@@ -315,13 +315,14 @@ class CoreOrderCreateService extends BaseCoreService
 
         } elseif ($sku_info[ 'goods' ][ 'member_discount' ] == 'fixed_price') {
             // 指定会员价
-            if (!empty($sku_info[ 'member_price' ])) {
-                $sku_info[ 'member_price' ] = json_decode($sku_info[ 'member_price' ], true);
-                if (!empty($sku_info[ 'member_price' ][ 'level_' . $this->buyer[ 'member_level' ][ 'level_id' ] ])) {
-                    $member_level_price = $sku_info[ 'member_price' ][ 'level_' . $this->buyer[ 'member_level' ][ 'level_id' ] ];
-                    $price = number_format($member_level_price, 2, '.', '');
-                }
-            }
+            // if (!empty($sku_info[ 'member_price' ])) {
+            //     $sku_info[ 'member_price' ] = json_decode($sku_info[ 'member_price' ], true);
+            //     if (!empty($sku_info[ 'member_price' ][ 'level_' . $this->buyer[ 'member_level' ][ 'level_id' ] ])) {
+            //         $member_level_price = $sku_info[ 'member_price' ][ 'level_' . $this->buyer[ 'member_level' ][ 'level_id' ] ];
+            //         $price = number_format($member_level_price, 2, '.', '');
+            //     }
+            // }
+            $price = $sku_info[ 'market_price' ];
         }
 
         return $price;

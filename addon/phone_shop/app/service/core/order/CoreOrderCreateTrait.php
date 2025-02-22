@@ -93,7 +93,14 @@ trait CoreOrderCreateTrait
 
             $order_data[ 'order_id' ] = $this->order_id;
             //订单创建后事件
-            CoreOrderEventService::orderCreate([ 'site_id' => $site_id, 'order_id' => $this->order_id, 'order_data' => $order_data, 'order_goods_data' => $order_goods_data, 'cart_ids' => $this->cart_ids, 'basic' => get_object_vars($this), 'main_type' => $main_type, 'main_id' => $main_id, 'time' => time() ]);
+            event('AfterPhoneShopOrderCreate', [
+                'site_id' => $site_id, 
+                'order_id' => $this->order_id, 
+                'order_data' => $order_data, 
+                'order_goods_data' => $order_goods_data, 
+                'cart_ids' => $this->cart_ids, 
+                'basic' => get_object_vars($this)
+            ]);
             Db::commit();
             //删除订单缓存
             $this->delOrderCache($this->order_key);
@@ -228,7 +235,8 @@ trait CoreOrderCreateTrait
         $discount_service = new CoreOrderDiscountService();
         if ($this->discount) {
             foreach ($this->discount as $k => $v) {
-                $result = array_values(array_filter(event('ShopOrderDiscountCreate', [ 'data' => $v, 'order_object' => $this ])));
+                //订单优惠事件
+                $result = array_values(array_filter(event('PhoneShopOrderDiscountCreate', [ 'data' => $v, 'order_object' => $this ])));
                 if (empty($result)) {
                     switch ($k) {
                         case 'coupon':

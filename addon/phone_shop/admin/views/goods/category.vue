@@ -24,7 +24,7 @@
                         </template>
                     </el-table-column>
                     <el-table-column :label="t('分类id')" min-width="120" prop="category_id" />
-
+                    <el-table-column :label="t('memoryGroup')" min-width="120" prop="group_name" />
                     <el-table-column :label="t('image')" width="170" align="left">
                         <template #default="{ row }">
                             <div class="h-[30px]">

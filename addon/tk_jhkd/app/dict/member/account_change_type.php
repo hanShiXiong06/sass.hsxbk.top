@@ -7,7 +7,7 @@ return [
         //调整
         'tk_jhkd_order' => [
             //名称
-            'name' => '聚合快递激励',
+            'name' => '快递激励',
             //是否增加
             'inc' => 1,
             //是否减少
@@ -18,7 +18,7 @@ return [
         //调整
         'tk_jhkd_order' => [
             //名称
-            'name' => '聚合快递激励',
+            'name' => '快递激励',
             //是否增加
             'inc' => 1,
             //是否减少
@@ -29,7 +29,7 @@ return [
            //调整
         'tk_jhkd_order' => [
             //名称
-            'name' => '聚合快递激励',
+            'name' => '快递激励',
             //是否增加
             'inc' => 1,
             //是否减少
@@ -40,7 +40,7 @@ return [
     MemberAccountTypeDict::COMMISSION => [
         'jhkd_award' => [
             //名称
-            'name' => '聚合快递分销佣金',
+            'name' => '快递分销佣金',
             //是否增加
             'inc' => 1,
             //是否减少

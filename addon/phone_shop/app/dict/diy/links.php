@@ -116,6 +116,12 @@ return [
                 'url' => '/addon/phone_shop/pages/goods/new_arrivals',
                 'is_share' => 1,
                 'action' => ''
+            ],[
+                'name' => 'PHONE_SHOP_ADD',
+                'title' => '添加商品',
+                'url' => '/addon/phone_shop/pages/manager/add_goods',
+                'is_share' => 0,
+                'action' => ''
             ],
         ]
     ],

@@ -4,12 +4,18 @@ namespace addon\tk_jhkd\app\adminapi\controller;
 
 
 use addon\tk_jhkd\app\service\core\CloudService as CommonAuth;
+use addon\tk_jhkd\app\service\core\CommonService;
 use core\base\BaseAdminController;
 use addon\tk_jhkd\app\service\core\ConfigService;
 use addon\tk_jhkd\app\service\core\YidaService;
 
 class Config extends BaseAdminController
 {
+    public function checkFenxiao()
+    {
+        return success((new CommonService())->checkFenxiao());
+    }
+
     /**
      * 接口数据
      */
@@ -17,6 +23,7 @@ class Config extends BaseAdminController
     {
         return success("TK_JHKD_SUCCESS", (new ConfigService())->getConfig());
     }
+
     public function setConfig()
     {
         (new CommonAuth())->auth();
@@ -47,6 +54,7 @@ class Config extends BaseAdminController
         (new ConfigService())->setConfig($data);
         return success('TK_JHKD_SUCCESS');
     }
+
     public function getBalance()
     {
         return success((new YidaService())->getBalance());

@@ -192,4 +192,114 @@ class SiteAgentService extends BaseAdminService
 
         return $info->delete();
     }
+
+    /**
+     * 获取商品代理关系
+     * @param int $goods_id 商品ID
+     * @param int $site_id 站点ID
+     * @return array
+     */
+    public function getGoodsProxyInfo(int $goods_id, int $site_id)
+    {
+        $proxy_info = model('phone_shop_goods_proxy')->where([
+            ['goods_id', '=', $goods_id],
+            ['site_id', '=', $site_id]
+        ])->find();
+
+        if (empty($proxy_info)) {
+            return [];
+        }
+
+        // 获取来源站点信息
+        $source_site = model('site')->where([
+            ['site_id', '=', $proxy_info['source_site_id']]
+        ])->field('site_id, site_name')->find();
+
+        return [
+            'proxy_id' => $proxy_info['id'],
+            'goods_id' => $proxy_info['goods_id'],
+            'source_site' => $source_site ?? [],
+            'markup_type' => $proxy_info['markup_type'],
+            'markup_value' => $proxy_info['markup_value'],
+            'status' => $proxy_info['status']
+        ];
+    }
+
+    /**
+     * 计算代理商品价格
+     * @param float $original_price 原始价格
+     * @param array $proxy_info 代理信息
+     * @return float
+     */
+    public function calculateProxyPrice(float $original_price, array $proxy_info)
+    {
+        if (empty($proxy_info) || $proxy_info['status'] != 1) {
+            return $original_price;
+        }
+
+        // 固定金额加价
+        if ($proxy_info['markup_type'] == 1) {
+            return $original_price + $proxy_info['markup_value'];
+        }
+
+        // 区间加价（百分比）
+        if ($proxy_info['markup_type'] == 2) {
+            return $original_price * (1 + $proxy_info['markup_value'] / 100);
+        }
+
+        return $original_price;
+    }
+
+    /**
+     * 获取站点的所有代理商品
+     * @param int $site_id 站点ID
+     * @param array $params 查询参数
+     * @return array
+     */
+    public function getProxyGoodsList(int $site_id, array $params = [])
+    {
+        $where = [
+            ['p.site_id', '=', $site_id],
+            ['p.status', '=', 1]
+        ];
+
+        // 构建查询条件
+        if (!empty($params['keyword'])) {
+            $where[] = ['g.goods_name', 'like', '%' . $params['keyword'] . '%'];
+        }
+
+        $field = 'p.id as proxy_id, p.goods_id, p.source_site_id, p.markup_type, p.markup_value, 
+                 g.goods_name, g.goods_image, g.price as original_price, s.site_name as source_site_name';
+
+        $list = model('phone_shop_goods_proxy')
+            ->alias('p')
+            ->join('phone_shop_goods g', 'p.goods_id = g.goods_id')
+            ->join('site s', 'p.source_site_id = s.site_id')
+            ->where($where)
+            ->field($field)
+            ->page($params['page'] ?? 1, $params['limit'] ?? 10)
+            ->select()
+            ->each(function ($item) {
+                // 计算代理价格
+                $item['proxy_price'] = $this->calculateProxyPrice($item['original_price'], [
+                    'markup_type' => $item['markup_type'],
+                    'markup_value' => $item['markup_value'],
+                    'status' => 1
+                ]);
+                return $item;
+            });
+
+        $count = model('phone_shop_goods_proxy')
+            ->alias('p')
+            ->join('phone_shop_goods g', 'p.goods_id = g.goods_id')
+            ->where($where)
+            ->count();
+
+        return [
+            'list' => $list,
+            'count' => $count,
+            'page' => $params['page'] ?? 1,
+            'limit' => $params['limit'] ?? 10
+        ];
+    }
 }

@@ -189,6 +189,10 @@
                                             <el-button type="primary" link @click="finish(item)"
                                                 v-if="item.status == 3">{{ t('confirmTakeDelivery')
                                                 }}</el-button>
+                                            <el-button type="primary"
+                                                v-if="item.is_refund_show && item.status != 1 && item.status != -1" link
+                                                @click="refundEvent(item)">{{ t('voluntaryRefund') }}</el-button>
+
                                         </template>
                                     </el-table-column>
                                 </el-table>
@@ -218,6 +222,7 @@
             @close="handleClose" />
         <order-edit-address ref="orderEditAddressDialog" @complete="loadOrderList" />
         <electronic-sheet-print ref="electronicSheetPrintDialog" @complete="electronicSheetPrintComplete" />
+        <shop-active-refund ref="shopActiveRefundDialog" @complete="loadOrderList" />
     </div>
 </template>
 
@@ -232,6 +237,7 @@ import OrderExportSelect from '@/addon/phone_shop/views/order/components/order-e
 import orderEditAddress from '@/addon/phone_shop/views/order/components/order-edit-address.vue'
 import AdjustMoney from '@/addon/phone_shop/views/order/components/adjust-money.vue'
 import electronicSheetPrint from '@/addon/phone_shop/views/order/components/electronic-sheet-print.vue'
+import ShopActiveRefund from '@/addon/phone_shop/views/order/components/shop-active-refund.vue'
 import { img } from '@/utils/common'
 import { ElMessage, ElMessageBox, FormInstance } from 'element-plus'
 import { useRouter, useRoute } from 'vue-router'
@@ -343,27 +349,38 @@ const loadOrderList = (page: number = 1) => {
         limit: orderTable.limit,
         ...orderTable.searchParam
     }).then(res => {
-        orderTable.loading = false;
+        orderTable.loading = false
         orderTable.data = res.data.data.map((el: any) => {
-            el.isSupportElectronicSheet = false; // 是否支持打印电子面单
-            el.isSupportPrintTicket = false; // 是否支持打印小票
+            el.isSupportElectronicSheet = false // 是否支持打印电子面单
+            el.isSupportPrintTicket = false // 是否支持打印小票
 
             // 只有待发货、待收货，物流配送的情况下才能打印电子面单
             if (el.delivery_type == 'express' && el.status == 3) {
-                el.isSupportElectronicSheet = true;
+                el.isSupportElectronicSheet = true
             }
 
             //  待发货、待收货、已完成状态下可以打印小票
             if (el.delivery_type != 'virtual' && (el.status == 2 || el.status == 3 || el.status == 5)) {
-                el.isSupportPrintTicket = true;
+                el.isSupportPrintTicket = true
             }
             el.order_goods.forEach((v: any) => {
                 v.rowNum = el.order_goods.length
-            });
+            })
             return el
-        });
+        })
 
+        // 处理主力退款按钮是否出现
+        orderTable.data.forEach((item: any, index: number, arr: any) => {
+            let refundOrderNum = 0
+            item.order_goods.forEach((orderItem: any, orderIndex: number) => {
+                if (orderItem.is_enable_refund == 1) {
+                    refundOrderNum++
+                }
+            })
+            arr[index].is_refund_show = refundOrderNum > 0 ? true : false;
+        })
         orderTable.total = res.data.total
+        setTablePageStorage(orderTable.page, orderTable.limit, orderTable.searchParam);
     }).catch(() => {
         orderTable.loading = false
     })
@@ -595,6 +612,15 @@ const printTicketEvent = (data: any) => {
     }).catch(() => {
         repeat.value = false
     })
+}
+
+/**
+ * 商家主动退款
+ */
+const shopActiveRefundDialog: Record<string, any> | null = ref(null)
+const refundEvent = (data: any) => {
+    shopActiveRefundDialog.value.setFormData(data)
+    shopActiveRefundDialog.value.showDialog = true
 }
 </script>
 

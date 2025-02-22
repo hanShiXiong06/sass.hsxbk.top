@@ -45,6 +45,9 @@ return [
         //获取海报数据
         'GetPosterType' => ['addon\shop_fenxiao\app\listener\poster\ShopFenxiaoPosterType'],
         'GetPosterData' => ['addon\shop_fenxiao\app\listener\poster\ShopFenxiaoPoster'],
+
+        //主题色
+        'ThemeColor' => [ 'addon\shop_fenxiao\app\listener\diy\ThemeColorListener' ],
     ],
     'subscribe' => [
     ],

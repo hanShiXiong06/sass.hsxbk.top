@@ -67,8 +67,8 @@ CREATE TABLE `{{prefix}}shop_fenxiao_goods` (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE utf8mb4_general_ci COMMENT '分销商品表';
 
 
-DROP TABLE IF EXISTS `shop_fenxiao_goods_rule`;
-CREATE TABLE `shop_fenxiao_goods_rule` (
+DROP TABLE IF EXISTS `{{prefix}}shop_fenxiao_goods_rule`;
+CREATE TABLE `{{prefix}}shop_fenxiao_goods_rule` (
   `goods_rule_id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `site_id` INT(11) NOT NULL DEFAULT 0 COMMENT '站点id',
   `goods_id` INT(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '商品id',

@@ -434,6 +434,11 @@ Route::group('phone_shop', function() {
     //订单维权审核
     Route::put('order/refund/delivery/:order_refund_no', 'addon\phone_shop\app\adminapi\controller\refund\Refund@auditRefundGoods');
 
+    //订单维权 可退款金额
+    Route::get('order/refund/refund_money', 'addon\phone_shop\app\adminapi\controller\refund\Refund@getOrderRefundMoney');
+
+    //订单维权 商家主动退款
+    Route::post('order/refund/active', 'addon\phone_shop\app\adminapi\controller\refund\Refund@shopActiveRefund');
     /************************************************** 订单发货批量操作相关接口 *****************************************************/
 
     //订单批量操作 列表

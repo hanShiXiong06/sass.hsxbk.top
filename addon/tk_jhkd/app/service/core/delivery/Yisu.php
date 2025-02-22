@@ -42,7 +42,7 @@ class Yisu extends BaseDelivery
             "sendAddress" => $params['senderProvince'] . $params['senderCity'] . $params['senderDistrict'] . $params['senderAddress'],
             "receiveAddress" => $params['receiveProvince'] . $params['receiveCity'] . $params['receiveDistrict'] . $params['receiveAddress'],
             "packageNum" => $params['packageCount'],
-            "goodsValue" => $params['guaranteeValueAmount'],
+            "goodsValue" => (int)$params['guaranteeValueAmount'],
             "weight" => $params['weight'],
             "length" => $params['vloumLong'],
             "width" => $params['vloumWidth'],
@@ -50,7 +50,10 @@ class Yisu extends BaseDelivery
             "payMethod" => 3,
             "expressType" => 1,
         ];
-
+        $bj = 0;
+        if ($data['goodsValue'] > 0) {
+            $bj = 1;
+        }
         $resInfo = $this->execute('/openApi/getPriceList', $data);
         if ($resInfo['code'] != 0 || !isset($resInfo['code'])) throw new Exception('获取运单报价失败：yisu_error--' . $resInfo['msg']);
         $callbackData = [];
@@ -108,7 +111,9 @@ class Yisu extends BaseDelivery
                     $newdata['calcFeeType'] = 'profit';
                 }
                 $newdata['originalFee'] = $v['originalFee'] ?? 0;
-                $callbackData[] = $newdata;
+                if (!($bj == 1 && $newdata['preBjFee'] == 0)) {
+                    $callbackData[] = $newdata;
+                }
             }
         }
         return $callbackData;
@@ -166,7 +171,7 @@ class Yisu extends BaseDelivery
     {
         $params = [
             "genre" => 1,
-            "thirdOrderNo" => $data['order_id'],
+            "orderNo" => $data['order_no'] ?? 0,
         ];
         $resInfo = $this->execute('/openApi/doCancel', $params);
         $resInfo['data'] = $resInfo['code'];

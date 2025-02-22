@@ -14,6 +14,8 @@ namespace addon\fast_pay\app\service\core;
 use app\dict\pay\PayDict;
 use app\dict\pay\RefundDict;
 use app\model\pay\Refund;
+use app\model\order\Order;
+use app\dict\order\OrderDict;
 
 use core\base\BaseCoreService;
 use core\exception\PayException;
@@ -200,7 +202,6 @@ class CoreRefundService extends BaseCoreService
      */
     public function refundSuccess(int $site_id, array $data)
     {
-
         $out_trade_no = $data['out_trade_no'];
         $refund_no = $data['refund_no'];
         $this->model->where([
@@ -209,6 +210,21 @@ class CoreRefundService extends BaseCoreService
         ])->update([
             'status' => RefundDict::SUCCESS
         ]);
+        
+        // 更新订单状态为已关闭
+        $order = (new Order())->where([
+            ['site_id', '=', $site_id],
+            ['out_trade_no', '=', $out_trade_no]
+        ])->findOrEmpty();
+        
+        if (!$order->isEmpty()) {
+            $order->save([
+                'order_status' => OrderDict::CLOSE,
+                'close_time' => time(),
+                'close_type' => 'refund'
+            ]);
+        }
+        
         $pay = (new CorePayService())->findPayInfoByOutTradeNo($site_id, $out_trade_no);
         $result = event('RefundSuccess', ['refund_no' => $refund_no, 'trade_type' => $pay->trade_type, 'site_id' => $site_id, 'trade_id' => $data['trade_id']]);
         if (!check_event_result($result)) {

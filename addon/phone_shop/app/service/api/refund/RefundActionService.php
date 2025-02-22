@@ -103,7 +103,7 @@ class RefundActionService extends BaseApiService
             'status' => OrderGoodsDict::REFUNDING
         ]);
         //订单申请退款后事件
-        event('AfterShopOrderRefundApply', ['order_refund_no' => $order_refund_no, 'refund_data' => $insert_data]);
+        event('AfterPhoneShopOrderRefundApply', ['order_refund_no' => $order_refund_no, 'refund_data' => $insert_data]);
         return true;
     }
 
@@ -159,8 +159,8 @@ class RefundActionService extends BaseApiService
             'source' => OrderRefundDict::APPLY
         ];
         $order_refund_info->save($update_data);
-        //订单申请退款后事件
-        event('AfterShopOrderRefundEdit', ['site_id' => $this->site_id, 'order_refund_no' => $order_refund_no, 'refund_data' => array_merge($order_refund_info->toArray(), $update_data)]);
+        //订单编辑退款后事件
+        event('AfterPhoneShopOrderRefundEdit', ['site_id' => $this->site_id, 'order_refund_no' => $order_refund_no, 'refund_data' => array_merge($order_refund_info->toArray(), $update_data)]);
         return true;
     }
 
@@ -213,8 +213,8 @@ class RefundActionService extends BaseApiService
             'status' => OrderRefundDict::BUYER_REFUND_GOODS_WAIT_STORE,
         ];
         $order_refund_info->save($update_data);
-        //订单申请退款后事件
-        event('AfterShopOrderRefundDelivery', ['site_id' => $this->site_id, 'main_type' => OrderRefundLogDict::MEMBER, 'main_id' => $this->member_id, 'order_refund_no' => $order_refund_no, 'refund_data' => array_merge($order_refund_info->toArray(), $update_data)]);
+        //订单退款发货后事件
+        event('AfterPhoneShopOrderRefundDelivery', ['site_id' => $this->site_id, 'main_type' => OrderRefundLogDict::MEMBER, 'main_id' => $this->member_id, 'order_refund_no' => $order_refund_no, 'refund_data' => array_merge($order_refund_info->toArray(), $update_data)]);
         return true;
     }
 
@@ -253,8 +253,8 @@ class RefundActionService extends BaseApiService
             'status' => OrderRefundDict::BUYER_REFUND_GOODS_WAIT_STORE,
         ];
         $order_refund_info->save($update_data);
-        //订单申请退款后事件
-        event('AfterShopOrderRefundEditDelivery', ['main_type' => OrderRefundLogDict::MEMBER, 'site_id' => $this->site_id, 'main_id' => $this->member_id, 'order_refund_no' => $order_refund_no, 'refund_data' => array_merge($order_refund_info->toArray(), $update_data)]);
+        //订单退款编辑发货后事件
+        event('AfterPhoneShopOrderRefundEditDelivery', ['main_type' => OrderRefundLogDict::MEMBER, 'site_id' => $this->site_id, 'main_id' => $this->member_id, 'order_refund_no' => $order_refund_no, 'refund_data' => array_merge($order_refund_info->toArray(), $update_data)]);
         return true;
     }
 

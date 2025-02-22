@@ -52,8 +52,9 @@ class RecycleBanner extends BaseAdminController
     public function add()
     {
         $data = $this->request->params([
-            ['image', '', 'require']
+            ['image', '']
         ]);
+        
         $res = (new RecycleBannerService())->add($data);
         return success('ADD_SUCCESS', $res);
     }

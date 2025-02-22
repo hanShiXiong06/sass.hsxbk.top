@@ -624,6 +624,13 @@ return [
                                 "imgHeight" => 104
                             ]
                         ],
+                        // 轮播图设置
+                        'swiper' => [
+                            'indicatorColor' => 'rgba(0, 0, 0, 0.3)', // 未选中颜色
+                            "indicatorActiveColor" => '#FF0E0E',
+                            'indicatorStyle' => 'style-1',
+                            'indicatorAlign' => 'center'
+                        ],
                         'pageStartBgColor' => '',
                         'pageEndBgColor' => '',
                         'pageGradientAngle' => 'to bottom',
@@ -722,6 +729,13 @@ return [
                                     "bgColorEnd" => "#FE3423"
                                 ]
                             ]
+                        ],
+                        // 轮播图设置
+                        'swiper' => [
+                            'indicatorColor' => 'rgba(0, 0, 0, 0.3)', // 未选中颜色
+                            "indicatorActiveColor" => '#FF0E0E',
+                            'indicatorStyle' => 'style-1',
+                            'indicatorAlign' => 'center'
                         ]
                     ]
                 ]

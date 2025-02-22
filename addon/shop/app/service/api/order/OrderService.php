@@ -138,17 +138,17 @@ class OrderService extends BaseApiService
 
     /**
      * 详情
-     * @param int $order_id
+     * @param $order_id
      * @return array
      */
-    public function getDetail(int $order_id)
+    public function getDetail($order_id)
     {
-        $field = 'relate_id,activity_type,point,order_id,site_id,order_no,order_type,order_from,out_trade_no,status,member_id,ip,goods_money,delivery_money,order_money,invoice_id,create_time,pay_time,delivery_time,take_time,finish_time,close_time,delivery_type,taker_name,taker_mobile,taker_province,taker_city,taker_district,taker_address,taker_full_address,taker_longitude,taker_latitude,take_store_id,is_enable_refund,member_remark,shop_remark,close_remark,discount_money,is_evaluate';
-        $info = $this->model->where([ [ 'site_id', '=', $this->site_id ], [ 'order_id', '=', $order_id ], [ 'member_id', '=', $this->member_id ] ])->field($field)
+        $field = 'relate_id,activity_type,point,order_id,site_id,order_no,order_type,order_from,out_trade_no,status,member_id,ip,goods_money,delivery_money,order_money,invoice_id,create_time,pay_time,delivery_time,take_time,finish_time,close_time,delivery_type,taker_name,taker_mobile,taker_province,taker_city,taker_district,taker_address,taker_full_address,taker_longitude,taker_latitude,take_store_id,is_enable_refund,member_remark,shop_remark,close_remark,discount_money,is_evaluate,form_record_id';
+        $info = $this->model->where([ [ 'site_id', '=', $this->site_id ], [ 'order_id|out_trade_no', '=', $order_id ], [ 'member_id', '=', $this->member_id ] ])->field($field)
             ->with(
                 [
                     'order_goods' => function($query) {
-                        $query->field('extend,order_goods_id, site_id, order_id, member_id, goods_id, sku_id, goods_name, sku_name, goods_image, sku_image, price, num, goods_money, discount_money, is_enable_refund, status, order_refund_no, delivery_status, verify_count, verify_expire_time, is_verify, goods_type, is_gift')->append([ 'goods_image_thumb_small' ]);
+                        $query->field('extend,order_goods_id, site_id, order_id, member_id, goods_id, sku_id, goods_name, sku_name, goods_image, sku_image, price, num, goods_money, discount_money, is_enable_refund, status, order_refund_no, delivery_status, verify_count, verify_expire_time, is_verify, goods_type, is_gift,form_record_id')->append([ 'goods_image_thumb_small' ]);
                     },
                     'order_discount' => function($query) {
                         $query->field('order_id,discount_type,money');

@@ -30,13 +30,13 @@ class BottomNavigationListener
             'key' => $key,
             'info' => $addon_info,
             'value' => [
-                "backgroundColor" => "#ffffff",
-                "textColor" => "#333333",
-                "textHoverColor" => "#4541c7",
-                "type" => 1,
-                "list" => [
+                "backgroundColor" =>"#ffffff",
+                "textColor" =>"#333333",
+                "textHoverColor" =>"#0057FE",
+                "type" =>1,
+                "list" =>[
                     [
-                        "text" => "首页",
+                        "text" =>"寄快递",
                         "link" => [
                             "parent" =>"TK_JHKD_DIY_LINK",
                             "name" =>"TK_JHKD_DIY_INDEX",
@@ -44,44 +44,44 @@ class BottomNavigationListener
                             "url" =>"/addon/tk_jhkd/pages/index",
                             "action" =>"decorate"
                         ],
-                        "iconPath" => "addon/tk_jhkd/diy/tabbar/index.png",
-                        "iconSelectPath" => "addon/tk_jhkd/diy/tabbar/index-select.png"
+                        "iconPath" =>"addon/tk_jhkd/tabbar/jitab.png",
+                        "iconSelectPath" =>"addon/tk_jhkd/tabbar/jitabs.png"
                     ],
                     [
-                        "text" => "订单",
+                        "text" =>"订单",
                         "link" => [
-                            "parent" => "TK_JHKD_LINK",
-                            "name" => "TK_JHKD_ORDERLIST",
-                            "title" => "订单列表",
-                            "url" => "/addon/tk_jhkd/pages/orderlist",
-                            "action" => ""
+                            "parent" =>"TK_JHKD_LINK",
+                            "name" =>"TK_JHKD_ORDERLIST",
+                            "title" =>"订单列表",
+                            "url" =>"/addon/tk_jhkd/pages/orderlist",
+                            "action" =>""
                         ],
-                        "iconSelectPath" => "addon/tk_jhkd/diy/tabbar/order-select.png",
-                        "iconPath" => "addon/tk_jhkd/diy/tabbar/order.png"
+                        "iconSelectPath" =>"addon/tk_jhkd/tabbar/searchs.png",
+                        "iconPath" =>"addon/tk_jhkd/tabbar/secrch.png"
                     ],
                     [
-                        "text" => "帮助",
+                        "text" =>"帮助",
                         "link" => [
-                            "parent" => "TK_JHKD_LINK",
-                            "name" => "TK_JHKD_HELP",
-                            "title" => "帮助中心",
-                            "url" => "/addon/tk_jhkd/pages/help",
-                            "action" => ""
+                            "parent" =>"TK_JHKD_LINK",
+                            "name" =>"TK_JHKD_HELP",
+                            "title" =>"帮助中心",
+                            "url" =>"/addon/tk_jhkd/pages/help",
+                            "action" =>""
                         ],
-                        "iconSelectPath" => "addon/tk_jhkd/diy/tabbar/help-select.png",
-                        "iconPath" => "addon/tk_jhkd/diy/tabbar/help.png"
+                        "iconSelectPath" =>"addon/tk_jhkd/tabbar/gifts.png",
+                        "iconPath" =>"addon/tk_jhkd/tabbar/gift.png"
                     ],
                     [
-                        "text" => "个人",
+                        "text" =>"我的",
                         "link" => [
-                            "parent" => "MEMBER_LINK",
-                            "name" => "MEMBER_CENTER",
-                            "title" => "个人中心",
-                            "url" => "/addon/tk_jhkd/pages/member",
-                            "action" => "decorate"
+                            "parent" =>"MEMBER_LINK",
+                            "name" =>"MEMBER_CENTER",
+                            "title" =>"个人中心",
+                            "url" =>"/addon/tk_jhkd/pages/member",
+                            "action" =>"decorate"
                         ],
-                        "iconSelectPath" => "addon/tk_jhkd/diy/tabbar/my-select.png",
-                        "iconPath" => "addon/tk_jhkd/diy/tabbar/my.png"
+                        "iconSelectPath" =>"addon/tk_jhkd/tabbar/mys.png",
+                        "iconPath" =>"addon/tk_jhkd/tabbar/my.png"
                     ]
                 ]
             ]

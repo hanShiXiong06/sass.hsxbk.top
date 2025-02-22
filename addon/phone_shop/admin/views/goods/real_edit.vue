@@ -52,6 +52,7 @@
                         <el-form-item :label="t('goodsImage')" prop="goods_image">
                             <upload-image v-model="goodsEdit.formData.goods_image" :limit="10" />
                         </el-form-item>
+                       
 
                         <el-form-item :label="t('goodsCategory')" prop="goods_category">
                             <el-cascader v-model="goodsEdit.formData.goods_category"
@@ -97,6 +98,7 @@
                             </div>
                         </el-form-item>
 
+
                         <div class="ml-[120px] mb-[10px] text-[12px] text-[#999] leading-[20px]">{{ t('posterTips') }}
                         </div>
 
@@ -114,6 +116,22 @@
                                     t('addGoodsLabel') }}</span>
                             </div>
                         </el-form-item>
+
+                        <el-form-item :label="t('memory')">
+                            <el-radio-group v-model="goodsEdit.formData.memory_ids">
+                                <el-radio :label="item.spec_id" v-for="(item, index) in goodsEdit.memoryOptions"
+                                    :key="index">{{
+                                        item.spec_name }}</el-radio>
+                            </el-radio-group>
+                            <div class="ml-[10px]">
+                                <span class="cursor-pointer text-primary mr-[10px]"
+                                    @click="goodsEdit.refreshGoodsMemory">{{ t('refresh')
+                                    }}</span>
+                                <span class="cursor-pointer text-primary" @click="goodsEdit.toGoodsMemoryEvent">{{
+                                    t('addGoodsMemory') }}  </span>
+                            </div>
+                        </el-form-item>
+
                         <el-form-item :label="t('goodsService')">
                             <el-checkbox-group v-model="goodsEdit.formData.service_ids">
                                 <el-checkbox :label="item.service_id" v-for="(item, index) in goodsEdit.serviceOptions"
@@ -149,6 +167,10 @@
                                 <el-radio label="1">{{ t('statusOn') }}</el-radio>
                                 <el-radio label="0">{{ t('statusOff') }}</el-radio>
                             </el-radio-group>
+                        </el-form-item>
+                        <el-form-item :label="t('代理')" prop="is_proxy">
+                            <el-switch v-model="goodsEdit.formData.is_proxy" 
+                                :active-value="1" :inactive-value="0" />
                         </el-form-item>
                         <el-form-item :label="t('unit')" prop="unit">
                             <el-input v-model.trim="goodsEdit.formData.unit" clearable
@@ -194,24 +216,21 @@
                         </el-form-item>
 
                         <template v-if="goodsEdit.formData.spec_type == 'single'">
-                            <el-form-item v-if="userStore().siteInfo.site_id == 100005" label="批发售价" prop="price">
-                                <el-input v-model.trim="goodsEdit.formData.price" clearable placeholder="0.00"
-                                    class="input-width" maxlength="8" :disabled="goodsEdit.isDisabledPrice()">
-                                    <template #append>{{ t('yuan') }}</template>
-                                </el-input>
-                            </el-form-item>
-                            <el-form-item v-else :label="t('price')" prop="price">
-                                <el-input v-model.trim="goodsEdit.formData.price" clearable placeholder="0.00"
-                                    class="input-width" maxlength="8" :disabled="goodsEdit.isDisabledPrice()">
-                                    <template #append>{{ t('yuan') }}</template>
-                                </el-input>
-                            </el-form-item>
-
+                            
                             <el-form-item :label="t('marketPrice')" prop="market_price">
                                 <el-input v-model.trim="goodsEdit.formData.market_price" clearable placeholder="0.00"
                                     class="input-width" maxlength="8">
                                     <template #append>{{ t('yuan') }}</template>
                                 </el-input>
+                            </el-form-item>
+
+                            <el-form-item :label="t('price')" prop="price">
+                                <el-input v-model.trim="goodsEdit.formData.price" clearable placeholder="0.00"
+                                    class="input-width" maxlength="8" :disabled="goodsEdit.isDisabledPrice()">
+                                    <template #append>{{ t('yuan') }}</template>
+                                </el-input>
+                                <div class="mt-[10px] text-[12px] text-[#999] leading-[20px]">{{ t('priceMsgTips')
+                                    }}</div>
                             </el-form-item>
 
                             <el-form-item :label="t('costPrice')" prop="cost_price">
@@ -220,7 +239,7 @@
                                     <template #append>{{ t('yuan') }}</template>
                                 </el-input>
                             </el-form-item>
-                            <el-form-item :label="t('weight')" prop="weight">
+                            <!-- <el-form-item :label="t('weight')" prop="weight">
                                 <el-input v-model.trim="goodsEdit.formData.weight" clearable placeholder="0.00"
                                     class="input-width" maxlength="6">
                                     <template #append>kg</template>
@@ -231,7 +250,7 @@
                                     class="input-width" maxlength="6">
                                     <template #append>m³</template>
                                 </el-input>
-                            </el-form-item>
+                            </el-form-item> -->
                             <el-form-item :label="t('goodsStock')" prop="stock">
                                 <el-input v-model.trim="goodsEdit.formData.stock" clearable
                                     :placeholder="t('goodsStockPlaceholder')" class="input-width" maxlength="8"

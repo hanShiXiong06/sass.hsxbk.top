@@ -1,0 +1,11 @@
+{
+  "title": "易东文档VIT平台版",
+  "desc": "极速搭建基于VUE的文档型官网，在线文档和企业官网二合一",
+  "key": "ydc_docvite",
+  "version": "1.0.0",
+  "author": "易东云网络",
+  "type": "app",
+  "support_app": "",
+  "compile":[],
+  "support_version": "0.5.6"
+}

@@ -9,7 +9,7 @@
 // | Author: Niucloud Team
 // +----------------------------------------------------------------------
 
-namespace addon\shop\app\service\admin\order;
+namespace addon\tk_jhkd\app\service\admin\order;
 
 
 use addon\shop\app\dict\order\OrderLogDict;

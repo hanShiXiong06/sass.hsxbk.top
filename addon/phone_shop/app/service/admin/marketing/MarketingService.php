@@ -30,7 +30,7 @@ class MarketingService extends BaseAdminService
     public function index($params)
     {
 
-        $data = event('ShopPromotion', $params);
+        $data = event('PhoneShopPromotion', $params);
         $category = [];
         $app = [];
         if (empty($data)) {

@@ -128,7 +128,7 @@ return [
     'dict_diy_form' => [
         'shop_component_type_basic' => '商城表单组件',
         'type_goods_detail' => '商品表单',
-        'type_order_payment' => '待付款订单',
+        'type_order_payment' => '待付款表单',
     ],
     'dict_shop_delivery_status' => [
         'wait_delivery' => '待发货',
@@ -298,6 +298,7 @@ return [
         'gift' => '是否赠品',
         'delivery' => '运费设置',
         'stock' => '商品库存',
+        'diy_form' => '万能表单',
     ],
 
 

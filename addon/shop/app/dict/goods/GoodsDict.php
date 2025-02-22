@@ -33,6 +33,7 @@ class GoodsDict
     const CATEGORY = 'category';
     const BRAND = 'brand';
     const POSTER = 'poster';
+    const DIY_FORM = 'diy_form';
     const GIFT = 'gift';
     const DELIVERY = 'delivery';
     const STOCK = 'stock';
@@ -79,6 +80,7 @@ class GoodsDict
             self::GIFT => get_lang('dict_shop_goods_batch_set.gift'),
             self::DELIVERY => get_lang('dict_shop_goods_batch_set.delivery'),
             self::STOCK => get_lang('dict_shop_goods_batch_set.stock'),
+            self::DIY_FORM => get_lang('dict_shop_goods_batch_set.diy_form'),
         ];
         if (!$type) {
             return $data;

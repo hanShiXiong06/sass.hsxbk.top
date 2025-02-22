@@ -24,6 +24,12 @@ use core\base\BaseAdminService;
 use core\exception\AdminException;
 use core\exception\CommonException;
 use think\facade\Db;
+use addon\phone_shop\app\model\site\SiteAgent;
+use addon\phone_shop\app\model\site\Site;
+use addon\phone_shop\app\model\site\PhoneShopRecyclePriceConfig;
+use addon\phone_shop\app\model\site\PhoneShopRecyclerPriceRange;
+use think\facade\Log;
+
 
 
 /**
@@ -142,23 +148,6 @@ class GoodsService extends BaseAdminService
             }
 
         }
-        // 商品同步的时候加的数
-        if($this->site_id == 100005){
-            if (!empty($res['goods_info']['sku_list']) && is_array($res['goods_info']['sku_list'])) {
-                foreach ($res['goods_info']['sku_list'] as $i => &$v) {
-                    $v['price'] = (float) $v['price'];
-                    if ($v['price'] < 1000 && $v['price'] >= 0) {
-                        $v['price'] = $v['price'] - 100;
-                    } elseif ($v['price'] < 5000 && $v['price'] > 1000) {
-                        $v['price'] = $v['price'] - 200;
-                    } else {
-                        $v['price'] = $v['price'] - 300;
-                    }
-                    // 保留两位小数
-                    $v['price'] = number_format($v['price'], 2, '.', '');
-                }
-            }            
-        }
 
         return $res;
     }
@@ -168,76 +157,159 @@ class GoodsService extends BaseAdminService
      * @param array $where
      * @return array
      */
-
-    public function getPage(array $where = [])
-    {
-
-        $field = 'goods_id,sub_title,site_id,goods_name,goods_type,brand_id, memory_ids, source, goods_cover,stock,sale_num,status,sort,create_time,update_time,member_discount';
-        $order = 'sort asc, create_time desc , update_time desc';
-        if($where['status']=='' ){
-            $sku_where = [
-                [ 'goodsSku.is_default', '=', 1 ]
-             ];
-        }else{
-             $sku_where = [
-            [ 'goodsSku.is_default', '=', 1 ],[ 'status','=' ,$where['status']]
-        ];
-        }
-
-        if (!empty($where[ 'start_price' ]) && !empty($where[ 'end_price' ])) {
-            $money = [ $where[ 'start_price' ], $where[ 'end_price' ] ];
-            sort($money);
-            $sku_where[] = [ 'goodsSku.price', 'between', $money ];
-        } else if (!empty($where[ 'start_price' ])) {
-            $sku_where[] = [ 'goodsSku.price', '>=', $where[ 'start_price' ] ];
-        } else if (!empty($where[ 'end_price' ])) {
-            $sku_where[] = [ 'goodsSku.price', '<=', $where[ 'end_price' ] ];
-        }
-        if (!empty($where[ 'order' ])) {
-            if($where[ 'order' ] == '_time'){
-                $order = 'update_time ' . $where[ 'sort' ];;
-            }else{
-                $order = $where[ 'order' ] . ' ' . $where[ 'sort' ];
-            }
-        }
+  public function getPage(array $where = [])
+     {
+         $field = 'goods_id,sub_title,site_id,goods_name,goods_type,brand_id,memory_ids,source,goods_cover,stock,sale_num,status,sort,create_time,update_time,member_discount';
+         $order = 'sort asc,create_time desc,update_time desc';
+         // 基础SKU查询条件
+         $sku_where = [['goodsSku.is_default', '=', 1]];
+         if($where['status'] !== '') {
+             $sku_where[] = ['status', '=', $where['status']];
+         }
+         // 价格区间查询
+         if (!empty($where['start_price']) && !empty($where['end_price'])) {
+             $money = [$where['start_price'], $where['end_price']];
+             sort($money);
+             $sku_where[] = ['goodsSku.price', 'between', $money];
+         } else if (!empty($where['start_price'])) {
+             $sku_where[] = ['goodsSku.price', '>=', $where['start_price']];
+         } else if (!empty($where['end_price'])) {
+             $sku_where[] = ['goodsSku.price', '<=', $where['end_price']];
+         }
+     
+         // 排序处理
+         if (!empty($where['order'])) {
+             if($where['order'] == '_time') {
+                 $order = 'update_time ' . $where['sort'];
+             } else {
+                 $order = $where['order'] . ' ' . $where['sort'];
+             }
+         }
+     
          // SKU编号查询
-    if (!empty($where['sku_no'])) {
-        $skuNoTrimmed = trim($where['sku_no']);
-        if (strpos($skuNoTrimmed, ' ') !== false) {
-            $skuNoArray = explode(' ', $skuNoTrimmed);
-            $sku_where[] = function ($query) use ($skuNoArray) {
-                $query->whereIn('goodsSku.sku_no', $skuNoArray);
-            };
-        } else {
-            $sku_where[] = ['goodsSku.sku_no', '=', $skuNoTrimmed];
+         if (!empty($where['sku_no'])) {
+             $skuNoTrimmed = trim($where['sku_no']);
+             if (strpos($skuNoTrimmed, ' ') !== false) {
+                 $skuNoArray = explode(' ', $skuNoTrimmed);
+                 $sku_where[] = function ($query) use ($skuNoArray) {
+                     $query->whereIn('goodsSku.sku_no', $skuNoArray);
+                 };
+             } else {
+                 $sku_where[] = ['goodsSku.sku_no', '=', $skuNoTrimmed];
+             }
+         }
+     
+         // 获取当前站点信息
+         $site_info = (new Site())->where([['site_id', '=', $this->site_id]])->find();
+         
+         // 获取需要查询的站点ID列表
+         $site_ids = [$this->site_id]; // 默认包含当前站点
+        //  return $where;
+         if ($site_info['client'] == 0 && !$where['only_self']) {
+             // 如果是被代理方，查找所有代理自己的站点
+             $agent_relations = (new SiteAgent())->where([
+                 ['agent_site_id', '=', $this->site_id],
+                 ['status', '=', 1]
+             ])->select()->toArray();
+             
+             foreach ($agent_relations as $relation) {
+                 $site_ids[] = $relation['site_id'];
+             }
+             // 条件加入  
+               $sku_where[]=  ['is_proxy','=',1];
+         } else {
+             // 如果是代理方，查找自己代理的所有站点
+             $agent_relations = (new SiteAgent())->where([
+                 ['site_id', '=', $this->site_id],
+                 ['status', '=', 1],
+                
+             ])->select()->toArray();
+             
+             foreach ($agent_relations as $relation) {
+                 $site_ids[] = $relation['agent_site_id'];
+             }
+         }
+     
+         // 构建查询模型
+       // 获取当前站点信息
+        $site_info = (new Site())->where([['site_id', '=', $this->site_id]])->find();   
+        $search_model = $this->model
+            ->whereIn('goods.site_id', $site_ids)
+            ->when(!empty($where['sku_no']), function ($query) use ($where) {
+                $skuNoTrimmed = trim($where['sku_no']);
+                if (strpos($skuNoTrimmed, ' ') !== false) {
+                    $skuNoArray = explode(' ', $skuNoTrimmed);
+                    $query->whereIn('goodsSku.sku_no', $skuNoArray);
+                } else {
+                    $query->where('goodsSku.sku_no', $skuNoTrimmed);
+                }
+            })
+            ->withSearch(["goods_name", "goods_type", "brand_id", "goods_category", "label_ids", 'service_ids', "sale_num", "status"], $where)
+            ->field($field)
+            ->withJoin([
+                'goodsSku' => function($query) use ($site_info) {
+                    // if ($site_info['client'] == 1) { // 代理站
+                    //     // 先尝试查找代理站自己的SKU
+                    //     $query->whereOr([
+                    //         ['goodsSku.site_id', '=', $site_info['site_id']],
+                    //         function($q) use ($site_info) {
+                    //             // 如果没有找到代理站的SKU，则查找代理商的SKU
+                    //             $agent = (new SiteAgent())->where([
+                    //                 ['site_id', '=', $site_info['site_id']],
+                    //                 ['status', '=', 1]
+                    //             ])->find();
+                    //             if ($agent) {
+                    //                 $q->where('goodsSku.site_id', '=', $agent['agent_site_id']);
+                    //             }
+                    //         }
+                    //     ]);
+                    // } else { // 代理商
+                        $query->where('site_id', '=', $site_info['site_id']);
+                    // }
+                    $query->field('sku_id,  price, sale_price, market_price, member_price, sku_no, cost_price');
+                }
+            ])
+            ->where($sku_where)
+            ->order($order)
+            ->append(['goods_type_name', 'brand_name', 'site_name', 'goods_edit_path', 'goods_cover_thumb_small']);
+                // 执行查询
+                $list = $this->pageQuery($search_model);
+            
+                // 处理返回数据，添加代理关系信息
+                if (!empty($list['data'])) {
+                    foreach ($list['data'] as &$item) {
+                        if ($item['site_id'] != $this->site_id) {
+                            // 获取代理关系信息
+                            $proxy_relation = (new SiteAgent())->where([
+                                ['site_id', '=', $this->site_id],
+                                ['agent_site_id', '=', $item['site_id']],
+                                ['status', '=', 1]
+                            ])->find();
+            
+                            if ($proxy_relation) {
+                                $item['is_proxy'] = 1;
+                                $item['proxy_info'] = $proxy_relation;
+                                
+                                // 处理SKU价格
+                                if (!empty($item['goods_sku'])) {
+                                    foreach ($item['goods_sku'] as &$sku) {
+                                        $sku['source_price'] = $sku['market_price'];
+                                        $sku['proxy_price'] = $this->calculateProxyPrice($sku['market_price']);
+                                    }
+                                }
+                            }
+                        }
+                        // 加入一个字段 join_time 表示 入库的时间 
+                        //  $item['join_time'] = time() - time($item['create_time']);
+                        $item['join_time'] =floor((time() - strtotime($item['create_time'])) / (24 * 3600));
+                    }
+                }
+            
+            return $list;
         }
-    }
-
-    // 构建查询模型
-    $search_model = $this->model->where('goods.site_id', $this->site_id)
-        ->when(!empty($where['sku_no']), function ($query) use ($where) {
-            // 这里假设 $where['sku_no'] 包含的值是精确匹配，不是模糊匹配
-            $skuNoTrimmed = trim($where['sku_no']);
-            if (strpos($skuNoTrimmed, ' ') !== false) {
-                $skuNoArray = explode(' ', $skuNoTrimmed);
-                $query->whereIn('goodsSku.sku_no', $skuNoArray);
-            } else {
-                $query->where('goodsSku.sku_no', $skuNoTrimmed);
-            }
-        })->withSearch([ "goods_name", "goods_type", "brand_id", "goods_category", "label_ids", 'service_ids', "sale_num", "status"  ], $where)
-        ->field($field)
-        ->withJoin([
-            'goodsSku' => ['sku_id', 'goods_id', 'price','sale_price', 'market_price', 'member_price', 'sku_no']
-        ])
-        ->where($sku_where)
-        ->order($order)
-        ->append(['goods_type_name', 'brand_name', 'goods_edit_path', 'goods_cover_thumb_small']);
-
-    // 执行查询
-    $list = $this->pageQuery($search_model);
-
-    return $list;
-    }
+        
+  
+    
 
 
 
@@ -503,16 +575,16 @@ class GoodsService extends BaseAdminService
                     $sku_data[ 'sale_price' ] = $data[ 'price' ];
                     $sku_data[ 'stock' ] = $data[ 'stock' ];
                 }
-                if ($this->site_id == 100005) {
-                    $sku_data['member_price'] = json_encode(['level_1' => $data['price']]);
-                    if ($data['price'] < 1000) {
-                        $sku_data['price'] = $data['price'] + 100;
-                    } elseif ($data['price'] < 5000) {
-                        $sku_data['price'] = $data['price'] + 200;
-                    } else {
-                        $sku_data['price'] = $data['price'] + 300;
-                    }
-                }
+                // if ($this->site_id == 100005) {
+                //     $sku_data['member_price'] = json_encode(['level_1' => $data['price']]);
+                //     if ($data['price'] < 1000) {
+                //         $sku_data['price'] = $data['price'] + 100;
+                //     } elseif ($data['price'] < 5000) {
+                //         $sku_data['price'] = $data['price'] + 200;
+                //     } else {
+                //         $sku_data['price'] = $data['price'] + 300;
+                //     }
+                // }
                 $sku_count = $goods_sku_model->where([ [ 'goods_id', '=', $goods_id ] ])->count();
                 if ($sku_count > 1) {
 
@@ -1093,12 +1165,34 @@ class GoodsService extends BaseAdminService
      */
     public function editGoodsListPrice($params)
     {
+
+        // 获取当前站点ID
+        $siteId = $this->site_id;
+        // 获取当前商品的站点
+        $goods_site_id = $this->model->where([
+            ['goods_id', '=', $params['goods_id']]
+        ])->value('site_id');
+
+        // 判断当前站点 和 要修改的商品的站点是否 一致或者 有代理关系
+        $site_agent = (new SiteAgent())->where([
+            ['site_id', '=', $goods_site_id],
+            ['agent_site_id', '=',$siteId ]
+        ])->find();
+        // 或者 当前站点 和 要修改的商品的站点 一致
+        if($goods_site_id == $siteId){
+            $site_agent = true;
+        }
+
+        if (!$site_agent) {
+            throw new CommonException('SHOP_GOODS_NOT_EXIST');
+        }
+
         try {
             Db::startTrans();
 
             $goods_info = $this->model->where([
                 [ 'goods_id', '=', $params[ 'goods_id' ] ],
-                [ 'site_id', '=', $this->site_id ]
+               
             ])->field('goods_id,goods_type')->findOrEmpty()->toArray();
 
             if (empty($goods_info)) {
@@ -1247,136 +1341,161 @@ class GoodsService extends BaseAdminService
         return $active_goods_count;
     }
 
-    // 一键同步 100005站点的商品 到当前站点
-    
-    public function syncGoodsList($siteId=null)
-    {
-        // 定义当前站点ID
-        $siteId = $siteId ? $siteId : $this->site_id;
-        //如果 当前站点ID为100005则直接返回
-        if ($siteId == '100005') {
-            return '不能同步自己的商品';
-        }
-        $sites = [ 100010,100022,100023,100024,100026];
-        // 如果你$sites 中 没有有 当前的 $siteId  直接返回 无权限
-        if (!in_array($siteId, $sites)) {
-            return '没有权限'.$siteId;
-        }
  
-        // 查询站点100005的商品
-        $list = $this->model->where([['site_id', '=', '100005'],['goods_type','=','real']])->select()->toArray();
+/**
+ * 同步SKU价格
+ * @param int|null $siteId 目标站点ID
+ * @return string
+ */
+public function syncGoodsList($siteId = null)
+{
+    try {
+        // 定义当前站点ID
+        $siteId = $siteId ?: $this->site_id;
         
-        $updateCount = 0;
-        $syncCount = 0;
+        // 获取所有client=1的站点（源站点）
+        $source_sites = (new Site())->where([
+            ['client', '=', 1]
+        ])->select()->toArray();
         
-        if (!empty($list)) {
-            foreach ($list as $goods) {
-                // 去查询一下表中有没有当前站点ID的商品通过字段的 'goods_no' 来查询如果没有则插入如果有则更新
-                $goods_no = $goods['goods_no'];
-                $goods_info = $this->model->where([['goods_no', '=', $goods_no], ['site_id', '=', $siteId]])->find();
-                
-                if (empty($goods_info)) {
-                    // 如果 这个商品的状态已经是 下架了直接 返回
-                    if ($goods['status'] == 0) {
-                        continue;
-                    }
-                    // 将站点ID设置为当前站点ID
-                    $goods['site_id'] = $siteId;
-                    $before_goods_id = $goods['goods_id'];
-                    // 删除旧的商品ID字段
-                    unset($goods['goods_id']);
+        if (empty($source_sites)) {
+            return '没有找到源站点';
+        }
 
-                    // 将 $goods['category_id'] 里的值加 "" 例如 array_map(function($item) { return (string) $item; }, $data[ 'goods_category' ])
-                    $goods['goods_category'] = array_map(function($item) { return (string) $item; }, $goods['goods_category']);
-                    $goods['create_time'] = strtotime( $goods['create_time'] );
-                    $goods['update_time'] = strtotime( $goods['update_time'] );
-                    $goods['source']= '天泰通讯';
-                    
-                    // 保存商品数据，获取新生成的商品ID
-                    $newGoods = $this->model->create($goods);
-                    $newGoodsId = $newGoods['goods_id'];
+        $total_update = 0;
+        $total_sync = 0;
+        $messages = [];
 
-                    // 查询旧商品ID对应的SKU列表
-                    $goodsSkuModel = new GoodsSku();
-                    $skuList = $goodsSkuModel->where([
-                        ['goods_id', '=', $before_goods_id],
-                        ['site_id', '=', '100005']
-                    ])->select()->toArray();
-                    
-                    // 遍历SKU列表，更新站点ID和商品ID
-                    foreach ($skuList as &$sku) {
-                        // 获取到 $sku['member_price'] 字段 为json 格式 转为数组
-                        $sku['member_price'] = json_decode($sku['member_price'], true);
-                        $sku['site_id'] = $siteId;
-                        $sku['goods_id'] = $newGoodsId;
-                        if( $sku['member_price']){
-                            $sku['cost_price'] = $sku['member_price']['level_1'];
-                        }else{
-                            $sku['cost_price']=0;
-                        }
-                        unset($sku['sale_price']);
-                        unset($sku['sku_id']);
-                        unset($sku['member_price']);
-                    }
-                    // 批量插入更新后的SKU数据
-                    $goodsSkuModel->insertAll($skuList);
+        foreach ($source_sites as $source_site) {
+            // 检查代理关系
+            $site_agent = (new SiteAgent())->where([
+                ['site_id', '=', $source_site['site_id']],
+                ['agent_site_id', '=', $siteId],
+                ['status', '=', 1]
+            ])->find();
 
-                    // 查询一下 $before_goods_id 这个值在 new GoodsSpec 表里是否有这个商品ID 如果有这将这条数据 插入到 new GoodsSpec 表里 将 goods_id 替换为新的商品ID
-                    $goodsSpecModel = new GoodsSpec();
-                    $goodsSpec = $goodsSpecModel->where([
-                        ['goods_id', '=', $before_goods_id],
-                        ['site_id', '=', '100005']
-                    ])->find();
-                    //   $goodsSpec 为一条 数据 将goods_id 插入为新的商品ID 并把 spec_id 删除
-                    if ($goodsSpec) {
-                         $newGoodsSpec = $goodsSpec->toArray();
-                         $newGoodsSpec['goods_id'] = $newGoodsId;
-                         $newGoodsSpec['site_id'] = $siteId;
-                         unset($newGoodsSpec['spec_id']);
-                         $goodsSpecModel->insert($newGoodsSpec);
-                    }                    
-                    $syncCount++;
+            if (empty($site_agent)) {
+                $messages[] = "站点 {$siteId} 没有代理 {$source_site['site_id']} 的权限";
+                continue;
+            }
+
+            // 获取所有商品的SKU（源站点的价格）
+            $goodsSkuModel = new GoodsSku();
+            $source_skus = $goodsSkuModel->where([
+                ['site_id', '=', $source_site['site_id']]
+            ])->select()->toArray();
+
+            $current_update = 0;  // 当前源站点的更新计数
+            $current_sync = 0;    // 当前源站点的同步计数
+
+            foreach ($source_skus as $sku) {
+                // 检查目标站点是否已有该商品的价格记录
+                $exists = $goodsSkuModel->where([
+                    ['goods_id', '=', $sku['goods_id']],
+                    ['sku_no', '=', $sku['sku_no']],
+                    ['site_id', '=', $siteId]
+                ])->find();
+
+                // 使用 market_price 作为基准价格
+                $base_price = $sku['market_price'];
+                // 计算代理价格
+                $proxy_price = $this->calculateProxyPrice($base_price);
+
+                if ($exists) {
+                    // 只更新价格相关字段
+                    $goodsSkuModel->where([
+                        ['goods_id', '=', $sku['goods_id']],
+                        ['sku_no', '=', $sku['sku_no']],
+                        ['site_id', '=', $siteId]
+                    ])->update([
+                        'cost_price' => $base_price,
+                        'price' => $proxy_price,
+                        'market_price' => $sku['market_price']+100,
+                        'sale_price' => $base_price,
+                        'stock' => $sku['stock'],
+                    ]);
+                    $current_update++;
                 } else {
-                    //如果商品的状态不一样则进行更新 $goods['status'] 是参考的状态 $goods_info['status'] 是代理站点商品的状态
-                    if($goods['status'] != $goods_info['status'] || $goods['stock'] !== $goods_info['stock'] ||  $goods['update_time'] !== $goods_info['update_time'] ){
-                        // 进行更新只更新商品的状态及库存其他的保持不变
-                        $update_goods['status'] = $goods['status'];
-                        $update_goods['stock'] = $goods['stock'];
-                        $update_goods['update_time'] = strtotime( $goods['update_time']);
-                        $this->model->where([
-                            ['goods_no', '=', $goods_no],
-                            ['site_id', '=', $siteId]
-                        ])->update($update_goods);
-                        
-                        // 通过 goods_no 查询100005站点的sku信息
-                        $goods_sku = new GoodsSku();
-                        $source_sku = $goods_sku->where([
-                            ['goods_id', '=', $goods['goods_id']],
-                            ['site_id', '=', '100005']
-                        ])->select()->toArray();
-
-                        // 更新当前站点的sku信息
-                        foreach($source_sku as $sku) {
-                            $goods_sku->where([
-                                ['goods_id', '=', $goods_info['goods_id']],
-                                ['site_id', '=', $siteId],
-                                ['sku_no', '=', $sku['sku_no']]  // 通过sku_no匹配具体规格
-                            ])->update([
-                                'stock' => $sku['stock'],
-                                'cost_price' => $sku['sale_price'],
-                                'price' => $sku['price']
-                            ]);
-                        }
-                        
-                        $updateCount++;
-                    }
+                    // 插入新的价格记录
+                    $goodsSkuModel->insert([
+                        'site_id' => $siteId,
+                        'goods_id' => $sku['goods_id'], // 使用原商品ID
+                        'sku_no' => $sku['sku_no'],
+                        'sku_name' => $sku['sku_name'],
+                        'sku_image' => $sku['sku_image'],
+                        'sku_spec_format' => $sku['sku_spec_format'],
+                        'cost_price' => $base_price,
+                        'price' => $proxy_price,
+                        'sale_price' => $base_price,
+                        'market_price' => $sku['market_price'],
+                        'weight' => $sku['weight'],
+                        'volume' => $sku['volume'],
+                        'is_default' => $sku['is_default'],
+                    ]);
+                    $current_sync++;
                 }
             }
+
+            $total_update += $current_update;
+            $total_sync += $current_sync;
+            $messages[] = "源站点 {$source_site['site_id']} 更新: {$current_update} 条，同步: {$current_sync} 条";
         }
-        
-        return "更新成功: $updateCount 条， 同步成功: $syncCount 条".$siteId;
+
+        return implode("\n", $messages) . "\n总计更新: {$total_update} 条，同步: {$total_sync} 条";
+
+    } catch (\Exception $e) {
+        return "同步出错：" . $e->getMessage();
     }
- 
+}
+
+/**
+ * 计算代理价格
+ * @param float $base_price 基础价格
+ * @return float
+ */
+
+private function calculateProxyPrice($base_price)
+{
+    try {
+        // 查询当前站点的价格配置
+        $price_config = (new PhoneShopRecyclePriceConfig())->where([
+            'site_id' => $this->site_id
+        ])->find();
+
+        // 如果没有配置，直接返回基础价格+100
+        if (empty($price_config)) {
+            return $base_price + 200;
+        }
+        //  Log::write('站点配置信息 ' . $price_config['price_type'] );
+        // 价格类型1：固定加价
+        if ($price_config['price_type'] == 1) {
+            return $base_price + $price_config['member_markup'];
+        }
+
+        // 价格类型2：区间加价
+        if ($price_config['price_type'] == 2) {
+            // 查询符合当前价格的区间
+            $price_range = (new PhoneShopRecyclerPriceRange())->where([
+                'config_id' => $price_config['id']
+            ])->where('min_price', '<=', $base_price)
+              ->where('max_price', '>', $base_price)
+              ->find();
+
+            // 如果找到对应区间，使用区间的加价规则
+            if ($price_range) {
+                return $base_price + $price_range['member_markup'];
+            }
+        }
+
+        // 如果都没有匹配到，返回基础价格+100
+        return $base_price + 200;
+
+    } catch (\Exception $e) {
+        // 发生异常时返回基础价格+100
+        return $base_price + 200;
+    }
+}
+
 
 
 

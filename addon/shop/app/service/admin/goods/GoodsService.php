@@ -22,6 +22,7 @@ use addon\shop\app\model\goods\Stat;
 use addon\shop\app\model\order\OrderGoods;
 use addon\shop\app\service\admin\marketing\ManjianService;
 use addon\shop\app\service\core\goods\CoreGoodsLimitBuyService;
+use app\model\diy_form\DiyForm;
 use app\model\member\Member;
 use app\service\admin\addon\AddonService;
 use core\base\BaseAdminService;
@@ -58,7 +59,7 @@ class GoodsService extends BaseAdminService
 
         if (!empty($params[ 'goods_id' ])) {
             // 查询商品信息，用于编辑
-            $field = 'goods_id,goods_name,sub_title,goods_type,goods_cover,goods_image,goods_video,goods_desc,brand_id,goods_category,label_ids,service_ids,unit,stock,virtual_sale_num,is_limit,limit_type,max_buy,min_buy,status,sort,delivery_type,is_free_shipping,fee_type,delivery_money,delivery_template_id,supplier_id,attr_id,attr_format,member_discount,poster_id,is_gift';
+            $field = 'goods_id,goods_name,sub_title,goods_type,goods_cover,goods_image,goods_video,goods_desc,brand_id,goods_category,label_ids,service_ids,unit,stock,virtual_sale_num,is_limit,limit_type,max_buy,min_buy,status,sort,delivery_type,is_free_shipping,fee_type,delivery_money,delivery_template_id,supplier_id,attr_id,attr_format,member_discount,poster_id,is_gift,form_id';
             $goods_info = $this->model->field($field)->where([ [ 'goods_id', '=', $params[ 'goods_id' ] ] ])->findOrEmpty()->toArray();
             if (!empty($goods_info)) {
 
@@ -104,6 +105,20 @@ class GoodsService extends BaseAdminService
                 // 商品海报id，处理数据类型
                 if (empty($goods_info[ 'poster_id' ])) {
                     $goods_info[ 'poster_id' ] = '';
+                }
+
+                // 万能表单id，处理数据类型
+                if (!empty($goods_info[ 'form_id' ])) {
+                    $diy_form_model = new DiyForm();
+                    $diy_form_count = $diy_form_model->where([
+                        [ 'site_id', '=', $this->site_id ],
+                        [ 'form_id', '=', $goods_info[ 'form_id' ] ]
+                    ])->count();
+                    if ($diy_form_count == 0) {
+                        $goods_info[ 'form_id' ] = '';
+                    }
+                } else {
+                    $goods_info[ 'form_id' ] = '';
                 }
 
                 //  配送方式
@@ -190,7 +205,7 @@ class GoodsService extends BaseAdminService
      */
     public function getInfo(int $id)
     {
-        $field = 'goods_id,site_id,goods_name,sub_title,goods_type,goods_cover,goods_image,goods_video,goods_desc,brand_id,goods_category,label_ids,service_ids,unit,stock,sale_num,virtual_sale_num,is_limit,limit_type,max_buy,min_buy,status,sort,delivery_type,is_free_shipping,fee_type,delivery_money,delivery_template_id,supplier_id,create_time,update_time,member_discount,poster_id';
+        $field = 'goods_id,site_id,goods_name,sub_title,goods_type,goods_cover,goods_image,goods_video,goods_desc,brand_id,goods_category,label_ids,service_ids,unit,stock,sale_num,virtual_sale_num,is_limit,limit_type,max_buy,min_buy,status,sort,delivery_type,is_free_shipping,fee_type,delivery_money,delivery_template_id,supplier_id,create_time,update_time,member_discount,poster_id,form_id';
         $info = $this->model->field($field)->where([ [ 'goods_id', '=', $id ], [ 'site_id', '=', $this->site_id ] ])->findOrEmpty()->toArray();
         return $info;
     }
@@ -244,6 +259,7 @@ class GoodsService extends BaseAdminService
                 'supplier_id' => $data[ 'supplier_id' ],
                 'member_discount' => $data[ 'member_discount' ],
                 'poster_id' => $data[ 'poster_id' ],
+                'form_id' => $data[ 'form_id' ],
                 'create_time' => time()
             ];
             $res = $this->model->create($goods_data);
@@ -400,6 +416,7 @@ class GoodsService extends BaseAdminService
                 'supplier_id' => $data[ 'supplier_id' ],
                 'member_discount' => $data[ 'member_discount' ],
                 'poster_id' => $data[ 'poster_id' ],
+                'form_id' => $data[ 'form_id' ],
                 'update_time' => time()
             ];
 
@@ -419,14 +436,14 @@ class GoodsService extends BaseAdminService
                     'cost_price' => $data[ 'cost_price' ],
                     'weight' => $data[ 'weight' ],
                     'volume' => $data[ 'volume' ],
+                    'stock' => $data[ 'stock' ],
                     'is_default' => 1
                 ];
 
-                // 未参与营销活动，则允许修改 原价、销售价、库存
+                // 未参与营销活动，则允许修改 原价、销售价
                 if ($active_goods_count == 0) {
                     $sku_data[ 'price' ] = $data[ 'price' ];
                     $sku_data[ 'sale_price' ] = $data[ 'price' ];
-                    $sku_data[ 'stock' ] = $data[ 'stock' ];
                 }
 
                 $sku_count = $goods_sku_model->where([ [ 'goods_id', '=', $goods_id ] ])->count();
@@ -481,6 +498,7 @@ class GoodsService extends BaseAdminService
                             'cost_price' => $v[ 'cost_price' ],
                             'weight' => $v[ 'weight' ],
                             'volume' => $v[ 'volume' ],
+                            'stock' => $v[ 'stock' ],
                             'is_default' => $v[ 'is_default' ]
                         ];
 
@@ -488,7 +506,6 @@ class GoodsService extends BaseAdminService
                         if ($active_goods_count == 0) {
                             $sku_data[ 'price' ] = $v[ 'price' ];
                             $sku_data[ 'sale_price' ] = $v[ 'price' ];
-                            $sku_data[ 'stock' ] = $v[ 'stock' ];
                         }
 
                         if (!empty($v[ 'sku_id' ])) {
@@ -667,6 +684,11 @@ class GoodsService extends BaseAdminService
         if ($active_goods_count > 0) {
             throw new AdminException('SHOP_GOODS_PARTICIPATE_IN_ACTIVE_DISABLED_EDIT');
         }
+        // 查询商品是否参与礼品卡活动
+        $is_connected = event('GoodsIsConnectedCard', [ 'goods_ids' => $goods_ids, 'site_id' => $this->site_id ]);
+        if (!empty($is_connected) && isset($is_connected[ 0 ]) && $is_connected[ 0 ]) {
+            throw new AdminException('GOODS_PARTICIPATE_IN_ACTIVE_DISABLED_DELETE');
+        }
 
         // 删除之前下架商品
         $this->model->where([ [ 'goods_id', 'in', $goods_ids ], [ 'site_id', '=', $this->site_id ] ])->update([ 'status' => 0 ]);
@@ -736,7 +758,7 @@ class GoodsService extends BaseAdminService
             $goods_spec_model = new GoodsSpec();
 
             // 查询商品信息
-            $field = 'goods_name,site_id,sub_title,goods_type,goods_cover,goods_image,goods_video,goods_desc,brand_id,goods_category,label_ids,service_ids,unit,stock,virtual_sale_num,is_limit,limit_type,max_buy,min_buy,status,sort,delivery_type,is_free_shipping,fee_type,delivery_money,delivery_template_id,supplier_id,attr_id,attr_format,virtual_auto_delivery,virtual_receive_type,virtual_verify_type,virtual_indate,poster_id';
+            $field = 'goods_name,site_id,sub_title,goods_type,goods_cover,goods_image,goods_video,goods_desc,brand_id,goods_category,label_ids,service_ids,unit,stock,virtual_sale_num,is_limit,limit_type,max_buy,min_buy,status,sort,delivery_type,is_free_shipping,fee_type,delivery_money,delivery_template_id,supplier_id,attr_id,attr_format,virtual_auto_delivery,virtual_receive_type,virtual_verify_type,virtual_indate,poster_id,form_id';
 
             $goods_data = $this->model->field($field)->where([ [ 'goods_id', '=', $goods_id ], [ 'site_id', '=', $this->site_id ] ])->findOrEmpty()->toArray();
             if (empty($goods_data)) {
@@ -1007,7 +1029,7 @@ class GoodsService extends BaseAdminService
             [ 'goods.site_id', '=', $this->site_id ],
             [ 'goods.stock', '>', 0 ],
             [ 'status', '=', 1 ],
-            [ 'goods.is_gift', '=',  GoodsDict::NOT_IS_GIFT ]
+            [ 'goods.is_gift', '=', GoodsDict::NOT_IS_GIFT ]
         ];
 
         if (!empty($where[ 'keyword' ])) {
@@ -1022,17 +1044,17 @@ class GoodsService extends BaseAdminService
             ])
             ->where($sku_where)->order($order)->append([ 'goods_type_name', 'goods_cover_thumb_small', 'goods_cover_thumb_mid' ]);
         $list = $this->pageQuery($search_model);
-        if (!empty($where['member_id'])) {
-            $member_info = $this->getMemberInfo($where['member_id']);
+        if (!empty($where[ 'member_id' ])) {
+            $member_info = $this->getMemberInfo($where[ 'member_id' ]);
             foreach ($list[ 'data' ] as $k => &$v) {
                 if (!empty($v[ 'goodsSku' ])) {
                     $v[ 'goodsSku' ][ 'member_price' ] = $this->getMemberPrice($member_info, $v[ 'member_discount' ], $v[ 'goodsSku' ][ 'member_price' ], $v[ 'goodsSku' ][ 'price' ]);
                 }
                 // 限购查询当前会员已购数量
-                $has_buy = ( new CoreGoodsLimitBuyService() )->getGoodsHasBuyNumber($this->site_id, $where['member_id'], $v[ 'goods_id' ]);
+                $has_buy = ( new CoreGoodsLimitBuyService() )->getGoodsHasBuyNumber($this->site_id, $where[ 'member_id' ], $v[ 'goods_id' ]);
                 $v[ 'has_buy' ] = $has_buy;
                 // 满减活动
-                $manjian_info = ( new ManjianService() )->getManjianInfo([ 'goods_id' => $v[ 'goods_id' ], 'sku_id' => $v[ 'goodsSku' ][ 'sku_id' ], 'member_id' => $where['member_id'] ]);
+                $manjian_info = ( new ManjianService() )->getManjianInfo([ 'goods_id' => $v[ 'goods_id' ], 'sku_id' => $v[ 'goodsSku' ][ 'sku_id' ], 'member_id' => $where[ 'member_id' ] ]);
                 $v[ 'manjian_info' ] = $manjian_info;
             }
         }
@@ -1050,20 +1072,20 @@ class GoodsService extends BaseAdminService
         $goods_sku_model = new GoodsSku();
         $select_goods_list = $goods_sku_model->where([
             [ 'site_id', '=', $this->site_id ],
-            [ 'sku_id', 'in', $where['sku_ids'] ]
+            [ 'sku_id', 'in', $where[ 'sku_ids' ] ]
         ])->with([ 'goods' ])->field($field)->append([ 'goods_cover_thumb_small', 'goods_cover_thumb_mid' ])->select()->toArray();
-        if (!empty($where['member_id'])) {
-            $member_info = $this->getMemberInfo($where['member_id']);
+        if (!empty($where[ 'member_id' ])) {
+            $member_info = $this->getMemberInfo($where[ 'member_id' ]);
             foreach ($select_goods_list as $k => &$v) {
-                if (!empty($v['goods'])) {
-                    $v['member_price'] = $this->getMemberPrice($member_info, $v['goods']['member_discount'], $v['member_price'], $v['price']);
+                if (!empty($v[ 'goods' ])) {
+                    $v[ 'member_price' ] = $this->getMemberPrice($member_info, $v[ 'goods' ][ 'member_discount' ], $v[ 'member_price' ], $v[ 'price' ]);
                 }
                 // 限购查询当前会员已购数量
-                $has_buy = (new CoreGoodsLimitBuyService())->getGoodsHasBuyNumber($this->site_id, $where['member_id'], $v['goods_id']);
-                $v['has_buy'] = $has_buy;
+                $has_buy = ( new CoreGoodsLimitBuyService() )->getGoodsHasBuyNumber($this->site_id, $where[ 'member_id' ], $v[ 'goods_id' ]);
+                $v[ 'has_buy' ] = $has_buy;
                 // 满减活动
-                $manjian_info = (new ManjianService())->getManjianInfo(['goods_id' => $v['goods_id'], 'sku_id' => $v['sku_id'], 'member_id' => $where['member_id']]);
-                $v['manjian_info'] = $manjian_info;
+                $manjian_info = ( new ManjianService() )->getManjianInfo([ 'goods_id' => $v[ 'goods_id' ], 'sku_id' => $v[ 'sku_id' ], 'member_id' => $where[ 'member_id' ] ]);
+                $v[ 'manjian_info' ] = $manjian_info;
             }
         }
         return $select_goods_list;
@@ -1081,7 +1103,7 @@ class GoodsService extends BaseAdminService
 
         $goods_sku_model = new GoodsSku();
 
-        $info = $goods_sku_model->where([ [ 'site_id', '=', $this->site_id ], [ 'sku_id', '=', $data['sku_id'] ] ])
+        $info = $goods_sku_model->where([ [ 'site_id', '=', $this->site_id ], [ 'sku_id', '=', $data[ 'sku_id' ] ] ])
             ->field($field)
             ->with([
                 // 商品主表
@@ -1100,17 +1122,17 @@ class GoodsService extends BaseAdminService
             ])
             ->append([ 'sku_image_thumb_small', 'sku_image_thumb_mid', 'sku_image_thumb_big' ])
             ->findOrEmpty()->toArray();
-        if (!empty($info) && !empty($data['member_id'])) {
-            $member_info = $this->getMemberInfo($data['member_id']);
+        if (!empty($info) && !empty($data[ 'member_id' ])) {
+            $member_info = $this->getMemberInfo($data[ 'member_id' ]);
 
             $info[ 'member_price' ] = $this->getMemberPrice($member_info, $info[ 'goods' ][ 'member_discount' ], $info[ 'member_price' ], $info[ 'price' ]);
 
             $this->getMemberPriceByList($member_info, $info[ 'goods' ][ 'member_discount' ], $info[ 'skuList' ]);
             // 限购查询当前会员已购数量
-            $has_buy = ( new CoreGoodsLimitBuyService() )->getGoodsHasBuyNumber($this->site_id, $data['member_id'], $info[ 'goods_id' ]);
+            $has_buy = ( new CoreGoodsLimitBuyService() )->getGoodsHasBuyNumber($this->site_id, $data[ 'member_id' ], $info[ 'goods_id' ]);
             $info[ 'has_buy' ] = $has_buy;
             // 满减活动
-            $manjian_info = ( new ManjianService() )->getManjianInfo([ 'goods_id' => $info[ 'goods_id' ], 'sku_id' => $info[ 'sku_id' ], 'member_id' => $data['member_id'] ]);
+            $manjian_info = ( new ManjianService() )->getManjianInfo([ 'goods_id' => $info[ 'goods_id' ], 'sku_id' => $info[ 'sku_id' ], 'member_id' => $data[ 'member_id' ] ]);
             $info[ 'manjian_info' ] = $manjian_info;
         }
 
@@ -1417,36 +1439,36 @@ class GoodsService extends BaseAdminService
         }
 
         // 没有会员等级，排除
-        if (!empty($member_info) && empty($member_info['member_level'])) {
+        if (!empty($member_info) && empty($member_info[ 'member_level' ])) {
             $is_default = true;
         }
 
         foreach ($sku_list as $k => &$v) {
 
             if ($is_default) {
-                $v['member_price'] = $v['price'];
+                $v[ 'member_price' ] = $v[ 'price' ];
             } else {
                 if ($member_discount == 'discount') {
                     // 按照会员等级折扣计算
 
                     // 默认按会员享受折扣计算
-                    if (!empty($member_info['memberLevelData']['level_benefits'])
-                        && !empty($member_info['memberLevelData']['level_benefits']['discount'])
-                        && !empty($member_info['memberLevelData']['level_benefits']['discount']['is_use'])) {
-                        $v['member_price'] = number_format($v['price'] * $member_info['memberLevelData']['level_benefits']['discount']['discount'] / 10, 2, '.', '');
+                    if (!empty($member_info[ 'memberLevelData' ][ 'level_benefits' ])
+                        && !empty($member_info[ 'memberLevelData' ][ 'level_benefits' ][ 'discount' ])
+                        && !empty($member_info[ 'memberLevelData' ][ 'level_benefits' ][ 'discount' ][ 'is_use' ])) {
+                        $v[ 'member_price' ] = number_format($v[ 'price' ] * $member_info[ 'memberLevelData' ][ 'level_benefits' ][ 'discount' ][ 'discount' ] / 10, 2, '.', '');
                     } else {
-                        $v['member_price'] = $v['price'];
+                        $v[ 'member_price' ] = $v[ 'price' ];
                     }
 
                 } elseif ($member_discount == 'fixed_price') {
                     // 指定会员价
-                    if (!empty($v['member_price'])) {
-                        $member_price = json_decode($v['member_price'], true); // 会员价，json格式，指定会员价
-                        if (!empty($member_price['level_' . $member_info['member_level']])) {
-                            $member_level_price = $member_price['level_' . $member_info['member_level']];
-                            $v['member_price'] = number_format($member_level_price, 2, '.', '');
+                    if (!empty($v[ 'member_price' ])) {
+                        $member_price = json_decode($v[ 'member_price' ], true); // 会员价，json格式，指定会员价
+                        if (!empty($member_price[ 'level_' . $member_info[ 'member_level' ] ])) {
+                            $member_level_price = $member_price[ 'level_' . $member_info[ 'member_level' ] ];
+                            $v[ 'member_price' ] = number_format($member_level_price, 2, '.', '');
                         } else {
-                            $v['member_price'] = $v['price'];
+                            $v[ 'member_price' ] = $v[ 'price' ];
                         }
                     }
                 }
@@ -1486,6 +1508,9 @@ class GoodsService extends BaseAdminService
             case GoodsDict::POSTER :
                 $filed_data[ 'poster' ][ 'poster_id' ] = $data[ 'set_value' ][ 'poster_id' ];
                 break;
+            case GoodsDict::DIY_FORM :
+                $filed_data[ 'diy_form' ][ 'form_id' ] = $data[ 'set_value' ][ 'form_id' ];
+                break;
             case GoodsDict::GIFT :
                 if (!isset($data[ 'set_value' ][ 'is_gift' ]) || !in_array($data[ 'set_value' ][ 'is_gift' ], [ GoodsDict::IS_GIFT, GoodsDict::NOT_IS_GIFT ])) break;
                 $filed_data[ 'gift' ][ 'is_gift' ] = $data[ 'set_value' ][ 'is_gift' ];
@@ -1505,10 +1530,10 @@ class GoodsService extends BaseAdminService
                 $goods_stock_list = ( new Goods() )->where([ [ 'goods_id', 'in', $data[ 'goods_ids' ] ], [ 'site_id', '=', $this->site_id ] ])->column('stock,goods_id');
                 $sku_save_data = $goods_stock = [];
                 foreach ($sku_list as $v) {
-                    $active_goods_count = $this->getActiveGoodsCount($v[ 'goods_id' ]);
-                    if ($active_goods_count > 0){
-                        continue;
-                    }
+//                    $active_goods_count = $this->getActiveGoodsCount($v[ 'goods_id' ]);
+//                    if ($active_goods_count > 0) {
+//                        continue;
+//                    }
                     if (!isset($goods_stock[ $v[ 'goods_id' ] ])) {
                         $goods_stock[ $v[ 'goods_id' ] ] = 0;
                     }

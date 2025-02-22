@@ -13,13 +13,12 @@ namespace addon\shop_giftcard\app\service\admin\giftcard;
 
 
 use addon\shop_giftcard\app\model\giftcard\Category;
-use addon\shop_giftcard\app\model\giftcard\Giftcard;
 use core\base\BaseAdminService;
 use core\exception\AdminException;
 
 
 /**
- * 礼品卡分类服务层
+ * 社区话题分类服务层
  * Class CategoryService
  * @package addon\shop_giftcard\app\service\admin\giftcard
  */
@@ -32,7 +31,7 @@ class CategoryService extends BaseAdminService
     }
 
     /**
-     * 获取礼品卡分类分页列表
+     * 获取社区话题分类分页列表
      * @param array $where
      * @return array
      * @throws \think\db\exception\DbException
@@ -51,7 +50,7 @@ class CategoryService extends BaseAdminService
     }
 
     /**
-     * 获取礼品卡分类列表
+     * 获取社区话题分类列表
      * @param array $where
      * @param string $field
      * @return array
@@ -63,7 +62,7 @@ class CategoryService extends BaseAdminService
     }
 
     /**
-     * 获取礼品卡分类信息
+     * 获取社区话题分类信息
      * @param int $id
      * @return array
      */
@@ -75,7 +74,7 @@ class CategoryService extends BaseAdminService
     }
 
     /**
-     * 添加礼品卡分类
+     * 添加社区话题分类
      * @param array $data
      * @return mixed
      */
@@ -87,7 +86,7 @@ class CategoryService extends BaseAdminService
     }
 
     /**
-     * 礼品卡分类编辑
+     * 社区话题分类编辑
      * @param int $id
      * @param array $data
      * @return bool
@@ -99,7 +98,7 @@ class CategoryService extends BaseAdminService
     }
 
     /**
-     * 删除礼品卡分类
+     * 删除社区话题分类
      * @param int $id
      * @return bool
      */
@@ -113,7 +112,7 @@ class CategoryService extends BaseAdminService
     }
 
     /**
-     * 修改礼品卡分类排序号
+     * 修改社区话题分类排序号
      * @param $data
      * @return mixed
      */
@@ -123,7 +122,7 @@ class CategoryService extends BaseAdminService
     }
 
     /**
-     * 修改礼品卡分类状态
+     * 修改社区话题分类状态
      * @param $data
      * @return mixed
      */

@@ -42,7 +42,7 @@ class BrandService extends BaseAdminService
             $order = $where[ 'order' ] . ' ' . $where[ 'sort' ];
         }
 
-        $search_model = $this->model->where([['site_id', '=', $this->site_id]])->withSearch([ "brand_name" ], $where)->field($field)->order($order);
+        $search_model = $this->model->where([ [ 'site_id', '=', $this->site_id ] ])->withSearch([ "brand_name" ], $where)->field($field)->order($order);
         $list = $this->pageQuery($search_model);
         return $list;
     }
@@ -56,7 +56,7 @@ class BrandService extends BaseAdminService
     public function getList(array $where = [], $field = 'brand_id,brand_name,logo,desc,sort,create_time')
     {
         $order = 'sort desc';
-        return $this->model->where([['site_id', '=', $this->site_id]])->withSearch([ "brand_name" ], $where)->field($field)->order($order)->select()->toArray();
+        return $this->model->where([ [ 'site_id', '=', $this->site_id ] ])->withSearch([ "brand_name" ], $where)->field($field)->order($order)->select()->toArray();
     }
 
     /**
@@ -67,7 +67,7 @@ class BrandService extends BaseAdminService
     public function getInfo(int $id)
     {
         $field = 'brand_id,brand_name,logo,desc,sort,create_time';
-        $info = $this->model->field($field)->where([ [ 'brand_id', '=', $id ], ['site_id', '=', $this->site_id] ])->findOrEmpty()->toArray();
+        $info = $this->model->field($field)->where([ [ 'brand_id', '=', $id ], [ 'site_id', '=', $this->site_id ] ])->findOrEmpty()->toArray();
         return $info;
     }
 
@@ -80,9 +80,8 @@ class BrandService extends BaseAdminService
     {
         $data[ 'create_time' ] = time();
         $data[ 'site_id' ] = $this->site_id;
-        $brandInfo = $this->model->where([ [ 'site_id', '=', $this->site_id], [ 'brand_name', '=', $data['brand_name']] ])->findOrEmpty()->toArray();
-        if($brandInfo)
-        {
+        $brandInfo = $this->model->where([ [ 'site_id', '=', $this->site_id ], [ 'brand_name', '=', $data[ 'brand_name' ] ] ])->findOrEmpty()->toArray();
+        if ($brandInfo) {
             throw new AdminException('品牌已存在，请检查');
         }
         $res = $this->model->create($data);
@@ -99,12 +98,11 @@ class BrandService extends BaseAdminService
     public function edit(int $id, array $data)
     {
         $data[ 'update_time' ] = time();
-        $brandInfo = $this->model->where([ [ 'site_id', '=', $this->site_id], [ 'brand_name', '=', $data['brand_name']] ])->findOrEmpty()->toArray();
-        if($brandInfo && $brandInfo['brand_id'] != $id )
-        {
+        $brandInfo = $this->model->where([ [ 'site_id', '=', $this->site_id ], [ 'brand_name', '=', $data[ 'brand_name' ] ] ])->findOrEmpty()->toArray();
+        if ($brandInfo && $brandInfo[ 'brand_id' ] != $id) {
             throw new AdminException('品牌已存在，请检查');
         }
-        $this->model->where([ [ 'brand_id', '=', $id ], ['site_id', '=', $this->site_id] ])->update($data);
+        $this->model->where([ [ 'brand_id', '=', $id ], [ 'site_id', '=', $this->site_id ] ])->update($data);
         return true;
     }
 
@@ -115,7 +113,7 @@ class BrandService extends BaseAdminService
      */
     public function del(int $id)
     {
-        $model = $this->model->where([ [ 'brand_id', '=', $id ], ['site_id', '=', $this->site_id] ])->find();
+        $model = $this->model->where([ [ 'brand_id', '=', $id ], [ 'site_id', '=', $this->site_id ] ])->find();
         $res = $model->delete();
         return $res;
     }

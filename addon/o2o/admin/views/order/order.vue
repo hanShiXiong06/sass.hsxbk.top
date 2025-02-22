@@ -115,7 +115,8 @@
                                     </el-table-column>
                                     <el-table-column :label="t('orderMoney')" min-width="130" >
                                         <template #default>
-                                            ￥{{ item.total_money }}
+                                            <span>￥{{ item.total_money }}</span>
+                                            <div v-if="item.pay">{{item.member_id !== item.pay.main_id && item.pay.status == 2 ? item.pay.pay_type_name:''}}</div>
                                         </template>
                                     </el-table-column>
                                     <el-table-column :label="t('orderStatus')" min-width="100">

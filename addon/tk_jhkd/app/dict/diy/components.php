@@ -35,6 +35,23 @@ return [
                     "mrsize"=>"4"
                 ]
             ],
+            'KdGz' => [
+                'title' => '关注公众号',
+                'icon' => 'nc-iconfont nc-icon-erweimaV6xx-1',
+                'path' => 'edit-gz', // 编辑组件属性名称
+                'support_page' => [], // 支持页面
+                'uses' => 1, // 最大添加数量
+                'sort' => 10001,
+                'value' => [
+                    "btbackground"=>"#0057FE",
+                    "link" => [
+                        "name" => "",
+                        "title" => "",
+                    ],
+                    "text" => "关注公众号,第一时间掌握物流动态",
+                    "min"=>3,
+                ]
+            ],
         ],
     ],
 

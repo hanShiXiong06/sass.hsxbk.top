@@ -16,6 +16,7 @@ use addon\vipcard\app\dict\order\OrderLogDict;
 use addon\vipcard\app\model\Order;
 use addon\vipcard\app\service\core\CoreOrderLogService;
 use addon\vipcard\app\service\core\CoreOrderService;
+use app\model\member\Member;
 use core\base\BaseApiService;
 use core\exception\CommonException;
 
@@ -57,18 +58,30 @@ class OrderService extends BaseApiService
     {
         $field = 'order_id, site_id, member_id, order_from, order_type, order_no, out_trade_no, order_status, refund_status, refund_no, ip, create_time, pay_time, close_time, auto_close_time, is_enable_refund, delete_time, order_money, pay_money';
 
-        $detail = $this->model->where([ ['site_id', '=', $this->site_id], ['member_id', '=', $this->member_id ], ['order_id', '=', $order_id]])->field($field)->with([ 'item' => function($query) {
+        $info = $this->model->where([ ['site_id', '=', $this->site_id], ['member_id', '=', $this->member_id ], ['order_id', '=', $order_id]])->field($field)->with([ 'item' => function($query) {
             $query->field('order_id, item_name, item_image, price, num, item_money, site_id');
         }, 'member_card' => function($query){
             $query->field('order_id,card_id');
         }, 'pay' => function($query){
-            $query->field('out_trade_no,type');
+            $query->field('main_id, out_trade_no, type, pay_time, status')->append(['type_name']);
         },'order_log' => function($query){
             $query->field('order_id, action, action_time, nick_name, action_way');
         }, 'refund' => function($query){
             $query->field('refund_id,refund_no');
         }])->append(['order_status_info', 'item.item_image_thumb_small'])->findOrEmpty()->toArray();
-        return $detail;
+        if(!empty($info))
+        {
+            if (!empty($info[ 'pay' ])) {
+                if ($info[ 'member_id' ] != $info[ 'pay' ][ 'main_id' ]) {
+                    $member_info = ( new Member() )->field('nickname,headimg')->where([ [ 'site_id', '=', $this->site_id ], [ 'member_id', '=', $info[ 'pay' ][ 'main_id' ] ] ])->findOrEmpty()->toArray();
+                    if (!empty($member_info)) {
+                        $info[ 'pay' ][ 'pay_member' ] = $member_info['nickname'];
+                        $info[ 'pay' ][ 'pay_member_headimg' ] = $member_info['headimg'];
+                    }
+                }
+            }
+        }
+        return $info;
     }
 
     /**

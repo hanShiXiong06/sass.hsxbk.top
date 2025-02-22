@@ -11,7 +11,7 @@
 					</el-radio-group>
 				</el-form-item>
 				<el-form-item :label="t('articleNum')" v-show="diyStore.editComponent.sources == 'initial'">
-					<el-slider v-model="diyStore.editComponent.count" show-input size="small" class="ml-[10px] article-slider" :min="1" :max="30" />
+					<el-slider v-model="diyStore.editComponent.count" show-input size="small" class="ml-[10px] diy-nav-slider" :min="1" :max="30" />
 				</el-form-item>
 				<el-form-item :label="t('manualSelectionSources')" v-show="diyStore.editComponent.sources == 'diy'" class=" flex">
 					<span @click="showArticle" class="cursor-pointer flex-1" :class="{ 'text-primary': diyStore.editComponent.articleIds.length > 0 }">{{ diyStore.editComponent.articleIds.length > 0 ? t('selected') + diyStore.editComponent.articleIds.length + t('piece') : t('selectPlaceholder') }}</span>
@@ -79,10 +79,10 @@
 					<el-color-picker v-model="diyStore.editComponent.textColor"/>
 				</el-form-item>
 				<el-form-item :label="t('topRounded')">
-					<el-slider v-model="diyStore.editComponent.topElementRounded" show-input size="small" class="ml-[10px] graphic-nav-slider" :max="50" />
+					<el-slider v-model="diyStore.editComponent.topElementRounded" show-input size="small" class="ml-[10px] diy-nav-slider" :max="50" />
 				</el-form-item>
 				<el-form-item :label="t('bottomRounded')">
-					<el-slider v-model="diyStore.editComponent.bottomElementRounded" show-input size="small" class="ml-[10px] graphic-nav-slider" :max="50" />
+					<el-slider v-model="diyStore.editComponent.bottomElementRounded" show-input size="small" class="ml-[10px] diy-nav-slider" :max="50" />
 				</el-form-item>
 			</el-form>
 		</div>
@@ -170,11 +170,4 @@ const save = () => {
 defineExpose({})
 </script>
 
-<style lang="scss">
-	.article-slider {
-	.el-slider__input {
-		width: 100px;
-	}
-}
-</style>
 <style lang="scss" scoped></style>

@@ -29,7 +29,6 @@ return [
                 'status' => '1',
                 'is_show' => '1',
             ],
-            // banner 
             [
                 'menu_name' => '轮播管理',
                 'menu_key' => 'recycle_banner',

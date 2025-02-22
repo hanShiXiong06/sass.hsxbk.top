@@ -58,7 +58,8 @@ class Order extends BaseAdminController
              ["order_status",""],
              ["refund_status",""],
              ["remark",""],
-             ["create_time",["",""]]
+             ["create_time",["",""]],
+             ["keyword",""]
         ]);
         return success((new OrderService())->getPage($data));
     }
@@ -71,7 +72,9 @@ class Order extends BaseAdminController
     public function info(int $id){
         return success((new OrderService())->getInfo($id));
     }
-
+    public function fxinfo($id){
+        return success((new OrderService())->getFxInfo($id));
+    }
     /**
      * 添加订单列
      * @return \think\Response

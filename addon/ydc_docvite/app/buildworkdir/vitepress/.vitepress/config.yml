@@ -1,0 +1,22 @@
+site:
+  title: "我的文档站点"
+  description: "我的 Vitepress 文档站点"
+  base: "/"
+  srcDir: "./"
+  outDir: "./dist"
+  cacheDir: "./cache"
+  docsEntry: "/docs/测试文档"
+  editLink:
+    text: "易东云文档"
+    link: "https://doc.yidong.site"
+  addonNavis:
+    - text: "1243"
+      url: "https://www.baidu.com"
+    - text: "易东云"
+      url: "https://doc.yidong.site"
+  blogEntry: "/blog/2021-08-26-welcome/index"
+  footer:
+    message: "易东云文档Vite"
+    copyright: "Copyright © 2024 易东云网络"
+  customProperty: 
+    

@@ -832,3 +832,64 @@ export function syncGoodsList() {
     showSuccessMessage: true,
   });
 }
+
+/**
+ * 内存规格分组相关接口
+ */
+export function getMemoryGroupList(params?: Record<string, any>) {
+  return request.get("/phone_shop/goods/memory_group", { params });
+}
+
+export function getMemoryGroupDetail(id: number) {
+  return request.get(`/phone_shop/goods/memory_group/${id}`);
+}
+
+export function addMemoryGroup(data: Record<string, any>) {
+  return request.post("/phone_shop/goods/memory_group", data);
+}
+
+export function editMemoryGroup(id: number, data: Record<string, any>) {
+  return request.put(`/phone_shop/goods/memory_group/${id}`, data);
+}
+
+export function deleteMemoryGroup(id: number) {
+  return request.delete(`/phone_shop/goods/memory_group/${id}`);
+}
+
+/**
+ * 内存规格相关接口
+ */
+export function getMemoryList(params?: Record<string, any>) {
+  return request.get("/phone_shop/goods/memory", { params });
+}
+
+export function getMemoryLists(id?: string | number | Array<string | number>) {
+  // 如果是数组，转换为逗号分隔的字符串
+  let params = Array.isArray(id) ? id.join(",") : id;
+
+  return request.get("/phone_shop/goods/memorys", {
+    params: {
+      id: params,
+    },
+  });
+}
+
+export function getMemoryDetail(id: number) {
+  return request.get(`/phone_shop/goods/memory/${id}`);
+}
+
+export function addMemory(data: Record<string, any>) {
+  return request.post("/phone_shop/goods/memory", data);
+}
+
+export function editMemory(id: number, data: Record<string, any>) {
+  return request.put(`/phone_shop/goods/memory/${id}`, data);
+}
+
+export function deleteMemory(id: number) {
+  return request.delete(`/phone_shop/goods/memory/${id}`);
+}
+
+export function getMemoryListByGroupId(groupId: number) {
+  return request.get(`/phone_shop/goods/memory_group/${groupId}`);
+}

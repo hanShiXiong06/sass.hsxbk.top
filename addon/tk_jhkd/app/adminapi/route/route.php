@@ -10,6 +10,8 @@ use think\facade\Route;
  */
 Route::group("tk_jhkd", function () {
     //Route::get('ceshi', 'addon\tk_jhkd\app\adminapi\controller\Ceshi@ceshi');
+    //检查站点是否有快递分销插件
+    Route::get('checkfenxiao', 'addon\tk_jhkd\app\adminapi\controller\Config@checkFenxiao');
     Route::get('getlink', 'addon\tk_jhkd\app\adminapi\controller\order\Order@getLink');
     Route::get('index', 'addon\tk_jhkd\app\adminapi\controller\Index@index');
     //配置列表
@@ -107,6 +109,7 @@ Route::group('tk_jhkd', function () {
     Route::get('order', 'addon\tk_jhkd\app\adminapi\controller\order\Order@lists');
     //订单列详情
     Route::get('order/:id', 'addon\tk_jhkd\app\adminapi\controller\order\Order@info');
+    Route::get('fxorder/:id', 'addon\tk_jhkd\app\adminapi\controller\order\Order@fxinfo');
     //订单佣金手动触发
     Route::post('order/commissionorder/:id', 'addon\tk_jhkd\app\adminapi\controller\order\Order@commissionOrder');
     //订单备注

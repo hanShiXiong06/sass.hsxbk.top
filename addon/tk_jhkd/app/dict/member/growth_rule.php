@@ -3,8 +3,8 @@
 return [
     'tk_jhkd_order' => [
         'key' => 'tk_jhkd_order',
-        'name' => '聚合快递下单',
-        'desc' => '聚合快递订单完成后发放成长值',
+        'name' => '快递下单',
+        'desc' => '快递订单完成后发放成长值',
         'component' => '/src/addon/tk_jhkd/views/member/components/growth-rule-jhkd.vue',
         'calculate' =>'',
         'content' => [

@@ -137,9 +137,16 @@ return [
         'MemberLoginAfter' => [ 'addon\shop\app\listener\MemberLoginAfterListener' ],
 
         // 会员充值 赠送内容
-        'RechargeGiftContent'=>['addon\shop\app\listener\recharge\GiftContentListener'],
+        'RechargeGiftContent' => [ 'addon\shop\app\listener\recharge\GiftContentListener' ],
         // 会员充值成功后的事件
-        'RechargeAfterListener' =>['addon\shop\app\listener\recharge\RechargeAfterListener']
+        'RechargeAfterListener' => [ 'addon\shop\app\listener\recharge\RechargeAfterListener' ],
+
+        //获取宝贝数据
+        'TreasureType' => [ 'addon\shop\app\listener\treasure\TreasureTypeListener' ],
+        'TreasureData' => [ 'addon\shop\app\listener\treasure\TreasureDataListener' ],
+
+        //主题色
+        'ThemeColor' => [ 'addon\shop\app\listener\diy\ThemeColorListener' ]
 
     ],
     'subscribe' => [

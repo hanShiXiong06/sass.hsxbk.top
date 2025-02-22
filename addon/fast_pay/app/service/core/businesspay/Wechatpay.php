@@ -310,13 +310,11 @@ class Wechatpay
             if ($action == 'pay') {//支付
                 if ($result['event_type'] == 'TRANSACTION.SUCCESS') {
                     $pay_trade_data = $result['resource']['ciphertext'];
-
                     $temp_params = [
                         'trade_no' => $pay_trade_data['transaction_id'],
-                        'mch_id' => $pay_trade_data['sub_mchid']??0,
+                        'mch_id' => $pay_trade_data['mchid'],
                         'status' => OnlinePayDict::getWechatPayStatus($pay_trade_data['trade_state'])
                     ];
-
                     $callback_result = $callback($pay_trade_data['out_trade_no'], $temp_params);
                     if (is_bool($callback_result) && $callback_result) {
                         return Pay::wechat()->success();
@@ -333,22 +331,20 @@ class Wechatpay
                     ];
                     $temp_params = [
                         'trade_no' => $refund_trade_data['transaction_id'],
-                        'mch_id' => $refund_trade_data['sub_mchid']??'',
-                        'refund_no' => $refund_trade_data['out_refund_no'],
+                        'mch_id' => $refund_trade_data['mchid'],
                         'status' => $refund_status_array[$refund_trade_data['refund_status']],
+                        'refund_id' => $refund_trade_data['refund_id'],
+                        'fail_reason' => $refund_trade_data['fail_reason'] ?? ''
                     ];
-
                     $callback_result = $callback($refund_trade_data['out_trade_no'], $temp_params);
                     if (is_bool($callback_result) && $callback_result) {
                         return Pay::wechat()->success();
                     }
                 }
             }
-            return $this->fail();
-
-        } catch ( Throwable $e ) {
-//            throw new PayException($e->getMessage());
-            return $this->fail($e->getMessage());
+            return Pay::wechat()->fail();
+        } catch (\Exception $e) {
+            return Pay::wechat()->fail();
         }
     }
 

@@ -3,7 +3,7 @@
 return [
     'DIY_TK_JHKD_INDEX' => [
         'tk_jhkd_index_one' => [ // 页面标识
-            "title" => "快递首页", // 页面名称
+            "title" => "快递首页(模板一)", // 页面名称
             'cover' => 'addon/tk_jhkd/diy/cover/cover.png', // 页面封面图
             'preview' => 'addon/tk_jhkd/diy/cover/cover.png', // 页面预览图
             'desc' => '', // 页面描述
@@ -414,6 +414,279 @@ return [
                         "componentGradientAngle" =>"to bottom",
                         "componentEndBgColor" =>"rgba(217, 199, 255, 0.26)",
                         "pageStyle" =>"padding-top:2rpx;padding-bottom:0rpx;padding-right:24rpx;padding-left:24rpx;"
+                    ]
+                ]
+            ]
+        ],
+        'tk_jhkd_index_two' => [ // 页面标识
+            "title" => "快递首页(模板二)", // 页面名称
+            'cover' => 'addon/tk_jhkd/diy/cover/cover.png', // 页面封面图
+            'preview' => 'addon/tk_jhkd/diy/cover/cover.png', // 页面预览图
+            'desc' => '', // 页面描述
+            'mode' => 'diy', // 页面模式：diy：自定义，fixed：固定
+            // 页面数据源
+            "data" => [
+                "global" => [
+                    "title" =>"5元全国无限寄",
+                    "pageStartBgColor" =>"",
+                    "pageEndBgColor" =>"",
+                    "pageGradientAngle" =>"to bottom",
+                    "bgUrl" =>"",
+                    "bgHeightScale" =>100,
+                    "imgWidth" =>"",
+                    "imgHeight" =>"",
+                    "topStatusBar" => [
+                        "isShow" =>true,
+                        "bgColor" =>"#ffffff",
+                        "rollBgColor" =>"#ffffff",
+                        "style" =>"style-2",
+                        "styleName" =>"风格2",
+                        "textColor" =>"#333333",
+                        "rollTextColor" =>"#333333",
+                        "textAlign" =>"center",
+                        "inputPlaceholder" =>"请输入搜索关键词",
+                        "imgUrl" =>"",
+                        "link" => [
+                            "name" =>""
+                        ]
+                    ],
+                    "bottomTabBarSwitch" =>true,
+                    "popWindow" => [
+                        "imgUrl" =>"",
+                        "imgWidth" =>"",
+                        "imgHeight" =>"",
+                        "count" =>-1,
+                        "show" =>0,
+                        "link" => [
+                            "name" =>""
+                        ]
+                    ],
+                    "template" => [
+                        "textColor" =>"#303133",
+                        "pageStartBgColor" =>"",
+                        "pageEndBgColor" =>"",
+                        "pageGradientAngle" =>"to bottom",
+                        "componentBgUrl" =>"",
+                        "componentBgAlpha" =>2,
+                        "componentStartBgColor" =>"",
+                        "componentEndBgColor" =>"",
+                        "componentGradientAngle" =>"to bottom",
+                        "topRounded" =>0,
+                        "bottomRounded" =>0,
+                        "elementBgColor" =>"",
+                        "topElementRounded" =>0,
+                        "bottomElementRounded" =>0,
+                        "margin" => [
+                            "top" =>0,
+                            "bottom" =>0,
+                            "both" =>0
+                        ]
+                    ]
+                ],
+                "value" =>[
+                    [
+                        "path" =>"edit-image-ads",
+                        "uses" =>0,
+                        "id" =>"3pklscsbrve0",
+                        "componentName" =>"ImageAds",
+                        "componentTitle" =>"图片广告",
+                        "ignore" =>[
+                            "componentBgUrl"
+                        ],
+                        "imageHeight" =>134,
+                        "isSameScreen" =>false,
+                        "list" =>[
+                            [
+                                "link" => [
+                                    "name" =>""
+                                ],
+                                "imageUrl" =>"addon/tk_jhkd/indext/banner.png",
+                                "imgWidth" =>347,
+                                "imgHeight" =>124,
+                                "id" =>"5jxjee390c80",
+                                "width" =>375,
+                                "height" =>134.0057636887608
+                            ]
+                        ],
+                        "textColor" =>"#303133",
+                        "pageStartBgColor" =>"",
+                        "pageEndBgColor" =>"",
+                        "pageGradientAngle" =>"to bottom",
+                        "componentBgUrl" =>"",
+                        "componentBgAlpha" =>2,
+                        "componentStartBgColor" =>"",
+                        "componentEndBgColor" =>"",
+                        "componentGradientAngle" =>"to bottom",
+                        "topRounded" =>0,
+                        "bottomRounded" =>0,
+                        "elementBgColor" =>"",
+                        "topElementRounded" =>0,
+                        "bottomElementRounded" =>0,
+                        "margin" => [
+                            "top" =>10,
+                            "bottom" =>0,
+                            "both" =>4
+                        ]
+                    ],
+                    [
+                        "path" =>"edit-rubik-cube",
+                        "uses" =>0,
+                        "id" =>"4pcwp2zz7cm0",
+                        "componentName" =>"RubikCube",
+                        "componentTitle" =>"魔方",
+                        "ignore" =>[],
+                        "mode" =>"row1-lt-of1-tp-of2-bm",
+                        "imageGap" =>0,
+                        "list" =>[
+                            [
+                                "imageUrl" =>"addon/tk_jhkd/indext/jkd.png",
+                                "imgWidth" =>373,
+                                "imgHeight" =>464,
+                                "link" => [
+                                    "parent" =>"TK_JHKD_DIY_LINK",
+                                    "name" =>"TK_JHKD_ORDERSUBMIT",
+                                    "title" =>"快递下单",
+                                    "url" =>"/addon/tk_jhkd/pages/ordersubmit",
+                                    "action" =>""
+                                ]
+                            ],
+                            [
+                                "imageUrl" =>"addon/tk_jhkd/indext/jdj.png",
+                                "imgWidth" =>300,
+                                "imgHeight" =>182,
+                                "link" => [
+                                    "parent" =>"TK_JHKD_DIY_LINK",
+                                    "name" =>"TK_JHKD_ORDERKY",
+                                    "title" =>"寄重货",
+                                    "url" =>"/addon/tk_jhkd/pages/ordersubmit?type=ky",
+                                    "action" =>""
+                                ]
+                            ],
+                            [
+                                "imageUrl" =>"addon/tk_jhkd/indext/bcj.png",
+                                "imgWidth" =>115,
+                                "imgHeight" =>149,
+                                "link" => [
+                                    "parent" =>"TK_JHKD_DIY_LINK",
+                                    "name" =>"TK_JHKD_ORDERADDLIST",
+                                    "title" =>"补差价",
+                                    "url" =>"/addon/tk_jhkd/pages/orderaddlist",
+                                    "action" =>""
+                                ]
+                            ],
+                            [
+                                "imageUrl" =>"addon/tk_jhkd/indext/lfl.png",
+                                "imgWidth" =>115,
+                                "imgHeight" =>149,
+                                "link" => [
+                                    "parent" =>"TK_JHKD_DIY_LINK",
+                                    "name" =>"TK_JHKD_INDEX",
+                                    "title" =>"快递首页",
+                                    "url" =>"/addon/tk_jhkd/pages/index",
+                                    "action" =>"decorate"
+                                ]
+                            ]
+                        ],
+                        "textColor" =>"#303133",
+                        "pageStartBgColor" =>null,
+                        "pageEndBgColor" =>null,
+                        "pageGradientAngle" =>"to bottom",
+                        "componentBgUrl" =>"",
+                        "componentBgAlpha" =>2,
+                        "componentStartBgColor" =>"rgba(255, 255, 255, 1)",
+                        "componentEndBgColor" =>"rgba(255, 255, 255, 1)",
+                        "componentGradientAngle" =>"to bottom",
+                        "topRounded" =>10,
+                        "bottomRounded" =>10,
+                        "elementBgColor" =>"",
+                        "topElementRounded" =>0,
+                        "bottomElementRounded" =>0,
+                        "margin" => [
+                            "top" =>10,
+                            "bottom" =>0,
+                            "both" =>10
+                        ]
+                    ],
+                    [
+                        "path" =>"edit-image-ads",
+                        "uses" =>0,
+                        "id" =>"1znkrwhni7a8",
+                        "componentName" =>"ImageAds",
+                        "componentTitle" =>"图片广告",
+                        "ignore" =>[
+                            "componentBgUrl"
+                        ],
+                        "imageHeight" =>29,
+                        "isSameScreen" =>false,
+                        "list" =>[
+                            [
+                                "link" => [
+                                    "name" =>""
+                                ],
+                                "imageUrl" =>"https://pub-67865ceeb0e0447180f111951c7229af.r2.dev/upload/attachment/image/100000/202501/16/173700287309a99529d5e405cad2b8121e61c6e932_tk_s3.png",
+                                "imgWidth" =>591,
+                                "imgHeight" =>59,
+                                "id" =>"bebebp3520w",
+                                "width" =>297,
+                                "height" =>29.649746192893403
+                            ]
+                        ],
+                        "textColor" =>"#303133",
+                        "pageStartBgColor" =>"",
+                        "pageEndBgColor" =>"",
+                        "pageGradientAngle" =>"to bottom",
+                        "componentBgUrl" =>"",
+                        "componentBgAlpha" =>2,
+                        "componentStartBgColor" =>"",
+                        "componentEndBgColor" =>"",
+                        "componentGradientAngle" =>"to bottom",
+                        "topRounded" =>0,
+                        "bottomRounded" =>0,
+                        "elementBgColor" =>"",
+                        "topElementRounded" =>0,
+                        "bottomElementRounded" =>0,
+                        "margin" => [
+                            "top" =>7,
+                            "bottom" =>0,
+                            "both" =>39
+                        ]
+                    ],
+                    [
+                        "path" =>"edit-gz",
+                        "uses" =>1,
+                        "id" =>"5q7m1gj19i40",
+                        "componentName" =>"KdGz",
+                        "componentTitle" =>"关注公众号",
+                        "ignore" =>[],
+                        "btbackground" =>"#0057FE",
+                        "link" => [
+                            "parent" =>"DIY_PAGE",
+                            "name" =>"DIY_PAGE",
+                            "title" =>"首页",
+                            "url" =>"/app/pages/index/diy?id=945",
+                            "action" =>"decorate"
+                        ],
+                        "text" =>"关注公众号,第一时间掌握物流动态",
+                        "textColor" =>"#303133",
+                        "pageStartBgColor" =>"",
+                        "pageEndBgColor" =>"",
+                        "pageGradientAngle" =>"to bottom",
+                        "componentBgUrl" =>"",
+                        "componentBgAlpha" =>2,
+                        "componentStartBgColor" =>"",
+                        "componentEndBgColor" =>"",
+                        "componentGradientAngle" =>"to bottom",
+                        "topRounded" =>0,
+                        "bottomRounded" =>0,
+                        "elementBgColor" =>"",
+                        "topElementRounded" =>0,
+                        "bottomElementRounded" =>0,
+                        "margin" => [
+                            "top" =>0,
+                            "bottom" =>0,
+                            "both" =>0
+                        ],
+                        "min" =>"3"
                     ]
                 ]
             ]

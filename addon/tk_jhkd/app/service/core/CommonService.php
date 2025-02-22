@@ -10,6 +10,7 @@
 // +----------------------------------------------------------------------
 
 namespace addon\tk_jhkd\app\service\core;
+
 use addon\tk_jhkd\app\dict\config\PlatformDict;
 use addon\tk_jhkd\app\dict\delivery\KdniaoBrandDict;
 use addon\tk_jhkd\app\dict\delivery\XindaBrandDict;
@@ -17,6 +18,7 @@ use addon\tk_jhkd\app\dict\delivery\YidaBrandDict;
 use addon\tk_jhkd\app\dict\delivery\YisuBrandDict;
 use addon\tk_jhkd\app\dict\delivery\YunyangBrandDict;
 use app\model\dict\Dict;
+use app\service\core\site\CoreSiteService;
 use app\service\core\sys\CoreConfigService;
 use core\base\BaseAdminService;
 use core\exception\CommonException;
@@ -33,24 +35,42 @@ class CommonService extends BaseAdminService
     {
         parent::__construct();
     }
-    public function getBrand($platform,$delivery_type)
+
+    /**
+     * @Notes:验证站点是否有快递分销插件
+     * checkFenxiao
+     * 2025/1/12  13:51
+     * author:TK
+     */
+    public function checkFenxiao()
     {
-        if($platform == 'xinda'){
+        $addons = (new CoreSiteService())->getAddonKeysBySiteId($this->site_id);
+        if (!in_array('kd_fenxiao', $addons)) {
+            return ['status' => false, 'msg' => '暂无快递分销插件权限'];
+        } else {
+            return ['status' => true, 'msg' => '拥有快递分销插件'];
+        }
+    }
+
+    public function getBrand($platform, $delivery_type)
+    {
+        if ($platform == 'xinda') {
             return XindaBrandDict::getBrand($delivery_type);
         }
-        if($platform == 'yida'){
+        if ($platform == 'yida') {
             return YidaBrandDict::getBrand($delivery_type);
         }
-        if($platform == 'yunyang'){
+        if ($platform == 'yunyang') {
             return YunyangBrandDict::getBrand($delivery_type);
         }
-        if($platform == 'kdniao'){
+        if ($platform == 'kdniao') {
             return KdniaoBrandDict::getBrand($delivery_type);
         }
-        if($platform == 'yisu'){
+        if ($platform == 'yisu') {
             return YisuBrandDict::getBrand($delivery_type);
         }
     }
+
     /**
      * @Notes:获取站点的驱动  type 为驱动类
      * @Interface getSiteDriver
@@ -71,7 +91,7 @@ class CommonService extends BaseAdminService
         }
         $extend = [];
         foreach ($config_type as $k => $v) {
-            if ($k!='default' && $v['is_use'] == 1) {
+            if ($k != 'default' && $v['is_use'] == 1) {
                 $v['type'] = $k;
                 $driverInfo = $this->getDriverByType($k);
                 if ($driverInfo) {
@@ -95,6 +115,7 @@ class CommonService extends BaseAdminService
         }
         return $extend;
     }
+
     public function getSiteAllDriver($site_id, $type = '')
     {
         $info = (new CoreConfigService())->getConfig((int)$site_id, PlatformDict::getType());
@@ -105,7 +126,7 @@ class CommonService extends BaseAdminService
         }
         $extend = [];
         foreach ($config_type as $k => $v) {
-            if ($k!='default') {
+            if ($k != 'default') {
                 $v['type'] = $k;
                 $driverInfo = $this->getDriverByType($k);
                 if ($driverInfo) {
@@ -159,6 +180,7 @@ class CommonService extends BaseAdminService
         }
         return $info['value'];
     }
+
     /**
      * 移动文件
      * 初始admin打包移动文件，uni-app-cli框架构建
@@ -176,8 +198,10 @@ class CommonService extends BaseAdminService
         }
         return true;
     }
+
     //获取url
-    public function getUrl(){
+    public function getUrl()
+    {
         $isSecure = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on';
         $domain = $_SERVER['HTTP_HOST'];
         if ($isSecure) {
@@ -187,6 +211,7 @@ class CommonService extends BaseAdminService
         }
         return $url;
     }
+
     public function getDictName($key, $value)
     {
         $field = 'id,name,key,dictionary,memo,create_time,update_time';
@@ -202,6 +227,7 @@ class CommonService extends BaseAdminService
             }
         }
     }
+
     /**
      * 读取json文件转化成数组返回
      * @param $json_file_path //json文件目录

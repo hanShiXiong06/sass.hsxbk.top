@@ -15,12 +15,7 @@
                     <el-image class="w-[16px] h-[16px] rounded-[50%] overflow-hidden" :src="img(addons[meta.addon].icon)" fit="fill"/>
                 </div>
                 <template #title>
-                    <el-tooltip placement="right" effect="light">
-                        <template #content>
-                            该功能仅限{{ addons[meta.addon].title }}使用
-                        </template>
-                        <span :class="[{'text-[15px]': routes.meta.class == 1}, {'text-[14px]': routes.meta.class != 1}, {'ml-[10px]': routes.meta.class == 2, 'ml-[15px]': routes.meta.class == 3}]">{{ meta.title }}</span>
-                    </el-tooltip>
+                    <span :class="[{'text-[15px]': routes.meta.class == 1}, {'text-[14px]': routes.meta.class != 1}, {'ml-[10px]': routes.meta.class == 2, 'ml-[15px]': routes.meta.class == 3}]">{{ meta.title }}</span>
                 </template>
             </el-menu-item>
             <el-menu-item :index="String(routes.name)" @click="router.push({ name: routes.name })" v-else>

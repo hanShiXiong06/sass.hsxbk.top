@@ -74,7 +74,7 @@ class AfterShopOrderPay
             }
 
             //消息发送
-            ( new NoticeService() )->send($order_data[ 'site_id' ], 'shop_order_pay', [ 'order_id' => $order_data[ 'order_id' ] ]);
+            ( new NoticeService() )->send($order_data[ 'site_id' ], 'phone_shop_order_pay', [ 'order_id' => $order_data[ 'order_id' ] ]);
 
             ( new DiscountService() )->orderPayAfter($order_data);
 

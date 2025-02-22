@@ -13,6 +13,11 @@
             <el-form-item :label="t('image')">
                 <upload-image v-model="formData.image" />
             </el-form-item>
+            <el-form-item :label="t('memoryGroup')">
+                <el-select v-model="formData.memory_group" clearable :placeholder="t('memoryGroupPlaceholder')" class="input-width">
+                    <el-option v-for="(item) in memoryGroupOptions.data" :key="item.group_id" :label="item.group_name" :value="item.group_id" />
+                </el-select>
+            </el-form-item>
 
             <el-form-item :label="t('isShow')" prop="is_show">
                 <el-switch v-model="formData.is_show" class="input-width" :active-value="1" :inactive-value="2" />
@@ -32,7 +37,7 @@
 import { ref, reactive, computed } from 'vue'
 import { t } from '@/lang'
 import type { FormInstance } from 'element-plus'
-import { addCategory, editCategory, getCategoryInfo, getCategoryList } from '@/addon/phone_shop/api/goods'
+import { addCategory, editCategory, getCategoryInfo, getCategoryList , getMemoryGroupList } from '@/addon/phone_shop/api/goods'
 
 const showDialog = ref(false)
 const loading = ref(false)
@@ -48,12 +53,16 @@ const initialFormData = {
     pid: 0,
     is_show: 1,
     child_count: 0,
+    memory_group: '',
     // sort: 9999,
     level: 1
 }
 const formData: Record<string, any> = reactive({ ...initialFormData })
 
 const formRef = ref<FormInstance>()
+
+const memoryGroupOptions = ref<any[]>([])
+
 
 // 表单验证规则
 const formRules = computed(() => {
@@ -103,11 +112,19 @@ const confirm = async (formEl: FormInstance | undefined) => {
 }
 
 // 获取全部分类
-const getCategoryAllFn = () => {
+const getCategoryAllFn =  () => {
     getCategoryList({
         level: 1
     }).then(res => {
         optionList.value = res.data.filter((el: any) => el.category_id != formData.category_id)
+        getMemoryGroupFn()
+    })
+}
+
+// 获取内存分组
+const getMemoryGroupFn = () => {
+    getMemoryGroupList().then(res => {
+        memoryGroupOptions.value = res.data
     })
 }
 
@@ -127,6 +144,7 @@ const setFormData = async (row: any = null) => {
         title.value = t('addCategory')
     }
     getCategoryAllFn()
+    getMemoryGroupFn()
     loading.value = false
 }
 

@@ -33,15 +33,17 @@ class RecycleBannerService extends BaseApiService
      */
     public function getPage()
     {
-        $field = 'id,site_id,image,sort,create_at,update_at';
+         $field = 'id,site_id,image,sort,create_at,update_at';
         $order = 'sort desc';
-        $search_model = $this->model->withSearch(['site_id'], ['site_id' => $this->site_id])
+        $search_model = $this->model->where([['site_id','=',$this->site_id]])->withSearch(['site_id', 'image'])
             ->field($field)
             ->order($order);
          
-        // 需要单独处理图片 将字符串转换为数组
-        $list = $search_model->select()->toArray();
-       
-        return $list;
+         // 需要单独处理图片 将字符串转换为数组
+         $list = $search_model->select()->toArray();
+        //  foreach ($list as $key => $value) {
+        //     $list[$key]['image'] = explode(',', $value['image']);
+        //  }
+         return $list;
     }
 }

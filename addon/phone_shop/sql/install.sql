@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `{{prefix}}phone_shop_address`;
+-- DROP TABLE IF EXISTS `{{prefix}}phone_shop_address`;
 CREATE TABLE `{{prefix}}phone_shop_address` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `site_id` int NOT NULL DEFAULT 0 COMMENT '站点id',
@@ -19,7 +19,7 @@ CREATE TABLE `{{prefix}}phone_shop_address` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci COMMENT='商家地址库';
 
 
-DROP TABLE IF EXISTS `{{prefix}}phone_shop_cart`;
+-- DROP TABLE IF EXISTS `{{prefix}}phone_shop_cart`;
 CREATE TABLE `{{prefix}}phone_shop_cart` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '购物车表ID',
   `site_id` int NOT NULL DEFAULT 0 COMMENT '站点id',
@@ -236,6 +236,7 @@ CREATE TABLE `{{prefix}}phone_shop_goods` (
   `goods_desc` text COMMENT '商品介绍',
   `brand_id` int(11) NOT NULL DEFAULT '0' COMMENT '商品品牌id',
    `memory_group` varchar(255) NOT NULL DEFAULT '' COMMENT '内存分组',
+   `goods_url` varchar(255) NOT NULL DEFAULT '' COMMENT '商品链接',
   `label_ids` varchar(255) NOT NULL DEFAULT '' COMMENT '标签组',
   `service_ids` varchar(255) NOT NULL DEFAULT '' COMMENT '商品服务',
   `unit` varchar(255) NOT NULL DEFAULT '件' COMMENT '单位',
@@ -258,7 +259,7 @@ CREATE TABLE `{{prefix}}phone_shop_goods` (
   `attr_id` int(11) NOT NULL DEFAULT '0' COMMENT '商品参数id',
   `attr_format` text COMMENT '商品参数内容，json格式',
   `is_discount` int(11) NOT NULL DEFAULT '0' COMMENT '是否参与限时折扣',
-  `member_discount` varchar(255) NOT NULL DEFAULT '' COMMENT '会员等级折扣，不参与：空，会员折扣：discount，指定会员价：fixed_price',
+  `member_discount` varchar(255) NOT NULL DEFAULT 'fixed_price' COMMENT '会员等级折扣，不参与：空，会员折扣：discount，指定会员价：fixed_price',
   `poster_id` int(11) NOT NULL DEFAULT '0' COMMENT '海报id',
   `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '修改时间',
@@ -311,6 +312,7 @@ CREATE TABLE `{{prefix}}phone_shop_goods_category` (
   `pid` int(11) NOT NULL DEFAULT '0' COMMENT '上级分类id',
   `category_full_name` varchar(255) NOT NULL DEFAULT '' COMMENT '组装分类名称',
   `is_show` tinyint(4) NOT NULL DEFAULT '1' COMMENT '是否显示（1：显示，0：不显示）',
+  `memory_group` int(11)  COMMENT '内存分组id',
   `sort` int(11) NOT NULL DEFAULT '0' COMMENT '排序号',
   `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '修改时间',
@@ -494,7 +496,7 @@ CREATE TABLE `{{prefix}}phone_shop_order` (
   `taker_store_id` varchar(50) NOT NULL DEFAULT '' COMMENT '收货门店',
   `is_enable_refund` int(11) NOT NULL DEFAULT '0' COMMENT '是否允许退款',
   `member_remark` varchar(50) NOT NULL DEFAULT '' COMMENT '会员留言信息',
-  `shop_remark` varchar(255) NOT NULL DEFAULT '' COMMENT '商家留言',
+  `{{prefix}}phone_shop_remark` varchar(255) NOT NULL DEFAULT '' COMMENT '商家留言',
   `close_remark` varchar(255) NOT NULL DEFAULT '' COMMENT '关闭原因',
   `close_type` varchar(255) NOT NULL DEFAULT '' COMMENT '关闭来源(未支付自动关闭   手动关闭  退款关闭)',
   `refund_status` int(11) NOT NULL DEFAULT '1' COMMENT '退款状态  1不存在退款  2 部分退款  3 全部退款',
@@ -645,7 +647,7 @@ CREATE TABLE `{{prefix}}phone_shop_order_refund` (
   `timeout` int(11) NOT NULL DEFAULT '0' COMMENT '操作超时时间',
   `refund_no` varchar(255) NOT NULL DEFAULT '' COMMENT '退款交易号',
   `delivery` varchar(500) NOT NULL DEFAULT '' COMMENT '退货配送信息',
-  `shop_reason` varchar(255) NOT NULL DEFAULT '' COMMENT '上架拒绝原因',
+  `{{prefix}}phone_shop_reason` varchar(255) NOT NULL DEFAULT '' COMMENT '上架拒绝原因',
   `refund_address` varchar(1000) NOT NULL DEFAULT '' COMMENT '商家退货地址',
   `is_refund_delivery` INT(11) NOT NULL DEFAULT 0 COMMENT '是否退运费',
   PRIMARY KEY (`refund_id`)
@@ -970,9 +972,12 @@ CREATE TABLE `{{prefix}}phone_shop_site` (
   `label_group_status` tinyint NOT NULL DEFAULT '1' COMMENT '是否使用0站点标签分组',
   `label_status` tinyint NOT NULL DEFAULT '1' COMMENT '是否使用0站点的标签',
   `service_status` tinyint NOT NULL DEFAULT '1' COMMENT '是否使用0站点的服务信息',
+  `price_status` tinyint NOT NULL DEFAULT '1' COMMENT '是否使用0站点的回收价格',
+  `memory_status` tinyint NOT NULL DEFAULT '1' COMMENT '是否使用0站点的内存规格',
+  `memory_group_status` tinyint NOT NULL DEFAULT '1' COMMENT '是否使用0站点的内存分组',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
+drop TABLE if exists `{{prefix}}phone_shop_recycler`;
 CREATE TABLE `{{prefix}}phone_shop_recycler` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `site_id` int(11) NOT NULL DEFAULT '0' COMMENT '站点ID',
@@ -991,7 +996,7 @@ CREATE TABLE `{{prefix}}phone_shop_recycler` (
   PRIMARY KEY (`id`),
   KEY `idx_site_id` (`site_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='回收商信息表';
-
+drop TABLE`{{prefix}}phone_shop_recycler_price_config`;
 CREATE TABLE `{{prefix}}phone_shop_recycler_price_config` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `site_id` int(11) NOT NULL DEFAULT '0' COMMENT '站点ID',
@@ -1004,6 +1009,7 @@ CREATE TABLE `{{prefix}}phone_shop_recycler_price_config` (
   PRIMARY KEY (`id`),
   KEY `idx_site_recycler` (`site_id`, `recycler_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='回收商价格配置表';
+drop TABLE if exists `{{prefix}}phone_shop_recycler_price_range`;
 CREATE TABLE `{{prefix}}phone_shop_recycler_price_range` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `config_id` int(11) NOT NULL DEFAULT '0' COMMENT '价格配置ID',
@@ -1015,7 +1021,7 @@ CREATE TABLE `{{prefix}}phone_shop_recycler_price_range` (
   PRIMARY KEY (`id`),
   KEY `idx_config_id` (`config_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='回收商价格区间表';
-
+drop TABLE if exists `{{prefix}}phone_shop_goods_proxy`;
 CREATE TABLE `{{prefix}}phone_shop_goods_proxy` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `goods_id` int(11) NOT NULL COMMENT '商品ID',
@@ -1030,7 +1036,7 @@ CREATE TABLE `{{prefix}}phone_shop_goods_proxy` (
   UNIQUE KEY `idx_goods_site` (`goods_id`, `site_id`),
   KEY `idx_source_site` (`source_site_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商品代理关系表';
-
+drop TABLE if exists `{{prefix}}phone_shop_site_agent`;
 CREATE TABLE `{{prefix}}phone_shop_site_agent` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `site_id` int(11) NOT NULL DEFAULT '0' COMMENT '站点ID（代理商）',
@@ -1038,31 +1044,28 @@ CREATE TABLE `{{prefix}}phone_shop_site_agent` (
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态（1：启用，0：禁用）',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '代理状态'
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_site_agent` (`site_id`, `agent_site_id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商户代理关系表';
 
 
 
 
--- 在商品表中添加内存规格相关字段
-ALTER TABLE `{{prefix}}phone_shop_goods` 
-ADD COLUMN `memory_group_id` int(11) NOT NULL DEFAULT 0 COMMENT '内存分组ID' AFTER `brand_id`,
-ADD COLUMN `memory_spec` int(11) NOT NULL DEFAULT '' COMMENT '内存规格值,如64G、8+128G等' AFTER `memory_group_id`;
+
 
 -- 内存规格分组表
+drop TABLE if exists `{{prefix}}phone_shop_memory_group`;
 CREATE TABLE `{{prefix}}phone_shop_memory_group` (
   `group_id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '分组ID',
   `site_id` int(11) NOT NULL DEFAULT 0 COMMENT '站点id',
   `group_name` varchar(50) NOT NULL DEFAULT '' COMMENT '分组名称,如iPhone系列、安卓系列等',
-  `momery_ids` varchar(255) NOT NULL DEFAULT '' COMMENT '内存规格id集合',
+  `memory_ids` varchar(255) NOT NULL DEFAULT '' COMMENT '内存规格id集合',
   `sort` int(11) NOT NULL DEFAULT 0 COMMENT '排序',
   `create_time` int(11) NOT NULL DEFAULT 0 COMMENT '创建时间',
   `update_time` int(11) NOT NULL DEFAULT 0 COMMENT '更新时间',
   PRIMARY KEY (`group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci COMMENT='内存规格分组表';
 -- 内存规格表
+drop TABLE if exists `{{prefix}}phone_shop_memory_spec`;
 CREATE TABLE `{{prefix}}phone_shop_memory_spec` (
   `spec_id` int(11) unsigned NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT '规格ID',
   `site_id` int(11) NOT NULL DEFAULT 0 COMMENT '站点id',
@@ -1071,3 +1074,66 @@ CREATE TABLE `{{prefix}}phone_shop_memory_spec` (
   `create_time` int(11) NOT NULL DEFAULT 0 COMMENT '创建时间',
   `update_time` int(11) NOT NULL DEFAULT 0 COMMENT '更新时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci COMMENT='内存规格表';
+
+
+DROP TABLE IF EXISTS `{{prefix}}phone_shop_goods_stat`;
+CREATE TABLE `{{prefix}}phone_shop_goods_stat` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `site_id` INT(11) NOT NULL DEFAULT 0 COMMENT '站点id',
+  `date` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '日期',
+  `date_time` INT(11) NOT NULL DEFAULT 0 COMMENT '时间戳',
+  `goods_id` INT(11) NOT NULL DEFAULT 0 COMMENT '商品id',
+  `cart_num` INT(11) NOT NULL DEFAULT 0 COMMENT '加入购物车数量',
+  `sale_num` INT(11) NOT NULL DEFAULT 0 COMMENT '商品销量（下单数）',
+  `pay_num` INT(11) NOT NULL DEFAULT 0 COMMENT '支付件数',
+  `pay_money` DECIMAL(10, 2) NOT NULL DEFAULT 0.00 COMMENT '支付总金额',
+  `refund_num` INT(11) NOT NULL DEFAULT 0 COMMENT '退款件数',
+  `refund_money` DECIMAL(10, 2) NOT NULL DEFAULT 0.00 COMMENT '退款总额',
+  `access_num` INT(11) NOT NULL DEFAULT 0 COMMENT '访问次数（浏览量）',
+  `collect_num` INT(11) NOT NULL DEFAULT 0 COMMENT '收藏数量',
+  `evaluate_num` INT(11) NOT NULL DEFAULT 0 COMMENT '评论数量',
+  `goods_visit_member_count` INT(11) NOT NULL DEFAULT 0 COMMENT '商品访客数',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci COMMENT='商品数据统计';
+
+
+ALTER TABLE `{{prefix}}phone_shop_order_goods` ADD COLUMN `{{prefix}}phone_shop_active_refund` TINYINT(4) NOT NULL DEFAULT 0 COMMENT '商家主动退款（0否  1是）';
+
+ALTER TABLE `{{prefix}}phone_shop_order_goods` ADD COLUMN `{{prefix}}phone_shop_active_refund_money` DECIMAL(10, 2) NOT NULL DEFAULT 0.00 COMMENT '商家主动退款金额';
+
+ALTER TABLE `{{prefix}}phone_shop_goods` ADD COLUMN `is_limit` TINYINT(4) NOT NULL DEFAULT 0 COMMENT '商品是否限购(0:否 1:是)';
+
+ALTER TABLE `{{prefix}}phone_shop_goods` ADD COLUMN `limit_type` TINYINT(4) NOT NULL DEFAULT 1 COMMENT '限购类型，1：单次限购，2：单人限购';
+
+ALTER TABLE `{{prefix}}phone_shop_goods` ADD COLUMN `max_buy` INT(11) NOT NULL DEFAULT 0 COMMENT '限购数';
+
+ALTER TABLE `{{prefix}}phone_shop_goods` ADD COLUMN `min_buy` INT(11) NOT NULL DEFAULT 0 COMMENT '起购数';
+
+ALTER TABLE `{{prefix}}phone_shop_goods` ADD COLUMN `is_gift` TINYINT(4) NOT NULL DEFAULT 0 COMMENT '商品是否赠品(0:否 1:是)';
+
+ALTER TABLE `{{prefix}}phone_shop_goods` ADD COLUMN `access_num` INT(11) NOT NULL DEFAULT 0 COMMENT '访问次数（浏览量）';
+
+ALTER TABLE `{{prefix}}phone_shop_goods` ADD COLUMN `cart_num` INT(11) NOT NULL DEFAULT 0 COMMENT '加入购物车数量';
+
+ALTER TABLE `{{prefix}}phone_shop_goods` ADD COLUMN `pay_num` INT(11) NOT NULL DEFAULT 0 COMMENT '支付件数';
+
+ALTER TABLE `{{prefix}}phone_shop_goods` ADD COLUMN `pay_money` DECIMAL(10, 2) NOT NULL DEFAULT 0.00 COMMENT '支付总金额';
+
+ALTER TABLE `{{prefix}}phone_shop_goods` ADD COLUMN `collect_num` INT(11) NOT NULL DEFAULT 0 COMMENT '收藏数量';
+
+ALTER TABLE `{{prefix}}phone_shop_goods` ADD COLUMN `evaluate_num` INT(11) NOT NULL DEFAULT 0 COMMENT '评论数量';
+
+ALTER TABLE `{{prefix}}phone_shop_goods` ADD COLUMN `refund_num` INT(11) NOT NULL DEFAULT 0 COMMENT '退款件数';
+
+ALTER TABLE `{{prefix}}phone_shop_goods` ADD COLUMN `refund_money` DECIMAL(10, 2) NOT NULL DEFAULT 0.00 COMMENT '退款总额';
+
+
+ALTER TABLE `{{prefix}}phone_shop_goods`  ADD COLUMN `memory_group_id` int(11) NOT NULL DEFAULT 0 COMMENT '内存分组ID' AFTER `brand_id`;
+
+ALTER TABLE `{{prefix}}phone_shop_goods`  ADD COLUMN `memory_ids` int(11) COMMENT '内存规格值,如64G、8+128G等' AFTER `memory_group_id`;
+
+ALTER TABLE `{{prefix}}phone_shop_goods` MODIFY `create_time` INT(11) NOT NULL DEFAULT 0 COMMENT '创建时间' AFTER `refund_money`;
+
+ALTER TABLE `{{prefix}}phone_shop_goods` MODIFY `update_time` INT(11) NOT NULL DEFAULT 0 COMMENT '修改时间' AFTER `create_time`;
+
+ALTER TABLE `{{prefix}}phone_shop_goods` MODIFY `delete_time` INT(11) NOT NULL DEFAULT 0 COMMENT '删除时间' AFTER `update_time`;

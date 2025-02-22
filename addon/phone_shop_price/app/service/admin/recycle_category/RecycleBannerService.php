@@ -37,7 +37,7 @@ class RecycleBannerService extends BaseAdminService
     {
         $field = 'id,site_id,image,sort,create_at,update_at';
         $order = 'sort desc';
-        $search_model = $this->model->withSearch(['site_id', 'image'], $where)
+        $search_model = $this->model->where([['site_id','=',$this->site_id]])->withSearch(['site_id', 'image'], $where)
             ->field($field)
             ->order($order);
          
@@ -74,12 +74,15 @@ class RecycleBannerService extends BaseAdminService
      */
     public function add(array $data)
     {
+        
+
         try {
             $data['site_id'] = $this->site_id;
             $data['create_at'] = time();
             $data['update_at'] = time();
            
             $res = $this->model->create($data);
+            
             return ['id' => $res->id];
         } catch (DbException $e) {
             throw new \think\Exception('添加失败');

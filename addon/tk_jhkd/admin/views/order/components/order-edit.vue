@@ -182,7 +182,6 @@
             </div>
           </div>
         </div>
-
         <el-timeline>
           <el-timeline-item v-for="(activity, index) in deliveryInfo" :key="index" :timestamp="activity.time">
             {{ activity.desc }}

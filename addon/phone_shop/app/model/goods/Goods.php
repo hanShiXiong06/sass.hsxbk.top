@@ -12,12 +12,15 @@
 namespace addon\phone_shop\app\model\goods;
 
 use addon\phone_shop\app\dict\goods\GoodsDict;
+use addon\phone_shop\app\model\site\Site;
 use addon\phone_shop\app\model\active\ActiveGoods;
 use addon\phone_shop\app\service\core\delivery\CoreDeliveryService;
 use app\dict\sys\FileDict;
 use core\base\BaseModel;
 use think\db\Query;
 use think\model\concern\SoftDelete;
+// use addon\phone_shop\app\model\goods\GoodsCategory;
+use addon\phone_shop\app\model\goods\Brand;
 
 /**
  * 商品模型
@@ -414,6 +417,19 @@ class Goods extends BaseModel
         return $this->hasOne(GoodsSku::class, 'goods_id', 'goods_id');
     }
 
+    // brand_name
+    public function brandName()
+    {
+        return $this->hasOne( Brand::class, 'brand_id', 'brand_id')
+        ->withField(' brand_name, logo');
+    }
+
+    // goods_category
+    // public function goodsCategory()
+    // {
+    //     return $this->hasOne(GoodsCategory::class, 'goods_category_id', 'goods_category');
+    // }
+
     /**
      * 关联活动
      * @return \think\model\relation\HasOne
@@ -451,6 +467,20 @@ class Goods extends BaseModel
             ->joinType('left')
             ->withField('brand_id, brand_name, logo, desc');
     }
+    // site_name
+    // 查询站点名
+    //  string
+    public function getSiteNameAttr($value, $data)
+    {
+        if (isset($data['site_id'])) {
+            $site = (new Site())->where('site_id', '=', $data['site_id'])->value('site_name');
+            return $site ?: '';
+        }
+        return '';
+    }
+
+    // protected $append = ['site_name'];
+    // 
 
     /**
      * 关联商品参数

@@ -1,12 +1,18 @@
 <template>
-    <div class="main-container">
-
-        <el-card class="box-card !border-none" shadow="never">
+    <div class="recycle-category">
+        <!-- 分类列表 -->
+        <el-card shadow="never">
             <div class="flex justify-between items-center mb-[5px]">
                 <span class="text-page-title">{{ pageName }}</span>
-                <el-button type="primary" @click="addEvent">
-                    {{ t('addCategory') }}
-                </el-button>
+                <div class="flex items-center">
+                    是否使用平台的报价
+                    <el-switch v-model="config.is_enable" :loading="configLoading" @change="handleConfigChange" />
+                    <el-button class="ml-2 mr-2" type="primary" @click="addEvent">
+                        {{ t('addCategory') }}
+                    </el-button>
+                </div>
+
+
             </div>
             <el-tabs class="demo-tabs" model-value="/phone_shop_price/goods/category" @tab-change="handleClick">
                 <el-tab-pane :label="t('tabGoodsCategory')" name="/phone_shop_price/goods/category" />
@@ -101,6 +107,7 @@
         <el-image-viewer :url-list="previewImageList" v-if="imageViewer.show" @close="imageViewer.show = false"
             :initial-index="imageViewer.index" :zoom-rate="1" />
 
+
     </div>
 </template>
 
@@ -109,7 +116,7 @@ import { reactive, ref, onMounted, nextTick } from 'vue'
 import { t } from '@/lang'
 // import { updateCategory, editCategory } from '@/addon/phone_shop_price/api/goods'
 
-import { getCategoryTree, deleteRecycleCategory, editRecycleCategory, updateRecycleCategory } from '@/addon/phone_shop_price/api/recycle_category'
+import { getCategoryTree, deleteRecycleCategory, editRecycleCategory, updateRecycleCategory, getConfig, setConfig } from '@/addon/phone_shop_price/api/recycle_category'
 
 import { img } from '@/utils/common'
 import { ElMessageBox } from 'element-plus'
@@ -120,6 +127,7 @@ import Sortable from 'sortablejs'
 import { useTemplateRefsList } from '@vueuse/core'
 import { cloneDeep } from 'lodash-es'
 import userStore from '@/stores/modules/user'
+
 
 
 const route = useRoute()
@@ -309,6 +317,44 @@ const handleClick = (path: string) => {
     router.push({ path })
 }
 
+
+// 配置相关
+const config = ref({
+    is_enable: false
+});
+const configLoading = ref(false);
+
+// 获取配置
+const getConfigInfo = async () => {
+    try {
+        const res = await getConfig();
+        if (res.data) {
+            res.data.is_enable = res.data.is_enable == 1 ? true : false;
+            config.value = res.data;
+        }
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+// 切换配置
+const handleConfigChange = async () => {
+    configLoading.value = true;
+    try {
+        await setConfig();
+        ElMessage.success('设置成功');
+        // 重新请求tree
+        loadCategoryList();
+    } catch (error) {
+        console.error(error);
+    }
+    configLoading.value = false;
+};
+
+onMounted(() => {
+    getConfigInfo();
+});
+
 </script>
 
 <style lang="scss" scoped>
@@ -331,5 +377,20 @@ const handleClick = (path: string) => {
 upload-image {
     width: 30px;
     height: 30px;
+}
+
+.recycle-category {
+
+    .config-header,
+    .banner-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .title {
+            font-size: 16px;
+            font-weight: bold;
+        }
+    }
 }
 </style>

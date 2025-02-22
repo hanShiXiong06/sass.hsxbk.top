@@ -123,6 +123,7 @@ class CopyGoodsService extends BaseAdminService
             $info['max_buy']=0;
             $info['min_buy']=0;
             $info['is_gift']=0;
+            $info['form_id']=0;
             return (new GoodsService())->add($info);
         } else {
             throw new Exception(isset($data['status']) ? $data['msg'] : '采集失败:请使用正确的商品ID或店铺ID');
@@ -173,7 +174,7 @@ class CopyGoodsService extends BaseAdminService
     //淘宝部分图片不带http时候的图片美化
     public function checkUrl($url)
     {
-        if (strpos($url, 'https') !== false || strpos($url, 'http') !== false) {
+        if (strpos($url, 'https://') !== false || strpos($url, 'http://') !== false) {
             return $url;
         } else {
             return 'https:' . $url;

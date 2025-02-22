@@ -6,6 +6,7 @@
 namespace addon\tk_jhkd\app\service\core;
 
 use addon\tk_jhkd\app\dict\order\JhkdOrderDict;
+use addon\tk_jhkd\app\job\order_event\OrderFinishAfter;
 use addon\tk_jhkd\app\model\fenxiao\FenxiaoOrder;
 use addon\tk_jhkd\app\model\fenxiao\FenxiaoMember;
 use app\dict\member\MemberAccountTypeDict;
@@ -40,9 +41,15 @@ class OrderFinishService extends BaseApiService
             //积分发放
             $this->sendPoint($orderInfo['site_id'], $orderInfo['member_id'], 'tk_jhkd_order', ['from_type' => 'tk_jhkd_order']);
             //会员等级激励发放
-           // $this->sendLevel($orderInfo['site_id'], $orderInfo['member_id']);
+            // $this->sendLevel($orderInfo['site_id'], $orderInfo['member_id']);
             //进行分销结算
             (new FenxiaoService())->fenxiaoEvent($orderInfo);
+            OrderFinishAfter::dispatch(['order_data' => [
+                'site_id' => $orderInfo['site_id'],
+                'member_id' => $orderInfo['member_id'],
+                'order_id' => $orderInfo['order_id'],
+                'order_money' => $orderInfo['order_money'],
+            ]]);
             return true;
         } catch (\Exception $e) {
             Log::write('-------聚合快递订单完成事件错误-------' . date('Y-m-d H:i:s', time()));

@@ -52,7 +52,7 @@
                     </div>
                     <div class="flex justify-center items-center mt-[19%]"  v-if="!materialTable.data.length && !materialTable.loading">
                         <div class="flex flex-col justify-center items-center">
-                            <img src="@/app/assets/images/no_attachment.png" class="max-w-[130px] max-h-[130px] mb-[15px]">
+                            <img src="@/app/assets/images/no_attachment.png" class="max-w-[160px] max-h-[120px] mb-[15px]">
                             <span class="text-[var(--el-text-color-secondary)] text-[14px]">{{t('materialCartEmpty')}}</span>
                         </div>
                     </div>

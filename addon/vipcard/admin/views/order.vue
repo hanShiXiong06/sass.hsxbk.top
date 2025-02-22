@@ -53,6 +53,7 @@
                     <el-table-column :label="t('orderMoney')" min-width="180" align="center">
                         <template #default="{ row }">
                             {{ row.order_money }}
+                            <div v-if="row.pay">{{row.member_id !== row.pay.main_id && row.pay.status == 2 ? row.pay.pay_type_name:''}}</div>
                         </template>
                     </el-table-column>
                     <el-table-column prop="order_from_name" :label="t('orderSource')" align="center" min-width="200" />

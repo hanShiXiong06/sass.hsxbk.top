@@ -36,16 +36,19 @@ class MemoryGroupService extends BaseAdminService
             $order = $where['order'] . ' ' . $where['sort'];
             unset($where['order'], $where['sort']);
         }
+        if($this->site_id !== 0 ){
+            $sites = (new Site())->field('memory_status')->where([['site_id', '=', $this->site_id]])->findOrEmpty()->toArray();
+        }
         
+        $site_id = empty($sites['memory_status']) ? $this->site_id : $this->site_id.",0";
         if($this->site_id !== 0 ){
             $sites = (new Site())->field('memory_group_status')
-                ->where([['site_id', '=', $this->site_id]])
+                ->where([['site_id', 'in',  $site_id]])
                 ->findOrEmpty()
                 ->toArray();
         }
         
-        $site_id = empty($sites['memory_group_status']) ? $this->site_id : $this->site_id.",0";
-        
+               
         $search_model = $this->model->where([['site_id', 'in', $site_id]])
             ->withSearch(['group_name'], $where)
             ->field($field)
@@ -65,13 +68,12 @@ class MemoryGroupService extends BaseAdminService
     {
         $order = 'sort desc,group_id desc';
         if($this->site_id !== 0 ){
-            $sites = (new Site())->field('memory_group_status')
-                ->where([['site_id', '=', $this->site_id]])
-                ->findOrEmpty()
-                ->toArray();
+            $sites = (new Site())->field('memory_status')->where([['site_id', '=', $this->site_id]])->findOrEmpty()->toArray();
         }
         
-        $site_id = empty($sites['memory_group_status']) ? $this->site_id : $this->site_id.",0";
+        $site_id = empty($sites['memory_status']) ? $this->site_id : $this->site_id.",0";
+        
+        
         return $this->model->where([['site_id', 'in', $site_id]])
             ->withSearch(['group_name'], $where)
             ->field($field)

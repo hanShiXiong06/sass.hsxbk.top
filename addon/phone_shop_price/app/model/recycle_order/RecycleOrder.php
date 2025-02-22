@@ -270,7 +270,10 @@ class RecycleOrder extends BaseModel
         }
     }
     
-    
+    public function devices()
+    {
+         return $this->hasMany('addon\phone_shop_price\app\model\recycle_order\RecycleDevice', 'order_id', 'id');
+    }
 
     
 

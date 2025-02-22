@@ -3,10 +3,10 @@ return [
     [
         'menu_name' => '上门服务',
         'menu_key' => 'o2o',
-        'menu_short_name' => '上门服务',
+        'menu_short_name' => '上门',
         'parent_key' => '',
         'menu_type' => '0',
-        'icon' => 'iconfont iconyingyongshichang',
+        'icon' => 'iconfont iconshangmenfuwu',
         'api_url' => '',
         'router_path' => '',
         'view_path' => '',

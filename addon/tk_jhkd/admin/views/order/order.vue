@@ -22,9 +22,6 @@
               <el-option v-for="(item, index) in orderFromData" :key="index" :label="item" :value="index"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="订单号" prop="order_id">
-            <el-input v-model="orderTable.searchParam.order_id" placeholder="请输入订单号" />
-          </el-form-item>
           <el-form-item label="支付单号" prop="out_trade_no">
             <el-input v-model="orderTable.searchParam.out_trade_no" placeholder="请输入支付单号" />
           </el-form-item>
@@ -54,9 +51,12 @@
                 :value="item.value" />
             </el-select>
           </el-form-item>
-
           <el-form-item :label="t('remark')" prop="remark">
             <el-input v-model="orderTable.searchParam.remark" :placeholder="t('remarkPlaceholder')" />
+          </el-form-item>
+          <el-form-item label="关键字搜索" prop="remark">
+            <el-input style="width: 280px" v-model="orderTable.searchParam.keyword" placeholder="订单号/快递号/手机号/姓名"
+              clearable />
           </el-form-item>
           <el-form-item :label="t('createTime')" prop="create_time">
             <el-date-picker v-model="orderTable.searchParam.create_time" type="datetimerange"
@@ -116,7 +116,8 @@
               <div class="p-1">订单金额:{{ row.order_money }}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="order_money" label="订单佣金" min-width="120" :show-overflow-tooltip="true">
+          <el-table-column v-if="fenxiao && fenxiao.status == false" prop="order_money" label="订单佣金" min-width="120"
+            :show-overflow-tooltip="true">
             <template #default="{ row }">
               <template v-if="row.fenxiao_order != []">
                 <div v-if="row.fenxiao_order.first_commission > 0" class="">
@@ -210,7 +211,7 @@
                 @click="sendEvent(row.order_id)">发单</el-button>
               <el-button type="primary" v-if="row.order_status == 1" link @click="cancelEvent(row.id)">取消</el-button>
               <el-button type="primary"
-                v-if="row.fenxiao_order != [] && row.order_status == 10 && row.fenxiao_order.status && row.fenxiao_order.status.status == 0"
+                v-if="row.fenxiao_order != [] && row.order_status == 10 && row.fenxiao_order.status && row.fenxiao_order.status.status == 0 && fenxiao && fenxiao.status == false"
                 link @click="commissionEvent(row.id)">佣金结算</el-button>
             </template>
           </el-table-column>
@@ -264,6 +265,11 @@ import { img } from "@/utils/common";
 import { ElMessageBox, ElTag, FormInstance } from "element-plus";
 import Edit from "@/addon/tk_jhkd/views/order/components/order-edit.vue";
 import { useRoute } from "vue-router";
+import { checkFenxiao } from "@/addon/tk_jhkd/api/tkjhkd";
+const fenxiao = ref()
+checkFenxiao().then((res) => {
+  fenxiao.value = res.data
+})
 const myIframeRef = ref(null);
 const rowData = ref();
 const showRemarkEvent = (row) => {
@@ -340,6 +346,7 @@ let orderTable = reactive({
     refund_status: "",
     remark: "",
     create_time: [],
+    keyword: '',
   },
 });
 

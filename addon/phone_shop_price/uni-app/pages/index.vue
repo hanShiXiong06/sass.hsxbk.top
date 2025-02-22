@@ -1,10 +1,11 @@
 <template>
     <view class="page">
         <!-- Banner区域 -->
-        <view class="banner-section">
+      
+        <view class="banner-section" v-if="bannerList.length > 0">
             <swiper class="banner-swiper" circular autoplay interval="3000" duration="500" @change="onSwiperChange">
                 <swiper-item v-for="(item, index) in bannerList" :key="index">
-                    <image :src="item.image" mode="aspectFill" class="banner-image" />
+                    <image :src="img(item.image)" mode="aspectFill" class="banner-image" />
                 </swiper-item>
             </swiper>
             <view class="banner-indicator">
@@ -15,13 +16,13 @@
         </view>
 
         <!-- 头部搜索区 -->
-        <view class="search-section">
+        <!-- <view class="search-section">
             <view class="search-box">
                 <up-icon name="search" size="20" color="#666"></up-icon>
                 <input type="text" placeholder="搜索品牌型号" class="search-input" disabled
                     @focus="() => redirect({ url: '/addon/phone_shop_price/pages/category' })" />
             </view>
-        </view>
+        </view> -->
 
         <!-- VIP提示区 -->
         <view class="vip-section" v-if="hasNeedVip">
@@ -140,8 +141,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch, nextTick } from 'vue';
-import { getCategoryTree ,getMemberLevel } from '@/addon/phone_shop_price/api/recycle';
-// import { getMemberLevel } from '@/addon/tk_vip/api/member';
+import { getCategoryTree ,getMemberLevel , getBannerList } from '@/addon/phone_shop_price/api/recycle';
 
 import { img, redirect } from '@/utils/common';
 import useMemberStore from "@/stores/member";
@@ -151,19 +151,22 @@ const memberStore = useMemberStore();
 const userInfo = computed(() => memberStore.info);
 
 // Banner数据
-const bannerList = ref([
-    {
-        image: 'https://vip.123pan.cn/1832133965/tiantai/1.png'
-    },
-    {
-        image: 'https://vip.123pan.cn/1832133965/tiantai/2.png'
-    }
-]);
+const bannerList = ref([]);
+
+
 const currentBannerIndex = ref(0);
 
 // 轮播切换事件处理
 const onSwiperChange = (e) => {
     currentBannerIndex.value = e.detail.current;
+};
+
+// 获取Banner列表
+const _getBannerList = async () => {
+    const res = await getBannerList();
+    if (res.code === 1) {
+        bannerList.value = res.data;
+    }
 };
 
 // VIP等级数据
@@ -253,11 +256,12 @@ onMounted(() => {
     if (!userInfo.value) {
         useLogin().setLoginBack({ url: "/addon/phone_shop_price/pages/index" });
     }
-
+   
     // 使用 Promise.all 同时获取分类和会员数据
     Promise.all([
         getCategoryTree(),
-        getMemberLevel()
+        getMemberLevel(),
+        _getBannerList()
     ]).then(([categoryRes, memberRes]) => {
         if (categoryRes.code === 1 && categoryRes.data) {
             categoryList.value = categoryRes.data;

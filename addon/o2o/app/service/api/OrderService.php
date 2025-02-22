@@ -17,6 +17,9 @@ use addon\o2o\app\model\Order;
 use addon\o2o\app\service\core\CoreOrderCreateService;
 use addon\o2o\app\service\core\CoreOrderLogService;
 use addon\o2o\app\service\core\CoreOrderService;
+use app\dict\pay\PayDict;
+use app\model\member\Member;
+use app\service\core\pay\CorePayChannelService;
 use core\base\BaseApiService;
 use core\exception\CommonException;
 
@@ -71,10 +74,10 @@ class OrderService extends BaseApiService
     {
         $field = 'order_id, check_code,site_id, reserve_service_time,member_message,order_type, member_id, order_from, order_type, order_no, out_trade_no, order_status, refund_status, ip, create_time, pay_time, close_time, auto_close_time, is_enable_refund, delete_time, order_money, pay_money, taker_name,taker_mobile,taker_province,taker_city,taker_district,taker_address,taker_full_address,taker_longitude,taker_latitude,technician_id,service_time,dispatch_time,finish_time';
 
-        $detail = $this->model->where([ ['site_id', '=', $this->site_id], ['member_id', '=', $this->member_id ], ['order_id', '=', $order_id]])->field($field)->with([ 'item' => function($query) {
+        $info = $this->model->where([ ['site_id', '=', $this->site_id], ['member_id', '=', $this->member_id ], ['order_id', '=', $order_id]])->field($field)->with([ 'item' => function($query) {
             $query->field('order_id, item_name,goods_id,item_id,order_item_id, item_type, is_refund, item_image,price, num, item_money, site_id, out_trade_no,pay_time,is_enable_refund, refund_status, refund_no, item_images')->append(['item_image_thumb_small', 'item_type_name', 'item_images_thumb_mid', 'item_images_thumb_small']);
         }, 'pay' => function($query){
-            $query->field('out_trade_no,type');
+            $query->field('main_id, out_trade_no, type, pay_time, status')->append(['type_name']);
         },'order_log' => function($query){
             $query->field('order_id, action, action_time, nick_name, action_way');
         },'technician_info' => function($query){
@@ -82,18 +85,30 @@ class OrderService extends BaseApiService
         }, 'refund' => function($query){
             $query->field('refund_id,refund_no');
         }])->append(['order_status_info'])->findOrEmpty()->toArray();
-        $detail['total_money'] = number_format(array_sum(array_column($detail['item'], 'item_money')), 2, '.', '');
-        $item = [];
-        foreach ($detail['item'] as $val)
+
+        if(!empty($info))
         {
-            if($val['pay_time'] != 0)
+            $info['total_money'] = number_format(array_sum(array_column($info['item'], 'item_money')), 2, '.', '');
+            $item = [];
+            foreach ($info['item'] as $val)
             {
-                $item[] = $val;
+                if($val['pay_time'] != 0)
+                {
+                    $item[] = $val;
+                }
+            }
+            $info['total_pay_money'] = number_format(array_sum(array_column($item, 'item_money')), 2, '.', '');
+            if (!empty($info[ 'pay' ])) {
+                if ($info[ 'member_id' ] != $info[ 'pay' ][ 'main_id' ]) {
+                    $member_info = ( new Member() )->field('nickname,headimg')->where([ [ 'site_id', '=', $this->site_id ], [ 'member_id', '=', $info[ 'pay' ][ 'main_id' ] ] ])->findOrEmpty()->toArray();
+                    if (!empty($member_info)) {
+                        $info[ 'pay' ][ 'pay_member' ] = $member_info['nickname'];
+                        $info[ 'pay' ][ 'pay_member_headimg' ] = $member_info['headimg'];
+                    }
+                }
             }
         }
-        $detail['total_pay_money'] = number_format(array_sum(array_column($item, 'item_money')), 2, '.', '');
-
-        return $detail;
+        return $info;
     }
 
     /**

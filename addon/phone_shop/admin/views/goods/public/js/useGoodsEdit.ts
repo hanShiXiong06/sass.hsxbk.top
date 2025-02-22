@@ -1,4 +1,4 @@
-import { reactive, ref, computed, nextTick } from "vue";
+import { reactive, ref, computed, nextTick, watch, watchEffect } from "vue";
 import { t } from "@/lang";
 import { TabsPaneContext, ElMessage } from "element-plus";
 import Sortable from "sortablejs";
@@ -10,13 +10,38 @@ import {
   getGoodsType,
   getBrandList,
   getLabelList,
+  getMemoryLists,
   getServeList,
   getSupplierList,
   getCategoryTree,
   getAttrList,
   getAttrInfo,
 } from "@/addon/phone_shop/api/goods";
+import { getRecyclerPriceConfigBySiteId } from "@/addon/phone_shop/api/site";
 import { getPosterList } from "@/app/api/poster";
+
+// 定义价格区间接口
+interface PriceRange {
+  id: number;
+  config_id: number;
+  min_price: string;
+  max_price: string;
+  member_markup: string;
+  create_time: string;
+  update_time: string;
+}
+
+interface RecyclerPriceConfig {
+  id: number;
+  site_id: number;
+  recycler_id: number;
+  price_type: number;
+  member_markup: string;
+  non_member_markup: string;
+  create_time: string;
+  update_time: string;
+  price_ranges: PriceRange[];
+}
 
 // 商品添加/编辑
 export function useGoodsEdit(params: any = {}) {
@@ -38,10 +63,14 @@ export function useGoodsEdit(params: any = {}) {
     brand_id: "",
     poster_id: "",
     label_ids: [],
+    only_self: 0,
+    // memory
+    memory_ids: [],
     service_ids: [],
     supplier_id: "",
     status: "1",
     sort: "",
+    is_proxy: 1,
 
     addon_shop_supplier: [],
 
@@ -86,6 +115,8 @@ export function useGoodsEdit(params: any = {}) {
 
   const verifyArr: any = reactive([]);
 
+  const recyclerPriceConfig = ref<RecyclerPriceConfig | null>(null);
+
   nextTick(() => {
     let formRef = getFormRef();
     for (let key in formRef) {
@@ -129,8 +160,74 @@ export function useGoodsEdit(params: any = {}) {
     multiple: true,
   };
 
+  /**
+   * 将多维数组扁平化为一维数组
+   * @param arr - 需要扁平化的数组
+   * @returns 扁平化后的一维数组
+   */
+  const flattenArray = (arr: any[]): any[] => {
+    return arr.reduce((flat, item) => {
+      if (Array.isArray(item)) {
+        return flat.concat(flattenArray(item));
+      } else {
+        return flat.concat(item);
+      }
+    }, []);
+  };
+
+  /**
+   * 从分类树中查找指定ID的分类
+   * @param categoryId - 要查找的分类ID
+   * @param categories - 分类树
+   * @returns 找到的分类对象或undefined
+   */
+  const findCategoryById = (
+    categoryId: string | number,
+    categories: any[]
+  ): any => {
+    for (const category of categories) {
+      // 检查当前层级
+      if (category.value === categoryId) {
+        return category;
+      }
+      // 检查子分类
+      if (category.children && category.children.length > 0) {
+        const found = findCategoryById(categoryId, category.children);
+        if (found) return found;
+      }
+    }
+    return undefined;
+  };
+
+  /**
+   * 处理分类变化，更新内存选项
+   * @param value - 选中的分类值
+   */
   const categoryHandleChange = (value: any) => {
-    // console.log(value, goodsEdit.formData.goods_category, goodsEdit.formData.goods_category.toString())
+    // 如果没有选择分类，清空内存选项并返回
+    if (!value || value.length === 0) {
+      memoryOptions.splice(0, memoryOptions.length);
+      return;
+    }
+
+    // 将多维数组扁平化为一维数组
+    const categoryIds = flattenArray(value);
+
+    if (categoryIds.length === 0) {
+      memoryOptions.splice(0, memoryOptions.length);
+      return;
+    }
+
+    const lastNum = categoryIds[categoryIds.length - 1];
+    // 通过  lastNum 获取对应的 .memory_group
+
+    // 在分类options 中查找
+
+    if (lastNum) {
+      refreshGoodsMemory(lastNum);
+    } else {
+      memoryOptions.splice(0, memoryOptions.length);
+    }
   };
 
   // 跳转到商品分类，添加分类
@@ -143,8 +240,9 @@ export function useGoodsEdit(params: any = {}) {
 
   // 刷新商品分类
   const refreshGoodsCategory = (bool = false) => {
-    getCategoryTree().then((res) => {
+    getCategoryTree().then(async (res) => {
       const data = res.data;
+
       if (data) {
         const goodsCategoryTree: any = [];
         data.forEach((item: any) => {
@@ -154,12 +252,14 @@ export function useGoodsEdit(params: any = {}) {
               children.push({
                 value: childItem.category_id,
                 label: childItem.category_name,
+                memory_group: childItem.memory_group,
               });
             });
           }
           goodsCategoryTree.push({
             value: item.category_id,
             label: item.category_name,
+            memory_group: item.memory_group,
             children,
           });
         });
@@ -168,6 +268,7 @@ export function useGoodsEdit(params: any = {}) {
           goodsCategoryOptions.length,
           ...goodsCategoryTree
         );
+        //
         if (bool) {
           ElMessage({
             message: t("refreshSuccess"),
@@ -208,7 +309,13 @@ export function useGoodsEdit(params: any = {}) {
   };
 
   refreshGoodsBrand();
-
+  // 获取回收商价格配置
+  const _getRecyclerPriceConfig = () => {
+    getRecyclerPriceConfigBySiteId().then((res) => {
+      recyclerPriceConfig.value = res.data;
+    });
+  };
+  _getRecyclerPriceConfig();
   // 海报列表下拉框
   const posterOptions = reactive([]);
 
@@ -262,6 +369,28 @@ export function useGoodsEdit(params: any = {}) {
   };
 
   refreshGoodsLabel();
+
+  // 商品内存列表复选框
+  const memoryOptions = reactive([]);
+  // 跳转到商品内存，添加内存
+  const toGoodsMemoryEvent = () => {
+    const url = router.resolve({
+      path: "/phone_shop/goods/memory",
+    });
+    window.open(url.href);
+  };
+
+  // 刷新商品内存
+  const refreshGoodsMemory = (param: any) => {
+    // 如果param 为真 才调用接口
+
+    getMemoryLists(param).then((res: any) => {
+      const data = res.data;
+      if (data) {
+        memoryOptions.splice(0, memoryOptions.length, ...data);
+      }
+    });
+  };
 
   // 商品服务列表复选框
   const serviceOptions = reactive([]);
@@ -339,13 +468,17 @@ export function useGoodsEdit(params: any = {}) {
       formData.goods_type = data.goods_info.goods_type;
       formData.goods_image = data.goods_info.goods_image;
       formData.goods_category = data.goods_info.goods_category;
+      // 内存赋值
+      formData.memory_ids = data.goods_info.memory_ids;
       formData.brand_id = data.goods_info.brand_id;
       formData.poster_id = data.goods_info.poster_id;
       formData.label_ids = data.goods_info.label_ids;
+      formData.only_self = data.goods_info.only_self;
       formData.service_ids = data.goods_info.service_ids;
       formData.supplier_id = data.goods_info.supplier_id;
       formData.status = data.goods_info.status;
       formData.sort = data.goods_info.sort;
+      formData.is_proxy = data.goods_info.is_proxy;
 
       /*************** 商品参数-start ****************/
       formData.attr_format = data.goods_info.attr_format
@@ -1531,6 +1664,57 @@ export function useGoodsEdit(params: any = {}) {
     });
   };
 
+  // 监听price变化，自动计算market_price
+  watch(
+    () => formData.market_price,
+    (newPrice) => {
+      if (!newPrice || !recyclerPriceConfig.value) return;
+      const price = parseFloat(newPrice);
+      // 先判断加价的类型 在根据类型进行计算
+      const priceType = recyclerPriceConfig.value?.price_type;
+      if (priceType == 1) {
+        // 证明是通用型 直接 使用 member_markup 进行计算
+        const markup = parseFloat(recyclerPriceConfig.value?.member_markup);
+        // 如果markup 为假 则同行价等于零售价
+        if (!markup) {
+          formData.price = price.toFixed(2);
+        } else {
+          formData.price = (price + markup).toFixed(2);
+        }
+        return;
+      }
+      // 证明是区间型 需要根据价格区间进行计算
+
+      const ranges = recyclerPriceConfig.value.price_ranges;
+
+      // 查找匹配的价格区间
+      const matchedRange = ranges.find((range: PriceRange) => {
+        const minPrice = parseFloat(range.min_price);
+        const maxPrice = parseFloat(range.max_price);
+        return price >= minPrice && price <= maxPrice;
+      });
+
+      // 如果找到匹配的区间，计算market_price
+      if (matchedRange) {
+        const markup = parseFloat(matchedRange.member_markup);
+        formData.price = (price + markup).toFixed(2);
+      }
+      // 如果找不到匹配的区间，则price等于market_price
+      if (!matchedRange) {
+        formData.price = price.toFixed(2);
+      }
+    },
+    { immediate: true }
+  );
+
+  // 监听商品分类变化
+  watchEffect(() => {
+    if (formData.goods_category && formData.goods_category.length > 0) {
+      console.log("商品分类发生变化:", formData.goods_category);
+      categoryHandleChange(formData.goods_category);
+    }
+  });
+
   return {
     formData,
 
@@ -1557,6 +1741,10 @@ export function useGoodsEdit(params: any = {}) {
     labelOptions,
     toGoodsLabelEvent,
     refreshGoodsLabel,
+
+    memoryOptions,
+    toGoodsMemoryEvent,
+    refreshGoodsMemory,
 
     serviceOptions,
     toGoodsServiceEvent,

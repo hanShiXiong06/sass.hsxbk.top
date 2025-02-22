@@ -13,6 +13,8 @@ namespace addon\vipcard\app\service\admin;
 
 use addon\vipcard\app\dict\order\OrderDict;
 use addon\vipcard\app\model\Order;
+use app\dict\pay\PayDict;
+use app\model\member\Member;
 use core\base\BaseAdminService;
 
 /**
@@ -42,9 +44,14 @@ class OrderService extends BaseAdminService
             }, 'member' => function($query){
                 $query->field('member_id, nickname, mobile, headimg');
             }, 'pay' => function($query){
-                $query->field('out_trade_no,type');
+                $query->field('main_id, out_trade_no, type, pay_time, status')->append(['type_name']);
             } ])->order($order)->append(['order_status_info', 'order_from_name', 'item.item_image_thumb_small']);
         $list = $this->pageQuery($search_model);
+        foreach ($list['data'] as $k => $v){
+            if (!empty($v[ 'pay' ])) {
+                $list['data'][$k][ 'pay' ][ 'pay_type_name' ] = PayDict::getPayType()[PayDict::FRIENDSPAY]['name'] ?? '';
+            }
+        }
         return $list;
     }
 
@@ -57,7 +64,7 @@ class OrderService extends BaseAdminService
     {
         $field = 'order_id, site_id, member_id, order_from, order_type, order_no, out_trade_no, order_status, refund_status, ip, create_time, pay_time, close_time, auto_close_time, is_enable_refund, delete_time, order_money, pay_money';
 
-        $detail = $this->model->where([ ['site_id', '=', $this->site_id], ['order_id', '=', $order_id]])->field($field)->with([ 'item' => function($query) {
+        $info = $this->model->where([ ['site_id', '=', $this->site_id], ['order_id', '=', $order_id]])->field($field)->with([ 'item' => function($query) {
             $query->field('order_id, item_name, item_image, price, num, item_money, site_id');
         }, 'member' => function($query) {
             $query->field('member_id, nickname, mobile, headimg');
@@ -71,8 +78,22 @@ class OrderService extends BaseAdminService
             }, 'goods' => function($query){
                 $query->field('goods_id,goods_name');
             }])->append(['card_type_name', 'expire_time_name', 'status_name']);
+        }, 'pay' => function($query){
+            $query->field('main_id, out_trade_no, type, pay_time, status')->append(['type_name']);
         } ])->append(['order_status_info', 'order_from_name', 'item.item_image_thumb_small'])->findOrEmpty()->toArray();
-        return $detail;
+        if(!empty($info))
+        {
+            if (!empty($info[ 'pay' ])) {
+                if ($info[ 'member_id' ] != $info[ 'pay' ][ 'main_id' ]) {
+                    $member_info = ( new Member() )->where([ [ 'site_id', '=', $this->site_id ], [ 'member_id', '=', $info[ 'pay' ][ 'main_id' ] ] ])->findOrEmpty()->toArray();
+                    if (!empty($member_info)) {
+                        $info[ 'pay' ][ 'pay_member' ] = $member_info['nickname'];
+                    }
+                }
+                $info[ 'pay' ][ 'pay_type_name' ] = PayDict::getPayType()[PayDict::FRIENDSPAY]['name'] ?? '';
+            }
+        }
+        return $info;
     }
 
     /**

@@ -40,7 +40,9 @@ class Goods extends BaseApiController
             [ 'coupon_id', '' ], // 优惠券id
             [ 'sku_no' , ''],
             [ 'status' , ''],
-            [ 'create_time','' ]
+            [ 'create_time','' ],
+            [ 'memory_id','' ]
+
         ]);
 
         return success(( new GoodsService() )->getPage($data));
@@ -100,4 +102,132 @@ class Goods extends BaseApiController
         return success(( new GoodsService() )->operationGoods($data));
     }
     
+    
+  // 添加商品
+    public function add()
+    {
+        $data = $this->request->params([
+            
+                [ "goods_name", "" ],
+                [ "sub_title", "" ],
+                [ "goods_type", "real" ],
+                [ "goods_image", "" ],
+                [ "goods_category", '' ],
+                [ "brand_id", 0 ],
+                [ "label_ids", "" ],
+                [ 'service_ids', '' ],
+                [ 'supplier_id', 0 ],
+                [ "status", 0 ],
+                [ "sort", 0 ],
+                [ 'attr_id', 0 ],
+                [ 'attr_format', '' ],
+                // 是否可以代理商品
+                [ 'is_proxy', 0 ],
+                [ 'memory_ids', '' ],
+    
+                // 规格类型，single：单规格，multi：多规格
+                [ 'spec_type', 'single' ],
+    
+                // 单规格数据
+                [ "price", 0 ],
+                [ "market_price", 0 ],
+                [ "cost_price", 0 ],
+                [ "weight", 0 ],
+                [ "volume", 0 ],
+                [ "stock", 1 ],
+                [ "sku_no", '' ],
+                [ "unit", "件" ],
+                [ "virtual_sale_num", 0 ],
+    
+                // 多规格数据
+                // [ 'goods_spec_format', '' ],
+                // [ 'goods_sku_data', '' ],
+    
+                // 配送设置
+                [ "delivery_type", [ "express","store"] ],
+                [ "is_free_shipping", 1],
+                [ 'fee_type', '' ],
+                [ 'delivery_money', 0 ],
+                [ "delivery_template_id", 0 ],
+    
+                // 商品详情
+                [ "goods_desc", "", false ],
+                [ "goods_url", "", false ],
+    
+    
+                [ 'member_discount', 'fixed_price' ], // 会员等级折扣，不参与：空，会员折扣：discount，指定会员价：fixed_price
+                [ 'poster_id', 0 ] // 海报id 
+
+        ]);
+        return success(( new GoodsService() )->add($data));
+    }
+    
+    // getMemoryList
+    public function getMemoryList()
+    {
+        // 分类id
+        $data = $this->request->params([
+            [ 'id', 6],
+        ]);
+        return success(( new GoodsService() )->getMemoryList($data));
+    }
+    // put
+    public function put($goods_id )
+    {
+        $data = $this->request->params([
+            [ "goods_name", "" ],
+                [ "sub_title", "" ],
+                [ "goods_type", "real" ],
+                [ "goods_image", "" ],
+                [ "goods_category", '' ],
+                [ "brand_id", 0 ],
+                [ "label_ids", "" ],
+                [ 'service_ids', '' ],
+                [ 'supplier_id', 0 ],
+                [ "status", 0 ],
+                [ "sort", 0 ],
+                [ 'attr_id', 0 ],
+                [ 'attr_format', '' ],
+                // 是否可以代理商品
+                [ 'is_proxy', 0 ],
+                [ 'memory_ids', '' ],
+    
+                // 规格类型，single：单规格，multi：多规格
+                // [ 'spec_type', 'single' ],
+    
+                // 单规格数据
+                [ "price", 0 ],
+                [ "market_price", 0 ],
+                [ "cost_price", 0 ],
+                [ "weight", 0 ],
+                [ "volume", 0 ],
+                [ "stock", 1 ],
+                [ "sku_no", '' ],
+                [ "unit", "件" ],
+                [ "virtual_sale_num", 0 ],
+    
+                // 多规格数据
+                // [ 'goods_spec_format', '' ],
+                // [ 'goods_sku_data', '' ],
+    
+                // 配送设置
+                [ "delivery_type", [ "express","store"] ],
+                [ "is_free_shipping", 1],
+                [ 'fee_type', '' ],
+                [ 'delivery_money', 0 ],
+                [ "delivery_template_id", 0 ],
+    
+                // 商品详情
+                [ "goods_desc", "", false ],
+                [ "goods_url", "", false ],
+    
+    
+                [ 'member_discount', 'fixed_price' ], // 会员等级折扣，不参与：空，会员折扣：discount，指定会员价：fixed_price
+                [ 'poster_id', 0 ] // 海报id 
+
+        ]);
+
+   
+        return success(( new GoodsService() )->update($goods_id, $data));
+    }
 }

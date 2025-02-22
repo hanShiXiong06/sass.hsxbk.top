@@ -29,6 +29,8 @@ class OrderDict
     //已关闭
     const CLOSE = 'close';
 
+    const TYPE = 'vipcard';
+
     /**
      * 当前订单支持的支付方式
      */

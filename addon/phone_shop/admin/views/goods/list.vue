@@ -26,13 +26,13 @@
                             :placeholder="t('goodsCategoryPlaceholder')" clearable
                             :props="{ value: 'value', label: 'label', emitPath: false }" />
                     </el-form-item>
-                    <el-form-item :label="t('goodsType')" prop="goods_type">
+                    <!-- <el-form-item :label="t('goodsType')" prop="goods_type">
                         <el-select v-model="goodsTable.searchParam.goods_type" :placeholder="t('goodsTypePlaceholder')"
                             clearable>
                             <el-option v-for="item in goodsType" :key="item.type" :label="item.name"
                                 :value="item.type" />
                         </el-select>
-                    </el-form-item>
+                    </el-form-item> -->
 
                     <el-form-item :label="t('brand')" prop="brand_id">
                         <el-select v-model="goodsTable.searchParam.brand_id" :placeholder="t('brandPlaceholder')"
@@ -48,15 +48,9 @@
                                 :value="item.label_id" />
                         </el-select>
                     </el-form-item>
-                    <el-form-item :label="t('saleNum')" prop="sale_num">
-                        <div class="region-input">
-                            <input type="text" :placeholder="t('startSaleNumPlaceholder')" maxlength="10"
-                                v-model.trim="goodsTable.searchParam.start_sale_num" @keyup="filterDigit($event)">
-                            <span class="separator">-</span>
-                            <input type="text" :placeholder="t('endSaleNumPlaceholder')" maxlength="10"
-                                v-model.trim="goodsTable.searchParam.end_sale_num" @keyup="filterDigit($event)">
-                        </div>
-                    </el-form-item>
+
+
+
                     <el-form-item :label="t('skuPrice')" prop="sku_price">
                         <div class="region-input">
                             <input type="text" :placeholder="t('startPricePlaceholder')" maxlength="10"
@@ -65,6 +59,10 @@
                             <input type="text" :placeholder="t('endPricePlaceholder')" maxlength="10"
                                 v-model.trim="goodsTable.searchParam.end_price" @keyup="filterDigit($event)">
                         </div>
+                    </el-form-item>
+                    <!-- 只看自己 -->
+                    <el-form-item>
+                        <el-checkbox v-model="goodsTable.searchParam.only_self" :label="t('只看自己')" />
                     </el-form-item>
 
                     <el-form-item>
@@ -134,28 +132,10 @@
                             <span :title="row.sku_no">{{ row.goodsSku.sku_no }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="price" :label="t('skuPrice')" min-width="120" align="right"
-                        sortable="custom">
+                    <el-table-column prop="price" :label="t('同行价')" min-width="120" align="right" sortable="custom">
                         <template #default="{ row }">
-                            <div v-if="userStore().siteInfo.site_id == 100005">
-                                <span>￥{{ row.goodsSku.price }}</span>
-                                <el-icon class="icon-wrap ml-[5px] invisible">
-                                    <EditPen />
-                                </el-icon>
-                            </div>
-                            <div v-else class="cursor-pointer price-wrap" @click="editPriceEvent(row)">
-                                <span>￥{{ row.goodsSku.price }}</span>
-                                <el-icon class="icon-wrap ml-[5px] invisible">
-                                    <EditPen />
-                                </el-icon>
-                            </div>
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="price" v-if="userStore().siteInfo.site_id == 100005" :label="t('批发价格')"
-                        min-width="120" align="right" sortable="custom">
-                        <template #default="{ row }">
-                            <div class="cursor-pointer price-wrap" @click="memberPriceEvent(row)">
-                                <span v-if="row.goodsSku.member_price">￥{{ JSON.parse(row.goodsSku.member_price).level_1
+                            <div class="cursor-pointer price-wrap" @click="editPriceEvent(row)">
+                                <span v-if="row.goodsSku.market_price">￥{{ row.goodsSku.market_price
                                     }}</span>
                                 <el-icon class="icon-wrap ml-[5px] invisible">
                                     <EditPen />
@@ -164,6 +144,23 @@
                         </template>
                     </el-table-column>
 
+
+
+                    <el-table-column prop="price" :label="t('skuPrice')" min-width="120" align="right"
+                        sortable="custom">
+                        <template #default="{ row }">
+
+                            <div class="cursor-pointer price-wrap" @click="editPriceEvent(row)">
+                                <span>￥{{ row.goodsSku.price }}</span>
+                                <el-icon class="icon-wrap ml-[5px] invisible">
+                                    <EditPen />
+                                </el-icon>
+                            </div>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column prop="cost_price" :label="t('成本价')" min-width="120" align="right"
+                        sortable="custom" />
                     <el-table-column prop="stock" :label="t('stock')" min-width="120" sortable="custom">
                         <template #default="{ row }">
                             <div class="cursor-pointer stock-wrap" @click="editStockEvent(row)">
@@ -174,7 +171,7 @@
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="sale_num" :label="t('saleNum')" min-width="100" sortable="custom" />
+                    <!-- <el-table-column prop="sale_num" :label="t('saleNum')" min-width="100" sortable="custom" /> -->
                     <el-table-column prop="status" :label="t('status')" min-width="100">
                         <template #default="{ row }">
                             <div v-if="row.status == 1">{{ t('statusOn') }}</div>
@@ -187,12 +184,10 @@
                                 @blur="sortInputListener(row.sort, row)" />
                         </template>
                     </el-table-column>
-                    <el-table-column v-if="userStore().siteInfo.site_id !== 100005" prop="source" :label="t('来源')"
-                        min-width="120">
 
-                    </el-table-column>
-
-
+                    <el-table-column prop="site_name" :label="t('来源')" min-width="120" />
+                    <el-table-column prop="join_time" v-if="goodsTable.searchParam.status == 1" :label="t('库龄')"
+                        min-width="120" />
                     <el-table-column prop="create_time" :label="t('createTime')" min-width="150" sortable="custom">
                         <template #default="{ row }">
                             <div>{{ row.create_time }}</div>
@@ -206,17 +201,27 @@
 
                     <el-table-column :label="t('operation')" fixed="right" align="right" min-width="120">
                         <template #default="{ row }">
-                            <el-button type="primary" link @click="editEvent(row)">{{ t('edit') }}</el-button>
-                            <el-button type="primary" link @click="spreadEvent(row)">{{ t('spreadGoods') }}</el-button>
-                            <el-button type="primary" link @click="memberPriceEvent(row)">{{ t('memberPrice')
+                            <div v-if="siteId == row.site_id">
+                                <el-button type="primary" link @click="editEvent(row)">{{ t('edit') }}</el-button>
+                                <el-button type="primary" link @click="spreadEvent(row)">{{ t('spreadGoods')
+                                    }}</el-button>
+
+                                <el-button type="primary" v-if="row.status == 1" link @click="statusChange(row, 0)">{{
+                                    t('statusActionOff') }}</el-button>
+                                <el-button type="primary" v-else link @click="statusChange(row, 1)">{{
+                                    t('statusActionOn')
                                 }}</el-button>
-                            <el-button type="primary" v-if="row.status == 1" link @click="statusChange(row, 0)">{{
-                                t('statusActionOff') }}</el-button>
-                            <el-button type="primary" v-else link @click="statusChange(row, 1)">{{ t('statusActionOn')
-                                }}</el-button>
-                            <el-button type="primary" link @click="copyEvent(row)">{{ t('copyGoods') }}</el-button>
-                            <el-button type="primary" v-if="row.status != 1" link @click="deleteEvent(row.goods_id)">{{
-                                t('delete') }}</el-button>
+                                <el-button type="primary" link @click="copyEvent(row)">{{ t('copyGoods') }}</el-button>
+                                <el-button type="primary" v-if="row.status != 1" link
+                                    @click="deleteEvent(row.goods_id)">{{
+                                        t('delete') }}</el-button>
+                            </div>
+                            <div v-else>
+                                <el-button type="primary" link @click="spreadEvent(row)">{{ t('spreadGoods')
+                                    }}</el-button>
+
+                            </div>
+
                         </template>
                     </el-table-column>
 
@@ -274,6 +279,9 @@ const route = useRoute()
 const pageName = route.meta.title
 const repeat = ref(false)
 const paginationStore = usePaginationStore();
+// 获取当前站点
+const siteId = userStore().siteInfo?.site_id
+
 
 const goodsTable = reactive({
     page: paginationStore.page,
@@ -753,6 +761,7 @@ const resetForm = (formEl: FormInstance | undefined) => {
     goodsTable.searchParam.end_price = ''
     goodsTable.searchParam.start_sale_num = ''
     goodsTable.searchParam.end_sale_num = ''
+    goodsTable.searchParam.only_self = 0
 
     loadGoodsList()
 }

@@ -27,6 +27,7 @@ use addon\shop\app\service\core\delivery\CoreLocalDeliveryService;
 use addon\shop\app\service\core\delivery\CoreStoreService;
 use addon\shop\app\service\core\goods\CoreGoodsLimitBuyService;
 use addon\shop\app\service\core\marketing\CoreManjianService;
+use app\service\core\diy_form\CoreDiyFormRecordsService;
 use app\service\core\member\CoreMemberAddressService;
 use core\exception\CommonException;
 use Exception;
@@ -40,6 +41,7 @@ trait CoreOrderCreateTrait
 {
     public $member_id;//会员id
     public $site_id; // 站点id
+    public $form_id; // 万能表单id
     public $param = [];//入参
     public $cart_ids = [];//购物车
     public $buyer = [];//买家信息
@@ -52,6 +54,7 @@ trait CoreOrderCreateTrait
     ];//基本数据处理(整体的数据)
     public $goods_data = [];//商品数据处理
     public $extend_data = [];//活动数据
+    public $form_data = [];// 万能表单数据
     public $config = [];//配置集合
     public $discount = [];//优惠整合
     public $gift = [];//赠品集合
@@ -78,13 +81,15 @@ trait CoreOrderCreateTrait
         $main_type = $data[ 'main_type' ] ?? OrderLogDict::MEMBER;
         $main_id = $data[ 'main_id' ] ?? $order_data[ 'member_id' ];
         $site_id = $order_data[ 'site_id' ];
-        //校验整理发票
+
+        // 校验整理发票
         $this->invoice();
         Db::startTrans();
         try {
             $order = ( new Order() )->create($order_data);
             $this->order_id = $order[ 'order_id' ];
-            //添加订单项目表
+
+            // 添加订单项目表
             $order_goods_model = new OrderGoods();
             $order_goods_data = array_map(function($value) {
                 $value[ 'order_goods_money' ] = $this->calculateOrderGoodsMoney($value);
@@ -92,20 +97,27 @@ trait CoreOrderCreateTrait
             }, $order_goods_data);
             $order_goods_model->insertAll($order_goods_data);
 
-            //优惠项
+            // 优惠项
             $this->useDiscount();
 
+            // 添加万能表单
+            $this->addFormData($this->order_id);
+
             $order_data[ 'order_id' ] = $this->order_id;
-            //订单创建后事件
+
+            // 订单创建后事件
             CoreOrderEventService::orderCreate([ 'site_id' => $site_id, 'order_id' => $this->order_id, 'order_data' => $order_data, 'order_goods_data' => $order_goods_data, 'cart_ids' => $this->cart_ids, 'basic' => get_object_vars($this), 'main_type' => $main_type, 'main_id' => $main_id, 'time' => time() ]);
+
             Db::commit();
-            //删除订单缓存
+
+            // 删除订单缓存
             $this->delOrderCache($this->order_key);
 
-            //订单创建后事件
+            // 订单创建后事件
             CoreOrderEventService::orderCreateAfter([ 'site_id' => $site_id, 'order_id' => $this->order_id, 'order_data' => $order_data, 'order_goods_data' => $order_goods_data, 'cart_ids' => $this->cart_ids, 'basic' => get_object_vars($this), 'main_type' => $main_type, 'main_id' => $main_id, 'time' => time() ]);
 //            event('AfterShopOrderCreate', ['site_id' => $site_id, 'order_id' => $this->order_id, 'order_data' => $order_data, 'order_goods_data' => $order_goods_data, 'cart_ids' => $this->cart_ids, 'basic' => get_object_vars($this), 'main_type' => $main_type, 'main_id' => $main_id, 'time' => time()]);
-            //订单金额为0的话,要直接支付
+
+            // 订单金额为0的话,要直接支付
             if ($order_data[ 'order_money' ] == 0) {
                 ( new CoreOrderPayService() )->pay([ 'site_id' => $site_id, 'trade_id' => $this->order_id, 'main_type' => $main_type, 'main_id' => $main_id ]);
             }
@@ -859,5 +871,50 @@ trait CoreOrderCreateTrait
     {
 
         return floor(strval(( $money ) * 100)) / 100;
+    }
+
+    /**
+     * 添加万能表单数据
+     * @param $order_id
+     */
+    public function addFormData($order_id)
+    {
+        if (!empty($this->form_data)) {
+            $diy_form_service = new CoreDiyFormRecordsService();
+            $order_form = $this->form_data[ 'order' ] ?? [];
+            if (!empty($order_form)) {
+                $order_form[ 'site_id' ] = $this->site_id;
+                $order_form[ 'member_id' ] = $this->member_id;
+                $order_form[ 'relate_id' ] = $order_id;
+                $form_record_id = $diy_form_service->add($order_form);
+                ( new Order() )->where([
+                    [ 'site_id', '=', $this->site_id ],
+                    [ 'order_id', '=', $order_id ]
+                ])->update([ 'form_record_id' => $form_record_id ]);
+            }
+
+            $goods_form = $this->form_data[ 'goods' ] ?? [];
+            if (!empty($goods_form)) {
+                $order_goods_model = new OrderGoods();
+                $order_goods_list = $data = $order_goods_model->where([ [ 'site_id', '=', $this->site_id ], [ 'order_id', '=', $order_id ] ])
+                    ->field('order_goods_id,sku_id')->select()->toArray();
+                foreach ($goods_form as $k => $v) {
+                    foreach ($order_goods_list as $ck => $cv) {
+                        if ($cv[ 'sku_id' ] == $k) {
+                            $v[ 'site_id' ] = $this->site_id;
+                            $v[ 'member_id' ] = $this->member_id;
+                            $v[ 'relate_id' ] = $cv[ 'order_goods_id' ];
+                            $form_record_id = $diy_form_service->add($v);
+                            $order_goods_model->where([
+                                [ 'site_id', '=', $this->site_id ],
+                                [ 'order_id', '=', $order_id ],
+                                [ 'order_goods_id', '=', $cv[ 'order_goods_id' ] ]
+                            ])->update([ 'form_record_id' => $form_record_id ]);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     }
 }

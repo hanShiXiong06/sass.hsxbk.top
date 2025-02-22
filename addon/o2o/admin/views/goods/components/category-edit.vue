@@ -14,7 +14,7 @@
                 <upload-image v-model="formData.image" />
             </el-form-item>
             <el-form-item :label="t('sort')" prop="sort">
-                <el-input v-model.trim="formData.sort" clearable :placeholder="t('sortPlaceholder')" class="input-width" @keyup="filterNumber($event)" />
+                <el-input v-model.trim="formData.sort" clearable :placeholder="t('sortPlaceholder')" class="input-width" @keyup="filterNumber($event)"  maxlength="8" />
             </el-form-item>
         </el-form>
 

@@ -7,7 +7,7 @@
         <el-form :model="formData" label-width="100px" ref="formRef" class="page-form" v-loading="loading">
             <el-card class="box-card !border-none relative" shadow="never" v-if="formData">
                 <h3 class="panel-title">{{ t('orderInfo') }}</h3>
-                <el-row class="row-bg" justify="space-between">
+                <el-row class="row-bg">
                     <el-col :span="8">
                         <el-form-item :label="t('orderNo')">
                             <div class="input-width">{{ formData.order_no }}</div>
@@ -43,9 +43,17 @@
                             <div class="input-width">{{ formData.pay_time || '' }}</div>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="8" v-if="formData.pay_type_name">
+                    <el-col :span="8" v-if="formData.pay">
                         <el-form-item :label="t('payTypeName')">
-                            <div class="input-width">{{ formData.pay_type_name }}</div>
+                            <div class="input-width">{{ formData.pay.type_name }}</div>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8" v-if="formData.pay && formData.member_id !== formData.pay.main_id && formData.pay.status == 2">
+                        <el-form-item>
+                            <div class="input-width">
+                                <span>{{ formData.pay.pay_type_name }}, 帮付人：</span>
+                                <span class="text-primary cursor-pointer" @click="memberEvent(formData.pay.main_id)">{{ formData.pay.pay_member }}</span>
+                            </div>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8">
@@ -164,6 +172,14 @@ const setFormData = async (orderId: number = 0) => {
 }
 if (orderId) setFormData(orderId)
 else loading.value = false
+
+const memberEvent = (id: number) => {
+    const routeUrl = router.resolve({
+        path: '/member/detail',
+        query: { id }
+    })
+    window.open(routeUrl.href, '_blank')
+}
 </script>
 
 <style lang="scss" scoped></style>

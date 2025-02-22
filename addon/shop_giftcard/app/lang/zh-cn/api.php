@@ -54,5 +54,7 @@ return [
 
     'CATEGORY_CAN_NOT_DEL' => '该分类下存在礼品卡，无法删除',
 
+    'GOODS_PARTICIPATE_IN_ACTIVE_DISABLED_DELETE' => '商品正在参与礼品卡活动，禁止删除',
+
 
 ];

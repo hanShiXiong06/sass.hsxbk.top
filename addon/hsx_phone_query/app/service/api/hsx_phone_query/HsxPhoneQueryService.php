@@ -42,132 +42,209 @@ class HsxPhoneQueryService extends BaseApiService
     return 'watermark';
    }
 
+    /**
+     * 查询手机串号信息
+     * @param array $where 查询参数
+     * @return array|string
+     */
     public function query(array $where = [])
     {
-
-        //  如果当前用户查询过 则直接返回
-        // 条件是
-        $data = (new HsxPhoneQueryInfo())->where([['sn', '=', $where['imeis']], ['type_id', '=', $where['id']]])->field('info')->select()->toArray();
-        if (!empty($data)) {
-            return ['code' => 200, 'data' => $data[0]['info']];
+        // 验证必要参数
+        if (empty($where['imeis']) || empty($where['id'])) {
+            throw new CommonException("参数错误");
+            // return error('参数错误');
         }
 
-        // 根据支付类型设置查询字段
-        $payType = $where['payType'] ?? 'point';
-        $member_field = $payType === 'point' ? 'point' : 'balance';
-    
-        // 获取会员数据
-        $member_model = (new Member())->where('member_id', '=', $this->member_id)->field($member_field)->find()->toArray();
-    
-        // 获取查询类别价格
-        $category_model = (new HsxPhoneQueryCategory())->where('id', '=', $where['id'])->field('price')->find()->toArray();
-    
-        // 根据支付方式设置所需消耗的金额或积分
-        $amount_needed = $payType === 'point' ?  $category_model['price']*100 : $category_model['price'] ;
-    
-        // 检查用户积分或余额是否足够
-        if ($member_model[$member_field] < $amount_needed) {
-            return ($payType === 'point' ? '积分不足' : '余额不足');
+        // 处理多串号，支持换行符和逗号分隔
+        $input = str_replace(["\r\n", "\r", "\n"], ',', $where['imeis']); // 将所有换行符转换为逗号
+        $imeis = array_filter(array_map('trim', explode(',', $input))); // 分割并去除空白
+        
+        if (empty($imeis)) {
+            throw new CommonException("请输入有效的串号");
+            // return error('请输入有效的串号');
         }
-    
-        // 检查本地数据库是否有现有数据
-        $data = (new HsxPhoneQueryInfo())->where([['sn', '=', $where['imeis']], ['type_id', '=', $where['id']]])->field('info')->select()->toArray();
-    
-        if (!empty($data)) {
-            // 扣除积分或余额并记录日志
-            $this->consumeAmount($this->member_id, $amount_needed, $payType, '查询', [
-                'from_type' => 'query',
-                'momo' => $payType === 'point' ? '积分消费查询' : '余额消费查询',
-                'related_id' => $where['id']
-            ]);
-    
-            // 扣除以后把这个$data 数据 重新插入到数据一份 并替换member_id 为 $this->member_id
-            $new_data = json_decode($data[0]['info'], true); // Decode existing info to an array
-            $new_data['member_id'] = $this->member_id; // Replace member_id with the current member's id
-    
-            // 将新的数据插入数据库
-            (new HsxPhoneQueryInfo())->insert([
-                'sn' => $where['imeis'],
-                'type_id' => $where['id'],
-                'member_id' => $this->member_id,
-                'info' => json_encode($new_data), // Re-encode the info with the updated member_id
-                // 又加了两个字段 一个是 is_look 一个是 pid  (父级分类id | 前端传过来的)
-                'is_look' => 0,
-                'pid' => $where['pid']
-            ]);
-    
-            return ['code' => 200, 'data' => $new_data]; // Return the updated info
+
+        // 去除重复的串号
+        $imeis = array_unique($imeis);
+
+        // 获取查询配置和价格信息
+        $queryConfig = $this->getQueryConfig($where['id']);
+        if (!is_array($queryConfig)) {
+            return $queryConfig; // 返回错误信息
         }
-    
-        // 获取外部 API 所需的 appid 和 Secret
-        $config_data = (new HsxPhoneQueryConfig())->where([['site_id', '=', $this->site_id]])->field('appid, Secret')->select()->toArray();
-    
-        if (empty($config_data)) {
-            return error('请先配置appid和Secret');
+
+        // 计算总费用并检查用户余额
+        $totalCost = $queryConfig['price'] * count($imeis);
+        $checkBalance = $this->checkUserBalance($totalCost, $where['payType'] ?? 'point');
+        if (!is_array($checkBalance)) {
+            return $checkBalance; // 返回错误信息
         }
-    
-        // 调用外部 API
-        $api_response = json_decode($this->call_api($config_data[0]['appid'], $config_data[0]['Secret'], $where['imeis'], $where['id']), true);
-    
-        if ($api_response['code'] != 200) {
-            return $api_response;
-        } else {
-            // 插入API返回数据到本地数据库
-            $insert_data = [
-                'sn' => $where['imeis'],
-                'type_id' => $where['id'],
-                'info' => json_encode($api_response['data']),
-                'create_time' => time(),
-                'member_id'=>$this->member_id,
-                'pid' => $where['pid']
-            ];
-            (new HsxPhoneQueryInfo())->insert($insert_data);
-    
-            // 扣除积分或余额并记录日志
-            $this->consumeAmount($this->member_id, $amount_needed, $payType, '查询', [
-                'from_type' => 'hsx_phone_query',
-                'momo' => $payType === 'point' ? '积分消费查询' : '余额消费查询',
-                'related_id' => $where['id']
-            ]);
-    
-            return $api_response;
+
+        $results = [];
+        $newQueries = 0;
+        
+        // 处理每个串号
+        foreach ($imeis as $imei) {
+            $imei = trim($imei);
+            if (empty($imei)) continue;
+
+            // 查询本地数据库
+            $localResult = $this->getLocalQueryResult($imei, $where['id']);
+            
+            if ($localResult) {
+                $results[] = $this->processExistingQuery($localResult, $where);
+            } else {
+                // 调用外部API
+                $apiResult = $this->processNewQuery($imei, $where, $queryConfig);
+                if (is_array($apiResult)) {
+                    $results[] = $apiResult;
+                    $newQueries++;
+                } else {
+                    $results[] = ['sn' => $imei, 'error' => $apiResult];
+                }
+            }
         }
+
+        // 只在有新查询时扣费
+        if ($newQueries > 0) {
+            $actualCost = $queryConfig['price'] * $newQueries;
+            $this->deductUserBalance($actualCost, $where['payType'] ?? 'point', $where['id']);
+        }
+
+        return ['code' => 200, 'data' => $results];
     }
-    
-    protected function consumeAmount($member_id, $amount, $payType, $key, $param = [])
+
+    /**
+     * 获取查询配置和价格信息
+     */
+    protected function getQueryConfig($typeId)
     {
-        // 获取会员数据
-        $member_model = (new Member())->where('member_id', '=', $member_id)->find();
-        
-        $field = $payType === 'point' ? 'point' : 'balance';
-        
-        // 检查积分或余额是否足够
-        if (!$member_model || $member_model[$field] < $amount) {
-            return error($payType === 'point' ? '积分不足' : '余额不足');
+        // 获取查询类别价格
+        $category = (new HsxPhoneQueryCategory())->where('id', '=', $typeId)->field('price')->find();
+        if (empty($category)) {
+            throw new CommonException("查询类型不存在");
+            // return error('查询类型不存在');
         }
-    
-        // 扣除积分或余额
-        $member_model->$field -= $amount;
-        // $member_model->save();
-    
-        // 记录扣除日志
-        $log_type = $payType === 'point' ? MemberAccountTypeDict::POINT : MemberAccountTypeDict::BALANCE;
-        $momo_text = $payType === 'point' ? '消费积分' : '消费余额';
-    
+
+        // 获取API配置
+        $config = (new HsxPhoneQueryConfig())->where([['site_id', '=', $this->site_id]])->field('appid, Secret')->find();
+        if (empty($config)) {
+            throw new CommonException("请先配置appid和Secret");
+            // return error('请先配置appid和Secret');
+        }
+
+        return [
+            'price' => $category['price'],
+            'appid' => $config['appid'],
+            'secret' => $config['Secret']
+        ];
+    }
+
+    /**
+     * 检查用户余额是否足够
+     */
+    protected function checkUserBalance($amount, $payType)
+    {
+        $field = $payType === 'point' ? 'point' : 'balance';
+        $needed = $payType === 'point' ? $amount * 100 : $amount;
+
+        $member = (new Member())->where('member_id', '=', $this->member_id)->field($field)->find();
+        if (!$member || $member[$field] < $needed) {
+            throw new CommonException($payType === 'point' ? '积分不足' : '余额不足');
+            // return error($payType === 'point' ? '积分不足' : '余额不足');
+        }
+
+        return ['field' => $field, 'needed' => $needed];
+    }
+
+    /**
+     * 获取本地查询结果
+     */
+    protected function getLocalQueryResult($imei, $typeId)
+    {
+        return (new HsxPhoneQueryInfo())
+            ->where([['sn', '=', $imei], ['type_id', '=', $typeId]])
+            ->field('info')
+            ->find();
+    }
+
+    /**
+     * 处理已存在的查询记录
+     */
+    protected function processExistingQuery($result, $where)
+    {
+        $data = json_decode($result['info'], true);
+        
+        // 插入新记录，记录当前用户的查询
+        (new HsxPhoneQueryInfo())->insert([
+            'sn' => $where['imeis'],
+            'type_id' => $where['id'],
+            'member_id' => $this->member_id,
+            'info' => $result['info'],
+            'is_look' => 0,
+            'pid' => $where['pid'] ?? 0,
+            'pay_type' => $where['payType'] ?? 'point',
+            'money' => $where['payType'] === 'point' ? 0 : $data['price'] ?? 0,
+            'create_time' => time()
+        ]);
+
+        return $data;
+    }
+
+    /**
+     * 处理新的查询请求
+     */
+    protected function processNewQuery($imei, $where, $config)
+    {
+        $apiResponse = json_decode($this->call_api($config['appid'], $config['secret'], $imei, $where['id']), true);
+        
+        if ($apiResponse['code'] != 200) {
+            return $apiResponse['msg'] ?? '查询失败';
+        }
+
+        // 保存查询结果
+        (new HsxPhoneQueryInfo())->insert([
+            'sn' => $imei,
+            'type_id' => $where['id'],
+            'member_id' => $this->member_id,
+            'info' => json_encode($apiResponse['data']),
+            'is_look' => 0,
+            'pid' => $where['pid'] ?? 0,
+            'pay_type' => $where['payType'] ?? 'point',
+            'money' => $where['payType'] === 'point' ? 0 : $config['price'],
+            'create_time' => time()
+        ]);
+
+        return $apiResponse['data'];
+    }
+
+    /**
+     * 扣除用户余额并记录
+     */
+    protected function deductUserBalance($amount, $payType, $relatedId)
+    {
+        $needed = $payType === 'point' ? $amount * 100 : $amount;
+        
+        // 扣除余额或积分
+        $member = (new Member())->where('member_id', '=', $this->member_id)->find();
+        $field = $payType === 'point' ? 'point' : 'balance';
+        $member->$field -= $needed;
+        $member->save();
+
+        // 记录消费日志
+        $logType = $payType === 'point' ? MemberAccountTypeDict::POINT : MemberAccountTypeDict::BALANCE;
         (new CoreMemberAccountService())->addLog(
             $this->site_id,
-            $member_id,
-            $log_type,
-            -$amount, // 负数表示扣除
-            $param['from_type'] ?? '',
-            $param['momo'] ?? $momo_text,
-            $param['related_id'] ?? 0
+            $this->member_id,
+            $logType,
+            -$needed,
+            'hsx_phone_query',
+            $payType === 'point' ? '积分消费查询' : '余额消费查询',
+            $relatedId
         );
-    
+
         return true;
     }
-    
-
 
     public function generate_md5_sign($params, $secret)
 {
@@ -221,6 +298,17 @@ public function call_api($appid, $secret, $code , $id)
 
     // Close the CURL session
     curl_close($ch);
+    // var_dump($response);
+    // 如果返回的数据是JSON，则解析成数组 
+    if (is_string($response)) {
+        $response = json_decode($response, true);
+    }
+    
+    // 判断返回的 code == 200
+    if ($response['code'] != 200) {
+        throw new \Exception($response['message']);
+    }
+
 
     // Return the response
     return $response;

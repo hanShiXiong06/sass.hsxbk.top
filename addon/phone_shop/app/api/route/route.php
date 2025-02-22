@@ -245,7 +245,13 @@ Route::group('phone_shop', function() {
     Route::get('order/refund/type', 'addon\phone_shop\app\api\controller\refund\Refund@getRefundType');
     // 操作员上下架
     Route::get('goods/operation/:goods_id', 'addon\phone_shop\app\api\controller\goods\Goods@operationGoods');
+    // 添加商品
+    Route::post('goods/add', 'addon\phone_shop\app\api\controller\goods\Goods@add');
 
+    // 修改商品
+    Route::put('goods/:goods_id', 'addon\phone_shop\app\api\controller\goods\Goods@put');
+  // 获取内存列表
+  Route::get('goods/memory/list', 'addon\phone_shop\app\api\controller\goods\Goods@getMemoryList');
   
 
 })->middleware(ApiChannel::class)

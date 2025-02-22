@@ -92,6 +92,7 @@ class RecycleOrderDevice extends BaseAdminController
              ["status",0],
              ["check_status",0],
              ["check_result",""],
+             ['check_images',''],
              ["initial_price",0.00],
              ["final_price",0.00],
              ["price_remark",""],

@@ -36,7 +36,7 @@ class RecycleOrderDeviceService extends BaseAdminService
      */
     public function getList(array $where = []): array
     {
-        $field = 'id,order_id,imei,model,initial_price,final_price,price_remark,status,check_status,check_result,check_at,remark,create_at,update_time';
+        $field = 'id,order_id,imei,model,initial_price,check_images,final_price,price_remark,status,check_status,check_result,check_at,remark,create_at,update_time';
         $order = 'create_at desc';
         
         $condition = [];

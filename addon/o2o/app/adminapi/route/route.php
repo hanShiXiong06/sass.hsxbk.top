@@ -16,7 +16,7 @@ use app\adminapi\middleware\AdminCheckToken;
 use app\adminapi\middleware\AdminLog;
 
 /**
- * 卡项功能插件定义
+ * 上门服务功能插件定义
  */
 Route::group('o2o', function () {
     /***************************************************** 技师 ****************************************************/

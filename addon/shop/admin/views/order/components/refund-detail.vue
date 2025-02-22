@@ -523,7 +523,7 @@ defineExpose({
 
 <style lang="scss">
 .member-detail-drawer{
-    width: 1000px !important;
+    width: 1300px !important;
 }
 .page-form .input-width{
     width: 170px;

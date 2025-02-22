@@ -26,6 +26,7 @@ use addon\shop\app\service\core\order\CoreOrderEventService;
 use addon\shop\app\service\core\order\CoreOrderPayService;
 use app\dict\common\ChannelDict;
 use app\dict\pay\PayDict;
+use app\model\diy_form\DiyFormRecordsFields;
 use app\model\member\Member;
 use app\model\pay\Pay;
 use app\service\core\pay\CorePayService;
@@ -70,15 +71,23 @@ class OrderService extends BaseAdminService
                 $pay_where[] = [ 'pay.type', '=', $where[ 'pay_type' ] ];
             }
         }
+        $member_where = [];
+        if ($where['keyword'] != ''){
+            $member_where = [
+                [ 'member.member_no|member.nickname|member.username|member.mobile', 'like' , "%" . $where['keyword'] . "%" ],
+            ];
+        }
         $search_model = $this->model
             ->where([ [ 'order.site_id', '=', $this->site_id ] ])
-            ->withSearch([ 'search_type', 'order_from', 'join_status', 'create_time', 'join_pay_time', 'activity_type', 'keyword' ], $where)
+            ->withSearch([ 'search_type', 'order_from', 'join_status', 'create_time', 'join_pay_time', 'activity_type' ], $where)
             ->field($field)
             ->withJoin([
                 'pay' => function(Query $query) use ($pay_where) {
                     $query->where($pay_where);
                 },
-                'member'
+                'member'=> function(Query $query) use ($member_where) {
+                    $query->where($member_where);
+                },
             ], 'left')
             ->with([
                 'order_goods' => function($query) {
@@ -104,12 +113,12 @@ class OrderService extends BaseAdminService
      */
     public function getDetail(int $order_id)
     {
-        $field = 'activity_type,point,order_id,order_no,order_type,order_from,out_trade_no,status,member_id,ip,goods_money,delivery_money,order_money,invoice_id,create_time,pay_time,delivery_time,take_time,finish_time,close_time,delivery_type,taker_name,taker_mobile,taker_province,taker_city,taker_district,taker_address,taker_full_address,taker_longitude,taker_latitude,take_store_id,is_enable_refund,member_remark,shop_remark,close_remark,discount_money';
+        $field = 'activity_type,point,order_id,order_no,order_type,order_from,out_trade_no,status,member_id,ip,goods_money,delivery_money,order_money,invoice_id,create_time,pay_time,delivery_time,take_time,finish_time,close_time,delivery_type,taker_name,taker_mobile,taker_province,taker_city,taker_district,taker_address,taker_full_address,taker_longitude,taker_latitude,take_store_id,is_enable_refund,member_remark,shop_remark,close_remark,discount_money,form_record_id';
         $info = $this->model->where([ [ 'order_id', '=', $order_id ], [ 'site_id', '=', $this->site_id ] ])->field($field)
             ->with(
                 [
                     'order_goods' => function($query) {
-                        $query->field('extend,order_goods_id, order_id, member_id, goods_id, sku_id, goods_name, sku_name, goods_image, sku_image, price, num, goods_money, is_enable_refund, goods_type, delivery_status, status,discount_money,delivery_id,is_gift')->append([ 'delivery_status_name', 'status_name' ]);
+                        $query->field('extend,order_goods_id, order_id, member_id, goods_id, sku_id, goods_name, sku_name, goods_image, sku_image, price, num, goods_money, is_enable_refund, goods_type, delivery_status, status,discount_money,delivery_id,is_gift,form_record_id')->append([ 'delivery_status_name', 'status_name' ]);
                     },
                     'member' => function($query) {
                         $query->field('member_id, nickname, mobile, headimg');
@@ -166,6 +175,26 @@ class OrderService extends BaseAdminService
         }
         $info[ 'coupon_money' ] = number_format($coupon_money, 2, '.', '');
         $info[ 'manjian_discount_money' ] = number_format($manjian_discount_money, 2, '.', '');
+
+        $diy_form_records_fields_model = new DiyFormRecordsFields();
+        if (!empty($info['form_record_id'])) {
+            $field_count = $diy_form_records_fields_model->where([[ 'record_id', '=', $info['form_record_id'] ], [ 'site_id', '=', $this->site_id ]])->count();
+            if ($field_count > 0) {
+                $info[ 'form_record_show' ] = true;
+            } else {
+                $info[ 'form_record_show' ] = false;
+            }
+        }
+        if (!empty($info[ 'order_goods' ])) {
+            foreach ($info[ 'order_goods' ] as &$item) {
+                $field_count = $diy_form_records_fields_model->where([[ 'record_id', '=', $item['form_record_id'] ], [ 'site_id', '=', $this->site_id ]])->count();
+                if ($field_count > 0) {
+                    $item[ 'form_record_show' ] = true;
+                } else {
+                    $item[ 'form_record_show' ] = false;
+                }
+            }
+        }
 
         return $info;
     }

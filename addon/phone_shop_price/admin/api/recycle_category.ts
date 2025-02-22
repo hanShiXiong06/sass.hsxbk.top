@@ -70,4 +70,40 @@ export function deleteRecycleCategory(category_id: number) {
   });
 }
 
+// Banner相关接口
+export function getBannerList(params?: any) {
+  return request.get("/phone_shop_price/recycle_banner", { params });
+}
+
+export function getBannerInfo(id: number) {
+  return request.get(`/phone_shop_price/recycle_banner/${id}`);
+}
+
+export function addBanner(data: any) {
+  return request.post("/phone_shop_price/recycle_banner", data);
+}
+
+export function editBanner(id: number, data: any) {
+  return request.put(`/phone_shop_price/recycle_banner/${id}`, data);
+}
+
+export function deleteBanner(id: number) {
+  return request.delete(`/phone_shop_price/recycle_banner/${id}`);
+}
+
+export function changeBannerSort(id: number, sort: number) {
+  return request.put(
+    `/phone_shop_price/recycle_banner/change_sort/${id}/${sort}`
+  );
+}
+
+// 配置相关接口
+export function getConfig() {
+  return request.get("/phone_shop_price/recycle_category_config");
+}
+
+export function setConfig() {
+  return request.put("/phone_shop_price/recycle_category_config");
+}
+
 // USER_CODE_END -- phone_shop_price_recycle_category

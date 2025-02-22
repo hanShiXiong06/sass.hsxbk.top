@@ -11,10 +11,7 @@
 					</el-radio-group>
 				</el-form-item>
 				<el-form-item :label="t('cardNum')" v-if="diyStore.editComponent.source == 'all'">
-					<div class="flex items-center w-full">
-						<el-slider v-model="diyStore.editComponent.count" show-input size="small" class="ml-[10px] article-slider" :min="1" :max="30"/>
-						<span class="ml-[15px]">{{ diyStore.editComponent.num }}</span>
-					</div>
+					<el-slider show-input class="diy-nav-slider" v-model="diyStore.editComponent.count" size="small" :min="1" :max="30"/>
 				</el-form-item>
 				<el-form-item :label="t('customGoods')" v-if="diyStore.editComponent.source == 'custom'">
 					<goods-select-popup v-model="diyStore.editComponent.goods_ids" type="card"/>

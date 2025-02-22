@@ -1,6 +1,11 @@
 import request from '@/utils/request'
-
-
+/**
+ * 验证分销权限
+ * @returns 
+ */
+export function checkFenxiao() {
+    return request.get(`tk_jhkd/checkfenxiao`)
+}
 /***************************************************** 聚合快递接口 ****************************************************/
 /**
  * 获取余额
@@ -16,7 +21,7 @@ export function getBalance() {
  * @returns
  */
 export function getJhkdConfig(params: Record<string, any>) {
-    return request.get(`tk_jhkd/getconfig`, {params})
+    return request.get(`tk_jhkd/getconfig`, { params })
 }
 /**
  * 设置快递接口配置
@@ -24,7 +29,7 @@ export function getJhkdConfig(params: Record<string, any>) {
  * @returns
  */
 export function setJhkdConfig(params: Record<string, any>) {
-    return request.post(`tk_jhkd/setconfig`, params,{showSuccessMessage: true})
+    return request.post(`tk_jhkd/setconfig`, params, { showSuccessMessage: true })
 }
 
 /***************************************************** 聚合快递品牌列表 ****************************************************/
@@ -35,7 +40,7 @@ export function setJhkdConfig(params: Record<string, any>) {
  * @returns
  */
 export function getTkjhkdBrandList(params: Record<string, any>) {
-    return request.get(`tk_jhkd/brand`, {params})
+    return request.get(`tk_jhkd/brand`, { params })
 }
 
 //***************************************************** 聚合快递通知列表 ****************************************************/
@@ -46,7 +51,7 @@ export function getTkjhkdBrandList(params: Record<string, any>) {
  * @returns
  */
 export function getTkjhkdNoticeList(params: Record<string, any>) {
-    return request.get(`tk_jhkd/notice`, {params})
+    return request.get(`tk_jhkd/notice`, { params })
 }
 
 /**

@@ -6,7 +6,7 @@ return [
         'name' => '充值订单未支付关闭',
         'desc' => '',
         'time' => [
-            'type' => 'day',
+            'type' => 'min',
             'min' => 1
         ],
         'class' => 'addon\recharge\app\job\OrderClose',

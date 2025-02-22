@@ -132,11 +132,6 @@ Route::group('shop', function() {
 
     Route::get('rank/getRankConfig', 'addon\shop\app\api\controller\goods\Rank@getRankConfig');
 
-    /***************************************************** 满减送 ****************************************************/
-
-    // 获取商品满减优惠信息
-    Route::get('manjian/info', 'addon\shop\app\api\controller\marketing\Manjian@info');
-
 })->middleware(ApiChannel::class)
     ->middleware(ApiCheckToken::class)//false表示不验证登录
     ->middleware(ApiLog::class);
@@ -279,6 +274,11 @@ Route::group('shop', function() {
 
     //积分商城订单创建
     Route::post('exchange_order/create', 'addon\shop\app\api\controller\exchange\OrderCreate@create');
+
+    /***************************************************** 满减送 ****************************************************/
+
+    // 获取商品满减优惠信息
+    Route::get('manjian/info', 'addon\shop\app\api\controller\marketing\Manjian@info');
 
 })->middleware(ApiChannel::class)
     ->middleware(ApiCheckToken::class, true)//表示验证登录

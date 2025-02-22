@@ -12,9 +12,6 @@
 namespace addon\phone_shop\app\dict\order;
 
 
-/**
- * 订单退款相关枚举类
- */
 class OrderRefundDict
 {
     /***************************************************** 退款相关状态 ****************************************************/
@@ -56,7 +53,7 @@ class OrderRefundDict
     const ACTIVE_REFUND_ACTION = 'active_refund';//卖家同意退款
     const FINISH_ACTION = 'finish';//卖家拒绝退款
     const CLOSE_ACTION = 'close';//卖家同意退货
-
+    const SHOP_ACTIVE_REFUND_ACTION = 'shop_active_refund';//商家主动退款
     /**
      * 获取售后状态
      * @param string $status
@@ -143,6 +140,7 @@ class OrderRefundDict
             self::REFUSE_AUDIT_REFUND_GOODS_ACTION => get_lang('dict_shop_order_refund_action.refuse_audit_refund_goods'),
             self::FINISH_ACTION => get_lang('dict_shop_order_refund_action.finish'),
             self::ACTIVE_REFUND_ACTION => get_lang('dict_shop_order_refund_action.active_refund'),
+            self::SHOP_ACTIVE_REFUND_ACTION => get_lang('dict_shop_order_refund_action.shop_active_refund'),
         ];
         if (!$type) {
             return $data;

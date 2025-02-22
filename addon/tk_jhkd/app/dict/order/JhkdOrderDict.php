@@ -62,13 +62,13 @@ class JhkdOrderDict
                 'action' => [],
                 'member_action' => [
                     [
-                        'name' => '立即支付',
-                        'class' => 'gopay',
+                        'name' => '关闭订单',
+                        'class' => 'close',
                         'params' => ''
                     ],
                     [
-                        'name' => '关闭订单',
-                        'class' => 'close',
+                        'name' => '立即支付',
+                        'class' => 'gopay',
                         'params' => ''
                     ],
                 ],

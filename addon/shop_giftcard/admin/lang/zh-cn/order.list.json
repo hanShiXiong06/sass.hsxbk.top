@@ -1,7 +1,7 @@
 {
       "orderInfo": "订单信息",
       "memberInfo": "会员昵称",
-      "memberInfoPlaceholder": "请输入会员昵称",
+      "memberInfoPlaceholder": "请输入会员昵称/账号/手机号/编码搜索",
       "payType": "支付类型",
       "all": "全部",
       "toBePaid": "待支付",

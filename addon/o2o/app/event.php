@@ -14,11 +14,13 @@ return [
         //订单支付后
         'AfterO2oOrderPay' => [ 'addon\o2o\app\listener\AfterO2oOrderPay' ],
 
-        'PayCreate' => ['addon\o2o\app\listener\pay\PayCreateListener'],
-        'PaySuccess' => ['addon\o2o\app\listener\pay\PaySuccessListener'],
-        'RefundSuccess' => ['addon\o2o\app\listener\pay\RefundSuccessListener'],
+        //支付
+        'PayCreate' => [ 'addon\o2o\app\listener\pay\PayCreateListener' ],
+        'PaySuccess' => [ 'addon\o2o\app\listener\pay\PaySuccessListener' ],
+        'PayTradeInfo' => [ 'addon\o2o\app\listener\order\O2oOrderTradeInfoListener' ],   //订单交易信息
+        'RefundSuccess' => [ 'addon\o2o\app\listener\pay\RefundSuccessListener' ],
 
-        'SiteIndex' => ['addon\o2o\app\listener\SiteIndexListener'],
+        'SiteIndex' => [ 'addon\o2o\app\listener\SiteIndexListener' ],
         'NoticeData' => [
             'addon\o2o\app\listener\notice_template\OrderPay',
             'addon\o2o\app\listener\notice_template\OrderPayRemind',
@@ -53,6 +55,9 @@ return [
 
         ],
         'WapIndex' => [ 'addon\o2o\app\listener\WapIndexListener' ],
+
+        //主题色
+        'ThemeColor' => [ 'addon\o2o\app\listener\diy\ThemeColorListener' ],
     ],
 
     'subscribe' => [

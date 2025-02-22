@@ -2,9 +2,11 @@
 return [
     'pages' => <<<EOT
         // PAGE_BEGIN
-				// *********************************** 二手商城 ***********************************
+        {
+            "root": "addon/phone_shop", 
+            "pages": [
 				{
-					"path": "phone_shop/pages/index",
+					"path": "pages/index",
 					"style": {
 						// #ifndef H5
 						"navigationStyle": "custom",
@@ -13,7 +15,7 @@ return [
 					}
 				},
 				{
-					"path": "phone_shop/pages/coupon/list",
+					"path": "pages/coupon/list",
 					"style": {
 						// #ifndef H5
 						"navigationStyle": "custom",
@@ -22,7 +24,7 @@ return [
 					}
 				},
 				{
-					"path": "phone_shop/pages/coupon/detail",
+					"path": "pages/coupon/detail",
 					"style": {
 						// #ifndef H5
 						"navigationStyle": "custom",
@@ -31,7 +33,7 @@ return [
 					}
 				},
 				{
-					"path": "phone_shop/pages/discount/list",
+					"path": "pages/discount/list",
 					"style": {
 						// #ifndef H5
 						"navigationStyle": "custom",
@@ -40,32 +42,32 @@ return [
 					}
 				},
 				{
-					"path": "phone_shop/pages/evaluate/list",
+					"path": "pages/evaluate/list",
 					"style": {
 						"navigationBarTitleText": "%shop.pages.evaluate.list%"
 					}
 				},
 				{
-					"path": "phone_shop/pages/evaluate/order_evaluate",
+					"path": "pages/evaluate/order_evaluate",
 					"style": {
 						"navigationBarTitleText": "%shop.pages.evaluate.order_evaluate%"
 					}
 				},
 				{
-					"path": "phone_shop/pages/evaluate/order_evaluate_view",
+					"path": "pages/evaluate/order_evaluate_view",
 					"style": {
 						"navigationBarTitleText": "%shop.pages.evaluate.order_evaluate_view%"
 					}
 				},
 				{
-					"path": "phone_shop/pages/member/my_coupon",
+					"path": "pages/member/my_coupon",
 					"style": {
 						"navigationBarTitleText": "%shop.pages.member.my_coupon%"
 					},
 					"needLogin": true
 				},
 				{
-					"path": "phone_shop/pages/member/index",
+					"path": "pages/member/index",
 					"style": {
 						// #ifndef H5
 						"navigationStyle": "custom",
@@ -74,38 +76,38 @@ return [
 					}
 				},
 				{
-					"path": "phone_shop/pages/goods/search",
+					"path": "pages/goods/search",
 					"style": {
 						"navigationBarTitleText": "%shop.pages.goods.search%"
 					}
 				},
 				{
-					"path": "phone_shop/pages/goods/list",
+					"path": "pages/goods/list",
 					"style": {
 						"navigationBarTitleText": "%shop.pages.goods.list%"
 					}
 				},
 				{
-					"path": "phone_shop/pages/goods/detail",
+					"path": "pages/goods/detail",
 					"style": {
 						"navigationBarTitleText": "%shop.pages.goods.detail%",
 						"navigationStyle": "custom"
 					}
 				},
 				{
-					"path": "phone_shop/pages/goods/cart",
+					"path": "pages/goods/cart",
 					"style": {
 						"navigationBarTitleText": "%shop.pages.goods.cart%"
 					}
 				},
 				{
-					"path": "phone_shop/pages/goods/category",
+					"path": "pages/goods/category",
 					"style": {
 						"navigationBarTitleText": "%shop.pages.goods.category%"
 					}
 				},
 				{
-					"path": "phone_shop/pages/order/detail",
+					"path": "pages/order/detail",
 					"style": {
 						// #ifndef H5
 						"navigationStyle": "custom",
@@ -115,42 +117,42 @@ return [
 					"needLogin": true
 				},
 				{
-					"path": "phone_shop/pages/order/list",
+					"path": "pages/order/list",
 					"style": {
 						"navigationBarTitleText": "%shop.pages.order.list%"
 					},
 					"needLogin": true
 				},
 				{
-					"path": "phone_shop/pages/order/payment",
+					"path": "pages/order/payment",
 					"style": {
 						"navigationBarTitleText": "%shop.pages.order.payment%"
 					},
 					"needLogin": true
 				},
 				{
-					"path": "phone_shop/pages/refund/apply",
+					"path": "pages/refund/apply",
 					"style": {
 						"navigationBarTitleText": "%shop.pages.refund.apply%"
 					},
 					"needLogin": true
 				},
 				{
-					"path": "phone_shop/pages/refund/edit_apply",
+					"path": "pages/refund/edit_apply",
 					"style": {
 						"navigationBarTitleText": "%shop.pages.refund.edit_apply%"
 					},
 					"needLogin": true
 				},
 				{
-					"path": "phone_shop/pages/refund/list",
+					"path": "pages/refund/list",
 					"style": {
 						"navigationBarTitleText": "%shop.pages.refund.list%"
 					},
 					"needLogin": true
 				},
 				{
-					"path": "phone_shop/pages/refund/detail",
+					"path": "pages/refund/detail",
 					"style": {
 						// #ifndef H5
 						"navigationStyle": "custom",
@@ -160,14 +162,14 @@ return [
 					"needLogin": true
 				},
 				{
-					"path": "phone_shop/pages/refund/log",
+					"path": "pages/refund/log",
 					"style": {
 						"navigationBarTitleText": "%shop.pages.refund.log%"
 					},
 					"needLogin": true
 				},
 				{
-					"path": "phone_shop/pages/point/index",
+					"path": "pages/point/index",
 					"style": {
 						// #ifndef H5
 						"navigationStyle": "custom",
@@ -176,41 +178,44 @@ return [
 					}
 				},
 				{
-					"path": "phone_shop/pages/point/list",
+					"path": "pages/point/list",
 					"style": {
 						"navigationBarTitleText": "%shop.pages.point.list%"
 					}
 				},
 				{
-					"path": "phone_shop/pages/point/detail",
+					"path": "pages/point/detail",
 					"style": {
 						"navigationStyle": "custom",
 						"navigationBarTitleText": "%shop.pages.point.detail%"
 					}
 				},
 				{
-					"path": "phone_shop/pages/point/payment",
+					"path": "pages/point/payment",
 					"style": {
 						"navigationBarTitleText": "%shop.pages.point.payment%"
 					}
 				},
 				{
-					"path": "phone_shop/pages/point/order_list",
+					"path": "pages/point/order_list",
 					"style": {
 						"navigationBarTitleText": "%shop.pages.point.order_list%"
 					}
 				},
 				{
-					"path": "phone_shop/pages/goods/operation",
+					"path": "pages/goods/operation",
 					"style": {
 						"navigationBarTitleText": "操作台"
 					}
-				},{
-					"path": "phone_shop/pages/goods/new_arrivals",
+				},
+				{
+					"path": "pages/goods/new_arrivals",
 					"style": {
 						"navigationBarTitleText": "%shop.pages.goods.new_arrivals%"
 					}
-				},
-				// PAGE_END
+				}
+			]
+        },
+// PAGE_END
 EOT
 ];

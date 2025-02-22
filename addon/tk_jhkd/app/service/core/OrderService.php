@@ -2,11 +2,16 @@
 
 namespace addon\tk_jhkd\app\service\core;
 
+use addon\tk_jhkd\app\dict\delivery\DeliveryDict;
 use addon\tk_jhkd\app\dict\order\CommissionStatusDict;
 use addon\tk_jhkd\app\dict\order\JhkdOrderAddDict;
 use addon\tk_jhkd\app\dict\order\JhkdOrderDict;
 use addon\tk_jhkd\app\dict\order\OrderRefundLogDict;
 use addon\tk_jhkd\app\job\notice\Webhook;
+use addon\tk_jhkd\app\job\order_event\OrderDeliveryCancel;
+use addon\tk_jhkd\app\job\order_event\OrderPayAfter;
+use addon\tk_jhkd\app\job\order_event\OrderRefundAfter;
+use addon\tk_jhkd\app\listener\order\delivery\DeliveryCancelOrderListener;
 use addon\tk_jhkd\app\model\fenxiao\FenxiaoOrder;
 use addon\tk_jhkd\app\model\order\OrderAdd;
 use addon\tk_jhkd\app\model\orderdelivery\OrderDelivery;
@@ -292,7 +297,7 @@ class OrderService extends BaseApiService
             (new OrderDelivery())->create($deliveryData);
             $info = $this->model->create($orderData);
             //添加订单支付表
-            (new CorePayService())->create($orderData['site_id'], PayDict::MEMBER, $orderData['member_id'], $orderData['order_money'], JhkdOrderDict::getOrderType()['type'], $info['id'], "快递下单付款");
+            //(new CorePayService())->create($orderData['site_id'], PayDict::MEMBER, $orderData['member_id'], $orderData['order_money'], JhkdOrderDict::getOrderType()['type'], $info['id'], "快递下单付款");
             //同步创建计费
             (new OrderDeliveryReal())->create([
                 'order_id' => $info['order_id'],
@@ -357,6 +362,17 @@ class OrderService extends BaseApiService
                 $this->member_id
             );
             Db::commit();
+            OrderPayAfter::dispatch([
+                'order_data' => [
+                    'id' => $order_info['id'],
+                    'site_id' => $pay_info['site_id'],
+                    'member_id' => $order_info['member_id'],
+                    'order_id' => $order_info['order_id'],
+                    'order_no' => '',
+                    'order_money' => $order_info['order_money'],
+                    'original_price' => $order_info['order_money'],
+                ]
+            ]);
             (new NoticeService())->send($order_info['site_id'], 'tk_jhkd_order_pay', ['order_id' => $order_info['order_id']]);
             $sendauto = $this->getConfig()['autosend'];
             if ($sendauto == 1) {
@@ -471,6 +487,10 @@ class OrderService extends BaseApiService
                 }
             }
             Db::commit();
+            OrderRefundAfter::dispatch(['order_data' => [
+                'order_goods_id' => $orderInfo['id'],
+                'site_id' => $site_id,
+            ]]);
             $deliveryInfo = $this->deliveryModel->where(['order_id' => $orderInfo['order_id']])->findOrEmpty();
             //分销订单关闭
             $fenxiao_order = (new FenxiaoOrder())->where(['order_id' => $orderInfo['order_id'], 'site_id' => $site_id])->findOrEmpty();
@@ -485,12 +505,17 @@ class OrderService extends BaseApiService
                 '订单退款成功',
                 'member'
             );
-            event('DeliveryCancelOrder', ['site_id' => $this->site_id, 'data' => [
-                'order_no' => $order_no,
-                'task_id' => $deliveryInfo['task_id'],
-                'order_id' => $orderInfo['order_id'],
-                'platform' => $deliveryInfo['platform'],
-            ]]);
+            $cancelData = [
+                'site_id' => $site_id,
+                'data' => [
+                    'order_no' => $order_no,
+                    'task_id' => $deliveryInfo['task_id'],
+                    'order_id' => $orderInfo['order_id'],
+                    'platform' => $deliveryInfo['platform'],
+                ]
+            ];
+            (new DeliveryCancelOrderListener())->handle($cancelData);
+            OrderDeliveryCancel::dispatch('doJob', $cancelData, 30);
             Db::commit();
         } catch (Exception $e) {
             Db::rollback();

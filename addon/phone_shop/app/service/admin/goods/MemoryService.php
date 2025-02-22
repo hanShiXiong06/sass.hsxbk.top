@@ -56,7 +56,9 @@ class MemoryService extends BaseAdminService
                     $query->field(' group_name');
                 },
             ])
+            
             ->order($order);
+            
         $list = $this->pageQuery($search_model);
         return $list;
     }
@@ -73,24 +75,28 @@ class MemoryService extends BaseAdminService
     // 先获取 分类的 memory_group
     $memory_group = (new Category())->where([ ['category_id', '=', $where['id']]])->value('memory_group');
    
+    if($this->site_id !== 0 ){
+        $sites = (new Site())->field('memory_group_status')->where([['site_id', '=', $this->site_id]])->findOrEmpty()->toArray();
+    }
+    $site_id = empty($sites['memory_group_status']) ? $this->site_id : $this->site_id.",0";
        
     if(!empty($memory_group)){
        // 先查询 $where['id'] 在 memory_group 表中 获取 memory_ids
-       $memory_ids = (new MemoryGroup())->where([['site_id', '=', $this->site_id], ['group_id', 'in', $memory_group ]])->value('memory_ids');
+       $memory_ids = (new MemoryGroup())->where([['site_id', 'in',  $site_id], ['group_id', 'in', $memory_group ]])->value('memory_ids');
        if($memory_ids){
         $where['memory_ids'] = $memory_ids;
        }
     }
        // 然后通过 memory_ids 查询 memory 表 获取 spec_name
-       $memory_list = (new Memory())->where([['site_id', '=', $this->site_id], ['spec_id', 'in', $where['memory_ids']]])->field('spec_id, spec_name')->select()->toArray();
+       $memory_list = (new Memory())->where([['site_id', 'in', $site_id], ['spec_id', 'in', $where['memory_ids']]])->field('spec_id, spec_name')->select()->toArray();
 
        return $memory_list;
         $order = 'sort desc,spec_id desc';
         if($this->site_id !== 0 ){
-            $sites = (new Site())->field('memory_status')->where([['site_id', '=', $this->site_id]])->findOrEmpty()->toArray();
+            $sites = (new Site())->field('memory_status')->where([['site_id', 'in', $site_id]])->findOrEmpty()->toArray();
         }
         
-        $site_id = empty($sites['memory_status']) ? $this->site_id : $this->site_id.",0";
+    
         $list=  $this->model->where([['site_id', 'in', $site_id]])->withSearch(["spec_name"])
             ->field($field)
             
@@ -141,7 +147,7 @@ class MemoryService extends BaseAdminService
         $specInfo = $this->model->where([
             ['site_id', '=', $this->site_id], 
             ['spec_name', '=', $data['spec_name']],
-            ['group_id', '=', $data['group_id']]
+           
         ])->findOrEmpty()->toArray();
         if ($specInfo) {
             throw new AdminException('该分组下内存规格已存在，请检查');

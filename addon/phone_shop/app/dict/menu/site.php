@@ -275,7 +275,6 @@ return [
                             ],
                         ],
                     ],
-                    // 内存管理界面
                     [
                         'menu_name' => '商品内存分组',
                         'menu_key' => 'phone_shop_goods_memory_group_list',
@@ -1682,7 +1681,6 @@ return [
                     ],
                 ],
             ],
-            // 回收商设置
             [
                 'menu_name' => '回收商配置',
                 'menu_key' => 'phone_shop_site_recycle',
@@ -1696,10 +1694,7 @@ return [
                 'sort' => '0',
                 'status' => '1',
                 'is_show' => '1',
-                'children'=>[
-                    // 回收商配置 和 普通商户配置
-                    // 回收商 的界面是  shop_recycle_config
-                    // 普通商户 的界面是  shop_config
+                'children' => [
                     [
                         'menu_name' => '回收商配置',
                         'menu_key' => 'phone_shop_site_recycle_config',
@@ -1709,6 +1704,10 @@ return [
                         'api_url' => 'phone_shop/site/recycle/config',
                         'router_path' => 'phone_shop/site/recycle/config',
                         'view_path' => 'site/recycle_config',
+                        'methods' => '',
+                        'sort' => '0',
+                        'status' => '1',
+                        'is_show' => '1',
                     ],
                     [
                         'menu_name' => '普通商户配置',
@@ -1719,8 +1718,12 @@ return [
                         'api_url' => 'phone_shop/site/config',
                         'router_path' => 'phone_shop/site/config',
                         'view_path' => 'site/config',
+                        'methods' => '',
+                        'sort' => '0',
+                        'status' => '1',
+                        'is_show' => '1',
                     ],
-                ],    
+                ],
             ],
         ],
     ],

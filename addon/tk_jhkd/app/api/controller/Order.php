@@ -75,7 +75,9 @@ class Order extends BaseController
     {
         $data = $this->request->params([
             ['order_status', ''],
+            ['keyword', ''],
         ]);
+
         return success((new ApiOrderService())->getPage($data));
     }
 

@@ -62,7 +62,7 @@
                 </el-form-item>
                 <el-form-item :label="t('member')" prop="member_id">
                     <div class="!w-[200px] border-[1px] border-[#e4e4e4] border-solid px-[11px] h-[30px]">{{ formData.member_nickname }}</div>
-                    <el-button class="ml-[10px]"  type="primary"  @click=" dialogMemberVisible = true">选择会员</el-button>
+                    <el-button class="ml-[10px]"  type="primary"  @click="dialogMemberVisible = true">选择会员</el-button>
                 </el-form-item>
                 <!-- <el-form-item :label="t('images')" prop="images">
                     <upload-image v-model="formData.images" :limit="6" />

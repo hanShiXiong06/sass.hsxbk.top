@@ -56,18 +56,36 @@ class AfterShopOrderClose
                     'goods_id' => $v['goods_id'],
                     'sku_id' => $v['sku_id']
                 ]);
-            }
-            // 将商品重新上架
-            $sku = GoodsSku::find($skuId);
-
-            if ($sku && $sku->stock <= 0 || $sku->stock <= $num  ) {
-                // 这里假设 GoodsSku 模型有一个关联到 Goods 模型的关联方法 `goods()`
-                $goods = $sku->goods;
-                if ($goods && $goods->status != '1') {
-                    $goods->status = '1'; // 假设状态字段为 'status'，下架状态为 'unlisted'
-                    $goods->save();
+                 // 获取 当前的商品的 skuId 
+                $skuId = $v['sku_id'];
+                 // 将商品重新上架
+                $sku = GoodsSku::find($skuId);
+                Log::write('-------------------------sku_stock-----------------------------------------------------------------');
+                 
+                Log::write($sku->stock .'-------$num'. $v['num'] .'--------'.$sku->goods);
+                Log::write('------------------------------------------------------------------------------------------');
+                if ($sku && $sku->stock <= 0 || $sku->stock <= $v['num']  ) {
+                    // 这里假设 GoodsSku 模型有一个关联到 Goods 模型的关联方法 `goods()`
+                    $goods = $sku->goods;
+                    if ($goods && $goods->status != '1') {
+                        $goods->status = '1'; // 假设状态字段为 'status'，下架状态为 'unlisted'
+                        $goods->save();
+                    }
                 }
             }
+            // 将商品重新上架
+            // $sku = GoodsSku::find($skuId);
+            // Log::write('------------------------------------------------------------------------------------------');
+            //  Log::write($sku);
+            //  Log::write('------------------------------------------------------------------------------------------');
+            // if ($sku && $sku->stock <= 0 || $sku->stock <= $num  ) {
+            //     // 这里假设 GoodsSku 模型有一个关联到 Goods 模型的关联方法 `goods()`
+            //     $goods = $sku->goods;
+            //     if ($goods && $goods->status != '1') {
+            //         $goods->status = '1'; // 假设状态字段为 'status'，下架状态为 'unlisted'
+            //         $goods->save();
+            //     }
+            // }
 
             //商品累计销量
             //累减销量

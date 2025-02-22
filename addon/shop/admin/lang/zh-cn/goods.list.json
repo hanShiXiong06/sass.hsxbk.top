@@ -140,12 +140,15 @@
   "goodsBrand": "商品品牌",
   "goodsPoster": "商品海报",
   "isGift": "是否赠品",
-  "batchSettingTip": "每次仅能设置一项，点击确定成功之后生效",
+  "batchSettingTip": "每次仅能设置一项，点击确认成功之后生效",
   "setStock": "修改库存",
   "addStock": "增加库存",
   "reduceStock": "减少库存",
   "stockNum": "目标数值",
-  "stockNumTips": "批量调整商品库存，若商品正在参与营销活动，则不会修改库存"
+  "stockNumTips": "批量调整商品库存，若商品正在参与营销活动，则不会修改库存",
+  "confirm": "确认",
 
-
+  "diyForm": "万能表单",
+  "diyFormPlaceholder": "请选择万能表单",
+  "addDiyForm": "添加表单"
 }

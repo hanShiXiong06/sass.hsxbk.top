@@ -298,6 +298,13 @@ return [
                                     "bgColorEnd" => "#FE3423"
                                 ]
                             ] ],
+                        // 轮播图设置
+                        'swiper' => [
+                            'indicatorColor' => 'rgba(0, 0, 0, 0.3)', // 未选中颜色
+                            "indicatorActiveColor" => '#FF0E0E',
+                            'indicatorStyle' => 'style-1',
+                            'indicatorAlign' => 'center',
+                        ],
                         "textColor" => "#303133",
                         'pageStartBgColor' => 'rgba(255, 255, 255, 1)',
                         'pageEndBgColor' => '',
@@ -373,6 +380,7 @@ return [
                         "componentTitle" => "图片广告",
                         "ignore" => [],
                         "imageHeight" => 141,
+                        "isSameScreen"=> false,
                         "list" => [
                             [
                                 "link" => [
@@ -604,6 +612,13 @@ return [
                                 "imgWidth" => 72,
                                 "imgHeight" => 72
                             ] ],
+                        // 轮播图设置
+                        'swiper' => [
+                            'indicatorColor' => 'rgba(0, 0, 0, 0.3)', // 未选中颜色
+                            "indicatorActiveColor" => '#FF0E0E',
+                            'indicatorStyle' => 'style-1',
+                            'indicatorAlign' => 'center',
+                        ],
                         "textColor" => "#303133",
                         'pageStartBgColor' => '',
                         'pageEndBgColor' => '',
@@ -952,6 +967,13 @@ return [
                                     "bgColorEnd" => "#FE3423"
                                 ]
                             ] ],
+                        // 轮播图设置
+                        'swiper' => [
+                            'indicatorColor' => 'rgba(0, 0, 0, 0.3)', // 未选中颜色
+                            "indicatorActiveColor" => '#FF0E0E',
+                            'indicatorStyle' => 'style-1',
+                            'indicatorAlign' => 'center',
+                        ],
                         "pageStyle" => "padding-top:12rpx;padding-bottom:12rpx;padding-right:32rpx;padding-left:32rpx;"
                     ],
                     [
@@ -1190,6 +1212,13 @@ return [
                                     "bgColorEnd" => "#FE3423"
                                 ]
                             ]
+                        ],
+                        // 轮播图设置
+                        'swiper' => [
+                            'indicatorColor' => 'rgba(0, 0, 0, 0.3)', // 未选中颜色
+                            "indicatorActiveColor" => '#FF0E0E',
+                            'indicatorStyle' => 'style-1',
+                            'indicatorAlign' => 'center',
                         ],
                         'pageStartBgColor' => '',
                         'pageEndBgColor' => '',

@@ -5,10 +5,13 @@ return [
 
     ],
     'listen' => [
-
+         // 手机端初始化加载事件
+         'initWap' => [
+            'addon\phone_shop\app\listener\config\initWapListener'
+        ],
         // 添加/编辑商品之后的事件
         'AfterGoodsEdit' => [
-            'addon\phone_shop\app\listener\point_exchange\AfterGoodsEdit'
+            'addon\phone_shop\app\listener\point_exchange\AfterGoodsEdit',
         ],
         //订单创建后
         'ShopOrderCreate' => [ 'addon\phone_shop\app\listener\order\ShopOrderCreate' ],
@@ -41,14 +44,15 @@ return [
             'addon\phone_shop\app\listener\marketing\ShopDiscountCalculate'
         ],
         /***************************************************** 退款 start *****************************************************/
-        'AfterShopOrderRefundApply' => [ 'addon\phone_shop\app\listener\refund\AfterShopOrderRefundApply' ],
-        'AfterShopOrderRefundAuditApply' => [ 'addon\phone_shop\app\listener\refund\AfterShopOrderRefundAuditApply' ],
-        'AfterShopOrderRefundAuditRefundGoods' => [ 'addon\phone_shop\app\listener\refund\AfterShopOrderRefundAuditRefundGoods' ],
-        'AfterShopOrderRefundClose' => [ 'addon\phone_shop\app\listener\refund\AfterShopOrderRefundClose' ],
-        'AfterShopOrderRefundDelivery' => [ 'addon\phone_shop\app\listener\refund\AfterShopOrderRefundDelivery' ],
-        'AfterShopOrderRefundEdit' => [ 'addon\phone_shop\app\listener\refund\AfterShopOrderRefundEdit' ],
-        'AfterShopOrderRefundEditDelivery' => [ 'addon\phone_shop\app\listener\refund\AfterShopOrderRefundEditDelivery' ],
-        'AfterShopOrderRefundFinish' => [ 'addon\phone_shop\app\listener\refund\AfterShopOrderRefundFinish' ],
+        'AfterPhoneShopOrderRefundApply' => [ 'addon\phone_shop\app\listener\refund\AfterShopOrderRefundApply' ],
+        'AfterPhoneShopOrderRefundAuditApply' => [ 'addon\phone_shop\app\listener\refund\AfterShopOrderRefundAuditApply' ],
+        'AfterPhoneShopOrderRefundAuditRefundGoods' => [ 'addon\phone_shop\app\listener\refund\AfterShopOrderRefundAuditRefundGoods' ],
+        'AfterPhoneShopOrderRefundClose' => [ 'addon\phone_shop\app\listener\refund\AfterShopOrderRefundClose' ],
+        'AfterPhoneShopOrderRefundDelivery' => [ 'addon\phone_shop\app\listener\refund\AfterShopOrderRefundDelivery' ],
+        'AfterPhoneShopOrderRefundEdit' => [ 'addon\phone_shop\app\listener\refund\AfterShopOrderRefundEdit' ],
+        'AfterPhoneShopOrderRefundEditDelivery' => [ 'addon\phone_shop\app\listener\refund\AfterShopOrderRefundEditDelivery' ],
+        'AfterPhoneShopOrderRefundFinish' => [ 'addon\phone_shop\app\listener\refund\AfterShopOrderRefundFinish' ],
+        'AfterPhoneShopOrderRefundActiveCreate' => [ 'addon\phone_shop\app\listener\refund\AfterShopOrderRefundActiveCreate' ],
         /***************************************************** 退款 end *****************************************************/
 
         'ShopPromotion' => [ 'addon\phone_shop\app\listener\app\ShopPromotionListener' ],
@@ -58,6 +62,7 @@ return [
         //支付
         'PayCreate' => [ 'addon\phone_shop\app\listener\pay\PayCreateListener' ],
         'PaySuccess' => [ 'addon\phone_shop\app\listener\pay\PaySuccessListener' ],
+        'PayTradeInfo' => [ 'addon\phone_shop\app\listener\order\ShopOrderTradeInfoListener' ],   //订单交易信息
         'RefundSuccess' => [ 'addon\phone_shop\app\listener\pay\RefundSuccessListener' ],
 
         'NoticeData' => [
@@ -69,7 +74,7 @@ return [
         ],
         //优惠券
         'CouponReceiveType' => [ 'addon\phone_shop\app\listener\coupon\CouponReceiveListener' ],
-
+        'CouponCheck' => [ 'addon\phone_shop\app\listener\coupon\CouponCheckListener' ],
 
         //获取海报数据
         'GetPosterType' => [ 'addon\phone_shop\app\listener\poster\ShopPosterType' ],
@@ -122,6 +127,14 @@ return [
         'PrinterContent' => [
             'addon\phone_shop\app\listener\printer\PrinterContentListener'
         ],
+
+        //会员登录后事件
+        'MemberLoginAfter' => [ 'addon\phone_shop\app\listener\MemberLoginAfterListener' ],
+
+        // 会员充值 赠送内容
+        'RechargeGiftContent'=>['addon\phone_shop\app\listener\recharge\GiftContentListener'],
+        // 会员充值成功后的事件
+        'RechargeAfterListener' =>['addon\phone_shop\app\listener\recharge\RechargeAfterListener']
     ],
     'subscribe' => [
     ],

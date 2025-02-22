@@ -52,7 +52,7 @@ CREATE TABLE `{{prefix}}phone_shop_recycle_order` (
   `return_type` varchar(20) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'self' COMMENT '退货方式：self-自取，mail-邮寄',
   `qrcode_image` varchar(255) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '收款码图片',
   `return_address` varchar(255) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '退货地址',
-  `status` varchar(20) COLLATE utf8mb4_general_ci DEFAULT '1' COMMENT '订单状态:1待签收,2待质检,3质检中,4质检完成,5订单完成,6有退货,7全部退货',
+  `status` varchar(20) COLLATE utf8mb4_general_ci DEFAULT '1' COMMENT '订单状态:1待签收,2待质检,3质检中,4质检完成,5订单完成,-1已取消',
   `create_at` int DEFAULT NULL COMMENT '创建时间',
   `update_at` int DEFAULT NULL COMMENT '更新时间',
   `delete_at` int DEFAULT NULL COMMENT '删除时间',
@@ -63,6 +63,30 @@ CREATE TABLE `{{prefix}}phone_shop_recycle_order` (
   UNIQUE KEY `uk_order_no` (`order_no`),
   KEY `idx_member_site` (`member_id`,`site_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='回收订单主表';
+
+-- 创建退货单表
+DROP TABLE IF EXISTS `{{prefix}}phone_shop_recycle_return`;
+CREATE TABLE `{{prefix}}phone_shop_recycle_return` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `return_no` varchar(50) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '退货单号',
+  `order_id` int NOT NULL COMMENT '关联订单ID',
+  `device_id` int NOT NULL COMMENT '关联设备ID',
+  `site_id` int NOT NULL COMMENT '站点 id',
+  `member_id` int NOT NULL COMMENT '用户ID',
+  `return_type` varchar(20) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'self' COMMENT '退货方式：self-自取，mail-邮寄',
+  `express_id` varchar(50) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '快递单号',
+  `express_company` varchar(50) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '快递公司',
+  `address` varchar(255) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '退货地址',
+  `status` varchar(20) COLLATE utf8mb4_general_ci DEFAULT 'init' COMMENT '退货状态:init-初始化,waiting_sign-待签收,delivering-发货中,delivered-已发货,completed-已完成',
+  `create_at` int DEFAULT NULL COMMENT '创建时间',
+  `update_at` int DEFAULT NULL COMMENT '更新时间',
+  `complete_at` int DEFAULT NULL COMMENT '完成时间',
+  `comment` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_return_no` (`return_no`),
+  KEY `idx_order_device` (`order_id`,`device_id`),
+  KEY `idx_member_site` (`member_id`,`site_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='回收退货单表';
 
 -- ----------------------------
 -- Table structure for sass_phone_shop_recycle_order_device
@@ -76,6 +100,7 @@ CREATE TABLE `{{prefix}}phone_shop_recycle_order_device` (
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态：1-正常，2-已退回',
   `check_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '验机状态：0-未验机，1-验机中，2-验机完成',
   `check_result` text COLLATE utf8mb4_general_ci COMMENT '验机详情',
+  `check_images` text COLLATE utf8mb4_general_ci COMMENT '验机图片',
   `initial_price` decimal(10,2) DEFAULT '0.00' COMMENT '初始报价',
   `final_price` decimal(10,2) DEFAULT '0.00' COMMENT '最终报价',
   `price_remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '报价备注',
@@ -115,4 +140,3 @@ CREATE TABLE `{{prefix}}phone_shop_recycle_banner` (
   `delete_time` int NOT NULL COMMENT '删除时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='回收banner表';
-

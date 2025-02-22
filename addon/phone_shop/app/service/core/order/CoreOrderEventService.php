@@ -38,7 +38,7 @@ class CoreOrderEventService extends BaseCoreService
      * @return true
      */
     public static function orderCreate($data){
-        event('ShopOrderCreate', $data);
+        event('PhoneShopOrderCreate', $data);
         return true;
     }
 
@@ -58,7 +58,7 @@ class CoreOrderEventService extends BaseCoreService
      * @return true
      */
     public static function orderPay($data){
-        event('ShopOrderPay', $data);
+        event('PhoneShopOrderPay', $data);
         return true;
     }
 
@@ -78,7 +78,7 @@ class CoreOrderEventService extends BaseCoreService
      * @return true
      */
     public static function orderClose($data){
-        event('ShopOrderClose', $data);
+        event('PhoneShopOrderClose', $data);
         return true;
     }
 
@@ -99,7 +99,7 @@ class CoreOrderEventService extends BaseCoreService
      * @return true
      */
     public static function orderDelivery($data){
-        event('ShopOrderDelivery', $data);
+        event('PhoneShopOrderDelivery', $data);
         return true;
     }
 
@@ -119,7 +119,7 @@ class CoreOrderEventService extends BaseCoreService
      * @return true
      */
     public static function orderFinish($data){
-        event('ShopOrderFinish', $data);
+        event('PhoneShopOrderFinish', $data);
         return true;
     }
 
@@ -139,7 +139,7 @@ class CoreOrderEventService extends BaseCoreService
      * @return true
      */
     public static function orderEditPrice($data){
-        event('ShopOrderEditPrice', $data);
+        event('PhoneShopOrderEditPrice', $data);
         return true;
     }
 

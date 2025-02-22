@@ -83,10 +83,7 @@
 					</el-radio-group>
 				</el-form-item>
 				<el-form-item :label="t('goodsNum')" v-if="diyStore.editComponent.source == 'all'">
-					<div class="flex items-center w-full ml-[5px]">
-						<el-slider class="flex-1" v-model="diyStore.editComponent.num" :min="1" max="20" size="small" />
-						<span class="ml-[15px]">{{ diyStore.editComponent.num }}</span>
-					</div>
+					<el-slider class="diy-nav-slider" show-input v-model="diyStore.editComponent.num" :min="1" max="20" size="small" />
 				</el-form-item>
 				<el-form-item :label="t('selectCategory')" v-if="diyStore.editComponent.source == 'category'">
 					<div class="flex items-center w-full">
@@ -101,7 +98,7 @@
 				</el-form-item>
 			</el-form>
 
-			<el-dialog v-model="categoryShowDialog" :title="t('goodsCategoryTitle')" width="1000px" :close-on-press-escape="false" :destroy-on-close="true" :close-on-click-modal="false">
+			<el-dialog v-model="categoryShowDialog" :title="t('goodsCategoryTitle')" width="750px" :close-on-press-escape="false" :destroy-on-close="true" :close-on-click-modal="false">
 				<el-table :data="categoryTable.data" ref="categoryTableRef" size="large"
 				          v-loading="categoryTable.loading"
 				          height="490px" @selection-change="handleSelectionChange" row-key="category_id"
@@ -147,7 +144,7 @@
 				<h3 class="mb-[10px]">{{ t('titleStyle') }}</h3>
 				<el-form label-width="80px" class="px-[10px]">
 					<el-form-item :label="t('textFontSize')">
-						<el-slider v-model="diyStore.editComponent.title_font_size" show-input size="small" class="ml-[10px] article-slider" :min="12" :max="20" />
+						<el-slider v-model="diyStore.editComponent.title_font_size" show-input size="small" class="ml-[10px] diy-nav-slider" :min="12" :max="20" />
 					</el-form-item>
 					<el-form-item :label="t('textFontWeight')">
 						<el-radio-group v-model="diyStore.editComponent.title_font_weight">
@@ -165,7 +162,7 @@
 				<h3 class="mb-[10px]">{{ t('subTitleStyle') }}</h3>
 				<el-form label-width="80px" class="px-[10px]">
 					<el-form-item :label="t('textFontSize')">
-						<el-slider v-model="diyStore.editComponent.sub_title_font_size" show-input size="small" class="ml-[10px] article-slider" :min="12" :max="16" />
+						<el-slider v-model="diyStore.editComponent.sub_title_font_size" show-input size="small" class="ml-[10px] diy-nav-slider" :min="12" :max="16" />
 					</el-form-item>
 					<el-form-item :label="t('textColor')">
 						<el-color-picker v-model="diyStore.editComponent.sub_title_color" />
@@ -177,7 +174,7 @@
 				<h3 class="mb-[10px]">{{ t('moreContent') }}</h3>
 				<el-form label-width="80px" class="px-[10px]">
 					<el-form-item :label="t('textFontSize')">
-						<el-slider v-model="diyStore.editComponent.more_font_size" show-input size="small" class="ml-[10px] article-slider" :min="12" :max="16" />
+						<el-slider v-model="diyStore.editComponent.more_font_size" show-input size="small" class="ml-[10px] diy-nav-slider" :min="12" :max="16" />
 					</el-form-item>
 					<el-form-item :label="t('textColor')">
 						<el-color-picker v-model="diyStore.editComponent.more_color" />

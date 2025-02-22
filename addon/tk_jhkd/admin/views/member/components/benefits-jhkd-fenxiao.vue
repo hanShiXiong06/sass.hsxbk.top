@@ -41,8 +41,11 @@
             </div>
           </div>
         </div>
-        <div class="text-sm text-gray-400 mb-[5px]">
+        <div v-if="fenxiao && fenxiao.status == false" class="text-sm text-gray-400 ">
           开启后将获得推广权限，参与分销金额为订单实际支付金额
+        </div>
+        <div v-if="fenxiao && fenxiao.status == true" class="text-sm text-[#ff1e00] mb-[5px]">
+          当前已拥有聚合快递分销专属定制插件，请勿重复开启会员等级分销
         </div>
       </div>
     </el-form-item>
@@ -53,7 +56,11 @@
 import { computed, reactive, ref, watch } from "vue";
 import { FormRules } from "element-plus";
 import Test from "@/utils/test";
-
+import { checkFenxiao } from "@/addon/tk_jhkd/api/tkjhkd";
+const fenxiao = ref()
+checkFenxiao().then((res) => {
+  fenxiao.value = res.data
+})
 const props = defineProps({
   modelValue: {
     type: Object,

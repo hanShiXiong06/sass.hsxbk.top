@@ -383,7 +383,7 @@ class FenxiaoService extends BaseApiService
                         'first_commission' => $commission,
                     ]);
 
-                    (new CoreMemberAccountService())->addLog($orderInfo['site_id'], $fenxiaoMemberInfo['pid'], MemberAccountTypeDict::COMMISSION, $commission, 'jhkd_award', '聚合快递一级分销激励');
+                    (new CoreMemberAccountService())->addLog($orderInfo['site_id'], $fenxiaoMemberInfo['pid'], MemberAccountTypeDict::COMMISSION, $commission, 'jhkd_award', '快递一级分销佣金');
                     $fenxiaoOrderModel->where(['order_id' => $orderInfo['order_id']])->update([
                         'status' => 1,
                         'update_time' => time()
@@ -427,7 +427,7 @@ class FenxiaoService extends BaseApiService
                     $orderFenxiao = $fenxiaoOrderModel->where(['order_id' => $orderInfo['order_id']])->update([
                         'two_commission' => $commission,
                     ]);
-                    (new CoreMemberAccountService())->addLog($orderInfo['site_id'], $pp_fenxiaoMemberInfo['pid'], MemberAccountTypeDict::COMMISSION, $commission, 'jhkd_award', '聚合快递二级分销激励');
+                    (new CoreMemberAccountService())->addLog($orderInfo['site_id'], $pp_fenxiaoMemberInfo['pid'], MemberAccountTypeDict::COMMISSION, $commission, 'jhkd_award', '快递二级分销佣金');
                     $fenxiaoOrderModel->where(['order_id' => $orderInfo['order_id']])->update([
                         'status' => 1,
                         'update_time' => time()

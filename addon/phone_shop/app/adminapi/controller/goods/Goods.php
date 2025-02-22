@@ -42,8 +42,11 @@ class Goods extends BaseAdminController
             [ "status", "" ],
             [ 'order', '' ],
             [ 'sort', '' ],
-            [ 'sku_no','']
+            [ 'sku_no',''],
+            [ 'only_self', 0 ]
         ]);
+       
+
         return success(( new GoodsService() )->getPage($data));
     }
 
@@ -192,6 +195,7 @@ class Goods extends BaseAdminController
 
             [ 'poster_id', 0 ] // 海报id
         ]);
+        
         $this->validate($data, 'addon\phone_shop\app\validate\goods\Goods.edit');
         $res = ( new GoodsService() )->edit($id, $data);
         return success('EDIT_SUCCESS');

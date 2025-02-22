@@ -95,11 +95,10 @@ class CoreRefundActionService extends BaseCoreService
             $update_data[ 'shop_reason' ] = $data[ 'shop_reason' ];
         }
         $order_refund_info->save($update_data);
-        //审核完毕后续事件
+        //审核通过后事件
         $data[ 'order_refund_no' ] = $order_refund_no;
         $data[ 'refund_data' ] = array_merge($order_refund_info->toArray(), $update_data);
-
-        event('AfterShopOrderRefundAuditApply', $data);
+        event('AfterPhoneShopOrderRefundAuditApply', $data);
         return true;
     }
 
@@ -138,8 +137,10 @@ class CoreRefundActionService extends BaseCoreService
         $order_refund_info->save($update_data);
         $data[ 'order_refund_no' ] = $order_refund_no;
         $data[ 'refund_data' ] = array_merge($order_refund_info->toArray(), $update_data);
-        //确认收货审核完毕后续事件
-        event('AfterShopOrderRefundAuditRefundGoods', $data);
+        //审核通过后事件
+        $data[ 'order_refund_no' ] = $order_refund_no;
+        $data[ 'refund_data' ] = array_merge($order_refund_info->toArray(), $update_data);
+        event('AfterPhoneShopOrderRefundAuditRefundGoods', $data);
         return true;
     }
 
@@ -177,10 +178,62 @@ class CoreRefundActionService extends BaseCoreService
             'status' => OrderGoodsDict::NORMAL
         );
         ( new OrderGoods() )->where($order_goods_where)->update($order_goods_update_data);
-        //订单申请退款后事件
+        //关闭后事件
         $data[ 'order_refund_no' ] = $order_refund_no;
         $data[ 'refund_data' ] = array_merge($order_refund_info->toArray(), $update_data);
-        event('AfterShopOrderRefundClose', $data);
+        event('AfterPhoneShopOrderRefundClose', $data);
+        return true;
+    }
+
+    /**
+     * 商家主动退款
+     * @param $data
+     * @return true
+     */
+    public function shopActiveRefund($data)
+    {
+        $site_id = $data['site_id'];
+        $order_goods_ids = $data['order_goods_ids'];
+        $shop_active_refund_money = $data['shop_active_refund_money'];
+
+        $check_data = ( new CoreRefundService() )->refundCheck($order_goods_ids, $shop_active_refund_money);
+        $order_goods_list = $check_data['order_goods_list'];
+
+        foreach ($order_goods_list as $order_goods_info) {
+            $order_refund_no = create_no();
+            $insert_data = [
+                'order_id' => $order_goods_info['order_id'],
+                'site_id' => $site_id,
+                'order_goods_id' => $order_goods_info['order_goods_id'],
+                'order_refund_no' => $order_refund_no,
+                'refund_type' => OrderRefundDict::ONLY_REFUND,
+                'reason' => get_lang('dict_shop_order_refund_action.shop_active_refund'),
+                'member_id' => $order_goods_info['member_id'],
+                'apply_money' => $order_goods_info['item_refund_money'],
+                'money' => $order_goods_info['item_refund_money'],
+                'status' => OrderRefundDict::STORE_AGREE_REFUND_WAIT_TRANSFER,
+                'remark' => $data['shop_active_refund_remark'],
+                'voucher' => [],
+                'source' => OrderRefundDict::ACTIVE_REFUND,
+                'is_refund_delivery' => $order_goods_info['is_refund_delivery'],
+            ];
+            $order_refund_info = $this->model->create($insert_data);
+
+            //将订单项的退款单号覆盖
+            $order_goods_info->save([
+                'order_refund_no' => $order_refund_no,
+                'shop_active_refund' => 1,
+                'shop_active_refund_money' => $order_goods_info['item_refund_money'],
+                'status' => OrderGoodsDict::REFUNDING
+            ]);
+
+            $data[ 'refund_data' ] = $order_refund_info->toArray();
+            $data[ 'order_goods_data' ] = $order_goods_info->toArray();
+            //创建后事件
+            $data[ 'order_refund_no' ] = $order_refund_no;
+            $data[ 'refund_data' ] = $insert_data;
+            event('AfterPhoneShopOrderRefundActiveCreate', $data);
+        }
         return true;
     }
 }

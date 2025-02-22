@@ -90,7 +90,7 @@ class RecycleOrder extends BaseApiController
             ["express_id", ""],
             ["send_username", ""],
             ["telphone", ""],
-            ["pay_type", ""],
+            
             ["account", ""],
             ["delivery_type", "mail"],
             ["return_type", "self"],

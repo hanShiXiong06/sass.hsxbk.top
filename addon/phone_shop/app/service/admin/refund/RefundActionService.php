@@ -54,5 +54,32 @@ class RefundActionService extends BaseAdminService
         (new CoreRefundActionService())->auditRefundGoods($data);
         return true;
     }
+ /**
+     * 商家主动退款
+     * @param $data
+     * @return true
+     */
+    public function shopActiveRefund($data)
+    {
+        $data[ 'main_type' ] = OrderRefundLogDict::STORE;
+        $data[ 'main_id' ] = $this->uid;
+        $data[ 'site_id' ] = $this->site_id;
+        (new CoreRefundActionService())->shopActiveRefund($data);
+        return true;
+    }
 
+    /**
+     * 获取订单可退款金额
+     * @param $data
+     * @return array
+     */
+    public function getOrderRefundMoney($data)
+    {
+        $order_goods_ids = $data[ 'order_goods_ids' ];
+        $refund_money_array = (new CoreRefundService())->getOrderRefundMoney($order_goods_ids);
+        return [
+            'refund_money' => round($refund_money_array[ 'refund_money' ] ?? 0, 2)
+        ];
+    }
+    
 }

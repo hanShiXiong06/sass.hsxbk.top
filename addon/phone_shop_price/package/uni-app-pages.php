@@ -2,42 +2,46 @@
 return [
     'pages' => <<<EOT
         // PAGE_BEGIN
-                // *********************************** hello world ***********************************
-               {
-					"path": "phone_shop_price/pages/index",
+        {
+            "root": "addon/phone_shop_price", 
+            "pages": [
+				{
+					"path": "pages/index",
 					"style": {
 						"navigationBarTitleText": "二手机回收报价单"
 					},
 					"needLogin": true
 				},
 				{
-					"path": "phone_shop_price/pages/order/order",
+					"path": "pages/order/order",
 					"style": {
 						"navigationBarTitleText": "立即下单"
 					},
 					"needLogin": true
-				},{
-					"path": "phone_shop_price/pages/order/list",
+				},
+				{
+					"path": "pages/order/list",
 					"style": {
 						"navigationBarTitleText": "订单列表"
 					},
 					"needLogin": true
 				},
 				{
-					"path": "phone_shop_price/pages/order/detail",
+					"path": "pages/order/detail",
 					"style": {
 						"navigationBarTitleText": "订单详情"
 					},
 					"needLogin": true
 				},
 				{
-					"path": "phone_shop_price/pages/payment/index",
+					"path": "pages/payment/index",
 					"style": {
 						"navigationBarTitleText": "收款方式"
 					},
 					"needLogin": true
-				},
-                
-                // PAGE_END
+				}
+			]
+        },
+// PAGE_END
 EOT
 ];

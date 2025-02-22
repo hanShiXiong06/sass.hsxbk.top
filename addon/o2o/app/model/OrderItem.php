@@ -66,6 +66,20 @@ class OrderItem extends BaseModel
     }
 
     /**
+     * 中图生成
+     * @param $value
+     * @param $data
+     * @return mixed
+     */
+    public function getItemImageThumbMidAttr($value, $data)
+    {
+        if (!empty($data['item_image'])) {
+            return get_thumb_images($data['site_id'], $data['item_image'], FileDict::MID);
+        }
+        return '';
+    }
+
+    /**
      * 技师
      * @return \think\model\relation\HasMany
      */

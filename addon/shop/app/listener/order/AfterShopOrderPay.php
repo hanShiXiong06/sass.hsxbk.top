@@ -76,6 +76,9 @@ class AfterShopOrderPay
             }
 
             //消息发送
+            // 这个的第二参数 是 消息的key
+            // 这个key 从 哪里 获取  
+            // 从 数据库 的 sys_notice 表 中 获取 
             ( new NoticeService() )->send($order_data[ 'site_id' ], 'shop_order_pay', [ 'order_id' => $order_data[ 'order_id' ] ]);
 
             ( new DiscountService() )->orderPayAfter($order_data);

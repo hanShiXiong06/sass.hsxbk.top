@@ -2,10 +2,10 @@
   "title": "存储管理--自定义站点存储方式",
   "desc": "",
   "key": "manage_oss",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "TK",
   "type": "addon",
   "support_app": "",
-  "support_version":"0.5.2",
+  "support_version":"1.0.0",
   "compile":[]
 }

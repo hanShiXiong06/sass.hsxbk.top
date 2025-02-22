@@ -41,16 +41,173 @@ class GoodsService extends BaseAdminService
     }
 
     /**
-     * @Notes:商品导入执行方法
-     * 导入格式必须严格按照模板填写
-     * @Interface import
-     * @param $data
-     * @author: TK
-     * @Time: 2024/6/21   下午9:33
+     * 获取或创建分类ID
+     * @param string $categoryName 分类名称
+     * @param int $level 分类级别
+     * @param int $pid 父级ID
+     * @param string $parentName 父级名称(用于生成full_name)
+     * @return int 分类ID
+     */
+    protected function getCategoryId($categoryName, $level = 1, $pid = 0, $parentName = '')
+    {
+        if (empty($categoryName)) return 0;
+        
+        $categoryModel = new \addon\phone_shop\app\model\goods\Category();
+        $where = [
+            ['category_name', '=', $categoryName],
+            ['level', '=', $level],
+           //  ['site_id', '=', $this->site_id]
+        ];
+        
+        if ($level == 2) {
+            $where[] = ['pid', '=', $pid];
+        }
+        
+        $category = $categoryModel->where($where)->find();
+        
+        if (!$category) {
+            $data = [
+                'site_id' => $this->site_id,
+                'category_name' => $categoryName,
+                'level' => $level,
+                'pid' => $pid,
+                'memory_group' => 0,
+                'create_time' => time()
+            ];
+            
+            if ($level == 2) {
+                $data['category_full_name'] = $parentName . '/' . $categoryName;
+            }
+            
+            $category = $categoryModel->create($data);
+        }
+        
+        return [$category['category_id'], $category['memory_group']];
+    }
+
+    /**
+     * 获取或创建品牌ID
+     * @param string $brandName 品牌名称
+     * @return int 品牌ID
+     */
+    protected function getBrandId($brandName)
+    {
+        if (empty($brandName)) return 0;
+        
+        $brandModel = new \addon\phone_shop\app\model\goods\Brand();
+        $brand = $brandModel->where([
+            ['brand_name', '=', $brandName],
+           //  ['site_id', '=', $this->site_id]
+        ])->find();
+        
+        if (!$brand) {
+            $brand = $brandModel->create([
+                'site_id' => $this->site_id,
+                'brand_name' => $brandName,
+                'desc' => $brandName,
+                'create_time' => time()
+            ]);
+        }
+        
+        return $brand['brand_id'];
+    }
+
+    /**
+     * 获取或创建内存规格ID
+     * @param string $specName 规格名称
+     * @return string 规格ID
+     */
+    protected function getMemoryId($specName)
+    {
+        if (empty($specName)) return '';
+        // specName  如果 末尾是 B 通过正则表达式 去掉 
+        $specName = preg_replace('/B$/', '', $specName);
+
+        $memoryModel = new \addon\phone_shop\app\model\goods\Memory();
+        $memory = $memoryModel->where([
+            ['spec_name', '=', $specName],
+            // ['site_id', '=', $this->site_id]
+        ])->find();
+        
+        if (!$memory) {
+            $memory = $memoryModel->create([
+                'site_id' => $this->site_id,
+                'spec_name' => $specName,
+                'create_time' => time()
+            ]);
+        }
+        
+        return $memory['spec_id'];
+    }
+
+    /**
+     * 获取或创建标签ID列表
+     * @param string $tagString 标签字符串(逗号分隔)
+     * @return array 标签ID数组
+     */
+    protected function getLabelIds($tagString)
+    {
+        if (empty($tagString)) return [];
+        
+        $labelModel = new \addon\phone_shop\app\model\goods\Label();
+        $labelIds = [];
+        $tags = explode(',', $tagString);
+        
+        foreach ($tags as $tag) {
+            $tag = trim($tag);
+            if (empty($tag)) continue;
+            
+            $label = $labelModel->where([
+                ['label_name', '=', $tag],
+              //   ['site_id', '=', $this->site_id]
+            ])->find();
+            
+            if (!$label) {
+                $label = $labelModel->create([
+                    'site_id' => $this->site_id,
+                    'label_name' => $tag,
+                    'create_time' => time()
+                ]);
+            }
+            
+            $labelIds[] = (string)$label['label_id'];
+        }
+        
+        return $labelIds;
+    }
+
+    /**
+     * 计算商品价格
+     * @param float $marketPrice 市场价格
+     * @return array [售价, 加价后的价格]
+     */
+    protected function calculatePrice($marketPrice)
+    {
+        $marketPrice = floatval($marketPrice);
+        $price = $marketPrice;
+        
+        if ($marketPrice >= 0 && $marketPrice < 1000) {
+            $price = $marketPrice + 100;
+        } else if ($marketPrice >= 1000 && $marketPrice < 5000) {
+            $price = $marketPrice + 200;
+        } else {
+            $price = $marketPrice + 300;
+        }
+        
+        return [
+            'market_price' => $marketPrice,
+            'price' => $price
+        ];
+    }
+
+    /**
+     * 导入商品数据
+     * @param array $data
+     * @return array
+     * @throws CommonException
      */
     public function import($data)
     {
-        
         (new CoreConfigService())->setConfig(0, 'SPDR_DOMAIN', ['domain' => $this->getUrl()]);
         $filePath = $data['file_url'];
         $extension = pathinfo($filePath, PATHINFO_EXTENSION);
@@ -72,6 +229,7 @@ class GoodsService extends BaseAdminService
             unlink($filePath);
             throw new CommonException("单次最多导入" . $data['num'] . "条数据，请分次导入");
         }
+
         $spec_type = 'single';
         $spec_data = [];
         $goods_sku_data = [];
@@ -80,106 +238,91 @@ class GoodsService extends BaseAdminService
         $spdrModel = new SpdrList();
         $spdrInfo = $spdrModel->create([
             'site_id' => $this->site_id,
-            // 'cat_id' => $data['goods_category'],
             'flie' => $data['file_url'],
         ]);
+
         foreach ($finalData as $key => $value) {
             if (!isset($value['商品名称'])) {
                 $failCount++;
                 continue;
             }
-            // 商品的分类在 模板中 对应的字段是 一级分类	二级分类
-            // 处理分类问题 将其拼接为 ["60","70"] 样的数据 
-             
+
+            // 处理分类
             $goods_category = [];
-            if (isset($value['一级分类']) && isset($value['二级分类'])) {
-                $goods_category = [(string)$value['一级分类'], (string)$value['二级分类']];
-            } else if (isset($value['一级分类']) && !isset($value['二级分类'])) {
-                $goods_category = [(string)$value['一级分类']];
-            } else if (!isset($value['一级分类']) && isset($value['二级分类'])) {
-                $failCount++;
-                continue;
-            }
-            // ----
-            if($value['商品等级'] == 1){
-                $brand_id = 7;
-            }else if($value['商品等级'] == 2){
-                $brand_id = 27;
-            }else if ($value['商品等级'] == 3){
-                $brand_id = 11;
-            }else{
-                $brand_id = 27;
-            }
-        
-            // 将 $goods_category 转为 字符 存储到数据库中
-            $goods_category = json_encode($goods_category);
+            if (isset($value['一级分类']) && !empty($value['一级分类'])) {
+                $level1Id = $this->getCategoryId($value['一级分类'], 1)[0];
+                $goods_category[] = (string)$level1Id;
 
-            if($value['售价']  >= 0 && $value['售价'] <1000){
-                $price = $value['售价'] +100;
-            }else if($value['售价']  >= 1000 && $value['售价'] <5000){
-                $price = $value['售价'] +200;
-            }else{
-                $price = $value['售价'] +300;
+                if (isset($value['二级分类']) && !empty($value['二级分类'])) {
+                    $level2Id = $this->getCategoryId($value['二级分类'], 2, $level1Id, $value['一级分类'])[0];
+                    $goods_category[] = (string)$level2Id;
+                    $memory_group = $this->getCategoryId($value['二级分类'], 2, $level1Id, $value['一级分类'])[1];
+                }
             }
 
-            
-            //数组组装
+            // 处理品牌
+            $brand_id = $this->getBrandId($value['商品等级'] ?? '');
+
+            // 处理内存规格
+            $memory_ids = $this->getMemoryId($value['内存规格'] ?? '');
+
+            // 处理标签
+            $label_ids = $this->getLabelIds($value['标签'] ?? '');
+
+            // 处理价格
+            $prices = $this->calculatePrice($value['售价'] ?? 0);
+
+            // 组装商品数据
             $info = [
-                'goods_no'=>$successCount,
+                'goods_no' => $successCount,
                 'goods_name' => $value['商品名称'] ?? '',
                 'sub_title' => $value['副标题'] ?? "",
-                'goods_cover' => $this->joinUrl($value['缩略图'],'.jpg') ?? '',
-                'goods_image' => $this->joinUrl($value['轮播图'],'.jpg')?? '',
-                'goods_desc' => $this->joinUrl($value['视频'],'.mp4')?? '',
-                'goods_category' =>  $goods_category,
-                'goods_type' => $value['商品类型'],
+                'goods_image' => $this->joinUrl($value['轮播图'],'.jpg') ?? '',
+                'goods_desc' => $this->joinUrl($value['视频'],'.mp4') ?? '',
+                'goods_category' => json_encode($goods_category),
+                'goods_type' => 'real',
                 'brand_id' => $brand_id,
-                'label_ids' => [],
+                'label_ids' => $label_ids,
                 'service_ids' => [],
                 'supplier_id' => 0,
                 'status' => $data['status'],
                 'sort' => 0,
-                "member_discount"=>"fixed_price",
-                // 规格类型，single：单规格，multi：多规格
+                'memory_ids' => $memory_ids,
+                'memory_group' => $memory_group,
+                "member_discount" => "fixed_price",
                 'spec_type' => $spec_type,
-                //单规格数据
-                'sale_price' => $value['售价'] ?? '',
-                'price'=>$price,
-                'market_price' => $value['原价'] ?? '',
+                'sale_price' => $prices['market_price'],
+                'price' => $prices['price'],
+                'market_price' => $prices['market_price'],
                 'cost_price' => $value['成本价'] ?? '',
-                'member_price'=> ['level_1'=> $value['售价'] ?? '', ],
                 'weight' => 0,
                 'volume' => 0,
-                'stock' => $value['商品库存'] ?? '',
+                'stock' => 1,
                 'sku_no' => $value['sn'] ?? '',
                 'unit' => $value['单位'] ?? '',
-                'virtual_sale_num' => $value['虚拟销量'] ?? 0,
-                //多规格数据
+                'virtual_sale_num' => 0,
                 'goods_spec_format' => $spec_data,
                 'goods_sku_data' => $goods_sku_data,
-                //配送设置
                 'delivery_type' => json_decode($value['配送类型'] ?? '[]', true),
                 'is_free_shipping' => 1,
                 'fee_type' => 'template',
                 'delivery_money' => '0',
                 'delivery_template_id' => 0,
-               // 'goods_desc' => $value['商品详情'] ?? '',
-                //商品详情
             ];
+
             $info['attr_id'] = '';
             $info['attr_format'] = '';
-            // $info['member_discount'] = 0;
             $info['poster_id'] = 0;
             $successCount++;
             ImportGoods::dispatch(['site_id' => $this->site_id, 'info' => $info, 'islocal' => $data['islocal']]);
         }
+
         $spdrInfo->num = count($finalData);
         $spdrInfo->success_num = $successCount;
         $spdrInfo->fail_num = $failCount;
         $spdrInfo->save();
         unlink($filePath);
         
-        // 返回准备好的数据
         return $finalData;
     }
 
@@ -337,12 +480,12 @@ class GoodsService extends BaseAdminService
 
         foreach ($list['data'] as $k => $v) {
 
-            if (isset($v['goodsSku']['member_price'])) {
-                $member_price = json_decode($v['goodsSku']['member_price'], true);
-                $list['data'][$k]['price'] = $member_price[0]['price'];
-            }else{
-                $list['data'][$k]['price'] = $v['goodsSku']['price'];
-            }
+            // if (isset($v['goodsSku']['member_price'])) {
+            //     $member_price = json_decode($v['goodsSku']['member_price'], true);
+            //     $list['data'][$k]['price'] = $member_price[0]['price'];
+            // }else{
+            //     $list['data'][$k]['price'] = $v['goodsSku']['price'];
+            // }
 
            
             $list['data'][$k]['sku_no'] = $v['goodsSku']['sku_no'];
@@ -499,6 +642,8 @@ class GoodsService extends BaseAdminService
                     return (string)$item;
                 }, $data['service_ids']),
                 'unit' => $data['unit'],
+                'memory_ids'=>$data['memory_ids'],
+                'memory_group' => $data['memory_group'],
                 'stock' => $data['stock'],
                 'virtual_sale_num' => $data['virtual_sale_num'],
                 'status' => $data['status'],
@@ -528,14 +673,14 @@ class GoodsService extends BaseAdminService
                     'goods_id' => $res->goods_id,
                     'sku_spec_format' => '', // sku规格格式
                     'price' => $data['price'],
-                    'market_price' => $data['market_price'],
+                    'market_price' => $data['sale_price'],
                     'sale_price' => $data['sale_price'],
                     'cost_price' => $data['cost_price'],
                     'stock' => $data['stock'],
                     'weight' => $data['weight'],
                     'volume' => $data['volume'],
                     'is_default' => 1,
-                    "member_price"=> json_encode($data['member_price']),
+                   //  "member_price"=> json_encode($data['member_price']),
                 ];
                 $goods_sku_model->save($sku_data);
 

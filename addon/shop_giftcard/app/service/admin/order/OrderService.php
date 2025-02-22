@@ -49,7 +49,7 @@ class OrderService extends BaseAdminService
         }
         $member_where = [];
         if (isset($where[ 'nickname' ]) && $where[ 'nickname' ] != '') {
-            $member_where[] = [ 'nickname', 'like', '%' . $this->model->handelSpecialCharacter($where[ 'nickname' ]) . '%' ];
+            $member_where[] = [ 'member.member_no|nickname|username|mobile', 'like', '%' . $this->model->handelSpecialCharacter($where[ 'nickname' ]) . '%' ];
         }
         $search_model = $this->model->where([ [ 'order.site_id' ,"=", $this->site_id ] ])->withSearch(['search_type','join_status','member_id','create_time','join_pay_time','giftcard_id'], $where)->field($field)
             ->withJoin([
@@ -121,5 +121,5 @@ class OrderService extends BaseAdminService
         $this->model->where([['order_id', '=', $id],['site_id', '=', $this->site_id]])->update(['status' => OrderDict::CLOSE]);
         return true;
     }
-    
+
 }

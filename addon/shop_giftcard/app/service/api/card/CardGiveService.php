@@ -54,13 +54,17 @@ class CardGiveService extends BaseApiService
 
         if (empty($info)) throw new ApiException('CARD_GIVE_INFO_INVALID');
 
-        $give_ids = $this->model->field($field)->where([
-            [ 'site_id', "=", $this->site_id ],
-            [ 'member_id', '=', $info[ 'member_id' ] ],
-            [ 'give_num', '=', $info[ 'give_num' ] ],
-            [ 'limit_num', '=', $info[ 'limit_num' ] ],
-            [ 'card_bag_id', '=', $info[ 'card_bag_id' ] ]
-        ])->column('give_id');
+        if ($info[ 'give_num' ] == 1) {
+            $give_ids = [ $give_id ];
+        } else {
+            $give_ids = $this->model->field($field)->where([
+                [ 'site_id', "=", $this->site_id ],
+                [ 'member_id', '=', $info[ 'member_id' ] ],
+                [ 'give_num', '=', $info[ 'give_num' ] ],
+                [ 'limit_num', '=', $info[ 'limit_num' ] ],
+                [ 'card_bag_id', '=', $info[ 'card_bag_id' ] ]
+            ])->column('give_id');
+        }
 
         if (!empty($info[ 'validity_time' ]) < time()) {
             throw new ApiException('CARD_GIVE_INFO_INVALID');
@@ -331,13 +335,17 @@ class CardGiveService extends BaseApiService
             throw new ApiException('CARD_GIVE_INFO_INVALID');
         }
 
-        $give_ids = $this->model->field($field)->where([
-            [ 'site_id', "=", $this->site_id ],
-            [ 'member_id', '=', $card_give_info[ 'member_id' ] ],
-            [ 'give_num', '=', $card_give_info[ 'give_num' ] ],
-            [ 'limit_num', '=', $card_give_info[ 'limit_num' ] ],
-            [ 'card_bag_id', '=', $card_give_info[ 'card_bag_id' ] ],
-        ])->column('give_id');
+        if ($card_give_info[ 'give_num' ] == 1) {
+            $give_ids = [ $params[ 'give_id' ] ];
+        } else {
+            $give_ids = $this->model->field($field)->where([
+                ['site_id', "=", $this->site_id],
+                ['member_id', '=', $card_give_info['member_id']],
+                ['give_num', '=', $card_give_info['give_num']],
+                ['limit_num', '=', $card_give_info['limit_num']],
+                ['card_bag_id', '=', $card_give_info['card_bag_id']],
+            ])->column('give_id');
+        }
 
 //        if ($card_give_info[ 'member_id' ] == $this->member_id) {
 //            throw new ApiException('CARD_OWN_CANNOT_RECEIVE');

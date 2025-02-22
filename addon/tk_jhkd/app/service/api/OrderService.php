@@ -59,53 +59,80 @@ class OrderService extends BaseApiService
      */
     public function getPage(array $where = [])
     {
-        $field = 'id,site_id,member_id,order_from,order_id,order_money,order_discount_money,is_send,is_pick,order_status,out_trade_no,remark,pay_time,create_time,close_reason,is_enable_refund,close_time,ip,update_time,delete_time';
-        $order = 'id desc';
-
+        $alias = 'o';
         $search_model = $this->model
-            ->where([['member_id', '=', $this->member_id]])
-            ->withSearch(['order_status'], $where)
-            ->field($field)
-            ->with(
-                [
-                    'orderInfo',
-                    'payInfo' => function ($query) {
-                        $query->field('trade_id,status,pay_time,cancel_time,fail_reason,type,trade_type')
-                            ->where(['trade_type' => JhkdOrderDict::getOrderType()['type']])
-                            ->append(['status_name', 'type_name']);
-                    },
-                    'deliveryRealInfo',
-                    'addorderInfo'
-                ]
-            )->order($order)->append(['is_send_name', 'order_status_arr']);
+            ->alias($alias)
+            ->join('tkjhkd_order_delivery oi', 'oi.order_id = ' . $alias . '.order_id')
+            ->where([[$alias . '.member_id', '=', $this->member_id]])
+            // 直接处理order_status条件
+            ->where(function ($query) use ($where, $alias) {
+                // 处理order_status查询
+                if ($where['order_status'] != '') {
+                    $query->where($alias . '.order_status', '=', $where['order_status']);
+                }
+                // 处理关键字搜索
+                if ($where['keyword'] != '') {
+                    $query->whereOr([
+                        ['oi.delivery_id', 'like', "%{$where['keyword']}%"],
+                        [$alias . '.order_id', 'like', "%{$where['keyword']}%"],
+                    ]);
+                    // 使用JSON_SEARCH实现模糊搜索，增加address和full_address字段
+                    $query->whereOr("JSON_SEARCH(oi.start_address, 'one', '%{$where['keyword']}%', NULL, '$.name') IS NOT NULL")
+                        ->whereOr("JSON_SEARCH(oi.start_address, 'one', '%{$where['keyword']}%', NULL, '$.mobile') IS NOT NULL")
+                        ->whereOr("JSON_SEARCH(oi.start_address, 'one', '%{$where['keyword']}%', NULL, '$.address') IS NOT NULL")
+                        ->whereOr("JSON_SEARCH(oi.start_address, 'one', '%{$where['keyword']}%', NULL, '$.full_address') IS NOT NULL")
+                        ->whereOr("JSON_SEARCH(oi.end_address, 'one', '%{$where['keyword']}%', NULL, '$.name') IS NOT NULL")
+                        ->whereOr("JSON_SEARCH(oi.end_address, 'one', '%{$where['keyword']}%', NULL, '$.mobile') IS NOT NULL")
+                        ->whereOr("JSON_SEARCH(oi.end_address, 'one', '%{$where['keyword']}%', NULL, '$.address') IS NOT NULL")
+                        ->whereOr("JSON_SEARCH(oi.end_address, 'one', '%{$where['keyword']}%', NULL, '$.full_address') IS NOT NULL");
+                }
+            })
+            ->field([
+                $alias . '.*',
+                'oi.delivery_id',
+                'oi.start_address',
+                'oi.end_address'
+            ])
+            ->with([
+                'orderInfo',
+                'payInfo',
+                'deliveryRealInfo',
+                'addorderInfo'
+            ])
+            ->order($alias . '.id desc')
+            ->append(['is_send_name', 'order_status_arr']);
         $order_status_list = JhkdOrderDict::getStatus();
         $list = $this->pageQuery($search_model, function ($item, $key) use ($order_status_list) {
             $item['order_status_data'] = $order_status_list[$item['order_status']] ?? [];
         });
+
         $list['data'] = array_map(function ($item) {
             $item['order_status'] = strval($item['order_status']);
-            $item['orderInfo']['price_rule'] = json_decode($item['orderInfo']['price_rule'], true);
-            $item['orderInfo']['original_rule'] = json_decode($item['orderInfo']['original_rule'], true);
-            $item['orderInfo']['courier_context'] = json_decode($item['orderInfo']['courier_context'], true);
-            $fee_list=json_decode($item['deliveryRealInfo']['fee_blockList'],true);
-            $new_fee_list=[];
-            if($fee_list!=''){
-                foreach ($fee_list as $fee){
-                    if($fee['type']!=0){
-                        $new_fee_list[]=[
-                            'fee'=>$fee['fee'],
-                            'type'=>$fee['type'],
-                            'name'=>$fee['name']
+            if ($item['orderInfo']) {
+                $item['orderInfo']['price_rule'] = json_decode($item['orderInfo']['price_rule'], true);
+                $item['orderInfo']['original_rule'] = json_decode($item['orderInfo']['original_rule'], true);
+                $item['orderInfo']['courier_context'] = json_decode($item['orderInfo']['courier_context'], true);
+                $item['orderInfo']['delivery_arry'] = (new CommonService())->getBrand($item['orderInfo']['platform'], $item['orderInfo']['delivery_type']);
+            }
+            $fee_list = json_decode($item['deliveryRealInfo']['fee_blockList'], true);
+            $new_fee_list = [];
+            if ($fee_list != '') {
+                foreach ($fee_list as $fee) {
+                    if ($fee['type'] != 0) {
+                        $new_fee_list[] = [
+                            'fee' => $fee['fee'],
+                            'type' => $fee['type'],
+                            'name' => $fee['name']
                         ];
                     }
                 }
             }
-
-            $item['deliveryRealInfo']['fee_blockList']=$new_fee_list;
+            $item['deliveryRealInfo']['fee_blockList'] = $new_fee_list;
             return $item;
         }, $list['data']);
         return $list;
     }
+
 
     /**
      * 获取订单列信息
@@ -121,8 +148,9 @@ class OrderService extends BaseApiService
                 [
                     'orderInfo',
                     'payInfo' => function ($query) {
-                        $query->field('trade_id,status,pay_time,cancel_time,fail_reason,type,trade_type')
+                        $query->field('trade_id,status,pay_time,cancel_time,fail_reason,type,trade_type,money')
                             ->where(['trade_type' => JhkdOrderDict::getOrderType()['type']])
+                            ->order('create_time desc')
                             ->append(['status_name', 'type_name']);
                     },
                     'deliveryRealInfo',
@@ -130,24 +158,24 @@ class OrderService extends BaseApiService
                 ]
             )
             ->findOrEmpty()->append(['order_status_arr'])->toArray();
-        $item=$info;
+        $item = $info;
         $item['orderInfo']['price_rule'] = json_decode($item['orderInfo']['price_rule'], true);
         $item['orderInfo']['original_rule'] = json_decode($item['orderInfo']['original_rule'], true);
-        $item['orderInfo']['delivery_arry'] = (new CommonService())->getBrand($item['orderInfo']['platform'],$item['orderInfo']['delivery_type']);
-        $fee_list=json_decode($item['deliveryRealInfo']['fee_blockList'],true);
-        $new_fee_list=[];
-        if($fee_list!=''){
-            foreach ($fee_list as $fee){
-                if($fee['type']!=0){
-                    $new_fee_list[]=[
-                        'fee'=>$fee['fee'],
-                        'type'=>$fee['type'],
-                        'name'=>$fee['name']
+        $item['orderInfo']['delivery_arry'] = (new CommonService())->getBrand($item['orderInfo']['platform'], $item['orderInfo']['delivery_type']);
+        $fee_list = json_decode($item['deliveryRealInfo']['fee_blockList'], true);
+        $new_fee_list = [];
+        if ($fee_list != '') {
+            foreach ($fee_list as $fee) {
+                if ($fee['type'] != 0) {
+                    $new_fee_list[] = [
+                        'fee' => $fee['fee'],
+                        'type' => $fee['type'],
+                        'name' => $fee['name']
                     ];
                 }
             }
         }
-        $item['deliveryRealInfo']['fee_blockList']=$new_fee_list;
+        $item['deliveryRealInfo']['fee_blockList'] = $new_fee_list;
         return $item;
     }
 
@@ -156,38 +184,38 @@ class OrderService extends BaseApiService
      */
     public function applyRefund($data)
     {
-//        Db::startTrans();
-//        try {
-            $orderInfo = $this->model->where(['id' => $data['id']])
-                ->with(
-                    [
-                        'orderInfo' => function ($query) {
-                            $query->field('start_address,end_address,order_id,goods,long,width,height,delivery_id,delivery_type,weight')->append(['delivery_arry']);
-                        },
-                        'payInfo' => function ($query) {
-                            $query->field('trade_id,status,pay_time,cancel_time,fail_reason,type,trade_type,out_trade_no,money')
-                                ->where(['trade_type' => JhkdOrderDict::getOrderType()['type'], 'status' => 2])
-                                ->append(['status_name', 'type_name']);
-                        },
-                    ]
-                )->findOrEmpty();
+        //        Db::startTrans();
+        //        try {
+        $orderInfo = $this->model->where(['id' => $data['id']])
+            ->with(
+                [
+                    'orderInfo' => function ($query) {
+                        $query->field('start_address,end_address,order_id,goods,long,width,height,delivery_id,delivery_type,weight')->append(['delivery_arry']);
+                    },
+                    'payInfo' => function ($query) {
+                        $query->field('trade_id,status,pay_time,cancel_time,fail_reason,type,trade_type,out_trade_no,money')
+                            ->where(['trade_type' => JhkdOrderDict::getOrderType()['type'], 'status' => 2])
+                            ->append(['status_name', 'type_name']);
+                    },
+                ]
+            )->findOrEmpty();
 
-            if ($orderInfo->isEmpty()) throw new CommonException('订单信息获取失败');
-            if ($orderInfo['order_status'] == JhkdOrderDict::FINISH) throw new CommonException('已完成订单不支持退款');
-            if ($orderInfo['payInfo']['status'] !== 2 && $orderInfo['is_enable_refund'] !== 1) throw new CommonException('当前状态不支持退款');
-            $orderInfo->refund_status = JhkdOrderDict::REFUNDING;
-            $orderInfo->close_reason = $data['close_reason'];
-            $orderInfo->save();
-            $refund_no = (new CoreRefundService())->create($orderInfo['site_id'], $orderInfo['payInfo']['out_trade_no'], $orderInfo['payInfo']['money'], $data['close_reason'], $orderInfo['payInfo']['trade_type'], $orderInfo['payInfo']['trade_id']);
-            (new CoreRefundService())->refund($orderInfo['site_id'], $refund_no, $orderInfo['payInfo']['money'], RefundDict::BACK, OrderRefundLogDict::MEMBER, $this->member_id);
-            Db::commit();
-            return true;
-//        } catch (Exception $e) {
-//            Db::rollback();
-//            Log::write('退款操作失败' . date('Y-m-d H:i:s'));
-//            Log::write($e->getMessage());
-//            throw new CommonException($e->getMessage());
-//        }
+        if ($orderInfo->isEmpty()) throw new CommonException('订单信息获取失败');
+        if ($orderInfo['order_status'] == JhkdOrderDict::FINISH) throw new CommonException('已完成订单不支持退款');
+        if ($orderInfo['payInfo']['status'] !== 2 && $orderInfo['is_enable_refund'] !== 1) throw new CommonException('当前状态不支持退款');
+        $orderInfo->refund_status = JhkdOrderDict::REFUNDING;
+        $orderInfo->close_reason = $data['close_reason'];
+        $orderInfo->save();
+        $refund_no = (new CoreRefundService())->create($orderInfo['site_id'], $orderInfo['payInfo']['out_trade_no'], $orderInfo['payInfo']['money'], $data['close_reason'], $orderInfo['payInfo']['trade_type'], $orderInfo['payInfo']['trade_id']);
+        (new CoreRefundService())->refund($orderInfo['site_id'], $refund_no, $orderInfo['payInfo']['money'], RefundDict::BACK, OrderRefundLogDict::MEMBER, $this->member_id);
+        Db::commit();
+        return true;
+        //        } catch (Exception $e) {
+        //            Db::rollback();
+        //            Log::write('退款操作失败' . date('Y-m-d H:i:s'));
+        //            Log::write($e->getMessage());
+        //            throw new CommonException($e->getMessage());
+        //        }
     }
 
     /**
@@ -244,5 +272,4 @@ class OrderService extends BaseApiService
         );
         return $res;
     }
-
 }

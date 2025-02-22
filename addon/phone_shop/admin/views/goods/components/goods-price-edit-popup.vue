@@ -41,18 +41,25 @@
                 </template>
 
                 <el-table-column prop="sku_name" :label="t('skuName')" min-width="120" v-if="goodsTable.data.length > 1" />
+                    <el-table-column prop="market_price" :label="t('marketPrice')" min-width="120">
+                        <template #default="{ row }">
+                            <el-input 
+                                v-model="row.market_price" 
+                                clearable 
+                                placeholder="0.00" 
+                                maxlength="8"
+                                @input="calculatePrice(row)"
+                            />
+                        </template>
+                    </el-table-column>
+    
                 <el-table-column prop="price" :label="t('price')" min-width="120">
                     <template #default="{ row }">
                         <el-input v-model="row.price" clearable placeholder="0.00" maxlength="8" :disabled="activeGoodsCount > 0" />
                     </template>
                 </el-table-column>
 
-                <el-table-column prop="market_price" :label="t('marketPrice')" min-width="120">
-                    <template #default="{ row }">
-                        <el-input v-model="row.market_price" clearable placeholder="0.00" maxlength="8" />
-                    </template>
-                </el-table-column>
-
+              
                 <el-table-column prop="cost_price" :label="t('costPrice')" min-width="120">
                     <template #default="{ row }">
                         <el-input v-model="row.cost_price" clearable placeholder="0.00" maxlength="8" />
@@ -73,7 +80,7 @@
 
 <script lang="ts" setup>
 import { t } from '@/lang'
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted, watch } from 'vue'
 import { img } from '@/utils/common'
 import { ElMessage } from 'element-plus'
 
@@ -82,6 +89,9 @@ import {
     getGoodsSkuList,
     editGoodsListPrice
 } from '@/addon/phone_shop/api/goods'
+
+// 获取价格配置
+import { getRecyclerPriceConfigBySiteId } from '@/addon/phone_shop/api/site'
 
 const goods: any = reactive({})
 const activeGoodsCount: any = ref(0)
@@ -253,6 +263,89 @@ const save = () => {
             emit('load');
             showDialog.value = false
         })
+    }
+}
+
+// 定义接口
+interface PriceRange {
+    id: number;
+    config_id: number;
+    min_price: string;
+    max_price: string;
+    member_markup: string;
+    create_time: string;
+    update_time: string;
+}
+
+interface RecyclerPriceConfig {
+    id: number;
+    site_id: number;
+    recycler_id: number;
+    price_type: number;
+    member_markup: string;
+    non_member_markup: string;
+    create_time: string;
+    update_time: string;
+    price_ranges: PriceRange[];
+}
+
+interface TableRow {
+    market_price: string;
+    price: string;
+    sku_id: number;
+    cost_price: string;
+}
+
+// 价格配置
+const recyclerPriceConfig = ref<RecyclerPriceConfig | null>(null)
+
+// 获取价格配置
+const getRecyclerPriceConfigFn = async () => {
+    try {
+        const res = await getRecyclerPriceConfigBySiteId({})
+        recyclerPriceConfig.value = res.data
+    } catch (error) {
+        console.error('获取价格配置失败:', error)
+    }
+}
+
+onMounted(() => {
+    getRecyclerPriceConfigFn()
+})
+
+// 监听同行价变化，自动计算零售价
+const calculatePrice = (row: TableRow) => {
+    if (!row.market_price || !recyclerPriceConfig.value) return
+    
+    const price = parseFloat(row.market_price)
+    // 判断加价类型
+    const priceType = recyclerPriceConfig.value.price_type
+    
+    if (priceType === 1) {
+        // 通用型：直接使用 member_markup
+        const markup = parseFloat(recyclerPriceConfig.value.member_markup)
+        if (!markup) {
+            row.price = price.toFixed(2)
+        } else {
+            row.price = (price + markup).toFixed(2)
+        }
+        return
+    }
+    
+    // 区间型：根据价格区间计算
+    const ranges = recyclerPriceConfig.value.price_ranges
+    const matchedRange = ranges.find((range: PriceRange) => {
+        const minPrice = parseFloat(range.min_price)
+        const maxPrice = parseFloat(range.max_price)
+        return price >= minPrice && price <= maxPrice
+    })
+    
+    if (matchedRange) {
+        const markup = parseFloat(matchedRange.member_markup)
+        row.price = (price + markup).toFixed(2)
+    } else {
+        // 如果找不到匹配区间，零售价等于同行价
+        row.price = price.toFixed(2)
     }
 }
 

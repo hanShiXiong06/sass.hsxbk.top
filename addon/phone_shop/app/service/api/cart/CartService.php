@@ -148,7 +148,7 @@ class CartService extends BaseApiService
         $member_info = $goods_service->getMemberInfo();
         foreach ($list as $k => &$v) {
             if(!empty($v[ 'goodsSku' ])) {
-                $v[ 'goodsSku' ][ 'member_price' ] = $goods_service->getMemberPrice($member_info, $v[ 'goods' ][ 'member_discount' ], $v[ 'goodsSku' ][ 'member_price' ], $v[ 'goodsSku' ][ 'price' ]);
+                $v[ 'goodsSku' ][ 'member_price' ] = $goods_service->getMemberPrice($member_info, $v[ 'goods' ][ 'member_discount' ], $v[ 'goodsSku' ][ 'member_price' ], $v[ 'goodsSku' ][ 'price' ], $v[ 'goodsSku' ][ 'market_price' ]);
             }
         }
         return $list;

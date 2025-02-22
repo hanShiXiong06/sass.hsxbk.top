@@ -215,7 +215,7 @@ class UpgradeService extends BaseAdminService
         $this->compileDiyComponentsCode(project_path() . 'uni-app' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR, $this->addon);
 
         // 编译 fixed-group 固定模板组件代码文件
-        $this->compileFixedComponentsCode(project_path() . 'uni-app' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR, $this->addon);
+       // $this->compileFixedComponentsCode(project_path() . 'uni-app' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR, $this->addon);
         // 编译 pages.json 页面路由代码文件
         $this->uninstallPageCode(project_path() . 'uni-app' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR);
         // 编译 pages.json 页面路由代码文件

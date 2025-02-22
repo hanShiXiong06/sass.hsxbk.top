@@ -33,15 +33,28 @@ class GoodsCategoryService extends BaseApiService
      * @param string $order
      * @return array
      */
-    public function getTree()
+    // public function getTree()
+    // {
+    //     if($this->site_id !== 0 ){
+    //         $sites =  (new Site())-> field('category_status')->where([['site_id','=', $this->site_id]]) ->findOrEmpty()->toArray();
+            
+    //     }
+        
+    //     $site_id = empty($sites['category_status'] ) ? $this->site_id : $this->site_id.",0";
+    //     return ( new CoreGoodsCategoryService() )->getTree([ [ 'is_show', '=', 1 ],  [ 'site_id', 'in', $site_id ]  ], ['flag'=>1], 'category_id,category_name,image,level,pid,category_full_name');
+    // }
+     public function getTree(array $params = [])
     {
+       
         if($this->site_id !== 0 ){
             $sites =  (new Site())-> field('category_status')->where([['site_id','=', $this->site_id]]) ->findOrEmpty()->toArray();
-            
+           
         }
-        
+    
         $site_id = empty($sites['category_status'] ) ? $this->site_id : $this->site_id.",0";
-        return ( new CoreGoodsCategoryService() )->getTree([ [ 'is_show', '=', 1 ],  [ 'site_id', 'in', "$site_id" ]  ], ['flag'=>0], 'category_id,category_name,image,level,pid,category_full_name');
+        $params['site_id'] =$this->site_id;
+        return ( new CoreGoodsCategoryService() )->getTree([[ 'is_show', '=', 1 ], [ 'site_id', 'in', "$site_id" ] ], $params  );
+        
     }
 
     /**

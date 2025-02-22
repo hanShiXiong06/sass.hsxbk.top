@@ -7,7 +7,6 @@ use addon\shop\app\dict\active\ActiveDict;
 use addon\shop\app\dict\order\InvoiceDict;
 use addon\shop\app\dict\order\OrderDict;
 use addon\shop\app\dict\order\OrderLogDict;
-use addon\shop\app\job\order\OrderClose;
 use addon\shop\app\job\order\OrderPayRemind;
 use addon\shop\app\model\order\Order;
 use addon\shop\app\service\core\cart\CoreCartService;
@@ -18,8 +17,6 @@ use addon\shop\app\service\core\goods\CoreGoodsStockService;
 use addon\shop\app\service\core\order\CoreInvoiceService;
 use addon\shop\app\service\core\order\CoreOrderConfigService;
 use addon\shop\app\service\core\order\CoreOrderLogService;
-use core\exception\CommonException;
-use think\facade\Db;
 use think\facade\Log;
 
 class AfterShopOrderCreate

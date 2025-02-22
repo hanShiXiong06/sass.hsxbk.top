@@ -2,10 +2,10 @@
   "title": "快速支付",
   "desc": "快速收款、自定义跳转信息",
   "key": "fast_pay",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "TK",
   "type": "addon",
   "support_app": "",
-  "support_version":"0.5.5",
+  "support_version":"1.0.0",
   "compile":[]
 }

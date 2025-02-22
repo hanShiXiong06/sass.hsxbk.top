@@ -3,6 +3,8 @@
 namespace addon\tk_upgrade;
 
 
+use addon\tk_upgrade\app\service\admin\AddonService;
+
 /**
  * 插件安装之后单独的插件方法
  */
@@ -13,7 +15,7 @@ class Addon
      */
     public function install()
     {
-
+        (new AddonService())->checkAuthInfo();
         return true;
     }
 

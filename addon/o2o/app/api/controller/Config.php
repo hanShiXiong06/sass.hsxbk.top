@@ -31,5 +31,4 @@ class Config extends BaseApiController
         return success((new ConfigService())->getReserveConfig());
     }
 
-
 }

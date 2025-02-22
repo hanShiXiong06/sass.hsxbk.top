@@ -87,7 +87,7 @@ public function getTree($condition = [], $params = [], $field = 'category_id,sit
     $list = $this->model->where($condition)->field($field)->order($order)->select()->toArray();
 
     // 判断是否需要计算 count 
-    if (!empty($params['flag']) && $params['flag'] == 1) {
+    // if (!empty($params['flag']) && $params['flag'] == 1) {
         // 使用子查询优化商品数量统计
         $goods_model = new \addon\phone_shop\app\model\goods\Goods();
         $query = $goods_model->field('goods_category')
@@ -141,16 +141,16 @@ public function getTree($condition = [], $params = [], $field = 'category_id,sit
                 $category['group_name'] = '';
             }
         }
-    } else {
-        // 即使不需要计算商品数量，也需要获取内存分组名称
-        foreach ($list as &$category) {
-            if (!empty($category['memory_group'])) {
-                $category['group_name'] = $this->model->getMemoryGroup($category['memory_group']);
-            } else {
-                $category['group_name'] = '';
-            }
-        }
-    }
+    // } else {
+    //     // 即使不需要计算商品数量，也需要获取内存分组名称
+    //     foreach ($list as &$category) {
+    //         if (!empty($category['memory_group'])) {
+    //             $category['group_name'] = $this->model->getMemoryGroup($category['memory_group']);
+    //         } else {
+    //             $category['group_name'] = '';
+    //         }
+    //     }
+    // }
 
     // 转换为树形结构
     $list = list_to_tree($list, 'category_id', 'pid', 'child_list');

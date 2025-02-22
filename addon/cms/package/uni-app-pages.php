@@ -2,18 +2,22 @@
 return [
     'pages' => <<<EOT
         // PAGE_BEGIN
-				{
-                    "path": "cms/pages/list",
+        {
+            "root": "addon/cms",
+            "pages": [{
+                    "path": "pages/list",
                     "style": {
                         "navigationBarTitleText": "%cms.pages.list%"
                     }
                 },
                 {
-                    "path": "cms/pages/detail",
+                    "path": "pages/detail",
                     "style": {
                         "navigationBarTitleText": "%cms.pages.detail%"
                     }
-                },
-				// PAGE_END
+                }
+            ]
+        },
+        // PAGE_END
 EOT
 ];

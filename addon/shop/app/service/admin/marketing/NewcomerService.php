@@ -108,16 +108,21 @@ class NewcomerService extends BaseAdminService
                     }
                 ])
                 ->select()->toArray();
-            foreach ($active_goods as &$item) {
-                $item[ 'goods_name' ] = $item[ 'goods' ][ 'goods_name' ];
-                $item[ 'goods_type' ] = $item[ 'goods' ][ 'goods_type' ];
-                $item[ 'goods_type_name' ] = $item[ 'goods' ][ 'goods_type_name' ];
-                $item[ 'sku_name' ] = $item[ 'goodsSkuOne' ][ 'sku_name' ];
-                $item[ 'sku_image' ] = $item[ 'goodsSkuOne' ][ 'sku_image' ];
-                $item[ 'price' ] = $item[ 'goodsSkuOne' ][ 'price' ];
-                $item[ 'stock' ] = $item[ 'goodsSkuOne' ][ 'stock' ];
-                $item[ 'active_goods_value' ] = json_decode($item[ 'active_goods_value' ], true);
+            foreach ($active_goods as $k => &$item) {
+                if (!empty($item[ 'goods' ])) {
+                    $item[ 'goods_name' ] = $item[ 'goods' ][ 'goods_name' ];
+                    $item[ 'goods_type' ] = $item[ 'goods' ][ 'goods_type' ];
+                    $item[ 'goods_type_name' ] = $item[ 'goods' ][ 'goods_type_name' ];
+                    $item[ 'sku_name' ] = $item[ 'goodsSkuOne' ][ 'sku_name' ];
+                    $item[ 'sku_image' ] = $item[ 'goodsSkuOne' ][ 'sku_image' ];
+                    $item[ 'price' ] = $item[ 'goodsSkuOne' ][ 'price' ];
+                    $item[ 'stock' ] = $item[ 'goodsSkuOne' ][ 'stock' ];
+                    $item[ 'active_goods_value' ] = json_decode($item[ 'active_goods_value' ], true);
+                } else {
+                    unset($active_goods[ $k ]);
+                }
             }
+            $active_goods = array_values($active_goods);
             $value[ 'active_goods' ] = $active_goods;
         }
         return $value;

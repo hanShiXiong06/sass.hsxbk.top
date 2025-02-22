@@ -2,9 +2,11 @@
 return [
     'pages' => <<<EOT
         // PAGE_BEGIN
-				// *********************************** 付费会员权益 ***********************************
+        {
+            "root": "addon/tk_vip", 
+            "pages": [
 				{
-					"path": "tk_vip/pages/index",
+					"path": "pages/index",
 					"style": {
 						"navigationBarTitleText": "付费会员",
 						// #ifndef H5
@@ -14,33 +16,35 @@ return [
 					"needLogin": true
 				},
 				{
-					"path": "tk_vip/pages/list",
+					"path": "pages/list",
 					"style": {
 						"navigationBarTitleText": "购买记录"
 					},
 					"needLogin": true
 				},
 				{
-					"path": "tk_vip/pages/real",
+					"path": "pages/real",
 					"style": {
 						"navigationBarTitleText": "实名认证"
 					},
 					"needLogin": true
 				},
 				{
-					"path": "tk_vip/pages/manage",
+					"path": "pages/manage",
 					"style": {
 						"navigationBarTitleText": "会员管理"
 					},
 					"needLogin": true
 				},
 				{
-					"path": "tk_vip/pages/member",
+					"path": "pages/member",
 					"style": {
 						"navigationBarTitleText": "会员详情"
 					},
 					"needLogin": true
-				},
-				// PAGE_END
+				}
+			]
+        },
+// PAGE_END
 EOT
 ];

@@ -29,19 +29,6 @@
                         <span>{{ !serveTable.loading ? t('emptyData') : '' }}</span>
                     </template>
                     <el-table-column prop="service_name" :label="t('serviceName')" min-width="120" />
-                    <!--					<el-table-column :label="t('image')" min-width="120">-->
-                    <!--						<template #default="{ row }">-->
-                    <!--							<div class="h-[50px]">-->
-                    <!--							    <el-image class="w-[50px] h-[50px] " :src="img(row.image)" fit="contain">-->
-                    <!--							        <template #error>-->
-                    <!--							            <div class="image-slot">-->
-                    <!--							                &lt;!&ndash; <img class="w-[30px] h-[30px]" src="@/addon/phone_shop/assets/category_default.png" /> &ndash;&gt;-->
-                    <!--							            </div>-->
-                    <!--							        </template>-->
-                    <!--							    </el-image>-->
-                    <!--							</div>-->
-                    <!--						</template>-->
-                    <!--					</el-table-column>-->
                     <el-table-column prop="desc" :label="t('desc')" min-width="120" />
                     <el-table-column :label="t('operation')" fixed="right" align="right" min-width="120">
                         <template #default="{ row }">

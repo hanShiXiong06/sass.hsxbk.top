@@ -62,7 +62,7 @@ class AddressService extends BaseApiService
     public function fanyiNameAddress($address)
     {
         $config = $this->getConfig();
-        if(!isset($config['address_use'])||$config['address_use']==0) throw new \Exception('地址解析未开启');
+        if(!isset($config['address_use'])||$config['address_use']==0) throw new \Exception('地址解析未启用，请手动填写');
         $secretId = $config['tx_id'];
         $secretKey = $config['tx_secret'];
         $source = 'market';

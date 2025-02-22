@@ -40,8 +40,8 @@ class AddonService extends BaseAdminService
         $res=(new CoreConfigService())->getConfig(0,ConfigKeyDict::NIUCLOUD_CONFIG);
         if(!$res){
             (new CoreConfigService())->setConfig(0,ConfigKeyDict::NIUCLOUD_CONFIG, [
-                'auth_code' => '20240910477258458189824',
-                'auth_secret' => '66e0532241b71'
+                'auth_code' => '20241221513165952913408',
+                'auth_secret' => '6766173073a54'
             ]);
         }
         return [];

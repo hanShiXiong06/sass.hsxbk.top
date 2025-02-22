@@ -2,64 +2,65 @@
 return [
     'pages' => <<<EOT
         // PAGE_BEGIN
-			// *********************************** 快捷支付 ***********************************
-			{
-				"path": "fast_pay/pages/pay/index",
+        {
+            "root": "addon/fast_pay", 
+            "pages": [
+				{
+				"path": "pages/pay/index",
 				"style": {
 					"navigationBarTitleText": "收银台"
 				},
 				"needLogin": true
 			},
-
-			{
-				"path": "fast_pay/pages/pay/result",
+				{
+				"path": "pages/pay/result",
 				"style": {
 					"navigationBarTitleText": "支付结果"
 				},
 				"needLogin": true
 			},
-			{
-				"path": "fast_pay/pages/pay/list",
+				{
+				"path": "pages/pay/list",
 				"style": {
 					"navigationBarTitleText": "支付记录"
 				},
 				"needLogin": true
 			},
-			{
-				"path": "fast_pay/pages/pay/pay",
+				{
+				"path": "pages/pay/pay",
 				"style": {
 					"navigationBarTitleText": "商户收款"
 				}
 			},
-
-			{
-				"path": "fast_pay/pages/partner/index",
+				{
+				"path": "pages/partner/index",
 				"style": {
 					"navigationBarTitleText": "收银台"
 				},
 				"needLogin": true
 			},
-
-			{
-				"path": "fast_pay/pages/partner/result",
+				{
+				"path": "pages/partner/result",
 				"style": {
 					"navigationBarTitleText": "支付结果"
 				},
 				"needLogin": true
 			},
-			{
-				"path": "fast_pay/pages/partner/list",
+				{
+				"path": "pages/partner/list",
 				"style": {
 					"navigationBarTitleText": "支付记录"
 				},
 				"needLogin": true
 			},
-			{
-				"path": "fast_pay/pages/partner/pay",
+				{
+				"path": "pages/partner/pay",
 				"style": {
 					"navigationBarTitleText": "商户收款"
 				}
-			},
-			// PAGE_END
+			}
+			]
+        },
+// PAGE_END
 EOT
 ];

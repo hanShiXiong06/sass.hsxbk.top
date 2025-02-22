@@ -182,7 +182,7 @@ class RecycleOrderService extends BaseApiService
                 'express_id' => $data['express_id'] ?? '',
                 'send_username' => $data['send_username'],
                 'telphone' => $data['telphone'],
-                'pay_type' => $data['pay_type'],
+                
                 'account' => $data['account'],
                 'delivery_type' => $data['delivery_type'] ?? 'mail',
                 'return_type' => $data['return_type'] ?? 'self',
@@ -204,6 +204,7 @@ class RecycleOrderService extends BaseApiService
             // 处理设备信息
             if (!empty($data['phone_list'])) {
                 $deviceModel = new PhoneShopRecycleOrderDevice();
+                
                 foreach ($data['phone_list'] as $phone) {
                     // 检查IMEI是否已存在
                     // $exists = $deviceModel->where('imei', $phone['imei'])->find();
@@ -215,10 +216,12 @@ class RecycleOrderService extends BaseApiService
                         'order_id' => $order->id,
                         'imei' => $phone['imei'],
                         'model' => $phone['model'] ?? '待识别',
+                        'initial_price'=> $phone['initial_price'] ?? '',
                         'status' => 1,
                         'create_at' => time(),
                         'site_id'=>$this->site_id
                     ];
+                    
 
                     $result = $deviceModel->create($deviceData);
                     if (!$result) {
@@ -690,5 +693,8 @@ class RecycleOrderService extends BaseApiService
         $this->model->commit();
         return true;
     }
+    //  取消设备回收 deviceCancel
+    
+    
 }
 

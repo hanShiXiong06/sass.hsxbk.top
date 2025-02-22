@@ -261,7 +261,7 @@ class Order extends BaseModel
      */
     public function pay()
     {
-        return $this->hasOne(Pay::class, 'out_trade_no', 'out_trade_no')->bind([ 'pay_type_name' => 'type_name' ]);
+        return $this->hasOne(Pay::class, 'out_trade_no', 'out_trade_no');
     }
 
     public function refund()

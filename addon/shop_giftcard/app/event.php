@@ -50,6 +50,12 @@ return [
         'WapIndex' => [ 'addon\shop_giftcard\app\listener\WapIndexListener' ],
         'BottomNavigation' => [ 'addon\shop_giftcard\app\listener\BottomNavigationListener' ],
 
+        //获取商品是否关联礼品卡
+        'GoodsIsConnectedCard' => [ 'addon\shop_giftcard\app\listener\giftcard\GoodsIsConnectedCard' ],
+
+        //主题色
+        'ThemeColor' => [ 'addon\shop_giftcard\app\listener\diy\ThemeColorListener' ],
+
     ],
     'subscribe' => [
     ],

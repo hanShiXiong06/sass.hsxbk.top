@@ -21,11 +21,8 @@ class SyncGoods extends BaseJob
         
         foreach ($site_list as $site) {
             $site_id = $site['site_id'];
-           
-           
             // 调用同步商品列表
             Log::write(  (new GoodsService())->syncGoodsList($site_id));
-            
         }
        return true;
     } catch (\Exception $e) {

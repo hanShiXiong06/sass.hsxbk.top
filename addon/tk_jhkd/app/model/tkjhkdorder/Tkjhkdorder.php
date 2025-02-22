@@ -2,15 +2,15 @@
 
 namespace addon\tk_jhkd\app\model\tkjhkdorder;
 
+use addon\tk_jhkd\app\dict\order\JhkdOrderDict;
 use addon\tk_jhkd\app\model\order\OrderAdd;
+use addon\tk_jhkd\app\model\orderdelivery\OrderDelivery;
+use addon\tk_jhkd\app\model\OrderDeliveryReal;
 use addon\tk_jhkd\app\service\core\CommonService;
+use app\model\member\Member;
+use app\model\pay\Pay;
 use core\base\BaseModel;
 use think\model\concern\SoftDelete;
-use think\model\relation\HasMany;
-use think\model\relation\HasOne;
-use app\service\admin\dict\DictService;
-use addon\tk_jhkd\app\dict\order\JhkdOrderDict;
-use app\model\member\Member;
 
 /**
  * 订单列模型
@@ -49,9 +49,9 @@ class Tkjhkdorder extends BaseModel
 
     public function getOrderStatusArrAttr($value, $data)
     {
-     if(isset($data['order_status'])){
-         return JhkdOrderDict::getStatus($data['order_status']);
-     }
+        if (isset($data['order_status'])) {
+            return JhkdOrderDict::getStatus($data['order_status']);
+        }
     }
 
 
@@ -177,23 +177,24 @@ class Tkjhkdorder extends BaseModel
 
     public function payInfo()
     {
-        return $this->hasOne(\app\model\pay\Pay::class, 'trade_id', 'id');
+        return $this->hasOne(Pay::class, 'trade_id', 'id');
     }
 
     public function memberInfo()
     {
-        return $this->hasOne(\app\model\member\Member::class, 'member_id', 'member_id');
+        return $this->hasOne(Member::class, 'member_id', 'member_id');
     }
 
     public function orderInfo()
     {
-        return $this->hasOne(\addon\tk_jhkd\app\model\orderdelivery\OrderDelivery::class, 'order_id', 'order_id');
+        return $this->hasOne(OrderDelivery::class, 'order_id', 'order_id');
     }
 
     public function deliveryRealInfo()
     {
-        return $this->hasOne(\addon\tk_jhkd\app\model\OrderDeliveryReal::class, 'order_id', 'order_id');
+        return $this->hasOne(OrderDeliveryReal::class, 'order_id', 'order_id');
     }
+
     public function addorderInfo()
     {
         return $this->hasOne(OrderAdd::class, 'order_id', 'order_id');

@@ -14,6 +14,7 @@ namespace addon\phone_shop\app\listener\pay;
 
 use addon\phone_shop\app\dict\order\OrderDict;
 use addon\phone_shop\app\service\core\refund\CoreRefundService;
+use think\facade\Log;
 
 /**
  * 退款异步回调事件
@@ -22,8 +23,10 @@ class RefundSuccessListener
 {
     public function handle(array $params)
     {
+        
+      
         if ($params[ 'trade_type' ] == OrderDict::TYPE) {
-
+           
             ( new CoreRefundService() )->transferSuccess([
                 'refund_no' => $params[ 'refund_no' ],
                 'order_refund_no' => $params[ 'trade_id' ],

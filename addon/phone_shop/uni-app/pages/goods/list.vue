@@ -3,7 +3,7 @@
 		<!-- 顶部搜索栏 -->
 		<view class="fixed left-0 right-0 top-0 bg-[#fff] px-[30rpx] z-50">
 			<view class="py-[14rpx] flex items-center justify-between">
-				<view class="flex-1 flex items-center h-[64rpx] bg-[#F6F8F8] rounded-[33rpx] px-[32rpx] mr-[30rpx]">
+				<view class="flex-1 flex items-center h-[64rpx] bg-[#F6F8F8] rounded-[33rpx] px-[32rpx] mr-[30rpx] ">
 					<u-input class="flex-1" maxlength="50" v-model="goods_name" @confirm="searchGoods"
 						placeholder="请输入商品名称或串号(#)" placeholderClass="text-[#a5a6a6] text-[26rpx]" fontSize="26rpx"
 						clearable border="none"></u-input>
@@ -92,6 +92,9 @@
 							<text class="nc-iconfont nc-icon-guanbiV6xx" @click.stop="removeCategory(index)"></text>
 						</view>
 					</view>
+					<view v-else>
+						<text>请选择分类</text>
+					</view>
 					<view class="btn-group">
 						<u-button type="info" :plain="true" text="重置" @click="resetCategories"></u-button>
 						<u-button type="primary" text="确定" @click="confirmCategories"></u-button>
@@ -154,9 +157,9 @@
 		</u-popup>
 
 		<!-- 商品列表 -->
-		<mescroll-body ref="mescrollRef" top="160rpx" bottom="50px" @init="mescrollInit" :down="{ use: false }"
+		<mescroll-body ref="mescrollRef" top="180rpx" bottom="50px" @init="mescrollInit" :down="{ use: false }"
 			@up="getGoodsList">
-			<view v-if="goodsList.length" :class="['sidebar-margin', !listType ? 'grid-list' : '']">
+			<view v-if="goodsList.length" :class="[!listType ? 'grid-list' : '']">
 				<template v-for="(item, index) in goodsList" :key="item.goods_id">
 					<!-- 列表样式 -->
 					<template v-if="listType">
@@ -170,9 +173,10 @@
 								</template>
 							</u--image>
 							<view class="goods-info">
-								<view class="goods-name">{{ item.goods_name }}</view>
-								<view class="goods-subtitle" v-if="item.sub_title">{{ item.sub_title }}</view>
-								<view class="goods-sku" v-if="item.goodsSku.sku_no">
+								<view class="goods-name truncate w-[430rpx]">{{ item.goods_name }}</view>
+								<view class="goods-subtitle truncate  w-[430rpx]" v-if="item.sub_title">{{
+									item.sub_title }}</view>
+								<view class="goods-sku truncate  w-[400rpx]" v-if="item.goodsSku.sku_no">
 									<text class="label">串号:</text>
 									<text class="value">{{ item.goodsSku.sku_no }}</text>
 								</view>
@@ -193,7 +197,7 @@
 									<view class="action-btns">
 										<view class="stock-info">
 											<text>库存:{{ item.goodsSku.stock }}{{ item.unit }}</text>
-											
+
 										</view>
 										<view class="download-btn" @click.stop="downloadGoods(item)">
 											<text class="nc-iconfont nc-icon-fenxiangV6xx"></text>
@@ -206,7 +210,7 @@
 					<!-- 网格样式 -->
 					<template v-else>
 						<view class="goods-item-grid" @click="toDetail(item.goods_id)">
-							<u--image class="goods-image" width="100%" height="350rpx"
+							<u--image class="goods-image" width="100%" height="200rpx"
 								:src="img(item.goods_cover_thumb_mid)" radius="10">
 								<template #error>
 									<image class="goods-image"
@@ -215,30 +219,27 @@
 								</template>
 							</u--image>
 							<view class="goods-info">
-								<view class="goods-name">{{ item.goods_name }}</view>
-								<view class="goods-subtitle" v-if="item.sub_title">{{ item.sub_title }}</view>
+								<view class="goods-name truncate w-[100%]">{{ item.goods_name }}</view>
+								<view class="goods-subtitle truncate w-[100%]" v-if="item.sub_title">{{ item.sub_title
+									}}</view>
 								<view class="price-wrap">
 									<view class="left">
 										<text class="symbol">￥</text>
 										<text class="price">{{ goodsPrice(item).toFixed(2).split('.')[0] }}</text>
 										<text class="decimal">.{{ goodsPrice(item).toFixed(2).split('.')[1] }}</text>
-									</view>
-									<view class="right">
 										<image class="price-tag" v-if="priceType(item) == 'member_price'"
 											:src="img('addon/phone_shop/VIP.png')" mode="heightFix" />
 										<image class="price-tag" v-if="priceType(item) == 'discount_price'"
 											:src="img('addon/phone_shop/discount.png')" mode="heightFix" />
 									</view>
-								</view>
-								<view class="goods-bottom">
-									<view class="left">
-										<text class="stock">库存:{{ item.goodsSku.stock }}{{ item.unit }}</text>
-										<text class="brand" v-if="item.brand">{{ getbrandLabel(item.brand) }}</text>
-									</view>
-									<view class="download-btn" @click.stop="downloadGoods(item)">
-										<text class="nc-iconfont nc-icon-fenxiangV6xx"></text>
+									<view class="right">
+
+										<view class="download-btn" @click.stop="downloadGoods(item)">
+											<text class="nc-iconfont nc-icon-fenxiangV6xx"></text>
+										</view>
 									</view>
 								</view>
+
 							</view>
 						</view>
 					</template>
@@ -435,7 +436,7 @@ const loadCategories = async () => {
 	try {
 		const res = await getGoodsCategoryTree()
 		categoryList.value = res.data
-		// 如果有预选分类，需要��置选中状态
+		// 如果有预选分类，需要置选中状态
 		if (filters.category_id) {
 			const ids = filters.category_id.split(',').map(Number)
 			selectedCategories.value = ids
@@ -902,7 +903,7 @@ const downloadImages = (images: string[], item: any, showToast: boolean = true) 
 
 	.goods-image {
 		width: 100%;
-		height: 350rpx;
+		height: 210rpx;
 	}
 
 	.goods-info {
@@ -1110,21 +1111,26 @@ const downloadImages = (images: string[], item: any, showToast: boolean = true) 
 		.selected-tags {
 			display: flex;
 			flex-wrap: wrap;
-			gap: 16rpx;
-			margin-bottom: 20rpx;
-			max-height: 80rpx;
+			gap: 12rpx;
+			margin-bottom: 16rpx;
+			max-height: 72rpx;
 			overflow-y: auto;
+
+			&::-webkit-scrollbar {
+				display: none;
+			}
 
 			.tag {
 				display: inline-flex;
 				align-items: center;
-				padding: 4rpx 16rpx;
+				height: 44rpx;
+				padding: 0 16rpx;
 				font-size: 24rpx;
 				color: var(--primary-color);
 				background: var(--primary-color-light);
-				border-radius: 24rpx;
+				border-radius: 22rpx;
 
-				.nc-iconfont {
+				.nc-icon-guanbiV6xx {
 					margin-left: 8rpx;
 					font-size: 24rpx;
 				}

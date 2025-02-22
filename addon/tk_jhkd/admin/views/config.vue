@@ -132,9 +132,10 @@ import { reactive, ref } from "vue";
 import { t } from "@/lang";
 import {
   getJhkdConfig,
-  setJhkdConfig,
+  setJhkdConfig
 } from "@/addon/tk_jhkd/api/tkjhkd";
 import { FormInstance, ElMessage } from "element-plus";
+
 const loading = ref(true);
 const ruleFormRef = ref<FormInstance>();
 const balance = ref();
